@@ -1,0 +1,355 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =====================================
+   THEME TOKEN MAPPING (shadcn)
+===================================== */
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/* =====================================
+   🌞 LIGHT THEME (DEFAULT)
+   Based on OLD LIGHT THEME
+===================================== */
+:root {
+  --radius: 0.75rem;
+
+  /* Backgrounds */
+  --background: oklch(0.98 0 0);
+  /* #fafaf9 */
+  --foreground: oklch(0.20 0.01 240);
+  /* text */
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.01 240);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.01 240);
+
+  /* Primary – Teal */
+  --primary: oklch(0.60 0.14 190);
+  /* #0d9488 */
+  --primary-foreground: oklch(0.98 0 0);
+
+  /* Secondary – Purple */
+  --secondary: oklch(0.62 0.18 305);
+  /* #9333ea */
+  --secondary-foreground: oklch(0.98 0 0);
+
+  /* Muted / Text */
+  --muted: oklch(0.94 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+
+  --accent: oklch(0.94 0 0);
+  --accent-foreground: oklch(0.20 0.01 240);
+
+  /* Semantic */
+  --destructive: oklch(0.60 0.25 27);
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.60 0.14 190);
+}
+
+/* =====================================
+   🌙 DARK THEME (OLD DARK STYLE)
+===================================== */
+.dark {
+  --background: oklch(0.15 0.03 240);
+  /* #0a1628 */
+  --foreground: oklch(0.97 0.01 240);
+
+  --card: oklch(0.18 0.04 240);
+  /* bg-2 */
+  --card-foreground: oklch(0.97 0.01 240);
+
+  --popover: oklch(0.18 0.04 240);
+  --popover-foreground: oklch(0.97 0.01 240);
+
+  /* Teal */
+  --primary: oklch(0.72 0.15 190);
+  /* #14b8a6 */
+  --primary-foreground: oklch(0.15 0 0);
+
+  /* Purple */
+  --secondary: oklch(0.65 0.20 305);
+  /* #a855f7 */
+  --secondary-foreground: oklch(0.98 0 0);
+
+  --muted: oklch(0.30 0.03 240);
+  --muted-foreground: oklch(0.75 0.02 240);
+
+  --accent: oklch(0.25 0.04 240);
+  --accent-foreground: oklch(0.97 0.01 240);
+
+  --destructive: oklch(0.63 0.25 27);
+  --border: oklch(0.32 0.05 240);
+  --input: oklch(0.22 0.04 240);
+  --ring: oklch(0.72 0.15 190);
+}
+
+/* =====================================
+   TOAST Z-INDEX ENFORCEMENT
+===================================== */
+/* Ensure toasts appear above modals */
+[data-sonner-toaster],
+[data-hot-toast-container],
+.react-hot-toast-container,
+div[style*="position: fixed"][style*="pointer-events: none"] {
+  z-index: 99999 !important;
+}
+
+[data-hot-toast-container]>div,
+.react-hot-toast-container>div,
+div[style*="position: fixed"][style*="pointer-events: none"]>div {
+  z-index: 99999 !important;
+}
+
+/* =====================================
+   BASE STYLES
+===================================== */
+@layer base {
+  * {
+    border-color: var(--color-border);
+    outline-color: rgba(var(--color-ring), 0.5);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  input,
+  textarea {
+    color: var(--color-foreground);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted-foreground);
+  }
+}
+
+/* =====================================
+   COMPONENT STYLES
+===================================== */
+@layer components {
+
+  /* Global Input & Form Element Styles */
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+    border: 2px solid var(--color-border);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .form-input::placeholder {
+    color: var(--color-muted-foreground);
+  }
+
+  .form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+    border: 2px solid var(--color-border);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    padding-right: 2.5rem;
+    font-size: 0.875rem;
+    color: var(--color-foreground);
+    background-color: var(--color-background);
+    border: 2px solid var(--color-border);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+  }
+
+  .form-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  /* Error state for inputs */
+  .form-input.error,
+  .form-textarea.error,
+  .form-select.error {
+    border-color: var(--color-destructive);
+  }
+
+  .form-input.error:focus,
+  .form-textarea.error:focus,
+  .form-select.error:focus {
+    border-color: var(--color-destructive);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+
+  /* Form labels */
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Required field indicator */
+  .required {
+    color: var(--color-destructive);
+  }
+
+  /* Error message styling */
+  .error-message {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-destructive);
+    margin-top: 0.25rem;
+  }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-group>*+* {
+    margin-top: 0.5rem;
+  }
+}
+
+
+/* 🔥 Disable browser autofill background color */
+/* Autofill for light & dark theme */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-foreground) !important;
+  /* <-- use theme variable */
+  caret-color: var(--color-foreground);
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-input) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+@keyframes rotatePattern {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation delay utility */
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+/* Enhanced loading animation */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* =====================================
+   🎯 SIDEBAR CUSTOM SCROLLBAR
+===================================== */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: var(--border) transparent;
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+  /* 👈 thin width */
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+}
+
+/* Hover effect */
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
+}

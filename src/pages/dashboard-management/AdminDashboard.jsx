@@ -6,6 +6,7 @@ import UserRegistrationChart from "../../components/charts/UserRegistrationChart
 import Icon from "../../components/Icon";
 import { getAdminDashboardAnalytics } from "../../services/adminService";
 import { formatDate } from "../../utils/dateFormatter";
+import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -172,7 +173,9 @@ export default function AdminDashboard() {
         <CardWrapper
           title="Recently Created Users"
           right={
-            <span className="text-primary cursor-pointer">View All →</span>
+            <Link to={"/users"} className="text-primary cursor-pointer">
+              View All →
+            </Link>
           }
           className="flex flex-col"
         >

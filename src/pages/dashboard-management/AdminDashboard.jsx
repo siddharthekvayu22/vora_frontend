@@ -167,17 +167,18 @@ export default function AdminDashboard() {
       </CardWrapper>
 
       {/* User Analytics */}
-      <div className="grid xl:grid-cols-2 gap-6">
+      <div className="grid xl:grid-cols-2 gap-6 items-stretch">
         {/* Recent Users */}
         <CardWrapper
           title="Recently Created Users"
           right={
             <span className="text-primary cursor-pointer">View All →</span>
           }
+          className="flex flex-col"
         >
-          <div className="space-y-3">
+          <div className="space-y-3 flex-1">
             {recentCreatedUsers.length === 0 ? (
-              <div className="text-center py-8">
+              <div className="text-center py-8 flex-1 flex flex-col justify-center">
                 <Icon
                   name="users"
                   size="48px"
@@ -226,8 +227,10 @@ export default function AdminDashboard() {
           </div>
         </CardWrapper>
         {/* User Registration Chart */}
-        <CardWrapper title="User Registration Trends">
-          <UserRegistrationChart data={charts.userCreation} />
+        <CardWrapper title="User Registration Trends" className="flex flex-col">
+          <div className="flex-1 min-h-[400px]">
+            <UserRegistrationChart data={charts.userCreation} />
+          </div>
         </CardWrapper>
       </div>
 

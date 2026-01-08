@@ -14,19 +14,8 @@ import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 
 function AppRoutes() {
-  const { isAuthenticated, user } = useAuth();
-  
-  // Component to handle role-based dashboard redirect
-  const DashboardRedirect = () => {
-    const userRole = user?.role;
-    
-    if (userRole === 'admin') {
-      return <Navigate to="/admin-dashboard" replace />;
-    } else {
-      return <Navigate to="/dashboard" replace />;
-    }
-  };
-  
+  const { isAuthenticated } = useAuth();
+
   return (
     <Routes>
       <Route
@@ -150,7 +139,11 @@ function AppRoutes() {
       <Route
         path="/"
         element={
-          isAuthenticated ? <DashboardRedirect /> : <Navigate to="/auth/login" replace />
+          isAuthenticated ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/auth/login" replace />
+          )
         }
       />
 

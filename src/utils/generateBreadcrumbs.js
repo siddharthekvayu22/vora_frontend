@@ -1,6 +1,28 @@
-export function generateBreadcrumbs(pathname) {
+export function generateBreadcrumbs(pathname, userRole = null) {
+  // Get role-based dashboard path
+  const getDashboardPath = (role) => {
+    if (!role) return "/dashboard";
+
+    switch (role.toLowerCase()) {
+      case "admin":
+        return "/admin-dashboard";
+      case "expert":
+        return "/dashboard";
+      case "user":
+        return "/dashboard";
+      default:
+        return "/dashboard";
+    }
+  };
+
+  const dashboardPath = getDashboardPath(userRole);
+
   // Normalize paths
-  if (pathname === "/" || pathname === "/dashboard") {
+  if (
+    pathname === "/" ||
+    pathname === "/dashboard" ||
+    pathname === "/admin-dashboard"
+  ) {
     return [
       {
         label: "Dashboard",
@@ -13,8 +35,8 @@ export function generateBreadcrumbs(pathname) {
   const segments = pathname.split("/").filter(Boolean);
   const breadcrumbs = [
     {
-      label: "Dashboard",
-      path: "/dashboard",
+      label: "Dashbaord",
+      path: dashboardPath,
       active: false,
     },
   ];

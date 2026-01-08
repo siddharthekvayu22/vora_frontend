@@ -56,9 +56,17 @@ function VerifyOtp() {
 
       toast.success(response.message || "Email verified successfully!");
 
-      // Navigate to dashboard or login
+      // Navigate to role-based dashboard or login
       setTimeout(() => {
-        navigate(response.user ? "/dashboard" : "/auth/login");
+        if (response.user) {
+          if (response.user.role === 'admin') {
+            navigate("/admin-dashboard");
+          } else {
+            navigate("/dashboard");
+          }
+        } else {
+          navigate("/auth/login");
+        }
       }, 500);
     } catch (error) {
       console.error(error.message || "Invalid OTP. Please try again.");

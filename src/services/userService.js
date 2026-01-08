@@ -73,8 +73,15 @@ export function updateUser(userData) {
 /**
  * Delete user
  */
-export function deleteUser(userId) {
-  return apiRequest(`/user/${userId}`, { method: "DELETE" }, true);
+export function deleteUser(userId, deleteData = true) {
+  return apiRequest(
+    `/user/${userId}`, 
+    {
+      method: "DELETE",
+      body: JSON.stringify({ deleteData }),
+    }, 
+    true
+  );
 }
 
 export default {

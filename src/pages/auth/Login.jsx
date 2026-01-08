@@ -22,7 +22,13 @@ function Login() {
       const response = await loginApi(formData.email, formData.password);
       login(response.user, response.token);
       toast.success(response.message || "Login successfull");
-      navigate("/dashboard");
+      
+      // Role-based redirect
+      if (response.user?.role === 'admin') {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Login error:", error.message || "Invalid email or password");
       toast.error(error.message || "Invalid email or password");

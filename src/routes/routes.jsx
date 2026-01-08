@@ -6,13 +6,26 @@ import AuthLayout from "../layout/AuthLayout";
 import { useAuth } from "../context/useAuth";
 import { useEffect } from "react";
 import Dashboard from "../pages/dashboard-management/Dashboard";
+import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
 import Users from "../pages/user-management/Users";
 import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 
 function AppRoutes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  
+  // Component to handle role-based dashboard redirect
+  const DashboardRedirect = () => {
+    const userRole = user?.role;
+    
+    if (userRole === 'admin') {
+      return <Navigate to="/admin-dashboard" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
+  };
+  
   return (
     <Routes>
       <Route
@@ -74,6 +87,16 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/users"
         element={
           <ProtectedRoute>
@@ -114,14 +137,11 @@ function AppRoutes() {
         }
       />
 
-      {/* Root redirect */}
+      {/* Root redirect - role-based dashboard */}
       <Route
         path="/"
         element={
-          <Navigate
-            to={isAuthenticated ? "/dashboard" : "/auth/login"}
-            replace
-          />
+          isAuthenticated ? <DashboardRedirect /> : <Navigate to="/auth/login" replace />
         }
       />
 

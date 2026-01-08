@@ -15,6 +15,11 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useState("");
+  
+  // Refs to prevent multiple logout calls and track state
+  const isLoggingOut = useRef(false);
+  const hasShownSessionExpiredToast = useRef(false);
+  const sessionCheckInterval = useRef(null);
 
   // Initialize state from sessionStorage
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -24,27 +29,28 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(
     () => sessionStorage.getItem("token") || null
   );
+  
   const [user, setUser] = useState(() => {
     const storedUser = sessionStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
   // Store pending email for OTP verification
-  const setEmailForVerification = (email) => {
+  const setEmailForVerification = useCallback((email) => {
     setPendingEmail(email);
     sessionStorage.setItem("pendingEmail", email);
-  };
+  }, []);
 
   // Get pending email from session
-  const getEmailForVerification = () => {
+  const getEmailForVerification = useCallback(() => {
     return pendingEmail || sessionStorage.getItem("pendingEmail") || "";
-  };
+  }, [pendingEmail]);
 
   // Clear pending email after verification
-  const clearPendingEmail = () => {
+  const clearPendingEmail = useCallback(() => {
     setPendingEmail("");
     sessionStorage.removeItem("pendingEmail");
-  };
+  }, []);
 
   // Refs to track activity
   const lastActivityTime = useRef(Date.now());
@@ -56,6 +62,10 @@ export const AuthProvider = ({ children }) => {
   // Login
   // -------------------------
   const login = useCallback((userData, authToken) => {
+    // Reset logout flags
+    isLoggingOut.current = false;
+    hasShownSessionExpiredToast.current = false;
+    
     setIsAuthenticated(true);
     setToken(authToken);
     setUser(userData);
@@ -71,10 +81,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // -------------------------
-  // Logout
+  // Logout with duplicate prevention
   // -------------------------
   const logout = useCallback(
-    async (message = null) => {
+    async (message = null, showToast = true) => {
+      // Prevent multiple simultaneous logout calls
+      if (isLoggingOut.current) {
+        return;
+      }
+      
+      isLoggingOut.current = true;
+
       try {
         // Only call logout API if we have a token
         if (token) {
@@ -84,6 +101,12 @@ export const AuthProvider = ({ children }) => {
         // Don't show error for logout API failure, just proceed with local logout
         console.warn("Logout API failed:", error.message);
       } finally {
+        // Clear session check interval
+        if (sessionCheckInterval.current) {
+          clearInterval(sessionCheckInterval.current);
+          sessionCheckInterval.current = null;
+        }
+
         // Always clear local state regardless of API success/failure
         setIsAuthenticated(false);
         setToken(null);
@@ -96,103 +119,160 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.removeItem("sessionStartTime");
         sessionStorage.removeItem("pendingEmail");
 
-        if (message) {
-          toast.error(message, { position: "top-center", duration: 5000 });
+        // Show toast only if requested and not already shown
+        if (message && showToast && !hasShownSessionExpiredToast.current) {
+          hasShownSessionExpiredToast.current = true;
+          toast.error(message, { 
+            position: "top-center", 
+            duration: 4000,
+            id: "session-expired" // Prevent duplicate toasts
+          });
         }
 
         navigate("/auth/login");
+        
+        // Reset logout flag after navigation
+        setTimeout(() => {
+          isLoggingOut.current = false;
+        }, 1000);
       }
     },
     [navigate, token]
   );
 
   // -------------------------
+  // Session validation helper
+  // -------------------------
+  const checkSessionValidity = useCallback(() => {
+    if (!isAuthenticated || isLoggingOut.current) {
+      return true; // Don't check if not authenticated or already logging out
+    }
+
+    const now = Date.now();
+    const sessionDuration = now - sessionStartTime.current;
+    const idleTime = now - lastActivityTime.current;
+
+    const maxSessionTime = 6 * 60 * 60 * 1000; // 6 hours
+    const maxIdleTime = 60 * 60 * 1000; // 1 hour
+
+    if (sessionDuration > maxSessionTime) {
+      logout("Your session has expired. Please log in again.");
+      return false;
+    } else if (idleTime > maxIdleTime) {
+      logout("You have been inactive for too long. Please log in again.");
+      return false;
+    }
+
+    return true;
+  }, [isAuthenticated, logout]);
+
+  // -------------------------
   // Update last activity on user actions
   // -------------------------
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const updateActivity = () => {
-      lastActivityTime.current = Date.now();
+      if (isAuthenticated && !isLoggingOut.current) {
+        lastActivityTime.current = Date.now();
+      }
     };
 
-    window.addEventListener("mousemove", updateActivity);
-    window.addEventListener("keydown", updateActivity);
-    window.addEventListener("scroll", updateActivity);
+    // Throttle activity updates to prevent excessive calls
+    let activityTimeout;
+    const throttledUpdateActivity = () => {
+      if (activityTimeout) return;
+      activityTimeout = setTimeout(() => {
+        updateActivity();
+        activityTimeout = null;
+      }, 1000); // Update at most once per second
+    };
+
+    window.addEventListener("mousemove", throttledUpdateActivity);
+    window.addEventListener("keydown", throttledUpdateActivity);
+    window.addEventListener("scroll", throttledUpdateActivity);
+    window.addEventListener("click", throttledUpdateActivity);
 
     return () => {
-      window.removeEventListener("mousemove", updateActivity);
-      window.removeEventListener("keydown", updateActivity);
-      window.removeEventListener("scroll", updateActivity);
-    };
-  }, []);
-
-  // -------------------------
-  // Auto logout on focus check
-  // -------------------------
-  useEffect(() => {
-    const checkSessionOnFocus = () => {
-      if (isAuthenticated) {
-        const sessionDuration = Date.now() - sessionStartTime.current;
-        const idleTime = Date.now() - lastActivityTime.current;
-
-        const maxSessionTime = 6 * 60 * 60 * 1000; // 6 hours
-        const maxIdleTime = 60 * 60 * 1000; // 1 hour
-
-        if (sessionDuration > maxSessionTime) {
-          logout("Your session has expired. Please log in again.");
-        } else if (idleTime > maxIdleTime) {
-          logout("You have been inactive for too long. Please log in again.");
-        }
+      window.removeEventListener("mousemove", throttledUpdateActivity);
+      window.removeEventListener("keydown", throttledUpdateActivity);
+      window.removeEventListener("scroll", throttledUpdateActivity);
+      window.removeEventListener("click", throttledUpdateActivity);
+      if (activityTimeout) {
+        clearTimeout(activityTimeout);
       }
     };
-
-    window.addEventListener("focus", checkSessionOnFocus);
-    checkSessionOnFocus();
-
-    return () => window.removeEventListener("focus", checkSessionOnFocus);
-  }, [isAuthenticated, logout]);
+  }, [isAuthenticated]);
 
   // -------------------------
-  // Auto logout every 1 min check
+  // Session monitoring with single interval
   // -------------------------
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (isAuthenticated) {
-        const idleTime = Date.now() - lastActivityTime.current;
-        if (idleTime >= 60 * 60 * 1000) {
-          logout(
-            "Your session has expired due to inactivity. Please log in again."
-          );
-        }
+    if (!isAuthenticated) {
+      if (sessionCheckInterval.current) {
+        clearInterval(sessionCheckInterval.current);
+        sessionCheckInterval.current = null;
       }
-    }, 60 * 1000);
+      return;
+    }
 
-    return () => clearInterval(intervalId);
-  }, [isAuthenticated, logout]);
+    // Clear any existing interval
+    if (sessionCheckInterval.current) {
+      clearInterval(sessionCheckInterval.current);
+    }
+
+    // Set up single session check interval
+    sessionCheckInterval.current = setInterval(() => {
+      checkSessionValidity();
+    }, 30 * 1000); // Check every 30 seconds instead of every minute
+
+    // Initial check
+    checkSessionValidity();
+
+    return () => {
+      if (sessionCheckInterval.current) {
+        clearInterval(sessionCheckInterval.current);
+        sessionCheckInterval.current = null;
+      }
+    };
+  }, [isAuthenticated, checkSessionValidity]);
 
   // -------------------------
   // Handle global unauthorized API responses
   // -------------------------
   useEffect(() => {
     const handleUnauthorizedResponse = (event) => {
-      if (event.detail && event.detail.status === 401) {
+      if (event.detail && event.detail.status === 401 && !isLoggingOut.current) {
         logout(
-          event.detail.message ||
-            "Your session has expired. Please log in again."
+          event.detail.message || "Your session has expired. Please log in again."
         );
       }
     };
 
-    window.addEventListener(
-      "unauthorized-response",
-      handleUnauthorizedResponse
-    );
+    window.addEventListener("unauthorized-response", handleUnauthorizedResponse);
+    
     return () => {
-      window.removeEventListener(
-        "unauthorized-response",
-        handleUnauthorizedResponse
-      );
+      window.removeEventListener("unauthorized-response", handleUnauthorizedResponse);
     };
   }, [logout]);
+
+  // -------------------------
+  // Handle page visibility change (when user switches tabs/windows)
+  // -------------------------
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isAuthenticated && !isLoggingOut.current) {
+        // Check session when user returns to the tab
+        checkSessionValidity();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isAuthenticated, checkSessionValidity]);
 
   // -------------------------
   // Memoize context value

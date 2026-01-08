@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import DataTable from "../../components/data-table/DataTable";
 import UserModal from "./components/UserModal";
@@ -16,6 +16,7 @@ import { formatDate } from "../../utils/dateFormatter";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -305,9 +306,12 @@ function Users() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
-        onClick={() => setViewModalState({ isOpen: true, user: row })}
+        onClick={() => {
+          const userId = row._id || row.id;
+          navigate(`/users/${userId}/statistics`);
+        }}
         className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105"
-        title="View Details"
+        title="View Statistics"
       >
         <Icon name="eye" size="16px" />
       </button>

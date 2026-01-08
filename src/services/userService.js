@@ -71,6 +71,13 @@ export function updateUser(userData) {
 }
 
 /**
+ * Get user statistics by ID
+ */
+export function getUserStatistics(userId) {
+  return apiRequest(`/user/${userId}/statistics`, true);
+}
+
+/**
  * Delete user
  */
 export function deleteUser(userId, deleteData = true) {

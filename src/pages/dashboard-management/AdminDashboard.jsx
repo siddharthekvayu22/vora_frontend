@@ -89,7 +89,7 @@ export default function AdminDashboard() {
     {
       label: "TOTAL USER DOCUMENTS",
       value: stats.totalDocuments,
-      trend: "Documents in system",
+      trend: "User uploaded Documents",
       trendColor: "text-orange-500",
       icon: "📄",
     },
@@ -168,90 +168,69 @@ export default function AdminDashboard() {
 
       {/* User Analytics */}
       <div className="grid xl:grid-cols-2 gap-6">
-        {/* User Role Distribution */}
-        <CardWrapper title="User Role Distribution">
-          <div className="space-y-4">
-            {roleDistribution.map((role) => (
-              <div
-                key={role.name}
-                className="flex items-center justify-between p-4 bg-accent rounded-lg border border-border"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-4 h-4 rounded-full ${role.color}`}></div>
-                  <div>
-                    <p className="font-semibold">{role.name}</p>
+        {/* Recent Users */}
+        <CardWrapper
+          title="Recently Created Users"
+          right={
+            <span className="text-primary cursor-pointer">View All →</span>
+          }
+        >
+          <div className="space-y-3">
+            {recentCreatedUsers.length === 0 ? (
+              <div className="text-center py-8">
+                <Icon
+                  name="users"
+                  size="48px"
+                  className="text-muted-foreground mb-4"
+                />
+                <p className="text-muted-foreground">No recent users</p>
+              </div>
+            ) : (
+              recentCreatedUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center gap-4 p-4 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Icon name="user" size="20px" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold text-foreground">
+                        {user.name}
+                      </h4>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          user.role === "admin"
+                            ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                            : user.role === "expert"
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                            : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        }`}
+                      >
+                        {user.role}
+                      </span>
+                    </div>
                     <p className="text-sm text-muted-foreground">
-                      {role.count} users
+                      {user.email}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">
+                      {formatDate(user.createdAt)}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-bold text-lg">{role.percentage}%</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </CardWrapper>
-
         {/* User Registration Chart */}
         <CardWrapper title="User Registration Trends">
           <UserRegistrationChart data={charts.userCreation} />
         </CardWrapper>
       </div>
 
-      {/* Recent Users */}
-      <CardWrapper
-        title="Recently Created Users"
-        right={<span className="text-primary cursor-pointer">View All →</span>}
-      >
-        <div className="space-y-3">
-          {recentCreatedUsers.length === 0 ? (
-            <div className="text-center py-8">
-              <Icon
-                name="users"
-                size="48px"
-                className="text-muted-foreground mb-4"
-              />
-              <p className="text-muted-foreground">No recent users</p>
-            </div>
-          ) : (
-            recentCreatedUsers.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center gap-4 p-4 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                  <Icon name="user" size="20px" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold text-foreground">
-                      {user.name}
-                    </h4>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        user.role === "admin"
-                          ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                          : user.role === "expert"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                          : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-muted-foreground">
-                    {formatDate(user.createdAt)}
-                  </p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </CardWrapper>
       {/* Quick Actions */}
       <CardWrapper title="Quick Actions">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

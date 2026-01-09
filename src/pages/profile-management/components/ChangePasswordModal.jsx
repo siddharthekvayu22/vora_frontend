@@ -29,6 +29,10 @@ function ChangePasswordModal({ isOpen, onClose }) {
     },
   ];
 
+  const isPasswordValid = rules.every((rule) =>
+    rule.test(formData.newPassword)
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,6 +45,10 @@ function ChangePasswordModal({ isOpen, onClose }) {
 
     if (newPassword !== confirmPassword) {
       return toast.error("Passwords do not match");
+    }
+
+    if (!isPasswordValid) {
+      return toast.error("Password does not meet security requirements");
     }
 
     if (newPassword.length < 6) {
@@ -240,7 +248,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
             <button
               type="submit"
               className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              disabled={loading}
+              disabled={loading || !isPasswordValid}
             >
               {loading ? (
                 <>

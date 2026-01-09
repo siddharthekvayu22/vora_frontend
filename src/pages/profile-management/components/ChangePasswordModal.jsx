@@ -18,6 +18,21 @@ function ChangePasswordModal({ isOpen, onClose }) {
     confirm: false,
   });
 
+  const rules = [
+    { label: "At least 8 characters", test: (v) => v.length >= 8 },
+    { label: "One uppercase letter", test: (v) => /[A-Z]/.test(v) },
+    { label: "One lowercase letter", test: (v) => /[a-z]/.test(v) },
+    { label: "One number", test: (v) => /\d/.test(v) },
+    {
+      label: "One special character (@$!%*#?&)",
+      test: (v) => /[@$!%*#?&]/.test(v),
+    },
+  ];
+
+  const isPasswordValid = rules.every((rule) =>
+    rule.test(formData.newPassword)
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -30,6 +45,10 @@ function ChangePasswordModal({ isOpen, onClose }) {
 
     if (newPassword !== confirmPassword) {
       return toast.error("Passwords do not match");
+    }
+
+    if (!isPasswordValid) {
+      return toast.error("Password does not meet security requirements");
     }
 
     if (newPassword.length < 6) {
@@ -192,52 +211,26 @@ function ChangePasswordModal({ isOpen, onClose }) {
           {formData.newPassword && (
             <div className="p-3 bg-accent rounded-lg border border-border">
               <div className="text-sm font-medium text-foreground mb-2">
-                Password Strength:
+                Password Requirements:
               </div>
+
               <div className="space-y-1 text-xs">
-                <div
-                  className={`flex items-center gap-2 ${
-                    formData.newPassword.length >= 6
-                      ? "text-green-600"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon
-                    name={formData.newPassword.length >= 6 ? "check" : "close"}
-                    size="12px"
-                  />
-                  At least 6 characters
-                </div>
-                <div
-                  className={`flex items-center gap-2 ${
-                    /[A-Z]/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      /[A-Z]/.test(formData.newPassword) ? "check" : "close"
-                    }
-                    size="12px"
-                  />
-                  Contains uppercase letter
-                </div>
-                <div
-                  className={`flex items-center gap-2 ${
-                    /[0-9]/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      /[0-9]/.test(formData.newPassword) ? "check" : "close"
-                    }
-                    size="12px"
-                  />
-                  Contains number
-                </div>
+                {rules.map((rule, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-2 ${
+                      rule.test(formData.newPassword)
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    <Icon
+                      name={rule.test(formData.newPassword) ? "check" : "close"}
+                      size="12px"
+                    />
+                    {rule.label}
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -255,7 +248,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
             <button
               type="submit"
               className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              disabled={loading}
+              disabled={loading || !isPasswordValid}
             >
               {loading ? (
                 <>

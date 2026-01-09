@@ -4,31 +4,14 @@ import Icon from "../components/Icon";
 function Header({ pageTitle, breadcrumbs = [] }) {
   const navigate = useNavigate();
 
-  function openAI() {
-    alert("AI Assistant coming soon");
-  }
-
-  function openSettings() {
-    alert("Settings coming soon");
-  }
-
   function refreshPage() {
     window.location.reload();
   }
 
   const defaultActions = [
     {
-      id: "ai",
-      label: "AI ASSISTANT",
-      onClick: openAI,
-    },
-    {
-      id: "settings",
-      label: "⚙",
-      onClick: openSettings,
-    },
-    {
       id: "refresh",
+      title: "Refresh",
       label: "↻",
       onClick: refreshPage,
     },
@@ -81,7 +64,8 @@ function Header({ pageTitle, breadcrumbs = [] }) {
             <button
               key={action.id}
               onClick={action.onClick}
-              className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition hover:border-primary hover:bg-muted hover:text-primary"
+              title={action.title}
+              className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition hover:border-primary hover:bg-muted hover:text-primary cursor-pointer"
             >
               {action.icon && <Icon name={action.icon} size="16px" />}
               {action.label}

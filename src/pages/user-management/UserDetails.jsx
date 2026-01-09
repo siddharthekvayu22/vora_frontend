@@ -695,19 +695,19 @@ function UserDetails() {
               <div className="flex items-center gap-6">
                 {/* Enhanced Avatar */}
                 <div className="relative">
-                  <div className="w-20 h-20 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full flex items-center justify-center border-2 border-primary/20 shadow-lg">
-                    <Icon name="user" size="36px" className="text-primary" />
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full flex items-center justify-center border-2 border-primary/20 shadow-lg">
+                    <Icon name="user" size="28px" className="text-primary" />
                   </div>
                   {/* Status Indicator */}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-card flex items-center justify-center">
-                    <Icon name="check" size="12px" className="text-white" />
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-card flex items-center justify-center">
+                    <Icon name="check" size="10px" className="text-white" />
                   </div>
                 </div>
 
                 {/* User Information */}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl font-bold text-foreground">
+                    <h1 className="text-xl font-bold text-foreground">
                       {userData.name}
                     </h1>
                     {/* Email Verification Badge */}
@@ -719,13 +719,13 @@ function UserDetails() {
                     )}
                   </div>
 
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center gap-2 mb-2">
                     <Icon
                       name="mail"
-                      size="16px"
+                      size="14px"
                       className="text-muted-foreground"
                     />
-                    <p className="text-muted-foreground font-medium">
+                    <p className="text-sm text-muted-foreground font-medium">
                       {userData.email}
                     </p>
                   </div>
@@ -735,20 +735,20 @@ function UserDetails() {
                     <div className="flex items-center gap-2 mb-3">
                       <Icon
                         name="phone"
-                        size="16px"
+                        size="14px"
                         className="text-muted-foreground"
                       />
-                      <p className="text-muted-foreground font-medium">
+                      <p className="text-sm text-muted-foreground font-medium">
                         {userData.phone}
                       </p>
                     </div>
                   )}
 
                   {/* Role and Creator Information */}
-                  <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {/* Role Badge */}
                     <span
-                      className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border shadow-sm ${getRoleColor(
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border shadow-sm ${getRoleColor(
                         userData.role
                       )}`}
                     >
@@ -760,22 +760,22 @@ function UserDetails() {
                             ? "star"
                             : "user"
                         }
-                        size="14px"
-                        className="mr-2"
+                        size="12px"
+                        className="mr-1"
                       />
                       {userData.role?.toUpperCase()}
                     </span>
 
                     {/* Created By Information */}
                     {userData.createdBy === "self" ? (
-                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 shadow-sm">
-                        <Icon name="user-check" size="14px" className="mr-2" />
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 shadow-sm">
+                        <Icon name="user-check" size="12px" className="mr-1" />
                         Self Registered
                       </span>
                     ) : userData.createdBy &&
                       typeof userData.createdBy === "object" ? (
-                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800 shadow-sm">
-                        <Icon name="user-plus" size="14px" className="mr-2" />
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800 shadow-sm">
+                        <Icon name="user-plus" size="12px" className="mr-1" />
                         Created by {userData.createdBy.name}
                       </span>
                     ) : null}
@@ -787,9 +787,9 @@ function UserDetails() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => navigate(-1)}
-                  className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border rounded-lg transition-all duration-200 hover:shadow-md"
+                  className="flex items-center gap-2 px-3 py-2 bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border rounded-lg transition-all duration-200 hover:shadow-md text-sm"
                 >
-                  <Icon name="arrow-left" size="16px" />
+                  <Icon name="arrow-left" size="14px" />
                   Back
                 </button>
               </div>
@@ -797,12 +797,12 @@ function UserDetails() {
           </div>
 
           {/* Footer Section with Additional Info */}
-          <div className="p-6 bg-muted/30">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-4 bg-muted/30">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Join Date */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <Icon name="calendar" size="18px" className="text-blue-500" />
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Icon name="calendar" size="16px" className="text-blue-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">
@@ -816,10 +816,10 @@ function UserDetails() {
 
               {/* Account Status */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Icon
                     name="shield-check"
-                    size="18px"
+                    size="16px"
                     className="text-green-500"
                   />
                 </div>
@@ -837,8 +837,8 @@ function UserDetails() {
 
               {/* User ID */}
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Icon name="hash" size="18px" className="text-purple-500" />
+                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <Icon name="hash" size="16px" className="text-purple-500" />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground font-medium">

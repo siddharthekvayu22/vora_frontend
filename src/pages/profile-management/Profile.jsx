@@ -108,11 +108,11 @@ function Profile() {
       {/* Profile Header */}
       <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl overflow-hidden">
         {/* Cover Background */}
-        <div className="h-32 bg-gradient-to-r from-primary to-primary-2 relative">
+        <div className="h-20 bg-gradient-to-r from-primary to-primary-2 relative">
           <div className="absolute inset-0 bg-black/10"></div>
-          <div className="absolute -bottom-16 left-8">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-primary-2 border-4 border-background shadow-xl flex items-center justify-center">
-              <span className="text-4xl font-bold text-white">
+          <div className="absolute -bottom-12 left-6">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary-2 border-4 border-background shadow-xl flex items-center justify-center">
+              <span className="text-3xl font-bold text-white">
                 {profileData.name?.charAt(0)?.toUpperCase() || "U"}
               </span>
             </div>
@@ -120,40 +120,44 @@ function Profile() {
         </div>
 
         {/* Profile Info */}
-        <div className="pt-20 pb-6 px-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-foreground">
+        <div className="pt-14 pb-4 px-6">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+                <h1 className="text-2xl font-bold text-foreground">
                   {profileData.name}
                 </h1>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getRoleBadgeColor(
-                    profileData.role
-                  )}`}
-                >
-                  {profileData.role?.charAt(0)?.toUpperCase() +
-                    profileData.role?.slice(1)}
-                </span>
-                {profileData.isEmailVerified && (
-                  <div className="flex items-center gap-1 text-green-600">
-                    <Icon name="check" size="16px" />
-                    <span className="text-sm">Verified</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
+                      profileData.role
+                    )}`}
+                  >
+                    {profileData.role?.charAt(0)?.toUpperCase() +
+                      profileData.role?.slice(1)}
+                  </span>
+                  {profileData.isEmailVerified && (
+                    <div className="flex items-center gap-1 text-green-600">
+                      <Icon name="check" size="14px" />
+                      <span className="text-xs">Verified</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <p className="text-muted-foreground flex items-center gap-2">
-                <Icon name="mail" size="16px" />
-                {profileData.email}
-              </p>
-              <p className="text-muted-foreground flex items-center gap-2">
-                <Icon name="phone" size="16px" />
-                {profileData.phone}
-              </p>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <Icon name="calendar" size="16px" />
-                Member since {formatDate(profileData.createdAt)}
-              </p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 text-sm">
+                <p className="text-muted-foreground flex items-center gap-2">
+                  <Icon name="mail" size="14px" />
+                  <span className="truncate">{profileData.email}</span>
+                </p>
+                <p className="text-muted-foreground flex items-center gap-2">
+                  <Icon name="phone" size="14px" />
+                  {profileData.phone}
+                </p>
+                <p className="text-muted-foreground flex items-center gap-2">
+                  <Icon name="calendar" size="14px" />
+                  Member since {formatDate(profileData.createdAt)}
+                </p>
+              </div>
             </div>
           </div>
         </div>

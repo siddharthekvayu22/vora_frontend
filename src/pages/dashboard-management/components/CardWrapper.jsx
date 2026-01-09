@@ -1,4 +1,6 @@
 function CardWrapper({ title, right, children, className = "" }) {
+  const isFlexContainer = className.includes("flex flex-col");
+
   return (
     <div
       className={`rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl ${className}`}
@@ -7,7 +9,9 @@ function CardWrapper({ title, right, children, className = "" }) {
         <h3 className="text-lg font-semibold text-foreground">{title}</h3>
         {right}
       </div>
-      <div className="p-6">{children}</div>
+      <div className={`p-6 ${isFlexContainer ? "flex-1 flex flex-col" : ""}`}>
+        {children}
+      </div>
     </div>
   );
 }

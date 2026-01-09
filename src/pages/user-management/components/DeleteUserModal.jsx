@@ -14,7 +14,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
   const handleConfirm = async (deleteData) => {
     setDeleting(true);
-    setDeleteType(deleteData ? 'all-data' : 'user-only');
+    setDeleteType(deleteData ? "all-data" : "user-only");
     try {
       await onConfirm(deleteData);
     } catch (error) {
@@ -54,8 +54,9 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
         </div>
 
         <div className="p-6">
-          <p className="text-muted-foreground text-base leading-relaxed mb-6">
-            Choose how you want to delete this user. This action cannot be undone.
+          <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+            Choose how you want to delete this user. This action cannot be
+            undone.
           </p>
 
           <div className="bg-muted rounded-xl p-4 border-l-4 border-red-500 mb-6">
@@ -97,16 +98,21 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
 
           {/* Delete Options */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-2 mb-3">
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <Icon name="user" size="20px" className="text-yellow-600 dark:text-yellow-400 mt-0.5" />
+                <Icon
+                  name="user"
+                  size="20px"
+                  className="text-yellow-600 dark:text-yellow-400 mt-0.5"
+                />
                 <div>
                   <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
                     Delete User Only
                   </h4>
                   <p className="text-sm text-yellow-700 dark:text-yellow-300">
-                    Remove user account but keep their associated data (documents, frameworks, etc.)
+                    Remove user account but keep their associated data
+                    (documents, frameworks, etc.)
                   </p>
                 </div>
               </div>
@@ -114,13 +120,18 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <div className="flex items-start gap-3">
-                <Icon name="trash" size="20px" className="text-red-600 dark:text-red-400 mt-0.5" />
+                <Icon
+                  name="trash"
+                  size="20px"
+                  className="text-red-600 dark:text-red-400 mt-0.5"
+                />
                 <div>
                   <h4 className="font-semibold text-red-800 dark:text-red-200 mb-1">
                     Delete All Data
                   </h4>
                   <p className="text-sm text-red-700 dark:text-red-300">
-                    Permanently remove user account and ALL associated data (documents, frameworks, comparisons, etc.)
+                    Permanently remove user account and ALL associated data
+                    (documents, frameworks, comparisons, etc.)
                   </p>
                 </div>
               </div>
@@ -128,23 +139,23 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end p-6 pt-0 border-t border-border">
+        <div className="flex gap-3 justify-end p-2 border-t border-border">
           <button
             type="button"
-            className="px-6 py-3 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full px-6 py-2 text-xs font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             onClick={onCancel}
             disabled={deleting}
           >
             Cancel
           </button>
-          
+
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-yellow-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
+            className="w-full inline-flex items-center gap-2 px-6 py-2 text-xs font-semibold rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-yellow-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={() => handleConfirm(false)}
             disabled={deleting}
           >
-            {deleting && deleteType === 'user-only' ? (
+            {deleting && deleteType === "user-only" ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 Deleting...
@@ -159,11 +170,11 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
+            className="w-full inline-flex items-center gap-2 px-6 py-2 text-xs font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={() => handleConfirm(true)}
             disabled={deleting}
           >
-            {deleting && deleteType === 'all-data' ? (
+            {deleting && deleteType === "all-data" ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 Deleting...

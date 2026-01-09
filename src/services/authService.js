@@ -4,9 +4,13 @@ import { apiRequest } from "./apiService";
  * Logout (optional - backend may not have this endpoint)
  */
 export function logoutApi() {
-  return apiRequest("/auth/logout", {
-    method: "POST",
-  }, true); // requireAuth = true
+  return apiRequest(
+    "/auth/logout",
+    {
+      method: "POST",
+    },
+    true
+  ); // requireAuth = true
 }
 
 /**
@@ -70,6 +74,20 @@ export function resendOTP(email) {
 }
 
 /**
+ * Change Password
+ */
+export function changePassword(currentPassword, newPassword) {
+  return apiRequest(
+    "/auth/change-password",
+    {
+      method: "POST",
+      body: JSON.stringify({ currentPassword, newPassword }),
+    },
+    true
+  ); // requireAuth = true
+}
+
+/**
  * Verify Email (send OTP)
  */
 export function verifyEmail(email) {
@@ -88,4 +106,5 @@ export default {
   resetPassword,
   resendOTP,
   verifyEmail,
+  changePassword,
 };

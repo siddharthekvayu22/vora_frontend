@@ -3,13 +3,11 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { useTheme } from "../context/ThemeContext";
 import Icon from "../components/Icon";
-import UserProfileModal from "../components/UserProfileModal";
 import logoImage from "../assets/loggo.png";
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
-  const [showProfileModal, setShowProfileModal] = useState(false);
 
   const location = useLocation();
   const { logout, user } = useAuth();
@@ -174,8 +172,8 @@ function Sidebar() {
                 alt="VORA Logo"
                 className="h-full w-full object-contain rounded-xl mix-blend-screen"
                 style={{
-                  filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.5))',
-                  background: 'transparent'
+                  filter: "drop-shadow(0 0 5px rgba(255,255,255,0.5))",
+                  background: "transparent",
                 }}
               />
             </div>
@@ -216,27 +214,30 @@ function Sidebar() {
                   }}
                   className={`group relative flex cursor-pointer items-center gap-4
                             rounded-2xl px-4 py-3 transition-all
-                  ${isActive(item.path)
+                  ${
+                    isActive(item.path)
                       ? "border border-primary bg-gradient-to-br from-primary/15 to-primary-2/15 shadow-md"
                       : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
-                    }`}
+                  }`}
                 >
                   {/* Left accent */}
                   <span
                     className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
-                    ${isActive(item.path)
+                    ${
+                      isActive(item.path)
                         ? "h-2/3 bg-gradient-to-b from-primary to-primary-2"
                         : "h-0 bg-primary group-hover:h-1/2 transition-all"
-                      }`}
+                    }`}
                   />
 
                   {/* Icon */}
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl border transition
-                    ${isActive(item.path)
+                    ${
+                      isActive(item.path)
                         ? "border-primary bg-primary/20 text-primary scale-110"
                         : "border-border bg-muted text-muted-foreground group-hover:text-primary"
-                      }`}
+                    }`}
                   >
                     <Icon name={item.icon} size="20px" />
                   </div>
@@ -245,8 +246,9 @@ function Sidebar() {
                   <div className="flex flex-1 flex-col">
                     <span
                       className={`text-sm font-semibold
-                      ${isActive(item.path) ? "text-primary" : "text-foreground"
-                        }`}
+                      ${
+                        isActive(item.path) ? "text-primary" : "text-foreground"
+                      }`}
                     >
                       {item.title}
                     </span>
@@ -261,10 +263,11 @@ function Sidebar() {
                   {item.children && (
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-md border transition
-                      ${activeMenu === item.id
+                      ${
+                        activeMenu === item.id
                           ? "rotate-180 border-primary bg-primary text-white"
                           : "border-border bg-muted text-muted-foreground"
-                        }`}
+                      }`}
                     >
                       <Icon name="arrow-down" size="12px" />
                     </div>
@@ -280,17 +283,19 @@ function Sidebar() {
                         to={sub.path}
                         onClick={() => setIsOpen(false)}
                         className={`group flex items-center gap-3 rounded-xl px-3 py-2 transition
-                        ${isActive(sub.path)
+                        ${
+                          isActive(sub.path)
                             ? "bg-primary/20 text-primary border-l-2 border-primary"
                             : "hover:translate-x-1 hover:bg-muted"
-                          }`}
+                        }`}
                       >
                         <div
                           className={`flex h-8 w-8 items-center justify-center rounded-lg border
-                          ${isActive(sub.path)
+                          ${
+                            isActive(sub.path)
                               ? "border-primary bg-primary/20 text-primary scale-110"
                               : "border-border bg-muted text-muted-foreground"
-                            }`}
+                          }`}
                         >
                           <Icon name={sub.icon} size="16px" />
                         </div>
@@ -306,9 +311,10 @@ function Sidebar() {
 
         {/* ================= FOOTER ================= */}
         <div className="shrink-0 border-t border-border bg-muted p-4">
-          <div
+          <Link
+            to={"/profile"}
+            onClick={() => setIsOpen(false)}
             className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-gradient-to-br from-primary/15 to-primary-2/15 p-3 hover:shadow-md cursor-pointer transition-all duration-200 hover:scale-[1.02]"
-            onClick={() => setShowProfileModal(true)}
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white animate-pulse">
               <Icon name="user" size="18px" />
@@ -325,14 +331,11 @@ function Sidebar() {
                 {role === "admin"
                   ? "Admin"
                   : role === "expert"
-                    ? "System Expert"
-                    : "System User"}
+                  ? "System Expert"
+                  : "System User"}
               </div>
             </div>
-            <div className="text-muted-foreground hover:text-primary transition-colors">
-              <Icon name="edit" size="16px" />
-            </div>
-          </div>
+          </Link>
 
           <div className="flex gap-2">
             <button
@@ -351,12 +354,6 @@ function Sidebar() {
           </div>
         </div>
       </aside>
-
-      {/* User Profile Modal */}
-      <UserProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-      />
     </>
   );
 }

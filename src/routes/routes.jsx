@@ -12,21 +12,27 @@ import UserStatistics from "../pages/user-management/UserStatistics";
 import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
+import Profile from "../pages/profile-management/profile";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
-  
-  // Component to handle role-based dashboard redirect
-  const DashboardRedirect = () => {
-    const userRole = user?.role;
-    
-    if (userRole === 'admin') {
-      return <Navigate to="/admin-dashboard" replace />;
-    } else {
-      return <Navigate to="/dashboard" replace />;
+
+  // Role-based dashboard redirect
+  const getRoleBasedDashboard = () => {
+    if (!user) return "/dashboard";
+
+    switch (user.role?.toLowerCase()) {
+      case "admin":
+        return "/admin-dashboard";
+      case "expert":
+        return "/dashboard";
+      case "user":
+        return "/dashboard";
+      default:
+        return "/dashboard";
     }
   };
-  
+
   return (
     <Routes>
       <Route
@@ -111,7 +117,9 @@ function AppRoutes() {
         path="/users/:userId/statistics"
         element={
           <ProtectedRoute>
-            <UserStatistics />
+            <Layout>
+              <UserStatistics />
+            </Layout>
           </ProtectedRoute>
         }
       />
@@ -145,12 +153,26 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Profile />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
 
       {/* Root redirect - role-based dashboard */}
       <Route
         path="/"
         element={
-          isAuthenticated ? <DashboardRedirect /> : <Navigate to="/auth/login" replace />
+          isAuthenticated ? (
+            <Navigate to={getRoleBasedDashboard()} replace />
+          ) : (
+            <Navigate to="/auth/login" replace />
+          )
         }
       />
 

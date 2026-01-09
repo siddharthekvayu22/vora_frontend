@@ -1,7 +1,7 @@
 function MetricCard({ icon, label, value, trend, trendColor }) {
   return (
-    <div className="rounded-2xl border border-border bg-accent p-6">
-      <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-popover-foreground/10">
+    <div className="rounded-2xl border border-border bg-accent py-2 px-3">
+      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-popover-foreground/10">
         {icon}
       </div>
 

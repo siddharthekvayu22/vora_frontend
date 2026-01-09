@@ -12,6 +12,7 @@ import UserStatistics from "../pages/user-management/UserStatistics";
 import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
+import Profile from "../pages/profile-management/profile";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -148,6 +149,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <FrameworkDetails />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Profile />
             </Layout>
           </ProtectedRoute>
         }

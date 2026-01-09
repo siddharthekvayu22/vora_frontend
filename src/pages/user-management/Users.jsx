@@ -20,6 +20,7 @@ function Users() {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [emptyMessage, setEmptyMessage] = useState("No users found");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -77,6 +78,19 @@ function Users() {
       });
 
       setUsers(res.data || res.users || []);
+
+      // Set the message from backend response, especially for empty results
+      if (res.message && (res.users?.length === 0 || res.data?.length === 0)) {
+        setEmptyMessage(res.message);
+      } else if (
+        searchTerm &&
+        (res.users?.length === 0 || res.data?.length === 0)
+      ) {
+        setEmptyMessage(`No users found for "${searchTerm}"`);
+      } else {
+        setEmptyMessage("No users found");
+      }
+
       setPagination((p) => ({
         ...p,
         totalPages: res.pagination?.totalPages || 1,
@@ -87,6 +101,7 @@ function Users() {
     } catch (err) {
       toast.error(err.message || "Failed to load users");
       setUsers([]);
+      setEmptyMessage("Failed to load users");
     } finally {
       setLoading(false);
     }
@@ -183,30 +198,19 @@ function Users() {
       key: "name",
       label: "Name",
       sortable: true,
-      render: (value) => (
+      render: (value, row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
             <Icon name="user" size="18px" />
           </div>
           <div>
-            <span className="font-semibold text-foreground block whitespace-nowrap">
+            <span className="font-semibold text-foreground block whitespace-nowrap capitalize">
               {value}
             </span>
             <span className="text-xs text-muted-foreground whitespace-nowrap">
-              User Profile
+              {row.email}
             </span>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "email",
-      label: "Email",
-      sortable: true,
-      render: (value) => (
-        <div className="flex items-center gap-2">
-          <Icon name="mail" size="14px" className="text-muted-foreground" />
-          <span className="text-foreground">{value}</span>
         </div>
       ),
     },
@@ -324,7 +328,7 @@ function Users() {
                 <Icon name="user" size="18px" />
               </div>
               <div>
-                <span className="font-semibold text-foreground block whitespace-nowrap">
+                <span className="font-semibold text-foreground block whitespace-nowrap capitalize">
                   {value.name}
                 </span>
                 <span className="text-xs text-muted-foreground whitespace-nowrap">
@@ -403,16 +407,20 @@ function Users() {
       {/* Header Section */}
       <div className="flex flex-wrap justify-between items-start gap-6 p-6 bg-gradient-to-r from-card to-muted/30 rounded-xl border border-border shadow-sm">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <Icon name="users" size="20px" className="text-primary" />
             </div>
-            User Management
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Manage system users and their permissions
-          </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="">
+              <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
+                User Management
+              </h1>
+              <p className="text-muted-foreground text-xs">
+                Manage system users and their permissions
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
             <span className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
               Total Users:{" "}
@@ -434,7 +442,7 @@ function Users() {
           onClick={() =>
             setModalState({ isOpen: true, mode: "create", user: null })
           }
-          className="flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200 font-medium"
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
         >
           <Icon name="plus" size="18px" />
           Add New User
@@ -452,7 +460,7 @@ function Users() {
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
         searchPlaceholder="Search users by name, email, or phone..."
-        emptyMessage="No users found"
+        emptyMessage={emptyMessage}
       />
 
       {viewModalState.isOpen && (

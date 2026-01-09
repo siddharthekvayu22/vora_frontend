@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { changePassword } from "../../../services/authService";
+import { useAuth } from "../../../context/useAuth";
 import Icon from "../../../components/Icon";
 import toast from "react-hot-toast";
 
 function ChangePasswordModal({ isOpen, onClose }) {
+  const { logout } = useAuth();
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -19,43 +21,36 @@ function ChangePasswordModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !formData.currentPassword ||
-      !formData.newPassword ||
-      !formData.confirmPassword
-    ) {
-      toast.error("All fields are required");
-      return;
+    // Basic validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return toast.error("All fields are required");
     }
 
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
+    if (newPassword !== confirmPassword) {
+      return toast.error("Passwords do not match");
     }
 
-    if (formData.newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters long");
-      return;
+    if (newPassword.length < 6) {
+      return toast.error("Password must be at least 6 characters");
     }
 
-    if (formData.currentPassword === formData.newPassword) {
-      toast.error("New password must be different from current password");
-      return;
+    if (currentPassword === newPassword) {
+      return toast.error("New password must be different");
     }
 
     try {
       setLoading(true);
-      await changePassword(formData.currentPassword, formData.newPassword);
-      toast.success("Password changed successfully");
-      setFormData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      onClose();
+
+      await changePassword(currentPassword, newPassword);
+
+      toast.success("Password changed successfully. Please login again.");
+
+      // Force logout for security
+      setTimeout(() => {
+        logout("Please login with your new password", true);
+      }, 1500);
     } catch (error) {
-      console.error("Error changing password:", error);
-      toast.error(error.message || "Failed to change password");
+      toast.error(error?.message || "Failed to change password");
     } finally {
       setLoading(false);
     }

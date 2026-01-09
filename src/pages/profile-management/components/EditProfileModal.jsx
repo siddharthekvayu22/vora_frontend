@@ -29,13 +29,19 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
 
     try {
       setLoading(true);
-      await updateUser(formData);
-      toast.success("Profile updated successfully");
+      const response = await updateUser(formData);
+      // Use backend success message
+      const successMessage =
+        response?.message || "Profile updated successfully";
+      toast.success(successMessage);
       onUpdate(); // Refresh profile data
       onClose();
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error(error.message || "Failed to update profile");
+      // Use backend error message
+      const errorMessage =
+        error?.message || error?.data?.message || "Failed to update profile";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

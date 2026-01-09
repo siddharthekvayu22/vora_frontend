@@ -18,6 +18,17 @@ function ChangePasswordModal({ isOpen, onClose }) {
     confirm: false,
   });
 
+  const rules = [
+    { label: "At least 8 characters", test: (v) => v.length >= 8 },
+    { label: "One uppercase letter", test: (v) => /[A-Z]/.test(v) },
+    { label: "One lowercase letter", test: (v) => /[a-z]/.test(v) },
+    { label: "One number", test: (v) => /\d/.test(v) },
+    {
+      label: "One special character (@$!%*#?&)",
+      test: (v) => /[@$!%*#?&]/.test(v),
+    },
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -189,7 +200,6 @@ function ChangePasswordModal({ isOpen, onClose }) {
           </div>
 
           {/* Password Strength Indicator */}
-          {/* Password Strength Indicator */}
           {formData.newPassword && (
             <div className="p-3 bg-accent rounded-lg border border-border">
               <div className="text-sm font-medium text-foreground mb-2">
@@ -197,88 +207,22 @@ function ChangePasswordModal({ isOpen, onClose }) {
               </div>
 
               <div className="space-y-1 text-xs">
-                {/* Length */}
-                <div
-                  className={`flex items-center gap-2 ${
-                    formData.newPassword.length >= 8
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Icon
-                    name={formData.newPassword.length >= 8 ? "check" : "close"}
-                    size="12px"
-                  />
-                  At least 8 characters
-                </div>
-
-                {/* Uppercase */}
-                <div
-                  className={`flex items-center gap-2 ${
-                    /[A-Z]/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      /[A-Z]/.test(formData.newPassword) ? "check" : "close"
-                    }
-                    size="12px"
-                  />
-                  One uppercase letter
-                </div>
-
-                {/* Lowercase */}
-                <div
-                  className={`flex items-center gap-2 ${
-                    /[a-z]/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      /[a-z]/.test(formData.newPassword) ? "check" : "close"
-                    }
-                    size="12px"
-                  />
-                  One lowercase letter
-                </div>
-
-                {/* Number */}
-                <div
-                  className={`flex items-center gap-2 ${
-                    /\d/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Icon
-                    name={/\d/.test(formData.newPassword) ? "check" : "close"}
-                    size="12px"
-                  />
-                  One number
-                </div>
-
-                {/* Special Character */}
-                <div
-                  className={`flex items-center gap-2 ${
-                    /[@$!%*#?&]/.test(formData.newPassword)
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  <Icon
-                    name={
-                      /[@$!%*#?&]/.test(formData.newPassword)
-                        ? "check"
-                        : "close"
-                    }
-                    size="12px"
-                  />
-                  One special character (@$!%*#?&)
-                </div>
+                {rules.map((rule, index) => (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-2 ${
+                      rule.test(formData.newPassword)
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    <Icon
+                      name={rule.test(formData.newPassword) ? "check" : "close"}
+                      size="12px"
+                    />
+                    {rule.label}
+                  </div>
+                ))}
               </div>
             </div>
           )}

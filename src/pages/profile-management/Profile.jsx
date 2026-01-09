@@ -187,84 +187,91 @@ function Profile() {
           {/* Quick Stats */}
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Statistics */}
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl">
-              <div className="border-b border-border px-6 py-4">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Personal Statistics
-                </h3>
-              </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="text-center p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/20 flex items-center justify-center">
-                      <Icon name="file" size="24px" className="text-blue-600" />
-                    </div>
-                    <div className="text-2xl font-bold text-foreground">
-                      {statistics.documents}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Documents
-                    </div>
-                  </div>
-                  <div className="text-center p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/20 flex items-center justify-center">
-                      <Icon
-                        name="framework"
-                        size="24px"
-                        className="text-purple-600"
-                      />
-                    </div>
-                    <div className="text-2xl font-bold text-foreground">
-                      {statistics.frameworks}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Frameworks
-                    </div>
-                  </div>
-                  <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-                    <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <Icon
-                        name="chart"
-                        size="24px"
-                        className="text-green-600"
-                      />
-                    </div>
-                    <div className="text-2xl font-bold text-foreground">
-                      {statistics.comparisons}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Comparisons
-                    </div>
-                  </div>
+            {!isAdmin && (
+              <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl">
+                <div className="border-b border-border px-6 py-4">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    Personal Statistics
+                  </h3>
                 </div>
-              </div>
-            </div>
-
-            {/* AI Processing Status */}
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl">
-              <div className="border-b border-border px-6 py-4">
-                <h3 className="text-lg font-semibold text-foreground">
-                  AI Processing Status
-                </h3>
-              </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-4 gap-4">
-                  {Object.entries(statistics.aiProcessingStatus).map(
-                    ([status, count]) => (
-                      <div
-                        key={status}
-                        className={`p-4 rounded-xl border ${getStatusColor(
-                          status
-                        )}`}
-                      >
-                        <div className="text-xl font-bold">{count}</div>
-                        <div className="text-sm capitalize">{status}</div>
+                <div className="p-6">
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="text-center p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <Icon
+                          name="file"
+                          size="24px"
+                          className="text-blue-600"
+                        />
                       </div>
-                    )
-                  )}
+                      <div className="text-2xl font-bold text-foreground">
+                        {statistics.documents}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Documents
+                      </div>
+                    </div>
+                    <div className="text-center p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/20 flex items-center justify-center">
+                        <Icon
+                          name="framework"
+                          size="24px"
+                          className="text-purple-600"
+                        />
+                      </div>
+                      <div className="text-2xl font-bold text-foreground">
+                        {statistics.frameworks}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Frameworks
+                      </div>
+                    </div>
+                    <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <Icon
+                          name="chart"
+                          size="24px"
+                          className="text-green-600"
+                        />
+                      </div>
+                      <div className="text-2xl font-bold text-foreground">
+                        {statistics.comparisons}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Comparisons
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            {/* AI Processing Status */}
+            {!isAdmin && (
+              <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl">
+                <div className="border-b border-border px-6 py-4">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    AI Processing Status
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <div className="grid md:grid-cols-4 gap-4">
+                    {Object.entries(statistics.aiProcessingStatus).map(
+                      ([status, count]) => (
+                        <div
+                          key={status}
+                          className={`p-4 rounded-xl border ${getStatusColor(
+                            status
+                          )}`}
+                        >
+                          <div className="text-xl font-bold">{count}</div>
+                          <div className="text-sm capitalize">{status}</div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* System Statistics (Admin Only) */}
             {isAdmin && statistics.systemStats && (

@@ -329,9 +329,6 @@ function Sidebar() {
                     : "System User"}
               </div>
             </div>
-            <div className="text-muted-foreground hover:text-primary transition-colors">
-              <Icon name="edit" size="16px" />
-            </div>
           </div>
 
           <div className="flex gap-2">

@@ -357,7 +357,7 @@ function UserStatistics() {
 
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center border border-border rounded-sm px-2">
                       <span className="text-muted-foreground text-sm">
                         User Frameworks
                       </span>
@@ -365,7 +365,7 @@ function UserStatistics() {
                         {statistics?.systemOverview?.totalUserFrameworks || 0}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center border border-border rounded-sm px-2">
                       <span className="text-muted-foreground text-sm">
                         Expert Frameworks
                       </span>

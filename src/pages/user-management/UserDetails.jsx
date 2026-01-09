@@ -687,52 +687,169 @@ function UserDetails() {
   return (
     <div className="bg-background my-5">
       <div className="space-y-6">
-        {/* User Info Card */}
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm flex justify-between">
-          <div className="flex items-center gap-4 flex-3/4">
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-              <Icon name="user" size="32px" className="text-primary" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-foreground">
-                {userData.name}
-              </h2>
-              <p className="text-muted-foreground">{userData.email}</p>
-              <div className="mt-2 flex items-center gap-3">
-                <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getRoleColor(
-                    userData.role
-                  )}`}
-                >
-                  {userData.role}
-                </span>
-                {/* Created By Information */}
-                {userData.createdBy === "self" ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
-                    <Icon name="user-check" size="14px" className="mr-1" />
-                    Self Created
-                  </span>
-                ) : userData.createdBy &&
-                  typeof userData.createdBy === "object" ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                    <Icon name="user" size="14px" className="mr-1" />
-                    Created by {userData.createdBy.name}
-                  </span>
-                ) : null}
+        {/* Enhanced User Info Card */}
+        <div className="bg-gradient-to-r from-card via-card to-muted/20 rounded-xl border border-border shadow-lg overflow-hidden">
+          {/* Header Section with Background Pattern */}
+          <div className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 border-b border-border">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-6">
+                {/* Enhanced Avatar */}
+                <div className="relative">
+                  <div className="w-20 h-20 bg-gradient-to-br from-primary/30 to-primary/10 rounded-full flex items-center justify-center border-2 border-primary/20 shadow-lg">
+                    <Icon name="user" size="36px" className="text-primary" />
+                  </div>
+                  {/* Status Indicator */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-card flex items-center justify-center">
+                    <Icon name="check" size="12px" className="text-white" />
+                  </div>
+                </div>
+
+                {/* User Information */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <h1 className="text-3xl font-bold text-foreground">
+                      {userData.name}
+                    </h1>
+                    {/* Email Verification Badge */}
+                    {userData.isEmailVerified && (
+                      <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-medium">
+                        <Icon name="shield-check" size="12px" />
+                        Verified
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <Icon
+                      name="mail"
+                      size="16px"
+                      className="text-muted-foreground"
+                    />
+                    <p className="text-muted-foreground font-medium">
+                      {userData.email}
+                    </p>
+                  </div>
+
+                  {/* Phone Number */}
+                  {userData.phone && (
+                    <div className="flex items-center gap-2 mb-3">
+                      <Icon
+                        name="phone"
+                        size="16px"
+                        className="text-muted-foreground"
+                      />
+                      <p className="text-muted-foreground font-medium">
+                        {userData.phone}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Role and Creator Information */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {/* Role Badge */}
+                    <span
+                      className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border shadow-sm ${getRoleColor(
+                        userData.role
+                      )}`}
+                    >
+                      <Icon
+                        name={
+                          userData.role === "admin"
+                            ? "shield"
+                            : userData.role === "expert"
+                            ? "star"
+                            : "user"
+                        }
+                        size="14px"
+                        className="mr-2"
+                      />
+                      {userData.role?.toUpperCase()}
+                    </span>
+
+                    {/* Created By Information */}
+                    {userData.createdBy === "self" ? (
+                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800 shadow-sm">
+                        <Icon name="user-check" size="14px" className="mr-2" />
+                        Self Registered
+                      </span>
+                    ) : userData.createdBy &&
+                      typeof userData.createdBy === "object" ? (
+                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-800 shadow-sm">
+                        <Icon name="user-plus" size="14px" className="mr-2" />
+                        Created by {userData.createdBy.name}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
               </div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                <Icon name="calendar" size="14px" className="inline mr-1" />
-                Joined {formatDate(userData.createdAt)}
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => navigate(-1)}
+                  className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground border border-border rounded-lg transition-all duration-200 hover:shadow-md"
+                >
+                  <Icon name="arrow-left" size="16px" />
+                  Back
+                </button>
               </div>
             </div>
           </div>
-          <div className="w-20">
-            <button
-              onClick={() => navigate(-1)}
-              className="border border-border rounded-xl py-2 px-5 cursor-pointer"
-            >
-              Back
-            </button>
+
+          {/* Footer Section with Additional Info */}
+          <div className="p-6 bg-muted/30">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Join Date */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Icon name="calendar" size="18px" className="text-blue-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    MEMBER SINCE
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {formatDate(userData.createdAt)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Account Status */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Icon
+                    name="shield-check"
+                    size="18px"
+                    className="text-green-500"
+                  />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    ACCOUNT STATUS
+                  </p>
+                  <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                    {userData.isEmailVerified
+                      ? "Verified & Active"
+                      : "Pending Verification"}
+                  </p>
+                </div>
+              </div>
+
+              {/* User ID */}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <Icon name="hash" size="18px" className="text-purple-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    USER ID
+                  </p>
+                  <p className="text-sm font-mono text-foreground">
+                    {userData.id?.slice(-8) || "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

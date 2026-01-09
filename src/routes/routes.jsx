@@ -114,7 +114,7 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/users/:userId/statistics"
+        path="/users/:userId"
         element={
           <ProtectedRoute>
             <Layout>

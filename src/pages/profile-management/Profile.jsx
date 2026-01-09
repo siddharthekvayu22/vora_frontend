@@ -155,20 +155,6 @@ function Profile() {
                 Member since {formatDate(profileData.createdAt)}
               </p>
             </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
-              >
-                <Icon name="edit" size="16px" />
-                Edit Profile
-              </button>
-              <button className="px-6 py-2 border border-border bg-background hover:bg-accent rounded-lg transition-colors flex items-center gap-2">
-                <Icon name="settings" size="16px" />
-                Settings
-              </button>
-            </div>
           </div>
         </div>
       </div>

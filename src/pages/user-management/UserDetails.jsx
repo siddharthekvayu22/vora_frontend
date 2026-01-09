@@ -186,7 +186,196 @@ function UserDetails() {
     </>
   );
 
-  // User - when statistics has documents, frameworks, comparisons, aiProcessingStatus
+  // Expert UI - when statistics has only frameworks and aiProcessingStatus
+  const renderExpertView = () => (
+    <>
+      {/* Expert Summary Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Frameworks */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+              <Icon name="framework" size="24px" className="text-green-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Expert Frameworks</p>
+              <p className="text-2xl font-bold text-foreground">
+                {statistics?.frameworks || 0}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Processing Total */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+              <Icon name="activity" size="24px" className="text-orange-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">AI Processing</p>
+              <p className="text-2xl font-bold text-foreground">
+                {(statistics?.aiProcessingStatus?.completed || 0) +
+                  (statistics?.aiProcessingStatus?.pending || 0) +
+                  (statistics?.aiProcessingStatus?.processing || 0) +
+                  (statistics?.aiProcessingStatus?.failed || 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Member Since */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+              <Icon name="calendar" size="24px" className="text-blue-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Expert Since</p>
+              <p className="text-lg font-bold text-foreground">
+                {formatDate(userData.createdAt)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expert Detailed Statistics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* AI Processing Status Breakdown */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Icon name="activity" size="20px" className="text-blue-500" />
+            <h3 className="text-lg font-semibold text-foreground">
+              AI Processing Status
+            </h3>
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex justify-between items-center border border-green-200 dark:border-green-800 rounded-lg px-3 py-2 bg-green-50 dark:bg-green-900/20">
+                <span className="text-green-700 dark:text-green-400 text-sm font-medium">
+                  Completed
+                </span>
+                <span className="font-bold text-green-800 dark:text-green-300">
+                  {statistics?.aiProcessingStatus?.completed || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center border border-yellow-200 dark:border-yellow-800 rounded-lg px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20">
+                <span className="text-yellow-700 dark:text-yellow-400 text-sm font-medium">
+                  Pending
+                </span>
+                <span className="font-bold text-yellow-800 dark:text-yellow-300">
+                  {statistics?.aiProcessingStatus?.pending || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-2 bg-blue-50 dark:bg-blue-900/20">
+                <span className="text-blue-700 dark:text-blue-400 text-sm font-medium">
+                  Processing
+                </span>
+                <span className="font-bold text-blue-800 dark:text-blue-300">
+                  {statistics?.aiProcessingStatus?.processing || 0}
+                </span>
+              </div>
+              <div className="flex justify-between items-center border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 bg-red-50 dark:bg-red-900/20">
+                <span className="text-red-700 dark:text-red-400 text-sm font-medium">
+                  Failed
+                </span>
+                <span className="font-bold text-red-800 dark:text-red-300">
+                  {statistics?.aiProcessingStatus?.failed || 0}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Expert Activity Summary */}
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Icon name="star" size="20px" className="text-purple-500" />
+            <h3 className="text-lg font-semibold text-foreground">
+              Expert Activity
+            </h3>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center py-3 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Icon
+                    name="framework"
+                    size="16px"
+                    className="text-green-500"
+                  />
+                </div>
+                <span className="text-muted-foreground font-medium">
+                  Expert Frameworks
+                </span>
+              </div>
+              <span className="font-bold text-foreground text-lg">
+                {statistics?.frameworks || 0}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center py-3 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                  <Icon
+                    name="activity"
+                    size="16px"
+                    className="text-orange-500"
+                  />
+                </div>
+                <span className="text-muted-foreground font-medium">
+                  Total AI Tasks
+                </span>
+              </div>
+              <span className="font-bold text-foreground text-lg">
+                {(statistics?.aiProcessingStatus?.completed || 0) +
+                  (statistics?.aiProcessingStatus?.pending || 0) +
+                  (statistics?.aiProcessingStatus?.processing || 0) +
+                  (statistics?.aiProcessingStatus?.failed || 0)}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center py-3 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Icon
+                    name="check-circle"
+                    size="16px"
+                    className="text-green-500"
+                  />
+                </div>
+                <span className="text-muted-foreground font-medium">
+                  Completed Tasks
+                </span>
+              </div>
+              <span className="font-bold text-green-600 text-lg">
+                {statistics?.aiProcessingStatus?.completed || 0}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center py-3">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <Icon name="calendar" size="16px" className="text-blue-500" />
+                </div>
+                <span className="text-muted-foreground font-medium">
+                  Expert Since
+                </span>
+              </div>
+              <span className="font-medium text-foreground">
+                {formatDate(userData.createdAt)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // User UI - when statistics has documents, frameworks, comparisons, aiProcessingStatus
   const renderUserView = () => (
     <>
       {/* User Summary Statistics */}
@@ -422,7 +611,17 @@ function UserDetails() {
       return renderAdminView();
     }
 
-    // Check if it's user/expert data structure (has documents, frameworks, comparisons, aiProcessingStatus)
+    // Check if it's expert data structure (has only frameworks and aiProcessingStatus, no documents or comparisons)
+    if (
+      statistics.hasOwnProperty("frameworks") &&
+      statistics.hasOwnProperty("aiProcessingStatus") &&
+      !statistics.hasOwnProperty("documents") &&
+      !statistics.hasOwnProperty("comparisons")
+    ) {
+      return renderExpertView();
+    }
+
+    // Check if it's user data structure (has documents, frameworks, comparisons, aiProcessingStatus)
     if (
       statistics.hasOwnProperty("documents") ||
       statistics.hasOwnProperty("frameworks") ||

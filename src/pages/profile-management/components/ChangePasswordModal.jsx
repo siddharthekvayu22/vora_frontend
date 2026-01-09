@@ -21,6 +21,8 @@ function ChangePasswordModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { currentPassword, newPassword, confirmPassword } = formData;
+
     // Basic validation
     if (!currentPassword || !newPassword || !confirmPassword) {
       return toast.error("All fields are required");

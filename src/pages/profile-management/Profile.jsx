@@ -3,6 +3,8 @@ import { useAuth } from "../../context/useAuth";
 import { getUserById } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
 import Icon from "../../components/Icon";
+import EditProfileModal from "./components/EditProfileModal";
+import ChangePasswordModal from "./components/ChangePasswordModal";
 import toast from "react-hot-toast";
 
 function Profile() {
@@ -10,6 +12,8 @@ function Profile() {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   useEffect(() => {
     if (authUser?.id) {
@@ -153,7 +157,10 @@ function Profile() {
             </div>
 
             <div className="flex gap-3">
-              <button className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2">
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+              >
                 <Icon name="edit" size="16px" />
                 Edit Profile
               </button>
@@ -445,11 +452,17 @@ function Profile() {
                 </h3>
               </div>
               <div className="p-6 space-y-3">
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors">
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
+                >
                   <Icon name="edit" size="16px" />
                   <span>Edit Profile</span>
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors">
+                <button
+                  onClick={() => setShowPasswordModal(true)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
+                >
                   <Icon name="key" size="16px" />
                   <span>Change Password</span>
                 </button>
@@ -494,6 +507,19 @@ function Profile() {
           <p className="text-muted-foreground">Coming soon...</p>
         </div>
       )}
+
+      {/* Modals */}
+      <EditProfileModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        profileData={profileData}
+        onUpdate={fetchProfileData}
+      />
+
+      <ChangePasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+      />
     </div>
   );
 }

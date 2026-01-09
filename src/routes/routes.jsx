@@ -12,7 +12,7 @@ import UserStatistics from "../pages/user-management/UserStatistics";
 import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
-import Profile from "../pages/profile-management/profile";
+import Profile from "../pages/profile-management/Profile";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();

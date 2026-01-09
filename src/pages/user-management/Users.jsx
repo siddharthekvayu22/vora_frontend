@@ -183,7 +183,7 @@ function Users() {
       key: "name",
       label: "Name",
       sortable: true,
-      render: (value) => (
+      render: (value, row) => (
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
             <Icon name="user" size="18px" />
@@ -193,20 +193,9 @@ function Users() {
               {value}
             </span>
             <span className="text-xs text-muted-foreground whitespace-nowrap">
-              User Profile
+              {row.email}
             </span>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: "email",
-      label: "Email",
-      sortable: true,
-      render: (value) => (
-        <div className="flex items-center gap-2">
-          <Icon name="mail" size="14px" className="text-muted-foreground" />
-          <span className="text-foreground">{value}</span>
         </div>
       ),
     },

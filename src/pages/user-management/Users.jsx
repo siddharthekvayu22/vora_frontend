@@ -164,7 +164,11 @@ function Users() {
       }
 
       await deleteUser(userId, deleteData);
-      toast.success(deleteData ? "User and all data deleted successfully" : "User deleted successfully");
+      toast.success(
+        deleteData
+          ? "User and all data deleted successfully"
+          : "User deleted successfully"
+      );
       setDeleteModalState({ isOpen: false, user: null });
       fetchUsers();
     } catch (e) {
@@ -289,6 +293,67 @@ function Users() {
       ),
     },
     {
+      key: "createdByAdmin",
+      label: "Created By",
+      sortable: true,
+      render: (value, row) => {
+        // If createdBy is "self", show self-created
+        if (row.createdBy === "self") {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 flex items-center justify-center text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800">
+                <Icon name="user-check" size="18px" />
+              </div>
+              <div>
+                <span className="font-semibold text-foreground block whitespace-nowrap">
+                  Self Created
+                </span>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  User Registration
+                </span>
+              </div>
+            </div>
+          );
+        }
+
+        // If createdByAdmin exists, show admin info
+        if (value && value.name) {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                <Icon name="user" size="18px" />
+              </div>
+              <div>
+                <span className="font-semibold text-foreground block whitespace-nowrap">
+                  {value.name}
+                </span>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  {value.email}
+                </span>
+              </div>
+            </div>
+          );
+        }
+
+        // Fallback for unknown cases
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900/30 dark:to-gray-800/20 flex items-center justify-center text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800">
+              <Icon name="help-circle" size="18px" />
+            </div>
+            <div>
+              <span className="font-semibold text-foreground block whitespace-nowrap">
+                Unknown
+              </span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                Creator Unknown
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       key: "createdAt",
       label: "Created At",
       sortable: true,
@@ -308,7 +373,7 @@ function Users() {
       <button
         onClick={() => {
           const userId = row._id || row.id;
-          navigate(`/users/${userId}/statistics`);
+          navigate(`/users/${userId}`);
         }}
         className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105"
         title="View Statistics"

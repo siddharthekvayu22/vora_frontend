@@ -73,8 +73,8 @@ export function updateUser(userData) {
 /**
  * Get user statistics by ID
  */
-export function getUserStatistics(userId) {
-  return apiRequest(`/user/${userId}/statistics`, true);
+export function getUserDetails(userId) {
+  return apiRequest(`/user/${userId}`, true);
 }
 
 /**
@@ -82,11 +82,11 @@ export function getUserStatistics(userId) {
  */
 export function deleteUser(userId, deleteData = true) {
   return apiRequest(
-    `/user/${userId}`, 
+    `/user/${userId}`,
     {
       method: "DELETE",
       body: JSON.stringify({ deleteData }),
-    }, 
+    },
     true
   );
 }

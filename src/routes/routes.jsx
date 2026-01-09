@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import Dashboard from "../pages/dashboard-management/Dashboard";
 import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
 import Users from "../pages/user-management/Users";
-import UserStatistics from "../pages/user-management/UserStatistics";
+import UserDetails from "../pages/user-management/UserDetails";
 import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
@@ -114,11 +114,11 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/users/:userId/statistics"
+        path="/users/:userId"
         element={
           <ProtectedRoute>
             <Layout>
-              <UserStatistics />
+              <UserDetails />
             </Layout>
           </ProtectedRoute>
         }

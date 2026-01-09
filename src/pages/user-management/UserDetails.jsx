@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Icon from "../../components/Icon";
-import { getUserStatistics } from "../../services/userService";
+import { getUserDetails } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
 
-function UserStatistics() {
+function UserDetails() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ function UserStatistics() {
   const fetchUserStatistics = async () => {
     try {
       setLoading(true);
-      const response = await getUserStatistics(userId);
+      const response = await getUserDetails(userId);
       setUserData(response.user);
       setStatistics(response.statistics);
 
@@ -715,4 +715,4 @@ function UserStatistics() {
   );
 }
 
-export default UserStatistics;
+export default UserDetails;

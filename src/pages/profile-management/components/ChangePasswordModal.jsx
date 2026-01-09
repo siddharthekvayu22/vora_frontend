@@ -189,30 +189,35 @@ function ChangePasswordModal({ isOpen, onClose }) {
           </div>
 
           {/* Password Strength Indicator */}
+          {/* Password Strength Indicator */}
           {formData.newPassword && (
             <div className="p-3 bg-accent rounded-lg border border-border">
               <div className="text-sm font-medium text-foreground mb-2">
-                Password Strength:
+                Password Requirements:
               </div>
+
               <div className="space-y-1 text-xs">
+                {/* Length */}
                 <div
                   className={`flex items-center gap-2 ${
-                    formData.newPassword.length >= 6
+                    formData.newPassword.length >= 8
                       ? "text-green-600"
-                      : "text-muted-foreground"
+                      : "text-red-600"
                   }`}
                 >
                   <Icon
-                    name={formData.newPassword.length >= 6 ? "check" : "close"}
+                    name={formData.newPassword.length >= 8 ? "check" : "close"}
                     size="12px"
                   />
-                  At least 6 characters
+                  At least 8 characters
                 </div>
+
+                {/* Uppercase */}
                 <div
                   className={`flex items-center gap-2 ${
                     /[A-Z]/.test(formData.newPassword)
                       ? "text-green-600"
-                      : "text-muted-foreground"
+                      : "text-red-600"
                   }`}
                 >
                   <Icon
@@ -221,22 +226,58 @@ function ChangePasswordModal({ isOpen, onClose }) {
                     }
                     size="12px"
                   />
-                  Contains uppercase letter
+                  One uppercase letter
                 </div>
+
+                {/* Lowercase */}
                 <div
                   className={`flex items-center gap-2 ${
-                    /[0-9]/.test(formData.newPassword)
+                    /[a-z]/.test(formData.newPassword)
                       ? "text-green-600"
-                      : "text-muted-foreground"
+                      : "text-red-600"
                   }`}
                 >
                   <Icon
                     name={
-                      /[0-9]/.test(formData.newPassword) ? "check" : "close"
+                      /[a-z]/.test(formData.newPassword) ? "check" : "close"
                     }
                     size="12px"
                   />
-                  Contains number
+                  One lowercase letter
+                </div>
+
+                {/* Number */}
+                <div
+                  className={`flex items-center gap-2 ${
+                    /\d/.test(formData.newPassword)
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  <Icon
+                    name={/\d/.test(formData.newPassword) ? "check" : "close"}
+                    size="12px"
+                  />
+                  One number
+                </div>
+
+                {/* Special Character */}
+                <div
+                  className={`flex items-center gap-2 ${
+                    /[@$!%*#?&]/.test(formData.newPassword)
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  <Icon
+                    name={
+                      /[@$!%*#?&]/.test(formData.newPassword)
+                        ? "check"
+                        : "close"
+                    }
+                    size="12px"
+                  />
+                  One special character (@$!%*#?&)
                 </div>
               </div>
             </div>

@@ -116,7 +116,9 @@ function AppRoutes() {
         path="/users/:userId/statistics"
         element={
           <ProtectedRoute>
-            <UserStatistics />
+            <Layout>
+              <UserStatistics />
+            </Layout>
           </ProtectedRoute>
         }
       />

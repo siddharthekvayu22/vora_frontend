@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/useAuth";
-import { getUserById } from "../../services/userService";
+import { userProfile } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
 import Icon from "../../components/Icon";
 import EditProfileModal from "./components/EditProfileModal";
@@ -24,7 +24,7 @@ function Profile() {
   const fetchProfileData = async () => {
     try {
       setLoading(true);
-      const response = await getUserById(authUser.id);
+      const response = await userProfile();
       setProfileData(response.user);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -169,7 +169,7 @@ function Profile() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 ${
+            className={`flex items-center gap-2 px-6 py-3 font-medium transition-colors border-b-2 cursor-pointer ${
               activeTab === tab.id
                 ? "text-primary border-primary"
                 : "text-muted-foreground border-transparent hover:text-foreground"
@@ -273,104 +273,155 @@ function Profile() {
               </div>
             )}
 
-            {/* System Statistics (Admin Only) */}
-            {isAdmin && statistics.systemStats && (
+            {/* Admin Statistics - Created Users */}
+            {isAdmin && statistics.createdUsers && (
               <div className="rounded-2xl border border-border bg-gradient-to-br from-background to-card shadow-xl">
                 <div className="border-b border-border px-6 py-4">
                   <h3 className="text-lg font-semibold text-foreground">
-                    System Statistics
+                    Created Users Management
                   </h3>
                 </div>
                 <div className="p-6">
-                  <div className="grid md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-red-500/20 flex items-center justify-center">
-                        <Icon
-                          name="user"
-                          size="24px"
-                          className="text-red-600"
-                        />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalUsers}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Total Users
-                      </div>
-                    </div>
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
                     <div className="text-center p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
                       <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/20 flex items-center justify-center">
                         <Icon
-                          name="user"
+                          name="users"
                           size="24px"
                           className="text-blue-600"
                         />
                       </div>
                       <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalExperts}
+                        {statistics.createdUsers.users.count}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        Total Experts
-                      </div>
-                    </div>
-                    <div className="text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-green-500/20 flex items-center justify-center">
-                        <Icon
-                          name="file"
-                          size="24px"
-                          className="text-green-600"
-                        />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalDocuments}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Total Documents
+                        Regular Users Created
                       </div>
                     </div>
                     <div className="text-center p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
                       <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/20 flex items-center justify-center">
                         <Icon
-                          name="framework"
+                          name="star"
                           size="24px"
                           className="text-purple-600"
                         />
                       </div>
                       <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalUserFrameworks}
+                        {statistics.createdUsers.experts.count}
                       </div>
                       <div className="text-sm text-muted-foreground">
-                        User Frameworks
+                        Expert Users Created
                       </div>
                     </div>
-                    <div className="text-center p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/20 flex items-center justify-center">
+                  </div>
+
+                  {/* Created Users Lists */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Regular Users List */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                         <Icon
-                          name="framework"
-                          size="24px"
-                          className="text-amber-600"
+                          name="users"
+                          size="16px"
+                          className="text-blue-500"
                         />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalExpertFrameworks}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Expert Frameworks
+                        Recent Regular Users (
+                        {statistics.createdUsers.users.count})
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {statistics.createdUsers.users.list.length > 0 ? (
+                          statistics.createdUsers.users.list.map(
+                            (user, index) => (
+                              <div
+                                key={index}
+                                className="p-3 rounded-lg bg-muted/50 border border-border"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                    <Icon
+                                      name="user"
+                                      size="14px"
+                                      className="text-blue-500"
+                                    />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-foreground truncate">
+                                      {user.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground truncate">
+                                      {user.email}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <div className="text-center py-4 text-muted-foreground">
+                            <Icon
+                              name="users"
+                              size="24px"
+                              className="mx-auto mb-2 opacity-50"
+                            />
+                            <p className="text-sm">
+                              No regular users created yet
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="text-center p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-teal-500/20 flex items-center justify-center">
+
+                    {/* Expert Users List */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                         <Icon
-                          name="chart"
-                          size="24px"
-                          className="text-teal-600"
+                          name="star"
+                          size="16px"
+                          className="text-purple-500"
                         />
-                      </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {statistics.systemStats.totalComparisons}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Total Comparisons
+                        Recent Expert Users (
+                        {statistics.createdUsers.experts.count})
+                      </h4>
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {statistics.createdUsers.experts.list.length > 0 ? (
+                          statistics.createdUsers.experts.list.map(
+                            (expert, index) => (
+                              <div
+                                key={index}
+                                className="p-3 rounded-lg bg-muted/50 border border-border"
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                                    <Icon
+                                      name="star"
+                                      size="14px"
+                                      className="text-purple-500"
+                                    />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-foreground truncate">
+                                      {expert.name}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground truncate">
+                                      {expert.email}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          )
+                        ) : (
+                          <div className="text-center py-4 text-muted-foreground">
+                            <Icon
+                              name="star"
+                              size="24px"
+                              className="mx-auto mb-2 opacity-50"
+                            />
+                            <p className="text-sm">
+                              No expert users created yet
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -451,25 +502,17 @@ function Profile() {
               <div className="p-6 space-y-3">
                 <button
                   onClick={() => setShowEditModal(true)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer"
                 >
                   <Icon name="edit" size="16px" />
                   <span>Edit Profile</span>
                 </button>
                 <button
                   onClick={() => setShowPasswordModal(true)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer"
                 >
                   <Icon name="key" size="16px" />
                   <span>Change Password</span>
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors">
-                  <Icon name="settings" size="16px" />
-                  <span>Account Settings</span>
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors">
-                  <Icon name="download" size="16px" />
-                  <span>Export Data</span>
                 </button>
               </div>
             </div>

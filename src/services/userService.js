@@ -57,6 +57,13 @@ export function updateUserByAdmin(userId, userData) {
 }
 
 /**
+ * Own profile
+ */
+export function userProfile(userData) {
+  return apiRequest("/user/profile", true);
+}
+
+/**
  * Update own profile
  */
 export function updateUser(userData) {

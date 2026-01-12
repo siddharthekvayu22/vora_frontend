@@ -1,16 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import {
-  File,
-  FileText,
-  FileSpreadsheet,
-  FileBarChart,
-  FileArchive,
-  Presentation,
-} from "lucide-react";
 import { FaRegFilePdf, FaRegFileWord } from "react-icons/fa6";
-import { BsFiletypeDocx, BsFiletypeXls } from "react-icons/bs";
+import { BsFiletypeXls } from "react-icons/bs";
 import { BsFiletypeCsv } from "react-icons/bs";
 import { AiOutlineFilePpt } from "react-icons/ai";
 import { useAuth } from "../../context/useAuth";
@@ -420,7 +412,7 @@ function Frameworks() {
 
   const getFileIcon = (frameworkType) => {
     const ext = getFileExtension(frameworkType);
-    return FILE_ICON_MAP[ext] || File;
+    return FILE_ICON_MAP[ext];
   };
 
   /* ---------------- TABLE CONFIG ---------------- */

@@ -68,6 +68,8 @@ function Profile() {
 
   const { statistics } = profileData;
   const isAdmin = profileData.role?.toLowerCase() === "admin";
+  const isUser = profileData.role?.toLowerCase() === "user";
+  const isExpert = profileData.role?.toLowerCase() === "expert";
 
   const tabs = [
     { id: "overview", label: "Overview", icon: "dashboard" },
@@ -196,21 +198,23 @@ function Profile() {
                 </div>
                 <div className="p-6">
                   <div className="grid md:grid-cols-3 gap-6">
-                    <div className="text-center p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/20 flex items-center justify-center">
-                        <Icon
-                          name="file"
-                          size="24px"
-                          className="text-blue-600"
-                        />
+                    {isUser && (
+                      <div className="text-center p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                        <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-blue-500/20 flex items-center justify-center">
+                          <Icon
+                            name="file"
+                            size="24px"
+                            className="text-blue-600"
+                          />
+                        </div>
+                        <div className="text-2xl font-bold text-foreground">
+                          {statistics.documents}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Documents
+                        </div>
                       </div>
-                      <div className="text-2xl font-bold text-foreground">
-                        {statistics.documents}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Documents
-                      </div>
-                    </div>
+                    )}
                     <div className="text-center p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
                       <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-purple-500/20 flex items-center justify-center">
                         <Icon
@@ -235,7 +239,7 @@ function Profile() {
                         />
                       </div>
                       <div className="text-2xl font-bold text-foreground">
-                        {statistics.comparisons}
+                        {statistics.comparisons || 0}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         Comparisons

@@ -342,7 +342,7 @@ function FrameworkDetails() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-foreground">
-                        {framework.uploadedBy.name}
+                        {framework.uploadedBy.name || "Unknown"}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {framework.uploadedBy.email}

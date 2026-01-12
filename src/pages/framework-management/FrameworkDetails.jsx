@@ -531,29 +531,47 @@ function FrameworkDetails() {
                       </h3>
                       <div className="space-y-3 max-h-80 overflow-y-auto">
                         {framework.aiProcessing.extractedControls.map(
-                          (control, index) => (
-                            <div
-                              key={control._id || index}
-                              className="border border-border rounded-lg p-3 bg-muted/30"
-                            >
-                              <div className="flex items-start justify-between mb-2">
-                                <h4 className="text-sm font-semibold text-foreground">
-                                  {control.Control_id}
-                                </h4>
-                                {control.Control_type && (
-                                  <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                                    {control.Control_type}
-                                  </span>
+                          (control, index) => {
+                            const deploymentPoints =
+                              control?.Deployment_points?.split(
+                                /\s*\d+\.\s*/g
+                              ).filter(Boolean);
+                            return (
+                              <div
+                                key={control._id || index}
+                                className="border border-border rounded-lg p-3 bg-muted/30"
+                              >
+                                <div className="flex items-start justify-between mb-2">
+                                  <h4 className="text-sm font-semibold text-foreground">
+                                    {control.Control_id}
+                                  </h4>
+                                  {control.Control_type && (
+                                    <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                                      {control.Control_type}
+                                    </span>
+                                  )}
+                                </div>
+                                <h5 className="text-sm font-medium text-foreground mb-1">
+                                  {control.Control_name}
+                                </h5>
+                                <p className="text-xs text-muted-foreground">
+                                  {control.Control_description}
+                                </p>
+                                <h6 className="text-xs font-medium text-foreground my-1">
+                                  Deployment Points
+                                </h6>
+                                {deploymentPoints?.length > 0 && (
+                                  <ol className="mt-2 list-decimal pl-5 space-y-1 text-xs text-muted-foreground">
+                                    {deploymentPoints.map((point, index) => (
+                                      <li key={index} className="break-words">
+                                        {point}
+                                      </li>
+                                    ))}
+                                  </ol>
                                 )}
                               </div>
-                              <h5 className="text-sm font-medium text-foreground mb-1">
-                                {control.Control_name}
-                              </h5>
-                              <p className="text-xs text-muted-foreground">
-                                {control.Control_description}
-                              </p>
-                            </div>
-                          )
+                            );
+                          }
                         )}
                       </div>
                     </div>

@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import {
+  File,
+  FileText,
+  FileSpreadsheet,
+  FileBarChart,
+  FileArchive,
+  Presentation,
+} from "lucide-react";
+import { FaRegFilePdf, FaRegFileWord } from "react-icons/fa6";
+import { BsFiletypeDocx, BsFiletypeXls } from "react-icons/bs";
+import { BsFiletypeCsv } from "react-icons/bs";
+import { AiOutlineFilePpt } from "react-icons/ai";
 import { useAuth } from "../../context/useAuth";
 import { formatDate } from "../../utils/dateFormatter";
 import DataTable from "../../components/data-table/DataTable";
@@ -394,27 +406,47 @@ function Frameworks() {
     }
   };
 
+  const FILE_ICON_MAP = {
+    pdf: FaRegFilePdf,
+    doc: FaRegFileWord,
+    docx: FaRegFileWord,
+    xls: BsFiletypeXls,
+    xlsx: BsFiletypeXls,
+    csv: BsFiletypeCsv,
+    ppt: AiOutlineFilePpt,
+  };
+
+  const getFileExtension = (frameworkType = "") => frameworkType;
+
+  const getFileIcon = (frameworkType) => {
+    const ext = getFileExtension(frameworkType);
+    return FILE_ICON_MAP[ext] || File;
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
       key: "frameworkName",
       label: "Framework Name",
       sortable: true,
-      render: (value, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center text-purple-500 border border-purple-500/20">
-            <Icon name="framework" size="18px" />
+      render: (value, row) => {
+        const FileIcon = getFileIcon(row.frameworkType);
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-purple-500/10 flex items-center justify-center text-purple-500 border border-purple-500/20">
+              <FileIcon size={18} strokeWidth={1.8} />
+            </div>
+            <div>
+              <span className="font-semibold text-foreground block whitespace-nowrap">
+                {value || row.originalFileName}
+              </span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {row.frameworkType?.toUpperCase()} • {row.fileSize}
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="font-semibold text-foreground block whitespace-nowrap">
-              {value || row.originalFileName}
-            </span>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
-              {row.frameworkType?.toUpperCase()} • {row.fileSize}
-            </span>
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "uploadedBy",

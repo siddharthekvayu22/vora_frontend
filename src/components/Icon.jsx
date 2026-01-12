@@ -158,6 +158,20 @@ const iconMap = {
   "icon-framework": "🏗",
   report: "📋",
   "icon-report": "📋",
+
+  // File type icons
+  pdf: "📄",
+  "icon-pdf": "📄",
+  doc: "📝",
+  "icon-doc": "📝",
+  excel: "📊",
+  "icon-excel": "📊",
+  ppt: "📽️",
+  "icon-ppt": "📽️",
+  csv: "🧾",
+  "icon-csv": "🧾",
+  zip: "🗜️",
+  "icon-zip": "🗜️",
 };
 
 export default function Icon({

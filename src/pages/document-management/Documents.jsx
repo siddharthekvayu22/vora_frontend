@@ -18,6 +18,9 @@ import {
   downloadDocument,
   getDocumentById,
 } from "../../services/documentService";
+import { FaRegFilePdf, FaRegFileWord } from "react-icons/fa6";
+import { BsFiletypeCsv, BsFiletypeXls } from "react-icons/bs";
+import { AiOutlineFilePpt } from "react-icons/ai";
 
 function Documents() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -91,12 +94,16 @@ function Documents() {
         documentsArray = res.data;
       } else if (res.documents && Array.isArray(res.documents)) {
         documentsArray = res.documents;
-      } else if (res.data && res.data.documents && Array.isArray(res.data.documents)) {
+      } else if (
+        res.data &&
+        res.data.documents &&
+        Array.isArray(res.data.documents)
+      ) {
         documentsArray = res.data.documents;
       }
 
       setDocuments(documentsArray);
-      
+
       // Handle pagination
       const paginationData = res.pagination || res.data?.pagination || {};
       setPagination((p) => ({
@@ -112,7 +119,13 @@ function Documents() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, userRole, viewMode]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    userRole,
+    viewMode,
+  ]);
 
   useEffect(() => {
     fetchDocuments();
@@ -189,15 +202,15 @@ function Documents() {
   const handleSaveDocument = async (data) => {
     // Prevent multiple submissions
     if (loading) return;
-    
+
     try {
       if (modalState.mode === "create") {
         const formData = new FormData();
-        formData.append("document", data.file);  // Changed from "file" to "document"
+        formData.append("document", data.file); // Changed from "file" to "document"
         if (data.documentName) {
           formData.append("documentName", data.documentName);
         }
-        
+
         await uploadDocument(formData, userRole);
         toast.success("Document uploaded successfully");
       } else {
@@ -217,7 +230,7 @@ function Documents() {
           if (data.documentName) {
             formData.append("documentName", data.documentName);
           }
-          
+
           // Use PUT request with FormData for file update
           await updateDocumentWithFile(documentId, formData, userRole);
           toast.success("Document and file updated successfully");
@@ -227,7 +240,7 @@ function Documents() {
           if (data.documentName) {
             updateData.documentName = data.documentName;
           }
-          
+
           await updateDocument(documentId, updateData, userRole);
           toast.success("Document updated successfully");
         }
@@ -237,11 +250,15 @@ function Documents() {
     } catch (e) {
       // Show specific error messages based on status
       if (e.status === 404) {
-        toast.error("Upload endpoint not found. Please check if the backend server is running and the API endpoint exists.");
+        toast.error(
+          "Upload endpoint not found. Please check if the backend server is running and the API endpoint exists."
+        );
       } else if (e.status === 413) {
         toast.error("File too large. Please choose a smaller file.");
       } else if (e.status === 415) {
-        toast.error("Unsupported file type. Please choose a supported file format.");
+        toast.error(
+          "Unsupported file type. Please choose a supported file format."
+        );
       } else {
         toast.error(e.message || "Failed to save document");
       }
@@ -250,7 +267,8 @@ function Documents() {
 
   const handleDeleteDocument = async () => {
     try {
-      const documentId = deleteModalState.document?.id || deleteModalState.document?._id;
+      const documentId =
+        deleteModalState.document?.id || deleteModalState.document?._id;
 
       if (!documentId) {
         toast.error("Document ID not found. Cannot delete document.");
@@ -270,43 +288,63 @@ function Documents() {
   const handleViewDocument = async (document) => {
     try {
       const documentId = document.id || document._id;
-      
+
       if (!documentId) {
         toast.error("Document ID not found.");
         return;
       }
 
       // Set loading state and open modal immediately
-      setViewModalState({ 
-        isOpen: true, 
+      setViewModalState({
+        isOpen: true,
         document: document, // Show basic info first
-        loading: true 
+        loading: true,
       });
 
       // Call API to get detailed document information
       const response = await getDocumentById(documentId, userRole);
-      
+
       // Extract document from the nested response structure
-      const detailedDocument = response.data?.document || response.document || response.data || response;
-      
+      const detailedDocument =
+        response.data?.document ||
+        response.document ||
+        response.data ||
+        response;
+
       // Update modal with the detailed document data
-      setViewModalState({ 
-        isOpen: true, 
+      setViewModalState({
+        isOpen: true,
         document: detailedDocument,
-        loading: false
+        loading: false,
       });
-      
     } catch (error) {
       console.error("Error fetching document details:", error);
       toast.error("Failed to load document details");
-      
+
       // Show modal with existing document data and stop loading
-      setViewModalState({ 
-        isOpen: true, 
+      setViewModalState({
+        isOpen: true,
         document: document,
-        loading: false 
+        loading: false,
       });
     }
+  };
+
+  const FILE_ICON_MAP = {
+    pdf: FaRegFilePdf,
+    doc: FaRegFileWord,
+    docx: FaRegFileWord,
+    xls: BsFiletypeXls,
+    xlsx: BsFiletypeXls,
+    csv: BsFiletypeCsv,
+    ppt: AiOutlineFilePpt,
+  };
+
+  const getFileExtension = (documentType = "") => documentType;
+
+  const getFileIcon = (documentType) => {
+    const ext = getFileExtension(documentType);
+    return FILE_ICON_MAP[ext];
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -315,21 +353,24 @@ function Documents() {
       key: "documentName",
       label: "Document Name",
       sortable: true,
-      render: (value, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
-            <Icon name="file" size="18px" />
+      render: (value, row) => {
+        const FileIcon = getFileIcon(row.documentType);
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
+              <FileIcon size={18} strokeWidth={1.8} />
+            </div>
+            <div>
+              <span className="font-semibold text-foreground block whitespace-nowrap">
+                {value || row.originalFileName}
+              </span>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {row.documentType?.toUpperCase()} • {row.fileSize}
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="font-semibold text-foreground block whitespace-nowrap">
-              {value || row.originalFileName}
-            </span>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
-              {row.documentType?.toUpperCase()} • {row.fileSize}
-            </span>
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "uploadedBy",
@@ -400,9 +441,7 @@ function Documents() {
         <Icon name="download" size="16px" />
       </button>
       <button
-        onClick={() =>
-          setModalState({ isOpen: true, mode: "edit", document })
-        }
+        onClick={() => setModalState({ isOpen: true, mode: "edit", document })}
         className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105"
         title="Edit Document"
       >
@@ -425,7 +464,9 @@ function Documents() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Documents</h1>
           <p className="text-muted-foreground mt-1">
-            {viewMode === "my" ? "Your uploaded documents" : "All available documents"}
+            {viewMode === "my"
+              ? "Your uploaded documents"
+              : "All available documents"}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -497,7 +538,9 @@ function Documents() {
 
       <DocumentViewModal
         isOpen={viewModalState.isOpen}
-        onClose={() => setViewModalState({ isOpen: false, document: null, loading: false })}
+        onClose={() =>
+          setViewModalState({ isOpen: false, document: null, loading: false })
+        }
         document={viewModalState.document}
         loading={viewModalState.loading}
       />

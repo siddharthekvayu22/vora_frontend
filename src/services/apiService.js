@@ -82,7 +82,45 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
       };
     }
 
-    return data;
+    // Normalize successful responses to standard format
+    if (data && typeof data === 'object') {
+      // If response already has the correct format, return as is
+      if (data.hasOwnProperty('success') && data.hasOwnProperty('message') && data.hasOwnProperty('data')) {
+        return data;
+      }
+      
+      // If response has message and data properties but no success flag
+      if (data.hasOwnProperty('message') && data.hasOwnProperty('data')) {
+        return {
+          success: true,
+          message: data.message,
+          data: data.data
+        };
+      }
+      
+      // If response has only data property
+      if (data.hasOwnProperty('data') && !data.hasOwnProperty('message')) {
+        return {
+          success: true,
+          message: "Operation successful",
+          data: data.data
+        };
+      }
+      
+      // If response is just the data object itself (no wrapper)
+      return {
+        success: true,
+        message: "Operation successful",
+        data: data
+      };
+    }
+    
+    // For non-object responses or null/empty responses
+    return {
+      success: true,
+      message: "Operation successful",
+      data: data
+    };
   } catch (error) {
     if (error?.status) throw error;
     throw {

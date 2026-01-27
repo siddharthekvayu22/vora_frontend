@@ -20,11 +20,11 @@ function Login() {
 
     try {
       const response = await loginApi(formData.email, formData.password);
-      login(response.user, response.token);
-      toast.success(response.message || "Login successfull");
+      login(response.data.user, response.data.token);
+      toast.success(response.message || "Login successful");
       
       // Role-based redirect
-      if (response.user?.role === 'admin') {
+      if (response.data.user?.role === 'admin') {
         navigate("/admin-dashboard");
       } else {
         navigate("/dashboard");

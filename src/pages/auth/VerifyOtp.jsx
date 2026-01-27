@@ -50,16 +50,16 @@ function VerifyOtp() {
       clearPendingEmail();
 
       // If response includes user and token, log them in
-      if (response.user && response.token) {
-        login(response.user, response.token);
+      if (response.data.user && response.data.token) {
+        login(response.data.user, response.data.token);
       }
 
       toast.success(response.message || "Email verified successfully!");
 
       // Navigate to role-based dashboard or login
       setTimeout(() => {
-        if (response.user) {
-          if (response.user.role === 'admin') {
+        if (response.data.user) {
+          if (response.data.user.role === 'admin') {
             navigate("/admin-dashboard");
           } else {
             navigate("/dashboard");

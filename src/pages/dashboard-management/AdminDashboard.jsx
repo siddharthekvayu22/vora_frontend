@@ -232,7 +232,7 @@ export default function AdminDashboard() {
         {/* User Registration Chart */}
         <CardWrapper title="User Registration Trends" className="flex flex-col">
           <div className="flex-1 min-h-[400px]">
-            <UserRegistrationChart data={charts.userCreation} />
+            {/* <UserRegistrationChart data={charts.userCreation} /> */}
           </div>
         </CardWrapper>
       </div>

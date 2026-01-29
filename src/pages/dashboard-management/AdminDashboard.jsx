@@ -61,27 +61,27 @@ export default function AdminDashboard() {
     );
   }
 
-  const { stats, charts, aiEnabled, recentCreatedUsers } = dashboardData;
+  const { stats, charts, recentCreatedUsers } = dashboardData;
 
   // Prepare metrics data
   const metrics = [
     {
       label: "TOTAL ACTIVE USERS",
-      value: stats.totalUsers,
-      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.user} User`,
+      value: stats.totalUsers || 0,
+      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.company} User`,
       trendColor: "text-blue-500",
       icon: "👥",
     },
     {
       label: "TOTAL EXPERT FRAMEWORKS",
-      value: stats.totalExpertFrameworks,
+      value: stats.totalExpertFrameworks || 0,
       trend: "Expert frameworks available",
       trendColor: "text-purple-500",
       icon: "🏗",
     },
     {
       label: "TOTAL USER FRAMEWORKS",
-      value: stats.totalUserFrameworks,
+      value: stats.totalUserFrameworks || 0,
       trend: "User uploaded frameworks",
       trendColor: "text-green-500",
       icon: "📋",
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
 
     {
       label: "TOTAL USER DOCUMENTS",
-      value: stats.totalDocuments,
+      value: stats.totalDocuments || 0,
       trend: "User uploaded Documents",
       trendColor: "text-orange-500",
       icon: "📄",
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
       name: "Admin",
       count: stats.usersByRole.admin,
       percentage: ((stats.usersByRole.admin / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-red-500",
     },
@@ -142,7 +142,7 @@ export default function AdminDashboard() {
       name: "Expert",
       count: stats.usersByRole.expert,
       percentage: ((stats.usersByRole.expert / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-blue-500",
     },
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
       name: "User",
       count: stats.usersByRole.user,
       percentage: ((stats.usersByRole.user / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-green-500",
     },
@@ -208,8 +208,8 @@ export default function AdminDashboard() {
                           user.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                            : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                              : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                         }`}
                       >
                         {user.role}

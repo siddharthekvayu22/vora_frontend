@@ -268,3 +268,46 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
+// response need
+// {
+//   "success": true,
+//   "message": "Dashboard analytics retrieved successfully",
+//   "data": {
+//     "stats": {
+//       "totalUsers": 10,
+//       "totalExpertFrameworks": 5,
+//       "totalUserFrameworks": 15,
+//       "totalDocuments": 25,
+//       "usersByRole": {
+//         "admin": 2,
+//         "expert": 3,
+//         "company": 0,
+//         "user": 5
+//       }
+//     },
+//     "charts": {
+//       "userCreation": {
+//         "labels": ["2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-24", "2026-01-25", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29"],
+//         "selfRegistration": [2, 1, 3, 0, 2, 1, 4, 2, 1, 3],
+//         "adminCreation": [1, 0, 1, 2, 0, 1, 1, 0, 2, 1]
+//       }
+//     },
+//     "recentCreatedUsers": [
+//       {
+//         "id": "697ae99cdba964fea8d87adf",
+//         "name": "John Doe",
+//         "email": "john@example.com",
+//         "role": "admin",
+//         "createdAt": "2026-01-29T05:01:16.856Z"
+//       },
+//       {
+//         "id": "697ae99cdba964fea8d87ae0",
+//         "name": "Jane Smith",
+//         "email": "jane@example.com",
+//         "role": "expert",
+//         "createdAt": "2026-01-28T10:30:45.123Z"
+//       }
+//     ]
+//   }
+// }

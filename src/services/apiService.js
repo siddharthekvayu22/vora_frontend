@@ -4,6 +4,7 @@
  */
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api`;
+const TENANT_ID = `${import.meta.env.VITE_TENANT_ID}`;
 
 /**
  * Get auth token from sessionStorage (matches AuthContext)
@@ -35,6 +36,7 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
 
   const headers = {
     ...(requireAuth && token && { Authorization: `Bearer ${token}` }),
+    ...(TENANT_ID && { "X-TENANT-ID": TENANT_ID }),
     ...(options.headers || {}),
   };
 
@@ -47,12 +49,12 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
 
   try {
     const response = await fetch(url, options);
-    
+
     // Check if response has content before trying to parse JSON
-    const contentType = response.headers.get('content-type');
+    const contentType = response.headers.get("content-type");
     let data = null;
-    
-    if (contentType && contentType.includes('application/json')) {
+
+    if (contentType && contentType.includes("application/json")) {
       const text = await response.text();
       if (text) {
         data = JSON.parse(text);
@@ -71,7 +73,7 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
                 data?.message ||
                 "Your session has expired. Please log in again.",
             },
-          })
+          }),
         );
       }
 
@@ -83,43 +85,47 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
     }
 
     // Normalize successful responses to standard format
-    if (data && typeof data === 'object') {
+    if (data && typeof data === "object") {
       // If response already has the correct format, return as is
-      if (data.hasOwnProperty('success') && data.hasOwnProperty('message') && data.hasOwnProperty('data')) {
+      if (
+        data.hasOwnProperty("success") &&
+        data.hasOwnProperty("message") &&
+        data.hasOwnProperty("data")
+      ) {
         return data;
       }
-      
+
       // If response has message and data properties but no success flag
-      if (data.hasOwnProperty('message') && data.hasOwnProperty('data')) {
+      if (data.hasOwnProperty("message") && data.hasOwnProperty("data")) {
         return {
           success: true,
           message: data.message,
-          data: data.data
+          data: data.data,
         };
       }
-      
+
       // If response has only data property
-      if (data.hasOwnProperty('data') && !data.hasOwnProperty('message')) {
+      if (data.hasOwnProperty("data") && !data.hasOwnProperty("message")) {
         return {
           success: true,
           message: "Operation successful",
-          data: data.data
+          data: data.data,
         };
       }
-      
+
       // If response is just the data object itself (no wrapper)
       return {
         success: true,
         message: "Operation successful",
-        data: data
+        data: data,
       };
     }
-    
+
     // For non-object responses or null/empty responses
     return {
       success: true,
       message: "Operation successful",
-      data: data
+      data: data,
     };
   } catch (error) {
     if (error?.status) throw error;

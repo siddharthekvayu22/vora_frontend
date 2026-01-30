@@ -38,7 +38,7 @@ export function createUser(userData) {
       method: "POST",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
 }
 
@@ -52,7 +52,7 @@ export function updateUserByAdmin(userId, userData) {
       method: "PUT",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
 }
 
@@ -73,7 +73,7 @@ export function updateUser(userData) {
       method: "PUT",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
 }
 
@@ -87,14 +87,13 @@ export function getUserDetails(userId) {
 /**
  * Delete user
  */
-export function deleteUser(userId, deleteData = true) {
+export function deleteUser(userId) {
   return apiRequest(
     `/users/${userId}`,
     {
       method: "DELETE",
-      body: JSON.stringify({ deleteData }),
     },
-    true
+    true,
   );
 }
 

@@ -167,7 +167,7 @@ function Users() {
     }
   };
 
-  const handleDeleteUser = async (deleteData) => {
+  const handleDeleteUser = async () => {
     try {
       // Handle both _id and id fields for user identification
       const userId = deleteModalState.user?._id || deleteModalState.user?.id;
@@ -178,12 +178,8 @@ function Users() {
         return;
       }
 
-      await deleteUser(userId, deleteData);
-      toast.success(
-        deleteData
-          ? "User and all data deleted successfully"
-          : "User deleted successfully",
-      );
+      await deleteUser(userId);
+      toast.success("User deleted successfully");
       setDeleteModalState({ isOpen: false, user: null });
       fetchUsers();
     } catch (e) {

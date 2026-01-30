@@ -13,6 +13,8 @@ import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
+import FrameworkCategory from "../pages/admin-framework-management/framework-category-manage/FrameworkCategory";
+import FrameworkAccess from "../pages/admin-framework-management/framework-access-manage/FrameworkAccess";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -99,6 +101,26 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-category"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <FrameworkCategory />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-access"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <FrameworkAccess />
             </Layout>
           </ProtectedRoute>
         }

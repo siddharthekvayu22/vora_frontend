@@ -16,6 +16,8 @@ import Profile from "../pages/profile-management/Profile";
 import Category from "../pages/admin-framework-management/framework-category-manage/Category";
 import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
 import AccessRequests from "../pages/admin-framework-management/framework-access-manage/AccessRequests";
+import AccessRejected from "../pages/admin-framework-management/framework-access-manage/AccessRejected";
+import AccessRevoked from "../pages/admin-framework-management/framework-access-manage/AccessRevoked";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -132,6 +134,26 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AccessRequests />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-access/rejected"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AccessRejected />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-access/revoked"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AccessRevoked />
             </Layout>
           </ProtectedRoute>
         }

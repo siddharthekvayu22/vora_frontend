@@ -28,6 +28,20 @@ export function getAdminFrameworkAccessRequests() {
 }
 
 /**
+ * Get admin framework access rejected
+ */
+export function getAdminFrameworkAccessRejected() {
+  return apiRequest("/admin/framework-access/access/rejected", true);
+}
+
+/**
+ * Get admin framework access revoked
+ */
+export function getAdminFrameworkAccessRevoked() {
+  return apiRequest("/admin/framework-access/access/revoked", true);
+}
+
+/**
  * Create framework category
  */
 export function createFrameworkCategory(categoryData) {
@@ -133,6 +147,8 @@ export default {
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
   getAdminFrameworkAccessRequests,
+  getAdminFrameworkAccessRejected,
+  getAdminFrameworkAccessRevoked,
   createFrameworkCategory,
   updateFrameworkCategory,
   deleteFrameworkCategory,

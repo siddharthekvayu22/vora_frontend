@@ -1,14 +1,14 @@
 import { useState } from "react";
-import Icon from "../../../components/Icon";
+import Icon from "../../../../components/Icon";
 
 /**
- * DeleteUserModal Component - Confirmation dialog for deleting a user
+ * DeleteCategoryModal Component - Confirmation dialog for deleting a category
  *
- * @param {Object} user - User to delete
- * @param {Function} onConfirm - Confirm delete handler (receives method parameter)
+ * @param {Object} category - Category to delete
+ * @param {Function} onConfirm - Confirm delete handler
  * @param {Function} onCancel - Cancel handler
  */
-export default function DeleteUserModal({ user, onConfirm, onCancel }) {
+export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -16,7 +16,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error("Error deleting category:", error);
     } finally {
       setDeleting(false);
     }
@@ -37,7 +37,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
               <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete User
+                Delete Category
               </h2>
             </div>
             <button
@@ -50,55 +50,49 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
         </div>
 
-        <div className="p-6">
-          <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-            Choose how you want to delete this user. This action cannot be
-            undone.
+        <div className="p-4">
+          <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+            Are you sure you want to delete this framework category? This action
+            cannot be undone.
           </p>
 
-          <div className="bg-muted rounded-xl p-4 border-l-4 border-red-500 mb-6">
-            <div className="flex items-center gap-4 mb-2">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                <Icon name="user" size="24px" />
+          <div className="bg-muted rounded-xl p-3 border-l-4 border-red-500 mb-4">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                <Icon name="chart" size="20px" />
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {user.name}
+                  {category.frameworkCategoryName}
                 </h4>
                 <p className="text-sm text-muted-foreground m-0">
-                  {user.email}
+                  Code: {category.code}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-1">
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  user.role === "admin"
-                    ? "bg-red-100 text-red-800"
-                    : user.role === "expert"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-green-100 text-green-800"
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  category.isActive
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                 }`}
               >
-                {user.role}
-              </span>
-              <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  user.isEmailVerified
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
-                }`}
-              >
-                {user.isEmailVerified ? "Verified" : "Pending"}
+                {category.isActive ? "Active" : "Inactive"}
               </span>
             </div>
+            {category.description && (
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                {category.description}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end p-3 border-t border-border">
+        <div className="flex gap-2 justify-end p-3 border-t border-border">
           <button
             type="button"
-            className="w-full px-6 py-2 text-xs font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
             onClick={onCancel}
             disabled={deleting}
           >
@@ -107,8 +101,8 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
           <button
             type="button"
-            className="w-full inline-flex items-center justify-center gap-2 px-6 py-2 text-xs font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
-            onClick={() => handleConfirm(false)}
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            onClick={handleConfirm}
             disabled={deleting}
           >
             {deleting ? (
@@ -118,8 +112,8 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
               </>
             ) : (
               <>
-                <Icon name="user" size="16px" />
-                Delete
+                <Icon name="trash" size="16px" />
+                Delete Category
               </>
             )}
           </button>

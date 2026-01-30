@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import DataTable from "../../components/data-table/DataTable";
 import UserModal from "./components/UserModal";
@@ -17,8 +17,6 @@ import { formatDate } from "../../utils/dateFormatter";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState("No users found");

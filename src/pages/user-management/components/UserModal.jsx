@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 
 /**
@@ -77,6 +78,7 @@ export default function UserModal({
       await onSave(formData);
     } catch (error) {
       console.error("Error saving user:", error);
+      toast.error(error.message || "Failed to save user");
     } finally {
       setSaving(false);
     }
@@ -132,127 +134,125 @@ export default function UserModal({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 flex flex-col">
-          {/* Email Field */}
-          <div className="form-group">
-            <label htmlFor="user-email" className="form-label">
-              Email Address {!isReadOnly && <span className="required">*</span>}
-            </label>
-            {isReadOnly ? (
-              <div className="py-2 text-foreground">
-                {formData.email || "-"}
-              </div>
-            ) : (
-              <>
-                <input
-                  id="user-email"
-                  type="email"
-                  className={`form-input ${errors.email ? "error" : ""} ${
-                    mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
-                  value={formData.email}
-                  onChange={(e) => handleChange("email", e.target.value)}
-                  placeholder="Enter email address"
-                  disabled={mode === "edit"}
-                />
-                {errors.email && (
-                  <span className="error-message">{errors.email}</span>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Name Field */}
-          <div className="form-group">
-            <label htmlFor="user-name" className="form-label">
-              Full Name {!isReadOnly && <span className="required">*</span>}
-            </label>
-            {isReadOnly ? (
-              <div className="py-2 text-foreground">{formData.name || "-"}</div>
-            ) : (
-              <>
-                <input
-                  id="user-name"
-                  type="text"
-                  className={`form-input ${errors.name ? "error" : ""}`}
-                  value={formData.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
-                  placeholder="Enter full name"
-                />
-                {errors.name && (
-                  <span className="error-message">{errors.name}</span>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Phone Field */}
-          <div className="form-group">
-            <label htmlFor="user-phone" className="form-label">
-              Phone Number
-            </label>
-            {isReadOnly ? (
-              <div className="py-2 text-foreground">
-                {formData.phone || "-"}
-              </div>
-            ) : (
-              <input
-                id="user-phone"
-                type="tel"
-                className="form-input"
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
-                placeholder="Enter phone number"
-              />
-            )}
-          </div>
-
-          {/* Role */}
-          <div className="form-group">
-            <label htmlFor="user-role" className="form-label">
-              Role {!isReadOnly && <span className="required">*</span>}
-            </label>
-            {isReadOnly ? (
-              <div className="py-2">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    formData.role === "admin"
-                      ? "bg-red-100 text-red-800"
-                      : formData.role === "expert"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-green-100 text-green-800"
-                  }`}
-                >
-                  {formData.role}
-                </span>
-              </div>
-            ) : (
-              <>
-                <select
-                  id="user-role"
-                  className={`form-select ${errors.role ? "error" : ""}`}
-                  value={formData.role}
-                  onChange={(e) => handleChange("role", e.target.value)}
-                >
-                  <option value="expert">Expert</option>
-                  <option value="admin">Admin</option>
-                  <option value="company">Company</option>
-                </select>
-              </>
-            )}
-          </div>
-
-          {errors.submit && (
-            <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-              <Icon name="alert-circle" size="20px" />
-              <span>{errors.submit}</span>
+        <form onSubmit={handleSubmit}>
+          <div className="p-4 flex flex-col">
+            {/* Email Field */}
+            <div className="form-group">
+              <label htmlFor="user-email" className="form-label">
+                Email Address{" "}
+                {!isReadOnly && <span className="required">*</span>}
+              </label>
+              {isReadOnly ? (
+                <div className="py-2 text-foreground">
+                  {formData.email || "-"}
+                </div>
+              ) : (
+                <>
+                  <input
+                    id="user-email"
+                    type="email"
+                    className={`form-input ${errors.email ? "error" : ""} ${
+                      mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
+                    }`}
+                    value={formData.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    placeholder="Enter email address"
+                    disabled={mode === "edit"}
+                  />
+                  {errors.email && (
+                    <span className="error-message">{errors.email}</span>
+                  )}
+                </>
+              )}
             </div>
-          )}
 
-          <div className="flex gap-3 justify-end pt-5 border-t border-border">
+            {/* Name Field */}
+            <div className="form-group">
+              <label htmlFor="user-name" className="form-label">
+                Full Name {!isReadOnly && <span className="required">*</span>}
+              </label>
+              {isReadOnly ? (
+                <div className="py-2 text-foreground">
+                  {formData.name || "-"}
+                </div>
+              ) : (
+                <>
+                  <input
+                    id="user-name"
+                    type="text"
+                    className={`form-input ${errors.name ? "error" : ""}`}
+                    value={formData.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                    placeholder="Enter full name"
+                  />
+                  {errors.name && (
+                    <span className="error-message">{errors.name}</span>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Phone Field */}
+            <div className="form-group">
+              <label htmlFor="user-phone" className="form-label">
+                Phone Number
+              </label>
+              {isReadOnly ? (
+                <div className="py-2 text-foreground">
+                  {formData.phone || "-"}
+                </div>
+              ) : (
+                <input
+                  id="user-phone"
+                  type="tel"
+                  className="form-input"
+                  value={formData.phone}
+                  onChange={(e) => handleChange("phone", e.target.value)}
+                  placeholder="Enter phone number"
+                />
+              )}
+            </div>
+
+            {/* Role */}
+            <div className="form-group">
+              <label htmlFor="user-role" className="form-label">
+                Role {!isReadOnly && <span className="required">*</span>}
+              </label>
+              {isReadOnly ? (
+                <div className="py-2">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      formData.role === "admin"
+                        ? "bg-red-100 text-red-800"
+                        : formData.role === "expert"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-green-100 text-green-800"
+                    }`}
+                  >
+                    {formData.role}
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <select
+                    id="user-role"
+                    className={`form-select ${errors.role ? "error" : ""}`}
+                    value={formData.role}
+                    onChange={(e) => handleChange("role", e.target.value)}
+                  >
+                    <option value="expert">Expert</option>
+                    <option value="admin">Admin</option>
+                    <option value="company">Company</option>
+                  </select>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex gap-2 justify-end p-3 border-t border-border">
             <button
               type="button"
-              className="px-6 py-3 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"
+              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"
               onClick={onClose}
             >
               {isReadOnly ? "Close" : "Cancel"}
@@ -260,7 +260,7 @@ export default function UserModal({
             {!isReadOnly && (
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
                 disabled={saving}
               >
                 {saving ? (

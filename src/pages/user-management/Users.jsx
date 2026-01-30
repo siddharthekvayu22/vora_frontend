@@ -363,16 +363,6 @@ function Users() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
-        onClick={() => {
-          const userId = row._id || row.id;
-          navigate(`/users/${userId}`);
-        }}
-        className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105"
-        title="View Statistics"
-      >
-        <Icon name="eye" size="16px" />
-      </button>
-      <button
         onClick={() => setModalState({ isOpen: true, mode: "edit", user: row })}
         className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105"
         title="Edit User"

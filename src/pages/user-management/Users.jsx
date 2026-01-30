@@ -182,7 +182,7 @@ function Users() {
       toast.success(
         deleteData
           ? "User and all data deleted successfully"
-          : "User deleted successfully"
+          : "User deleted successfully",
       );
       setDeleteModalState({ isOpen: false, user: null });
       fetchUsers();
@@ -246,7 +246,7 @@ function Users() {
                 border: "border-blue-200 dark:border-blue-800",
                 dot: "bg-blue-500",
               };
-            case "user":
+            case "company":
               return {
                 bg: "bg-green-100 dark:bg-green-900/30",
                 text: "text-green-700 dark:text-green-400",
@@ -277,7 +277,7 @@ function Users() {
     },
     {
       key: "isEmailVerified",
-      label: "Status",
+      label: "Email Verified",
       sortable: true,
       render: (v) => (
         <span
@@ -297,7 +297,7 @@ function Users() {
       ),
     },
     {
-      key: "createdByAdmin",
+      key: "createdBy",
       label: "Created By",
       sortable: true,
       render: (value, row) => {

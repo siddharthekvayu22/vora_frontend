@@ -14,8 +14,8 @@ import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
 import Category from "../pages/admin-framework-management/framework-category-manage/Category";
-import AccessRequests from "../pages/admin-framework-management/framework-access-requests-manage/AccessRequests";
 import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
+import AccessRequests from "../pages/admin-framework-management/framework-access-manage/AccessRequests";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();

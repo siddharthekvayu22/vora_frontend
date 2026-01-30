@@ -27,9 +27,53 @@ export function getAdminFrameworkAccessRequests() {
   return apiRequest("/admin/framework-access/access/requests", true);
 }
 
+/**
+ * Create framework category
+ */
+export function createFrameworkCategory(categoryData) {
+  return apiRequest(
+    "/admin/framework-categories/categories",
+    {
+      method: "POST",
+      body: JSON.stringify(categoryData),
+    },
+    true,
+  );
+}
+
+/**
+ * Update framework category
+ */
+export function updateFrameworkCategory(categoryId, categoryData) {
+  return apiRequest(
+    `/admin/framework-categories/categories/${categoryId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(categoryData),
+    },
+    true,
+  );
+}
+
+/**
+ * Delete framework category
+ */
+export function deleteFrameworkCategory(categoryId) {
+  return apiRequest(
+    `/admin/framework-categories/categories/${categoryId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
 export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
   getAdminFrameworkAccessRequests,
+  createFrameworkCategory,
+  updateFrameworkCategory,
+  deleteFrameworkCategory,
 };

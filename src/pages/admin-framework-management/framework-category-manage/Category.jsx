@@ -3,9 +3,16 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getAdminFrameworkCategory } from "../../../services/adminService";
+import {
+  getAdminFrameworkCategory,
+  createFrameworkCategory,
+  updateFrameworkCategory,
+  deleteFrameworkCategory,
+} from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
+import CategoryModal from "./components/CategoryModal";
+import DeleteCategoryModal from "./components/DeleteCategoryModal";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -28,6 +35,17 @@ function Category() {
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
+  });
+
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    mode: "create",
+    category: null,
+  });
+
+  const [deleteModalState, setDeleteModalState] = useState({
+    isOpen: false,
+    category: null,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -117,20 +135,64 @@ function Category() {
     setSortConfig({ sortBy: key, sortOrder: order });
   };
 
+  /* ---------------- CRUD ---------------- */
+  const handleSaveCategory = async (data) => {
+    try {
+      if (modalState.mode === "create") {
+        const response = await createFrameworkCategory(data);
+        toast.success(response.message || "Category created successfully");
+      } else {
+        const categoryId = modalState.category?._id || modalState.category?.id;
+        const response = await updateFrameworkCategory(categoryId, data);
+        toast.success(response.message || "Category updated successfully");
+      }
+      setModalState({ isOpen: false, mode: "create", category: null });
+      fetchFrameworkCategory();
+    } catch (e) {
+      toast.error(e.message || "Failed to save category");
+      console.error("Save category error:", e);
+    }
+  };
+
+  const handleDeleteCategory = async () => {
+    try {
+      const categoryId =
+        deleteModalState.category?._id || deleteModalState.category?.id;
+
+      if (!categoryId) {
+        toast.error("Category ID not found. Cannot delete category.");
+        console.error("Category object:", deleteModalState.category);
+        return;
+      }
+
+      const response = await deleteFrameworkCategory(categoryId);
+      toast.success(response.message || "Category deleted successfully");
+      setDeleteModalState({ isOpen: false, category: null });
+      fetchFrameworkCategory();
+    } catch (e) {
+      toast.error(e.message || "Failed to delete category");
+      console.error("Delete category error:", e);
+    }
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [];
 
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
+        onClick={() =>
+          setModalState({ isOpen: true, mode: "edit", category: row })
+        }
         className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title=""
+        title="Edit Category"
       >
         <Icon name="edit" size="16px" />
       </button>
       <button
+        onClick={() => setDeleteModalState({ isOpen: true, category: row })}
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title=""
+        title="Delete Category"
       >
         <Icon name="trash" size="16px" />
       </button>
@@ -174,7 +236,12 @@ function Category() {
           </div>
         </div>
 
-        <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
+        <button
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+          onClick={() =>
+            setModalState({ isOpen: true, mode: "create", category: null })
+          }
+        >
           <Icon name="plus" size="18px" />
           Add New Framework Category
         </button>
@@ -193,6 +260,27 @@ function Category() {
         searchPlaceholder="Search category..."
         emptyMessage={emptyMessage}
       />
+
+      {modalState.isOpen && (
+        <CategoryModal
+          mode={modalState.mode}
+          category={modalState.category}
+          onSave={handleSaveCategory}
+          onClose={() =>
+            setModalState({ isOpen: false, mode: "create", category: null })
+          }
+        />
+      )}
+
+      {deleteModalState.isOpen && (
+        <DeleteCategoryModal
+          category={deleteModalState.category}
+          onConfirm={handleDeleteCategory}
+          onCancel={() =>
+            setDeleteModalState({ isOpen: false, category: null })
+          }
+        />
+      )}
     </div>
   );
 }

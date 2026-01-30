@@ -95,7 +95,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end p-2 border-t border-border">
+        <div className="flex gap-3 justify-end p-3 border-t border-border">
           <button
             type="button"
             className="w-full px-6 py-2 text-xs font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"

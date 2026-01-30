@@ -34,6 +34,14 @@ export default function UserModal({
         phone: user.phone || "",
         role: user.role || "",
       });
+    } else if (mode === "create") {
+      // Set default role for create mode
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        role: "expert",
+      });
     }
   }, [user, mode]);
 
@@ -202,7 +210,7 @@ export default function UserModal({
           {/* Role */}
           <div className="form-group">
             <label htmlFor="user-role" className="form-label">
-              Role
+              Role {!isReadOnly && <span className="required">*</span>}
             </label>
             {isReadOnly ? (
               <div className="py-2">
@@ -219,16 +227,18 @@ export default function UserModal({
                 </span>
               </div>
             ) : (
-              <select
-                id="user-role"
-                className="form-select"
-                value={formData.role}
-                onChange={(e) => handleChange("role", e.target.value)}
-              >
-                <option value="expert">Expert</option>
-                <option value="admin">Admin</option>
-                <option value="company">Company</option>
-              </select>
+              <>
+                <select
+                  id="user-role"
+                  className={`form-select ${errors.role ? "error" : ""}`}
+                  value={formData.role}
+                  onChange={(e) => handleChange("role", e.target.value)}
+                >
+                  <option value="expert">Expert</option>
+                  <option value="admin">Admin</option>
+                  <option value="company">Company</option>
+                </select>
+              </>
             )}
           </div>
 

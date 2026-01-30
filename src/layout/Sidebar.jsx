@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { useTheme } from "../context/ThemeContext";
@@ -35,11 +35,26 @@ function Sidebar() {
         path: "/users",
       },
       {
-        id: "reports",
-        title: "Reports",
-        description: "System-wide reports",
-        icon: "chart",
-        path: "/reports",
+        id: "framework-management",
+        title: "Framework Management",
+        description: "Manage category & access",
+        icon: "framework",
+        children: [
+          {
+            id: "framework-category",
+            title: "Framework Category",
+            description: "Manage framework category",
+            icon: "chart",
+            path: "/framework-category",
+          },
+          {
+            id: "framework-access",
+            title: "Framework Access",
+            description: "Manage framework access",
+            icon: "shield",
+            path: "/framework-access",
+          },
+        ],
       },
       {
         id: "settings",
@@ -101,10 +116,31 @@ function Sidebar() {
 
   const menuItems = navigationConfig[role] || navigationConfig.expert;
 
-  const isActive = (path) =>
-    path === "/dashboard"
+  // Auto-expand parent menu if child is active
+  useEffect(() => {
+    const activeParent = menuItems.find(
+      (item) =>
+        item.children && item.children.some((child) => isActive(child.path)),
+    );
+    if (activeParent && activeMenu !== activeParent.id) {
+      setActiveMenu(activeParent.id);
+    }
+  }, [location.pathname]);
+
+  const isActive = (path) => {
+    if (!path) return false;
+    return path === "/dashboard"
       ? location.pathname === "/" || location.pathname === "/dashboard"
       : location.pathname === path;
+  };
+
+  const isParentActive = (item) => {
+    if (item.path) return isActive(item.path);
+    if (item.children) {
+      return item.children.some((child) => isActive(child.path));
+    }
+    return false;
+  };
 
   /* ================= RENDER ================= */
   return (
@@ -215,7 +251,7 @@ function Sidebar() {
                   className={`group relative flex cursor-pointer items-center gap-4
                             rounded-2xl px-4 py-3 transition-all
                   ${
-                    isActive(item.path)
+                    isParentActive(item)
                       ? "border border-primary bg-gradient-to-br from-primary/15 to-primary-2/15 shadow-md"
                       : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
                   }`}
@@ -224,7 +260,7 @@ function Sidebar() {
                   <span
                     className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
                     ${
-                      isActive(item.path)
+                      isParentActive(item)
                         ? "h-2/3 bg-gradient-to-b from-primary to-primary-2"
                         : "h-0 bg-primary group-hover:h-1/2 transition-all"
                     }`}
@@ -234,7 +270,7 @@ function Sidebar() {
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl border transition
                     ${
-                      isActive(item.path)
+                      isParentActive(item)
                         ? "border-primary bg-primary/20 text-primary scale-110"
                         : "border-border bg-muted text-muted-foreground group-hover:text-primary"
                     }`}
@@ -247,7 +283,9 @@ function Sidebar() {
                     <span
                       className={`text-sm font-semibold
                       ${
-                        isActive(item.path) ? "text-primary" : "text-foreground"
+                        isParentActive(item)
+                          ? "text-primary"
+                          : "text-foreground"
                       }`}
                     >
                       {item.title}
@@ -331,8 +369,8 @@ function Sidebar() {
                 {role === "admin"
                   ? "Admin"
                   : role === "expert"
-                  ? "System Expert"
-                  : "System User"}
+                    ? "System Expert"
+                    : "System User"}
               </div>
             </div>
           </Link>

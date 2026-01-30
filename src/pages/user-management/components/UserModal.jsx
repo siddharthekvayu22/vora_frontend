@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 
 /**
@@ -77,6 +78,7 @@ export default function UserModal({
       await onSave(formData);
     } catch (error) {
       console.error("Error saving user:", error);
+      toast.error(error.message || "Failed to save user");
     } finally {
       setSaving(false);
     }
@@ -245,13 +247,6 @@ export default function UserModal({
                 </>
               )}
             </div>
-
-            {errors.submit && (
-              <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                <Icon name="alert-circle" size="20px" />
-                <span>{errors.submit}</span>
-              </div>
-            )}
           </div>
 
           <div className="flex gap-2 justify-end p-3 border-t border-border">

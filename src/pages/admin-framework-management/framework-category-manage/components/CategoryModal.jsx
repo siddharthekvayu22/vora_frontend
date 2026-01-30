@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
 
 /**
@@ -77,6 +78,7 @@ export default function CategoryModal({
       await onSave(formData);
     } catch (error) {
       console.error("Error saving category:", error);
+      toast.error(error.message || "Failed to save category");
     } finally {
       setSaving(false);
     }
@@ -206,13 +208,6 @@ export default function CategoryModal({
                     <span className="text-sm">Inactive</span>
                   </label>
                 </div>
-              </div>
-            )}
-
-            {errors.submit && (
-              <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                <Icon name="alert-circle" size="20px" />
-                <span>{errors.submit}</span>
               </div>
             )}
           </div>

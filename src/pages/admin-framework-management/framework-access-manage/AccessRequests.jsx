@@ -7,6 +7,7 @@ import { getAdminFrameworkAccessRequests } from "../../../services/adminService"
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
+import AccessViewModal from "./components/AccessViewModal";
 
 function AccessRequests() {
   const [accessRequests, setAccessRequests] = useState([]);
@@ -27,6 +28,11 @@ function AccessRequests() {
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
+  });
+
+  const [viewModalState, setViewModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -329,6 +335,9 @@ function AccessRequests() {
       return (
         <div className="flex gap-1 justify-center">
           <button
+            onClick={() =>
+              setViewModalState({ isOpen: true, accessRecord: row })
+            }
             className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
             title="View Details"
           >
@@ -390,6 +399,15 @@ function AccessRequests() {
         searchPlaceholder="Search access requests..."
         emptyMessage={emptyMessage}
       />
+
+      {viewModalState.isOpen && (
+        <AccessViewModal
+          accessRecord={viewModalState.accessRecord}
+          onClose={() =>
+            setViewModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
     </div>
   );
 }

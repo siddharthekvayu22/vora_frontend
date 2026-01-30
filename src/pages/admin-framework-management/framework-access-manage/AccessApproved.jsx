@@ -11,6 +11,7 @@ import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
 import RevokeAccessModal from "./components/RevokeAccessModal";
+import AccessViewModal from "./components/AccessViewModal";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -34,6 +35,11 @@ function AccessApproved() {
   });
 
   const [revokeModalState, setRevokeModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
+  });
+
+  const [viewModalState, setViewModalState] = useState({
     isOpen: false,
     accessRecord: null,
   });
@@ -263,6 +269,7 @@ function AccessApproved() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
+        onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
         className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="View Details"
       >
@@ -341,6 +348,15 @@ function AccessApproved() {
           onConfirm={handleRevokeAccess}
           onCancel={() =>
             setRevokeModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
+
+      {viewModalState.isOpen && (
+        <AccessViewModal
+          accessRecord={viewModalState.accessRecord}
+          onClose={() =>
+            setViewModalState({ isOpen: false, accessRecord: null })
           }
         />
       )}

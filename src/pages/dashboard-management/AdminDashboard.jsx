@@ -71,10 +71,32 @@ export default function AdminDashboard() {
     {
       label: "TOTAL USERS",
       value: totalUsers,
-      trend: `${stats.totalActiveUsers || 0} Active, ${stats.totalInactiveUsers || 0} Inactive`,
+      trend: [
+        {
+          text: `${stats.totalActiveUsers || 0} Active`,
+          color: "text-green-600 dark:text-green-400",
+        },
+        {
+          text: `${stats.totalInactiveUsers || 0} Inactive`,
+          color: "text-red-600 dark:text-red-400",
+        },
+      ],
       trendColor: "text-blue-500",
       icon: "👥",
-      subtitle: `${stats.usersByRole.admin || 0} Admin, ${stats.usersByRole.expert || 0} Expert, ${stats.usersByRole.company || 0} Company`,
+      subtitle: [
+        {
+          text: `${stats.usersByRole.admin || 0} Admin`,
+          color: "text-red-600 dark:text-red-400",
+        },
+        {
+          text: `${stats.usersByRole.expert || 0} Expert`,
+          color: "text-blue-600 dark:text-blue-400",
+        },
+        {
+          text: `${stats.usersByRole.company || 0} Company`,
+          color: "text-green-600 dark:text-green-400",
+        },
+      ],
     },
     {
       label: "TOTAL OFFICIAL FRAMEWORKS",

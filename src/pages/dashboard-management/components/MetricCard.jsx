@@ -36,7 +36,7 @@ function MetricCard({ icon, label, value, trend, trendColor, subtitle }) {
                 <p className="text-3xl font-bold text-foreground leading-none">
                   {value}
                 </p>
-                <p className="text-xs font-medium">{renderText(trend)}</p>
+                <p className="text-xs font-medium">({renderText(trend)})</p>
               </div>
               {subtitle && (
                 <p className="mt-2 text-sm font-semibold">

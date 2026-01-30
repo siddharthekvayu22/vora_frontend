@@ -47,7 +47,7 @@ export function createUser(userData) {
  */
 export function updateUserByAdmin(userId, userData) {
   return apiRequest(
-    `/users/update/${userId}`,
+    `/users/${userId}`,
     {
       method: "PUT",
       body: JSON.stringify(userData),

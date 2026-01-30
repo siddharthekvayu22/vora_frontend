@@ -144,20 +144,12 @@ function Users() {
   const handleSaveUser = async (data) => {
     try {
       if (modalState.mode === "create") {
-        await createUser(data);
-        toast.success("User created");
+        const response = await createUser(data);
+        toast.success(response.message || "User created successfully");
       } else {
-        // Handle both _id and id fields for user identification
         const userId = modalState.user?._id || modalState.user?.id;
-
-        if (!userId) {
-          toast.error("User ID not found. Cannot update user.");
-          console.error("User object:", modalState.user);
-          return;
-        }
-
-        await updateUserByAdmin(userId, data);
-        toast.success("User updated");
+        const response = await updateUserByAdmin(userId, data);
+        toast.success(response.message || "User updated successfully");
       }
       setModalState({ isOpen: false, mode: "view", user: null });
       fetchUsers();

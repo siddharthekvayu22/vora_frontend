@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Icon from "../../../components/Icon";
-import toast from "react-hot-toast";
 
 /**
  * UserModal Component - Handles View, Create, and Edit modes
@@ -22,7 +21,6 @@ export default function UserModal({
     phone: "",
     role: "user",
   });
-  const [generatedPassword, setGeneratedPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
@@ -68,14 +66,9 @@ export default function UserModal({
 
     setSaving(true);
     try {
-      const response = await onSave(formData);
-      // backend returns temp password on create
-      if (mode === "create" && response?.user?.temporaryPassword) {
-        setGeneratedPassword(response.user.temporaryPassword);
-      }
+      await onSave(formData);
     } catch (error) {
       console.error("Error saving user:", error);
-      toast.error(error.message || "Failed to save user");
     } finally {
       setSaving(false);
     }
@@ -101,11 +94,6 @@ export default function UserModal({
       default:
         return "user";
     }
-  };
-
-  const copyPassword = async () => {
-    await navigator.clipboard.writeText(generatedPassword);
-    toast.success("Password copied to clipboard");
   };
 
   return (
@@ -136,7 +124,7 @@ export default function UserModal({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="p-6 flex flex-col">
           {/* Email Field */}
           <div className="form-group">
             <label htmlFor="user-email" className="form-label">
@@ -223,8 +211,8 @@ export default function UserModal({
                     formData.role === "admin"
                       ? "bg-red-100 text-red-800"
                       : formData.role === "expert"
-                      ? "bg-blue-100 text-blue-800"
-                      : "bg-green-100 text-green-800"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-green-100 text-green-800"
                   }`}
                 >
                   {formData.role}
@@ -239,76 +227,10 @@ export default function UserModal({
               >
                 <option value="expert">Expert</option>
                 <option value="admin">Admin</option>
-                <option value="user">User</option>
+                <option value="company">Company</option>
               </select>
             )}
           </div>
-
-          {/* GENERATED PASSWORD SECTION */}
-          {generatedPassword && (
-            <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-yellow-50 to-yellow-25 border border-yellow-200">
-              <p className="mb-3 text-sm leading-relaxed text-yellow-800 font-medium">
-                ⚠️ This password is auto-generated. Copy and share it securely.
-              </p>
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5 bg-white border border-dashed border-yellow-300 rounded-lg px-3 py-2 flex-1">
-                  <code className="flex-1 font-mono text-sm font-semibold text-gray-800 break-all">
-                    {generatedPassword}
-                  </code>
-                  <button
-                    type="button"
-                    onClick={copyPassword}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-md cursor-pointer border-none bg-yellow-400 text-gray-900 hover:bg-yellow-500 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
-                  >
-                    <Icon name="copy" size="16px" />
-                    Copy
-                  </button>
-                </div>
-                <div className="ml-2">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-200"
-                    onClick={onClose}
-                  >
-                    <Icon name="check" size="16px" />
-                    Done
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* View Mode: Additional Info */}
-          {isReadOnly && user && (
-            <div className="flex gap-6 p-4 bg-muted rounded-xl mt-2">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Icon
-                  name="calendar"
-                  size="16px"
-                  className="text-muted-foreground"
-                />
-                <span>
-                  Created:{" "}
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
-                    : "-"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Icon
-                  name="clock"
-                  size="16px"
-                  className="text-muted-foreground"
-                />
-                <span>
-                  Last Updated:{" "}
-                  {user.updatedAt
-                    ? new Date(user.updatedAt).toLocaleDateString()
-                    : "-"}
-                </span>
-              </div>
-            </div>
-          )}
 
           {errors.submit && (
             <div className="flex items-center gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { getAdminFrameworkAccess } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
+import { formatDate } from "../../../utils/dateFormatter";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -116,21 +117,97 @@ function AccessApproved() {
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
-  const columns = [];
+  const columns = [
+    {
+      key: "expert.name",
+      label: "Expert Name",
+      sortable: true,
+      render: (value, row) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-foreground">
+            {row.expert?.name}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {row.expert?.email}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "frameworkCategory.frameworkCode",
+      label: "Framework Code",
+      sortable: true,
+      render: (value, row) => (
+        <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
+          {row.frameworkCategory?.frameworkCode}
+        </span>
+      ),
+    },
+    {
+      key: "frameworkCategory.frameworkCategoryName",
+      label: "Framework Name",
+      sortable: true,
+      render: (value, row) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-foreground">
+            {row.frameworkCategory?.frameworkCategoryName}
+          </span>
+          <span className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+            {row.frameworkCategory?.description}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+          {value?.charAt(0).toUpperCase() + value?.slice(1)}
+        </span>
+      ),
+    },
+    {
+      key: "approval.approvedBy.name",
+      label: "Approved By",
+      sortable: false,
+      render: (value, row) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-foreground text-sm">
+            {row.approval?.approvedBy?.name}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {row.approval?.approvedBy?.email}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: "approval.approvedAt",
+      label: "Approved At",
+      sortable: true,
+      render: (value, row) => (
+        <span className="text-sm text-muted-foreground whitespace-nowrap">
+          {formatDate(row.approval?.approvedAt)}
+        </span>
+      ),
+    },
+  ];
 
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title=""
+        className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+        title="View Details"
       >
-        <Icon name="edit" size="16px" />
+        <Icon name="eye" size="16px" />
       </button>
       <button
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title=""
+        title="Revoke Access"
       >
-        <Icon name="trash" size="16px" />
+        <Icon name="x-circle" size="16px" />
       </button>
     </div>
   );
@@ -143,7 +220,7 @@ function AccessApproved() {
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="users" size="20px" className="text-primary" />
+              <Icon name="check-circle" size="20px" className="text-primary" />
             </div>
             <div className="">
               <h1 className="text-xl font-bold text-foreground flex items-center gap-3">

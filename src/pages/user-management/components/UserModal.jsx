@@ -19,7 +19,7 @@ export default function UserModal({
     name: "",
     email: "",
     phone: "",
-    role: "user",
+    role: "",
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -32,7 +32,7 @@ export default function UserModal({
         name: user.name || "",
         email: user.email || "",
         phone: user.phone || "",
-        role: user.role || "user",
+        role: user.role || "",
       });
     }
   }, [user, mode]);

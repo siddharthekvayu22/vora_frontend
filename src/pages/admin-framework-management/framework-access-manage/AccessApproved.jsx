@@ -3,10 +3,14 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getAdminFrameworkAccess } from "../../../services/adminService";
+import {
+  getAdminFrameworkAccess,
+  revokeFrameworkAccess,
+} from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
+import RevokeAccessModal from "./components/RevokeAccessModal";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -27,6 +31,11 @@ function AccessApproved() {
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
+  });
+
+  const [revokeModalState, setRevokeModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -114,6 +123,35 @@ function AccessApproved() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  /* ---------------- REVOKE ACCESS ---------------- */
+  const handleRevokeAccess = async (adminNotes) => {
+    try {
+      const accessRecord = revokeModalState.accessRecord;
+      const expertId = accessRecord?.expert?.id;
+      const frameworkId = accessRecord?.frameworkCategory?.frameworkId;
+
+      if (!expertId || !frameworkId) {
+        toast.error("Invalid access record. Cannot revoke access.");
+        console.error("Access record:", accessRecord);
+        return;
+      }
+
+      const response = await revokeFrameworkAccess(
+        expertId,
+        frameworkId,
+        adminNotes,
+      );
+      toast.success(
+        response.message || "Framework access revoked successfully",
+      );
+      setRevokeModalState({ isOpen: false, accessRecord: null });
+      fetchAccessApproved();
+    } catch (e) {
+      toast.error(e.message || "Failed to revoke framework access");
+      console.error("Revoke access error:", e);
+    }
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -231,6 +269,7 @@ function AccessApproved() {
         <Icon name="eye" size="16px" />
       </button>
       <button
+        onClick={() => setRevokeModalState({ isOpen: true, accessRecord: row })}
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="Revoke Access"
       >
@@ -295,6 +334,16 @@ function AccessApproved() {
         searchPlaceholder="Search approved access..."
         emptyMessage={emptyMessage}
       />
+
+      {revokeModalState.isOpen && (
+        <RevokeAccessModal
+          accessRecord={revokeModalState.accessRecord}
+          onConfirm={handleRevokeAccess}
+          onCancel={() =>
+            setRevokeModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
     </div>
   );
 }

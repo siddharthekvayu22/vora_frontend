@@ -68,6 +68,20 @@ export function deleteFrameworkCategory(categoryId) {
   );
 }
 
+/**
+ * Revoke framework access
+ */
+export function revokeFrameworkAccess(expertId, frameworkId, adminNotes) {
+  return apiRequest(
+    `/admin/framework-access/access/revoke/${expertId}/${frameworkId}`,
+    {
+      method: "DELETE",
+      body: JSON.stringify({ adminNotes }),
+    },
+    true,
+  );
+}
+
 export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
@@ -76,4 +90,5 @@ export default {
   createFrameworkCategory,
   updateFrameworkCategory,
   deleteFrameworkCategory,
+  revokeFrameworkAccess,
 };

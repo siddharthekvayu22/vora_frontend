@@ -252,75 +252,175 @@ export default function AccessViewModal({ accessRecord, onClose }) {
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {accessRecord.rejection && (
-                  <>
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Rejected By
-                      </p>
-                      <p className="text-sm font-medium text-foreground">
-                        {accessRecord.rejection.rejectedBy?.name || "-"}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Rejection Date
-                      </p>
-                      <p className="text-sm text-foreground">
-                        {accessRecord.rejection.rejectedAt
-                          ? formatDate(accessRecord.rejection.rejectedAt)
-                          : "-"}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Admin Email
-                      </p>
-                      <p className="text-sm text-foreground">
-                        {accessRecord.rejection.rejectedBy?.email || "-"}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Admin Role
-                      </p>
-                      <p className="text-sm capitalize text-foreground">
-                        {accessRecord.rejection.rejectedBy?.role || "-"}
-                      </p>
-                    </div>
-
-                    {accessRecord.adminRejectMessage && (
-                      <div className="sm:col-span-2">
+                {/* Approved Records */}
+                {accessRecord.status === "approved" &&
+                  accessRecord.approval && (
+                    <>
+                      <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">
-                          Rejection Message
+                          Approved By
                         </p>
-                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                          <p className="text-sm text-red-800 dark:text-red-200 leading-relaxed">
-                            {accessRecord.adminRejectMessage}
-                          </p>
-                        </div>
+                        <p className="text-sm font-medium text-foreground">
+                          {accessRecord.approval.approvedBy?.name || "-"}
+                        </p>
                       </div>
-                    )}
-                  </>
-                )}
 
-                {/* For approved/revoked records, show last updated info */}
-                {(accessRecord.status === "approved" ||
-                  accessRecord.status === "revoked") &&
-                  !accessRecord.rejection && (
-                    <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                        Last Updated
-                      </p>
-                      <p className="text-sm text-foreground">
-                        {accessRecord.updatedAt
-                          ? formatDate(accessRecord.updatedAt)
-                          : "-"}
-                      </p>
-                    </div>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Approval Date
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.approval.approvedAt
+                            ? formatDate(accessRecord.approval.approvedAt)
+                            : "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Email
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.approval.approvedBy?.email || "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Role
+                        </p>
+                        <p className="text-sm capitalize text-foreground">
+                          {accessRecord.approval.approvedBy?.role || "-"}
+                        </p>
+                      </div>
+
+                      {accessRecord.adminAssignMessage && (
+                        <div className="sm:col-span-2">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">
+                            Assignment Message
+                          </p>
+                          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                            <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
+                              {accessRecord.adminAssignMessage}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                {/* Rejected Records */}
+                {accessRecord.status === "rejected" &&
+                  accessRecord.rejection && (
+                    <>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Rejected By
+                        </p>
+                        <p className="text-sm font-medium text-foreground">
+                          {accessRecord.rejection.rejectedBy?.name || "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Rejection Date
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.rejection.rejectedAt
+                            ? formatDate(accessRecord.rejection.rejectedAt)
+                            : "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Email
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.rejection.rejectedBy?.email || "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Role
+                        </p>
+                        <p className="text-sm capitalize text-foreground">
+                          {accessRecord.rejection.rejectedBy?.role || "-"}
+                        </p>
+                      </div>
+
+                      {accessRecord.adminRejectMessage && (
+                        <div className="sm:col-span-2">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">
+                            Rejection Message
+                          </p>
+                          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                            <p className="text-sm text-red-800 dark:text-red-200 leading-relaxed">
+                              {accessRecord.adminRejectMessage}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                {/* Revoked Records */}
+                {accessRecord.status === "revoked" &&
+                  accessRecord.revocation && (
+                    <>
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Revoked By
+                        </p>
+                        <p className="text-sm font-medium text-foreground">
+                          {accessRecord.revocation.revokedBy?.name || "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Revocation Date
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.revocation.revokedAt
+                            ? formatDate(accessRecord.revocation.revokedAt)
+                            : "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Email
+                        </p>
+                        <p className="text-sm text-foreground">
+                          {accessRecord.revocation.revokedBy?.email || "-"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Admin Role
+                        </p>
+                        <p className="text-sm capitalize text-foreground">
+                          {accessRecord.revocation.revokedBy?.role || "-"}
+                        </p>
+                      </div>
+
+                      {accessRecord.adminRevokeMessage && (
+                        <div className="sm:col-span-2">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">
+                            Revocation Message
+                          </p>
+                          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
+                            <p className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">
+                              {accessRecord.adminRevokeMessage}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
               </div>
             </section>

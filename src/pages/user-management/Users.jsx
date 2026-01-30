@@ -205,21 +205,37 @@ function Users() {
       key: "name",
       label: "Name",
       sortable: true,
-      render: (value, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
-            <Icon name="user" size="18px" />
+      render: (value, row) => {
+        console.log("row data", row);
+        return (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
+              <Icon name="user" size="18px" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground whitespace-nowrap block capitalize">
+                  {value}
+                </span>
+                {row.isEmailVerified ? (
+                  <div
+                    className={`w-2 h-2 rounded-full bg-green-500 cursor-pointer`}
+                    title="Email verified"
+                  ></div>
+                ) : (
+                  <div
+                    className={`w-2 h-2 rounded-full bg-yellow-500 cursor-pointer`}
+                    title="Email verified pending"
+                  ></div>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {row.email}
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="font-semibold text-foreground block whitespace-nowrap capitalize">
-              {value}
-            </span>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
-              {row.email}
-            </span>
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "phone",
@@ -281,27 +297,6 @@ function Users() {
           </span>
         );
       },
-    },
-    {
-      key: "isEmailVerified",
-      label: "Email Verified",
-      sortable: true,
-      render: (v) => (
-        <span
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
-            v
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
-              : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
-          }`}
-        >
-          <div
-            className={`w-2 h-2 rounded-full ${
-              v ? "bg-green-500" : "bg-yellow-500"
-            }`}
-          ></div>
-          {v ? "Verified" : "Pending"}
-        </span>
-      ),
     },
     {
       key: "isActive",

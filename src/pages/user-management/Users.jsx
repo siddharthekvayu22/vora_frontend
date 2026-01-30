@@ -11,6 +11,7 @@ import {
   createUser,
   deleteUser,
   updateUserByAdmin,
+  toggleUserStatus,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -180,6 +181,24 @@ function Users() {
     }
   };
 
+  const handleToggleStatus = async (user) => {
+    try {
+      const userId = user?._id || user?.id;
+
+      if (!userId) {
+        toast.error("User ID not found. Cannot toggle status.");
+        return;
+      }
+
+      const response = await toggleUserStatus(userId);
+      toast.success(response.message || "User status updated successfully");
+      fetchUsers();
+    } catch (e) {
+      toast.error(e.message || "Failed to toggle user status");
+      console.error("Toggle status error:", e);
+    }
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -285,6 +304,27 @@ function Users() {
       ),
     },
     {
+      key: "isActive",
+      label: "Status",
+      sortable: true,
+      render: (v) => (
+        <span
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
+            v
+              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
+              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800"
+          }`}
+        >
+          <div
+            className={`w-2 h-2 rounded-full ${
+              v ? "bg-green-500" : "bg-red-500"
+            }`}
+          ></div>
+          {v ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
       key: "createdBy",
       label: "Created By",
       sortable: true,
@@ -363,15 +403,26 @@ function Users() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
+        onClick={() => handleToggleStatus(row)}
+        className={`px-3 py-2 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer ${
+          row.isActive
+            ? "hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
+            : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400"
+        }`}
+        title={row.isActive ? "Deactivate User" : "Activate User"}
+      >
+        <Icon name="power" size="16px" />
+      </button>
+      <button
         onClick={() => setModalState({ isOpen: true, mode: "edit", user: row })}
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105"
+        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="Edit User"
       >
         <Icon name="edit" size="16px" />
       </button>
       <button
         onClick={() => setDeleteModalState({ isOpen: true, user: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105"
+        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="Delete User"
       >
         <Icon name="trash" size="16px" />

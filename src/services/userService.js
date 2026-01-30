@@ -97,6 +97,19 @@ export function deleteUser(userId) {
   );
 }
 
+/**
+ * Toggle user status (active/inactive)
+ */
+export function toggleUserStatus(userId) {
+  return apiRequest(
+    `/users/${userId}/toggle-status`,
+    {
+      method: "PATCH",
+    },
+    true,
+  );
+}
+
 export default {
   getAllUsers,
   getUserById,
@@ -104,4 +117,5 @@ export default {
   updateUserByAdmin,
   updateUser,
   deleteUser,
+  toggleUserStatus,
 };

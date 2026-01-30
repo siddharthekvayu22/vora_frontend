@@ -148,6 +148,12 @@ const iconMap = {
   "icon-tag": "🏷",
   lightbulb: "💡",
   "icon-lightbulb": "💡",
+  "toggle-left": "◀",
+  "icon-toggle-left": "◀",
+  "toggle-right": "▶",
+  "icon-toggle-right": "▶",
+  power: "⏻",
+  "icon-power": "⏻",
 
   // Compliance/Audit specific - Professional symbols
   audit: "🔍",

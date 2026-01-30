@@ -280,16 +280,6 @@ function AccessRequests() {
       },
     },
     {
-      key: "requestMessage",
-      label: "Request Message",
-      sortable: false,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-          {value || "-"}
-        </span>
-      ),
-    },
-    {
       key: "actionBy",
       label: "Action By",
       sortable: false,
@@ -381,46 +371,36 @@ function AccessRequests() {
   ];
 
   const renderActions = (row) => {
-    // Show different actions based on status
-    if (row.status === "pending") {
-      return (
-        <div className="flex gap-1 justify-center">
-          <button
-            onClick={() =>
-              setApproveModalState({ isOpen: true, accessRecord: row })
-            }
-            className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-            title="Approve Request"
-          >
-            <Icon name="check" size="16px" />
-          </button>
-          <button
-            onClick={() =>
-              setRejectModalState({ isOpen: true, accessRecord: row })
-            }
-            className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-            title="Reject Request"
-          >
-            <Icon name="x" size="16px" />
-          </button>
-        </div>
-      );
-    } else {
-      // For approved, rejected, or revoked status, show view action
-      return (
-        <div className="flex gap-1 justify-center">
-          <button
-            onClick={() =>
-              setViewModalState({ isOpen: true, accessRecord: row })
-            }
-            className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-            title="View Details"
-          >
-            <Icon name="eye" size="16px" />
-          </button>
-        </div>
-      );
-    }
+    return (
+      <div className="flex gap-1 justify-center">
+        <button
+          onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
+          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="View Details"
+        >
+          <Icon name="eye" size="16px" />
+        </button>
+
+        <button
+          onClick={() =>
+            setApproveModalState({ isOpen: true, accessRecord: row })
+          }
+          className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Approve Request"
+        >
+          <Icon name="check" size="16px" />
+        </button>
+        <button
+          onClick={() =>
+            setRejectModalState({ isOpen: true, accessRecord: row })
+          }
+          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Reject Request"
+        >
+          <Icon name="x" size="16px" />
+        </button>
+      </div>
+    );
   };
 
   /* ---------------- UI ---------------- */

@@ -82,6 +82,52 @@ export function revokeFrameworkAccess(expertId, frameworkId, adminNotes) {
   );
 }
 
+/**
+ * Approve framework access request
+ */
+export function approveFrameworkAccessRequest(requestId, adminApproveMessage) {
+  return apiRequest(
+    `/admin/framework-access/access/approve/${requestId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ adminApproveMessage }),
+    },
+    true,
+  );
+}
+
+/**
+ * Reject framework access request
+ */
+export function rejectFrameworkAccessRequest(requestId, adminRejectMessage) {
+  return apiRequest(
+    `/admin/framework-access/access/reject/${requestId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ adminRejectMessage }),
+    },
+    true,
+  );
+}
+
+/**
+ * Assign framework access directly
+ */
+export function assignFrameworkAccess(
+  expertId,
+  frameworkId,
+  adminAssignMessage,
+) {
+  return apiRequest(
+    `/admin/framework-access/access/${expertId}/${frameworkId}/assign`,
+    {
+      method: "POST",
+      body: JSON.stringify({ adminAssignMessage }),
+    },
+    true,
+  );
+}
+
 export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
@@ -91,4 +137,7 @@ export default {
   updateFrameworkCategory,
   deleteFrameworkCategory,
   revokeFrameworkAccess,
+  approveFrameworkAccessRequest,
+  rejectFrameworkAccessRequest,
+  assignFrameworkAccess,
 };

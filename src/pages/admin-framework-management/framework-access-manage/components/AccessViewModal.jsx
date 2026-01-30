@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Icon from "../../../../components/Icon";
 import { formatDate } from "../../../../utils/dateFormatter";
 
@@ -207,16 +206,64 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                 </p>
               </div>
             </div>
-            {accessRecord.adminNotes && (
-              <div className="mt-4">
-                <label className="text-sm font-medium text-muted-foreground">
-                  Admin Notes
-                </label>
-                <p className="text-foreground bg-muted p-3 rounded-lg mt-1">
-                  {accessRecord.adminNotes}
-                </p>
-              </div>
-            )}
+
+            {/* Admin Messages */}
+            <div className="mt-4 space-y-3">
+              {accessRecord.adminAssignMessage && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Admin Assign Message
+                  </label>
+                  <p className="text-foreground bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mt-1">
+                    {accessRecord.adminAssignMessage}
+                  </p>
+                </div>
+              )}
+
+              {accessRecord.adminApproveMessage && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Admin Approve Message
+                  </label>
+                  <p className="text-foreground bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mt-1">
+                    {accessRecord.adminApproveMessage}
+                  </p>
+                </div>
+              )}
+
+              {accessRecord.adminRejectMessage && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Admin Reject Message
+                  </label>
+                  <p className="text-foreground bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mt-1">
+                    {accessRecord.adminRejectMessage}
+                  </p>
+                </div>
+              )}
+
+              {accessRecord.adminRevokeMessage && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Admin Revoke Message
+                  </label>
+                  <p className="text-foreground bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg mt-1">
+                    {accessRecord.adminRevokeMessage}
+                  </p>
+                </div>
+              )}
+
+              {accessRecord.adminNotes && (
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">
+                    Admin Notes
+                  </label>
+                  <p className="text-foreground bg-muted p-3 rounded-lg mt-1">
+                    {accessRecord.adminNotes}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Action Information - Show based on status */}

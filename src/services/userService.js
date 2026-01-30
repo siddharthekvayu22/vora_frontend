@@ -18,14 +18,14 @@ export function getAllUsers({
     ...(sortOrder && { sortOrder }),
   });
 
-  return apiRequest(`/user/all-users?${params.toString()}`, true);
+  return apiRequest(`/users/all-users?${params.toString()}`, true);
 }
 
 /**
  * Get user by ID
  */
 export function getUserById(userId) {
-  return apiRequest(`/user/${userId}`, true); // ✅ GET with auth
+  return apiRequest(`/users/${userId}`, true); // ✅ GET with auth
 }
 
 /**
@@ -33,7 +33,7 @@ export function getUserById(userId) {
  */
 export function createUser(userData) {
   return apiRequest(
-    "/user/create",
+    "/users/create",
     {
       method: "POST",
       body: JSON.stringify(userData),
@@ -47,7 +47,7 @@ export function createUser(userData) {
  */
 export function updateUserByAdmin(userId, userData) {
   return apiRequest(
-    `/user/update/${userId}`,
+    `/users/update/${userId}`,
     {
       method: "PUT",
       body: JSON.stringify(userData),
@@ -60,7 +60,7 @@ export function updateUserByAdmin(userId, userData) {
  * Own profile
  */
 export function userProfile(userData) {
-  return apiRequest("/user/profile", true);
+  return apiRequest("/users/profile", true);
 }
 
 /**
@@ -68,7 +68,7 @@ export function userProfile(userData) {
  */
 export function updateUser(userData) {
   return apiRequest(
-    "/user/profile/update",
+    "/profile/update",
     {
       method: "PUT",
       body: JSON.stringify(userData),
@@ -81,7 +81,7 @@ export function updateUser(userData) {
  * Get user statistics by ID
  */
 export function getUserDetails(userId) {
-  return apiRequest(`/user/${userId}`, true);
+  return apiRequest(`/users/${userId}`, true);
 }
 
 /**
@@ -89,7 +89,7 @@ export function getUserDetails(userId) {
  */
 export function deleteUser(userId, deleteData = true) {
   return apiRequest(
-    `/user/${userId}`,
+    `/users/${userId}`,
     {
       method: "DELETE",
       body: JSON.stringify({ deleteData }),

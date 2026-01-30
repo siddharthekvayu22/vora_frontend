@@ -154,10 +154,10 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-6 my-5">
+    <div className="space-y-4 my-4">
       {/* Metrics */}
       <CardWrapper title="System Overview">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m) => (
             <MetricCard key={m.label} {...m} icon={<span>{m.icon}</span>} />
           ))}
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
       </CardWrapper>
 
       {/* User Analytics */}
-      <div className="grid xl:grid-cols-2 gap-6 items-stretch">
+      <div className="grid xl:grid-cols-2 gap-4 items-stretch">
         {/* Recent Users */}
         <CardWrapper
           title="Recently Created Users"
@@ -176,7 +176,7 @@ export default function AdminDashboard() {
           }
           className="flex flex-col"
         >
-          <div className="space-y-3 flex-1">
+          <div className="space-y-2 flex-1">
             {recentCreatedUsers.length === 0 ? (
               <div className="text-center py-8 flex-1 flex flex-col justify-center">
                 <Icon
@@ -190,18 +190,18 @@ export default function AdminDashboard() {
               recentCreatedUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-4 p-4 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
                 >
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                    <Icon name="user" size="20px" />
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Icon name="user" size="18px" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-foreground">
+                      <h4 className="font-semibold text-foreground text-sm truncate">
                         {user.name}
                       </h4>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
                           user.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
@@ -212,12 +212,12 @@ export default function AdminDashboard() {
                         {user.role}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground truncate">
                       {user.email}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs text-muted-foreground">
                       {formatDate(user.createdAt)}
                     </p>
                   </div>
@@ -228,7 +228,7 @@ export default function AdminDashboard() {
         </CardWrapper>
         {/* User Registration Chart */}
         <CardWrapper title="User Registration Trends" className="flex flex-col">
-          <div className="flex-1 min-h-[400px]">
+          <div className="flex-1 min-h-[350px]">
             <UserRegistrationChart data={charts.userCreation} />
           </div>
         </CardWrapper>
@@ -236,26 +236,26 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <CardWrapper title="Quick Actions">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {quickActions.map((a) => (
             <button
               key={a.title}
-              className="group flex gap-4 rounded-2xl border border-border bg-accent p-6 shadow-lg hover:border-primary transition-all duration-200"
+              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
               onClick={() => {
                 // Navigate to the respective page
                 window.location.href = a.path;
               }}
             >
               <div
-                className={`h-12 w-12 rounded-xl flex items-center justify-center ${a.color}`}
+                className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${a.color}`}
               >
                 {a.icon}
               </div>
-              <div className="flex-1 text-left">
-                <p className="font-semibold">{a.title}</p>
-                <p className="text-sm text-muted-foreground">{a.desc}</p>
+              <div className="flex-1 text-left min-w-0">
+                <p className="font-semibold text-sm">{a.title}</p>
+                <p className="text-xs text-muted-foreground">{a.desc}</p>
               </div>
-              <span className="text-muted-foreground group-hover:translate-x-1 transition">
+              <span className="text-muted-foreground group-hover:translate-x-1 transition flex-shrink-0">
                 →
               </span>
             </button>

@@ -123,13 +123,22 @@ function AccessApproved() {
       label: "Expert Name",
       sortable: true,
       render: (value, row) => (
-        <div className="flex flex-col">
-          <span className="font-medium text-foreground">
-            {row.expert?.name}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {row.expert?.email}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <Icon
+              name="user"
+              size="16px"
+              className="text-blue-600 dark:text-blue-400"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground">
+              {row.expert?.name}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {row.expert?.email}
+            </span>
+          </div>
         </div>
       ),
     },
@@ -148,13 +157,22 @@ function AccessApproved() {
       label: "Framework Name",
       sortable: true,
       render: (value, row) => (
-        <div className="flex flex-col">
-          <span className="font-medium text-foreground">
-            {row.frameworkCategory?.frameworkCategoryName}
-          </span>
-          <span className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
-            {row.frameworkCategory?.description}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+            <Icon
+              name="shield"
+              size="16px"
+              className="text-purple-600 dark:text-purple-400"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground">
+              {row.frameworkCategory?.frameworkCategoryName}
+            </span>
+            <span className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+              {row.frameworkCategory?.description}
+            </span>
+          </div>
         </div>
       ),
     },
@@ -173,13 +191,22 @@ function AccessApproved() {
       label: "Approved By",
       sortable: false,
       render: (value, row) => (
-        <div className="flex flex-col">
-          <span className="font-medium text-foreground text-sm">
-            {row.approval?.approvedBy?.name}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {row.approval?.approvedBy?.email}
-          </span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+            <Icon
+              name="user-check"
+              size="16px"
+              className="text-green-600 dark:text-green-400"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-medium text-foreground text-sm">
+              {row.approval?.approvedBy?.name}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {row.approval?.approvedBy?.email}
+            </span>
+          </div>
         </div>
       ),
     },

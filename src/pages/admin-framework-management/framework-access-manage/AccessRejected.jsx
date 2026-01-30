@@ -193,16 +193,6 @@ function AccessRejected() {
       ),
     },
     {
-      key: "adminRejectMessage",
-      label: "Reject Message",
-      sortable: false,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-          {value || "-"}
-        </span>
-      ),
-    },
-    {
       key: "rejection.rejectedBy.name",
       label: "Rejected By",
       sortable: false,

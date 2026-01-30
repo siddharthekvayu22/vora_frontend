@@ -195,6 +195,168 @@ export default function AccessViewModal({ accessRecord, onClose }) {
               </div>
             </div>
           </section>
+
+          {/* Request Information */}
+          <section className="bg-muted/50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+              <Icon
+                name="message-square"
+                size="18px"
+                className="text-primary"
+              />
+              Request Information
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  Requested By
+                </p>
+                <p className="text-sm capitalize text-foreground">
+                  {accessRecord.requestedBy || "-"}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  Request Date
+                </p>
+                <p className="text-sm text-foreground">
+                  {accessRecord.createdAt
+                    ? formatDate(accessRecord.createdAt)
+                    : "-"}
+                </p>
+              </div>
+
+              <div className="sm:col-span-2">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  Request Message
+                </p>
+                <div className="bg-background border border-border rounded-lg p-3">
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {accessRecord.requestMessage || "-"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Admin Action Information - Only show for rejected/approved/revoked records */}
+          {(accessRecord.status === "rejected" ||
+            accessRecord.status === "approved" ||
+            accessRecord.status === "revoked") && (
+            <section className="bg-muted/50 rounded-xl p-5">
+              <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+                <Icon name="user-check" size="18px" className="text-primary" />
+                Admin Action
+              </h3>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {accessRecord.rejection && (
+                  <>
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Rejected By
+                      </p>
+                      <p className="text-sm font-medium text-foreground">
+                        {accessRecord.rejection.rejectedBy?.name || "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Rejection Date
+                      </p>
+                      <p className="text-sm text-foreground">
+                        {accessRecord.rejection.rejectedAt
+                          ? formatDate(accessRecord.rejection.rejectedAt)
+                          : "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Admin Email
+                      </p>
+                      <p className="text-sm text-foreground">
+                        {accessRecord.rejection.rejectedBy?.email || "-"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Admin Role
+                      </p>
+                      <p className="text-sm capitalize text-foreground">
+                        {accessRecord.rejection.rejectedBy?.role || "-"}
+                      </p>
+                    </div>
+
+                    {accessRecord.adminRejectMessage && (
+                      <div className="sm:col-span-2">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">
+                          Rejection Message
+                        </p>
+                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                          <p className="text-sm text-red-800 dark:text-red-200 leading-relaxed">
+                            {accessRecord.adminRejectMessage}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* For approved/revoked records, show last updated info */}
+                {(accessRecord.status === "approved" ||
+                  accessRecord.status === "revoked") &&
+                  !accessRecord.rejection && (
+                    <div>
+                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                        Last Updated
+                      </p>
+                      <p className="text-sm text-foreground">
+                        {accessRecord.updatedAt
+                          ? formatDate(accessRecord.updatedAt)
+                          : "-"}
+                      </p>
+                    </div>
+                  )}
+              </div>
+            </section>
+          )}
+
+          {/* Timestamps */}
+          <section className="bg-muted/50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+              <Icon name="clock" size="18px" className="text-primary" />
+              Timeline
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  Created At
+                </p>
+                <p className="text-sm text-foreground">
+                  {accessRecord.createdAt
+                    ? formatDate(accessRecord.createdAt)
+                    : "-"}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  Last Updated
+                </p>
+                <p className="text-sm text-foreground">
+                  {accessRecord.updatedAt
+                    ? formatDate(accessRecord.updatedAt)
+                    : "-"}
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
 
         <div className="flex justify-end p-3 border-t border-border">

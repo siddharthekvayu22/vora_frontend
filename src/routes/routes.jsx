@@ -13,9 +13,9 @@ import Documents from "../pages/document-management/Documents";
 import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
-import FrameworkCategory from "../pages/admin-framework-management/framework-category-manage/FrameworkCategory";
-import FrameworkAccessRequests from "../pages/admin-framework-management/framework-access-requests-manage/FrameworkAccessRequests";
-import FrameworkAccess from "../pages/admin-framework-management/framework-access-manage/FrameworkAccess";
+import Category from "../pages/admin-framework-management/framework-category-manage/Category";
+import AccessRequests from "../pages/admin-framework-management/framework-access-requests-manage/AccessRequests";
+import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -111,7 +111,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Layout>
-              <FrameworkCategory />
+              <Category />
             </Layout>
           </ProtectedRoute>
         }
@@ -121,7 +121,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Layout>
-              <FrameworkAccess />
+              <AccessApproved />
             </Layout>
           </ProtectedRoute>
         }
@@ -131,7 +131,7 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Layout>
-              <FrameworkAccessRequests />
+              <AccessRequests />
             </Layout>
           </ProtectedRoute>
         }

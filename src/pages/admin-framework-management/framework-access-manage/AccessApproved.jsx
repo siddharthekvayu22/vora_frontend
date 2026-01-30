@@ -3,15 +3,15 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getAdminFrameworkAccessRequests } from "../../../services/adminService";
+import { getAdminFrameworkAccess } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 
-function FrameworkAccessRequests() {
-  const [accessRequests, setAccessRequests] = useState([]);
+function AccessApproved() {
+  const [accessApproved, setAccessApproved] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState("No access requests found");
+  const [emptyMessage, setEmptyMessage] = useState("No approved access found");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -40,11 +40,11 @@ function FrameworkAccessRequests() {
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
-  /* ---------------- FETCH ACCESS REQUESTS ---------------- */
-  const fetchAccessRequests = useCallback(async () => {
+  /* ---------------- FETCH ACCESS APPROVED ---------------- */
+  const fetchAccessApproved = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getAdminFrameworkAccessRequests({
+      const res = await getAdminFrameworkAccess({
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
@@ -52,7 +52,7 @@ function FrameworkAccessRequests() {
         sortOrder: sortConfig.sortOrder,
       });
 
-      setAccessRequests(res.data || []);
+      setAccessApproved(res.data || []);
 
       // Set the message from backend response, especially for empty results
       if (res.message && res.data?.length === 0) {
@@ -61,9 +61,9 @@ function FrameworkAccessRequests() {
         searchTerm &&
         (res.users?.length === 0 || res.data?.length === 0)
       ) {
-        setEmptyMessage(`No access requests for "${searchTerm}"`);
+        setEmptyMessage(`No approved access for "${searchTerm}"`);
       } else {
-        setEmptyMessage("No access requests");
+        setEmptyMessage("No approved access");
       }
 
       setPagination((p) => ({
@@ -74,17 +74,17 @@ function FrameworkAccessRequests() {
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
     } catch (err) {
-      toast.error(err.message || "Failed to load access requests");
-      setAccessRequests([]);
-      setEmptyMessage("Failed to load access requests");
+      toast.error(err.message || "Failed to load approved access");
+      setAccessApproved([]);
+      setEmptyMessage("Failed to load approved access");
     } finally {
       setLoading(false);
     }
   }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
 
   useEffect(() => {
-    fetchAccessRequests();
-  }, [fetchAccessRequests]);
+    fetchAccessApproved();
+  }, [fetchAccessApproved]);
 
   /* ---------------- HANDLERS ---------------- */
   const handlePageChange = (page) => {
@@ -121,16 +121,16 @@ function FrameworkAccessRequests() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
-        className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Approve Request"
+        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+        title=""
       >
-        <Icon name="check" size="16px" />
+        <Icon name="edit" size="16px" />
       </button>
       <button
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Reject Request"
+        title=""
       >
-        <Icon name="x" size="16px" />
+        <Icon name="trash" size="16px" />
       </button>
     </div>
   );
@@ -143,21 +143,21 @@ function FrameworkAccessRequests() {
         <div className="space-y-2">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="clock" size="20px" className="text-primary" />
+              <Icon name="users" size="20px" className="text-primary" />
             </div>
             <div className="">
               <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Access Requests
+                Access Approved
               </h1>
               <p className="text-muted-foreground text-xs">
-                Manage access requests
+                Manage approved access
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
             <span className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Pending Requests:{" "}
+              Total Approved Framework Access:{" "}
               <span className="font-medium text-foreground">
                 {pagination.totalItems}
               </span>
@@ -171,23 +171,28 @@ function FrameworkAccessRequests() {
             </span>
           </div>
         </div>
+
+        <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
+          <Icon name="plus" size="18px" />
+          Give Framework Access
+        </button>
       </div>
 
       {/* Data Table */}
       <DataTable
         columns={columns}
-        data={accessRequests}
+        data={accessApproved}
         loading={loading}
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        searchPlaceholder="Search access requests..."
+        searchPlaceholder="Search approved access..."
         emptyMessage={emptyMessage}
       />
     </div>
   );
 }
 
-export default FrameworkAccessRequests;
+export default AccessApproved;

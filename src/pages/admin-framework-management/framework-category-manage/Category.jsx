@@ -3,15 +3,17 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getAdminFrameworkAccess } from "../../../services/adminService";
+import { getAdminFrameworkCategory } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 
-function FrameworkAccess() {
-  const [accessApproved, setAccessApproved] = useState([]);
+function Category() {
+  const [frameworkCategory, setFrameworkCategory] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState("No approved access found");
+  const [emptyMessage, setEmptyMessage] = useState(
+    "No framework category found",
+  );
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -40,11 +42,11 @@ function FrameworkAccess() {
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
-  /* ---------------- FETCH ACCESS APPROVED ---------------- */
-  const fetchAccessApproved = useCallback(async () => {
+  /* ---------------- FETCH CATEGORY ---------------- */
+  const fetchFrameworkCategory = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getAdminFrameworkAccess({
+      const res = await getAdminFrameworkCategory({
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
@@ -52,7 +54,7 @@ function FrameworkAccess() {
         sortOrder: sortConfig.sortOrder,
       });
 
-      setAccessApproved(res.data || []);
+      setFrameworkCategory(res.data || []);
 
       // Set the message from backend response, especially for empty results
       if (res.message && res.data?.length === 0) {
@@ -61,9 +63,9 @@ function FrameworkAccess() {
         searchTerm &&
         (res.users?.length === 0 || res.data?.length === 0)
       ) {
-        setEmptyMessage(`No approved access for "${searchTerm}"`);
+        setEmptyMessage(`No framework category found for "${searchTerm}"`);
       } else {
-        setEmptyMessage("No approved access");
+        setEmptyMessage("No framework category");
       }
 
       setPagination((p) => ({
@@ -74,17 +76,17 @@ function FrameworkAccess() {
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
     } catch (err) {
-      toast.error(err.message || "Failed to load approved access");
-      setAccessApproved([]);
-      setEmptyMessage("Failed to load approved access");
+      toast.error(err.message || "Failed to load framework category");
+      setFrameworkCategory([]);
+      setEmptyMessage("Failed to load framework category");
     } finally {
       setLoading(false);
     }
   }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
 
   useEffect(() => {
-    fetchAccessApproved();
-  }, [fetchAccessApproved]);
+    fetchFrameworkCategory();
+  }, [fetchFrameworkCategory]);
 
   /* ---------------- HANDLERS ---------------- */
   const handlePageChange = (page) => {
@@ -147,17 +149,17 @@ function FrameworkAccess() {
             </div>
             <div className="">
               <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Access Approved
+                Framework Category
               </h1>
               <p className="text-muted-foreground text-xs">
-                Manage approved access
+                Manage framework category
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
             <span className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Approved Framework Access:{" "}
+              Total Framework Category:{" "}
               <span className="font-medium text-foreground">
                 {pagination.totalItems}
               </span>
@@ -174,25 +176,25 @@ function FrameworkAccess() {
 
         <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
           <Icon name="plus" size="18px" />
-          Give Framework Access
+          Add New Framework Category
         </button>
       </div>
 
       {/* Data Table */}
       <DataTable
         columns={columns}
-        data={accessApproved}
+        data={frameworkCategory}
         loading={loading}
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        searchPlaceholder="Search approved access..."
+        searchPlaceholder="Search category..."
         emptyMessage={emptyMessage}
       />
     </div>
   );
 }
 
-export default FrameworkAccess;
+export default Category;

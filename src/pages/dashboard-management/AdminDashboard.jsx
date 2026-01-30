@@ -64,13 +64,17 @@ export default function AdminDashboard() {
   const { stats, charts, recentCreatedUsers } = dashboardData;
 
   // Prepare metrics data
+  const totalUsers =
+    (stats.totalActiveUsers || 0) + (stats.totalInactiveUsers || 0);
+
   const metrics = [
     {
       label: "TOTAL USERS",
-      value: `${stats.totalActiveUsers + stats.totalInactiveUsers || 0}`,
-      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.company} Company`,
+      value: totalUsers,
+      trend: `${stats.totalActiveUsers || 0} Active, ${stats.totalInactiveUsers || 0} Inactive`,
       trendColor: "text-blue-500",
       icon: "👥",
+      subtitle: `${stats.usersByRole.admin || 0} Admin, ${stats.usersByRole.expert || 0} Expert, ${stats.usersByRole.company || 0} Company`,
     },
     {
       label: "TOTAL OFFICIAL FRAMEWORKS",

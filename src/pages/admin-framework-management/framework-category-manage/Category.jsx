@@ -13,6 +13,7 @@ import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import CategoryModal from "./components/CategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoryModal";
+import { formatDate } from "../../../utils/dateFormatter";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -176,7 +177,62 @@ function Category() {
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
-  const columns = [];
+  const columns = [
+    {
+      key: "code",
+      label: "Code",
+      sortable: true,
+      render: (value) => (
+        <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
+          {value}
+        </span>
+      ),
+    },
+    {
+      key: "frameworkCategoryName",
+      label: "Category Name",
+      sortable: true,
+      render: (value) => (
+        <span className="font-medium text-foreground">{value}</span>
+      ),
+    },
+    {
+      key: "description",
+      label: "Description",
+      sortable: false,
+      render: (value) => (
+        <span className="text-muted-foreground text-sm line-clamp-2 max-w-xs">
+          {value}
+        </span>
+      ),
+    },
+    {
+      key: "isActive",
+      label: "Status",
+      sortable: true,
+      render: (value) => (
+        <span
+          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            value
+              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+          }`}
+        >
+          {value ? "Active" : "Inactive"}
+        </span>
+      ),
+    },
+    {
+      key: "createdAt",
+      label: "Created At",
+      sortable: true,
+      render: (value) => (
+        <span className="text-sm text-muted-foreground">
+          {formatDate(value)}
+        </span>
+      ),
+    },
+  ];
 
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">

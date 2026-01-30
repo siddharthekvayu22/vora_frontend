@@ -126,7 +126,7 @@ export default function RevokeAccessModal({
             <textarea
               id="admin-notes"
               className="form-input"
-              rows={4}
+              rows={2}
               placeholder="Please provide a reason for revoking access..."
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}

@@ -2,15 +2,16 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import { getAdminFrameworkAccess } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 
 function FrameworkAccess() {
-  const [frameworkAccess, setFrameworkAccess] = useState([]);
+  const [accessApproved, setAccessApproved] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState("No framework access found");
+  const [emptyMessage, setEmptyMessage] = useState("No approved access found");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -39,8 +40,8 @@ function FrameworkAccess() {
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
-  /* ---------------- FETCH USERS ---------------- */
-  const fetchFrameworkAccess = useCallback(async () => {
+  /* ---------------- FETCH ACCESS APPROVED ---------------- */
+  const fetchAccessApproved = useCallback(async () => {
     setLoading(true);
     try {
       const res = await getAdminFrameworkAccess({
@@ -51,7 +52,7 @@ function FrameworkAccess() {
         sortOrder: sortConfig.sortOrder,
       });
 
-      setFrameworkAccess(res.data || []);
+      setAccessApproved(res.data || []);
 
       // Set the message from backend response, especially for empty results
       if (res.message && res.data?.length === 0) {
@@ -60,9 +61,9 @@ function FrameworkAccess() {
         searchTerm &&
         (res.users?.length === 0 || res.data?.length === 0)
       ) {
-        setEmptyMessage(`No framework access for "${searchTerm}"`);
+        setEmptyMessage(`No approved access for "${searchTerm}"`);
       } else {
-        setEmptyMessage("No framework access");
+        setEmptyMessage("No approved access");
       }
 
       setPagination((p) => ({
@@ -73,17 +74,17 @@ function FrameworkAccess() {
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
     } catch (err) {
-      toast.error(err.message || "Failed to load framework access");
-      setUsers([]);
-      setEmptyMessage("Failed to load framework access");
+      toast.error(err.message || "Failed to load approved access");
+      setAccessApproved([]);
+      setEmptyMessage("Failed to load approved access");
     } finally {
       setLoading(false);
     }
   }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
 
   useEffect(() => {
-    fetchFrameworkAccess();
-  }, [fetchFrameworkAccess]);
+    fetchAccessApproved();
+  }, [fetchAccessApproved]);
 
   /* ---------------- HANDLERS ---------------- */
   const handlePageChange = (page) => {
@@ -146,10 +147,10 @@ function FrameworkAccess() {
             </div>
             <div className="">
               <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Framework Access Management
+                Access Approved
               </h1>
               <p className="text-muted-foreground text-xs">
-                Manage approved framework access and their permissions
+                Manage approved access
               </p>
             </div>
           </div>
@@ -180,14 +181,14 @@ function FrameworkAccess() {
       {/* Data Table */}
       <DataTable
         columns={columns}
-        data={frameworkAccess}
+        data={accessApproved}
         loading={loading}
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        searchPlaceholder="Search framework approved access..."
+        searchPlaceholder="Search approved access..."
         emptyMessage={emptyMessage}
       />
     </div>

@@ -20,8 +20,16 @@ export function getAdminFrameworkAccess() {
   return apiRequest("/admin/framework-access/access/approved", true);
 }
 
+/**
+ * Get admin framework access requests
+ */
+export function getAdminFrameworkAccessRequests() {
+  return apiRequest("/admin/framework-access/access/requests", true);
+}
+
 export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
+  getAdminFrameworkAccessRequests,
 };

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import { getAdminFrameworkCategory } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
@@ -41,7 +42,7 @@ function FrameworkCategory() {
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
-  /* ---------------- FETCH USERS ---------------- */
+  /* ---------------- FETCH CATEGORY ---------------- */
   const fetchFrameworkCategory = useCallback(async () => {
     setLoading(true);
     try {
@@ -76,7 +77,7 @@ function FrameworkCategory() {
       }));
     } catch (err) {
       toast.error(err.message || "Failed to load framework category");
-      setUsers([]);
+      setFrameworkCategory([]);
       setEmptyMessage("Failed to load framework category");
     } finally {
       setLoading(false);
@@ -148,10 +149,10 @@ function FrameworkCategory() {
             </div>
             <div className="">
               <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Framework Category Management
+                Framework Category
               </h1>
               <p className="text-muted-foreground text-xs">
-                Manage framework category and their permissions
+                Manage framework category
               </p>
             </div>
           </div>
@@ -189,7 +190,7 @@ function FrameworkCategory() {
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        searchPlaceholder="Search framework category..."
+        searchPlaceholder="Search category..."
         emptyMessage={emptyMessage}
       />
     </div>

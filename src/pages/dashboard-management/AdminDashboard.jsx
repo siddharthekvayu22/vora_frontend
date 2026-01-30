@@ -66,31 +66,31 @@ export default function AdminDashboard() {
   // Prepare metrics data
   const metrics = [
     {
-      label: "TOTAL ACTIVE USERS",
-      value: stats.totalUsers || 0,
-      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.company} User`,
+      label: "TOTAL USERS",
+      value: `${stats.totalActiveUsers + stats.totalInactiveUsers || 0}`,
+      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.company} Company`,
       trendColor: "text-blue-500",
       icon: "👥",
     },
     {
-      label: "TOTAL EXPERT FRAMEWORKS",
-      value: stats.totalExpertFrameworks || 0,
-      trend: "Expert frameworks available",
+      label: "TOTAL OFFICIAL FRAMEWORKS",
+      value: stats.totalOfficialFrameworks || 0,
+      trend: "Official frameworks available",
       trendColor: "text-purple-500",
       icon: "🏗",
     },
     {
-      label: "TOTAL USER FRAMEWORKS",
-      value: stats.totalUserFrameworks || 0,
-      trend: "User uploaded frameworks",
+      label: "TOTAL COMPANY FRAMEWORKS",
+      value: stats.totalCompanyFrameworks || 0,
+      trend: "Comapny uploaded frameworks",
       trendColor: "text-green-500",
       icon: "📋",
     },
 
     {
-      label: "TOTAL USER DOCUMENTS",
-      value: stats.totalDocuments || 0,
-      trend: "User uploaded Documents",
+      label: "TOTAL COMPANY DOCUMENTS",
+      value: stats.totalCompanyDocuments || 0,
+      trend: "Company uploaded Documents",
       trendColor: "text-orange-500",
       icon: "📄",
     },

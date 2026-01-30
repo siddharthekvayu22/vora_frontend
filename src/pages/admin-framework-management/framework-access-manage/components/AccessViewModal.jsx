@@ -53,120 +53,136 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           </div>
         </div>
 
-        <div className="p-6 space-y-6">
-          {/* Record Metadata */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Icon name="info" size="20px" className="text-primary" />
+        <div className="p-6 space-y-8">
+          {/* Record Information */}
+          <section className="bg-muted/50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+              <Icon name="info" size="18px" className="text-primary" />
               Record Information
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Record ID
-                </label>
-                <p className="text-foreground font-mono text-sm">
+                </p>
+                <p className="text-sm font-mono text-muted-foreground break-all">
                   {accessRecord.id}
                 </p>
               </div>
-              <div className="space-x-2">
-                <label className="text-sm font-medium text-muted-foreground">
+
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Current Status
-                </label>
+                </p>
                 <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusStyle(accessRecord.status)}`}
+                  className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${getStatusStyle(
+                    accessRecord.status,
+                  )}`}
                 >
                   {accessRecord.status?.charAt(0).toUpperCase() +
                     accessRecord.status?.slice(1)}
                 </span>
               </div>
             </div>
-          </div>
+          </section>
+
           {/* Expert Information */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Icon name="user" size="20px" className="text-primary" />
+          <section className="bg-muted/50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+              <Icon name="user" size="18px" className="text-primary" />
               Expert Information
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Name
-                </label>
-                <p className="text-foreground font-medium">
+                </p>
+                <p className="text-sm font-medium text-foreground">
                   {accessRecord.expert?.name}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Email
-                </label>
-                <p className="text-foreground">{accessRecord.expert?.email}</p>
+                </p>
+                <p className="text-sm text-foreground">
+                  {accessRecord.expert?.email}
+                </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Role
-                </label>
-                <p className="text-foreground capitalize">
+                </p>
+                <p className="text-sm capitalize text-foreground">
                   {accessRecord.expert?.role}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Expert ID
-                </label>
-                <p className="text-foreground font-mono text-sm">
+                </p>
+                <p className="text-sm font-mono text-muted-foreground break-all">
                   {accessRecord.expert?.id}
                 </p>
               </div>
             </div>
-          </div>
+          </section>
 
           {/* Framework Information */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Icon name="shield" size="20px" className="text-primary" />
+          <section className="bg-muted/50 rounded-xl p-5">
+            <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
+              <Icon name="shield" size="18px" className="text-primary" />
               Framework Information
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Framework Name
-                </label>
-                <p className="text-foreground font-medium">
+                </p>
+                <p className="text-sm font-medium text-foreground">
                   {accessRecord.frameworkCategory?.frameworkCategoryName}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Framework Code
-                </label>
-                <p className="text-foreground font-mono bg-muted px-2 py-1 rounded text-sm inline-block">
+                </p>
+                <p className="text-sm font-mono text-foreground bg-muted px-2 py-1 rounded inline-block">
                   {accessRecord.frameworkCategory?.frameworkCode}
                 </p>
               </div>
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-muted-foreground">
+
+              <div className="sm:col-span-2">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Description
-                </label>
-                <p className="text-foreground">
-                  {accessRecord.frameworkCategory?.description}
+                </p>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {accessRecord.frameworkCategory?.description || "-"}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Framework ID
-                </label>
-                <p className="text-foreground font-mono text-sm">
+                </p>
+                <p className="text-sm font-mono text-muted-foreground break-all">
                   {accessRecord.frameworkCategory?.frameworkId}
                 </p>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
                   Status
-                </label>
+                </p>
                 <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
                     accessRecord.frameworkCategory?.isActive
                       ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                       : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
@@ -178,200 +194,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                 </span>
               </div>
             </div>
-          </div>
-
-          {/* Request Information */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Icon
-                name="message-square"
-                size="20px"
-                className="text-primary"
-              />
-              Request Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Request Message
-                </label>
-                <p className="text-foreground">
-                  {accessRecord.requestMessage || "-"}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Requested By
-                </label>
-                <p className="text-foreground capitalize">
-                  {accessRecord.requestedBy}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Created At
-                </label>
-                <p className="text-foreground">
-                  {formatDate(accessRecord.createdAt)}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Last Updated
-                </label>
-                <p className="text-foreground">
-                  {formatDate(accessRecord.updatedAt)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Information - Show based on status */}
-          {(accessRecord.approval ||
-            accessRecord.rejection ||
-            accessRecord.revocation) && (
-            <div className="bg-muted/50 rounded-xl p-4">
-              <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Icon name="activity" size="20px" className="text-primary" />
-                Action Information
-              </h3>
-
-              {/* Approval Information */}
-              {accessRecord.approval && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon
-                      name="check-circle"
-                      size="16px"
-                      className="text-green-600"
-                    />
-                    <span className="font-medium text-green-600">Approved</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Approved By
-                      </label>
-                      <p className="text-foreground font-medium">
-                        {accessRecord.approval.approvedBy?.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {accessRecord.approval.approvedBy?.email}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Approved At
-                      </label>
-                      <p className="text-foreground">
-                        {formatDate(accessRecord.approval.approvedAt)}
-                      </p>
-                    </div>
-                  </div>
-                  {accessRecord.adminApproveMessage && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Admin Approve Message
-                      </label>
-                      <p className="text-foreground bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mt-1">
-                        {accessRecord.adminApproveMessage}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Rejection Information */}
-              {accessRecord.rejection && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon
-                      name="x-circle"
-                      size="16px"
-                      className="text-red-600"
-                    />
-                    <span className="font-medium text-red-600">Rejected</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Rejected By
-                      </label>
-                      <p className="text-foreground font-medium">
-                        {accessRecord.rejection.rejectedBy?.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {accessRecord.rejection.rejectedBy?.email}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Rejected At
-                      </label>
-                      <p className="text-foreground">
-                        {formatDate(accessRecord.rejection.rejectedAt)}
-                      </p>
-                    </div>
-                  </div>
-                  {accessRecord.adminRejectMessage && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Admin Reject Message
-                      </label>
-                      <p className="text-foreground bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mt-1">
-                        {accessRecord.adminRejectMessage}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Revocation Information */}
-              {accessRecord.revocation && (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon
-                      name="user-minus"
-                      size="16px"
-                      className="text-orange-600"
-                    />
-                    <span className="font-medium text-orange-600">Revoked</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Revoked By
-                      </label>
-                      <p className="text-foreground font-medium">
-                        {accessRecord.revocation.revokedBy?.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {accessRecord.revocation.revokedBy?.email}
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Revoked At
-                      </label>
-                      <p className="text-foreground">
-                        {formatDate(accessRecord.revocation.revokedAt)}
-                      </p>
-                    </div>
-                  </div>
-                  {accessRecord.adminRevokeMessage && (
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">
-                        Admin Revoke Message
-                      </label>
-                      <p className="text-foreground bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg mt-1">
-                        {accessRecord.adminRevokeMessage}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          </section>
         </div>
 
         <div className="flex justify-end p-3 border-t border-border">

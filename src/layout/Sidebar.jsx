@@ -314,7 +314,7 @@ function Sidebar() {
 
                 {/* Submenu */}
                 {item.children && activeMenu === item.id && (
-                  <div className="ml-6 mt-2 flex flex-col gap-1 border-l-2 border-primary/40 pl-4">
+                  <div className="ml-6 mt-2 flex flex-col gap-1 border-l-2 border-primary/40">
                     {item.children.map((sub) => (
                       <Link
                         key={sub.id}

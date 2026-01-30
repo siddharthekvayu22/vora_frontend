@@ -14,6 +14,7 @@ import Frameworks from "../pages/framework-management/Frameworks";
 import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
 import FrameworkCategory from "../pages/admin-framework-management/framework-category-manage/FrameworkCategory";
+import FrameworkAccessRequests from "../pages/admin-framework-management/framework-access-requests-manage/FrameworkAccessRequests";
 import FrameworkAccess from "../pages/admin-framework-management/framework-access-manage/FrameworkAccess";
 
 function AppRoutes() {
@@ -116,11 +117,21 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/framework-access"
+        path="/framework-access/approved"
         element={
           <ProtectedRoute>
             <Layout>
               <FrameworkAccess />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-access/requests"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <FrameworkAccessRequests />
             </Layout>
           </ProtectedRoute>
         }

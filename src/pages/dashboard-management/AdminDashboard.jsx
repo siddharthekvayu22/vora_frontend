@@ -113,13 +113,6 @@ export default function AdminDashboard() {
       path: "/",
     },
     {
-      title: "Document Management",
-      desc: "Manage system documents",
-      icon: "📄",
-      color: "bg-orange-500/20 text-orange-400",
-      path: "/",
-    },
-    {
       title: "System Settings",
       desc: "Configure system settings",
       icon: "⚙",

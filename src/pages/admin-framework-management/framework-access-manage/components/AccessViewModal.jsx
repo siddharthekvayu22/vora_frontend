@@ -31,7 +31,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[700px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        className="bg-background rounded-2xl shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
@@ -54,16 +54,34 @@ export default function AccessViewModal({ accessRecord, onClose }) {
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Status Badge */}
-          <div className="flex justify-center">
-            <span
-              className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${getStatusStyle(accessRecord.status)}`}
-            >
-              {accessRecord.status?.charAt(0).toUpperCase() +
-                accessRecord.status?.slice(1)}
-            </span>
+          {/* Record Metadata */}
+          <div className="bg-muted/50 rounded-xl p-4">
+            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
+              <Icon name="info" size="20px" className="text-primary" />
+              Record Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-muted-foreground">
+                  Record ID
+                </label>
+                <p className="text-foreground font-mono text-sm">
+                  {accessRecord.id}
+                </p>
+              </div>
+              <div className="space-x-2">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Current Status
+                </label>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusStyle(accessRecord.status)}`}
+                >
+                  {accessRecord.status?.charAt(0).toUpperCase() +
+                    accessRecord.status?.slice(1)}
+                </span>
+              </div>
+            </div>
           </div>
-
           {/* Expert Information */}
           <div className="bg-muted/50 rounded-xl p-4">
             <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -206,64 +224,6 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                 </p>
               </div>
             </div>
-
-            {/* Admin Messages */}
-            <div className="mt-4 space-y-3">
-              {accessRecord.adminAssignMessage && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Admin Assign Message
-                  </label>
-                  <p className="text-foreground bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg mt-1">
-                    {accessRecord.adminAssignMessage}
-                  </p>
-                </div>
-              )}
-
-              {accessRecord.adminApproveMessage && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Admin Approve Message
-                  </label>
-                  <p className="text-foreground bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mt-1">
-                    {accessRecord.adminApproveMessage}
-                  </p>
-                </div>
-              )}
-
-              {accessRecord.adminRejectMessage && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Admin Reject Message
-                  </label>
-                  <p className="text-foreground bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mt-1">
-                    {accessRecord.adminRejectMessage}
-                  </p>
-                </div>
-              )}
-
-              {accessRecord.adminRevokeMessage && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Admin Revoke Message
-                  </label>
-                  <p className="text-foreground bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg mt-1">
-                    {accessRecord.adminRevokeMessage}
-                  </p>
-                </div>
-              )}
-
-              {accessRecord.adminNotes && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Admin Notes
-                  </label>
-                  <p className="text-foreground bg-muted p-3 rounded-lg mt-1">
-                    {accessRecord.adminNotes}
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Action Information - Show based on status */}
@@ -308,6 +268,16 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                       </p>
                     </div>
                   </div>
+                  {accessRecord.adminApproveMessage && (
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground">
+                        Admin Approve Message
+                      </label>
+                      <p className="text-foreground bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mt-1">
+                        {accessRecord.adminApproveMessage}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -343,13 +313,13 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                       </p>
                     </div>
                   </div>
-                  {accessRecord.rejection.rejectionReason && (
+                  {accessRecord.adminRejectMessage && (
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
-                        Rejection Reason
+                        Admin Reject Message
                       </label>
                       <p className="text-foreground bg-red-50 dark:bg-red-900/20 p-3 rounded-lg mt-1">
-                        {accessRecord.rejection.rejectionReason}
+                        {accessRecord.adminRejectMessage}
                       </p>
                     </div>
                   )}
@@ -388,13 +358,13 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                       </p>
                     </div>
                   </div>
-                  {accessRecord.revocation.revocationReason && (
+                  {accessRecord.adminRevokeMessage && (
                     <div>
                       <label className="text-sm font-medium text-muted-foreground">
-                        Revocation Reason
+                        Admin Revoke Message
                       </label>
                       <p className="text-foreground bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg mt-1">
-                        {accessRecord.revocation.revocationReason}
+                        {accessRecord.adminRevokeMessage}
                       </p>
                     </div>
                   )}
@@ -402,38 +372,9 @@ export default function AccessViewModal({ accessRecord, onClose }) {
               )}
             </div>
           )}
-
-          {/* Record Metadata */}
-          <div className="bg-muted/50 rounded-xl p-4">
-            <h3 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-              <Icon name="info" size="20px" className="text-primary" />
-              Record Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Record ID
-                </label>
-                <p className="text-foreground font-mono text-sm">
-                  {accessRecord.id}
-                </p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Current Status
-                </label>
-                <span
-                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusStyle(accessRecord.status)}`}
-                >
-                  {accessRecord.status?.charAt(0).toUpperCase() +
-                    accessRecord.status?.slice(1)}
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="flex justify-end p-6 border-t border-border">
+        <div className="flex justify-end p-3 border-t border-border">
           <button
             type="button"
             className="px-6 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"

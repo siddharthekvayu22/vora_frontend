@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       subtitle: [
         {
           text: `${stats.usersByRole.admin || 0} Admin`,
-          color: "text-red-600 dark:text-red-400",
+          color: "text-pink-600 dark:text-pink-400",
         },
         {
           text: `${stats.usersByRole.expert || 0} Expert`,
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
         },
         {
           text: `${stats.usersByRole.company || 0} Company`,
-          color: "text-green-600 dark:text-green-400",
+          color: "text-yellow-600 dark:text-yellow-400",
         },
       ],
     },
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
       value: stats.totalOfficialFrameworks || 0,
       trend: "Official frameworks available",
       trendColor: "text-purple-500",
-      icon: "🏗",
+      icon: "📋",
     },
     {
       label: "TOTAL COMPANY FRAMEWORKS",

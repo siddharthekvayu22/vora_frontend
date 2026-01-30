@@ -273,7 +273,7 @@ function AccessApproved() {
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="Revoke Access"
       >
-        <Icon name="x-circle" size="16px" />
+        <Icon name="trash" size="16px" />
       </button>
     </div>
   );

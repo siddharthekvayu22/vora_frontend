@@ -95,11 +95,11 @@ function Sidebar() {
         path: "/dashboard",
       },
       {
-        id: "frameworks",
+        id: "official-framework",
         title: "Frameworks",
-        description: "Compliance frameworks",
+        description: "Official frameworks",
         icon: "framework",
-        path: "/frameworks",
+        path: "/official-frameworks",
       },
       {
         id: "reports",

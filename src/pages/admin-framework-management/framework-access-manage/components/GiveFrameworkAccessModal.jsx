@@ -48,6 +48,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     hasNextPage: false,
   });
   const [usersSearchTerm, setUsersSearchTerm] = useState("");
+  const [usersRoleFilter, setUsersRoleFilter] = useState("expert"); // Default to expert role
   const [frameworksSearchTerm, setFrameworksSearchTerm] = useState("");
 
   // Debounced search terms to reduce API calls
@@ -70,13 +71,20 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
     try {
-      const res = await getAllUsers({
+      const params = {
         page: usersPagination.currentPage,
         limit: usersPagination.limit,
         search: debouncedUsersSearchTerm,
         sortBy: "createdAt",
         sortOrder: "desc",
-      });
+      };
+
+      // Add role filter if selected
+      if (usersRoleFilter) {
+        params.role = usersRoleFilter;
+      }
+
+      const res = await getAllUsers(params);
 
       setUsers(res.data || []);
       setUsersPagination((p) => ({
@@ -97,6 +105,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     usersPagination.currentPage,
     usersPagination.limit,
     debouncedUsersSearchTerm,
+    usersRoleFilter,
   ]);
 
   /* ---------------- FETCH FRAMEWORK CATEGORIES ---------------- */
@@ -178,6 +187,11 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     setUsersPagination((p) => ({ ...p, currentPage: 1 }));
   };
 
+  const handleUserRoleFilter = (role) => {
+    setUsersRoleFilter(role);
+    setUsersPagination((p) => ({ ...p, currentPage: 1 }));
+  };
+
   const handleFrameworkSearch = (term) => {
     setFrameworksSearchTerm(term);
     setFrameworksPagination((p) => ({ ...p, currentPage: 1 }));
@@ -218,6 +232,32 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
   };
 
   /* ---------------- RENDER HELPERS ---------------- */
+  const getRoleStyle = (role) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      case "expert":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+      case "company":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
+    }
+  };
+
+  const getUserAvatarStyle = (role) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
+      case "expert":
+        return "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400";
+      case "company":
+        return "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400";
+      default:
+        return "bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400";
+    }
+  };
+
   const renderUserRow = (user) => (
     <tr
       key={user.id}
@@ -230,12 +270,10 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     >
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <Icon
-              name="user"
-              size="14px"
-              className="text-blue-600 dark:text-blue-400"
-            />
+          <div
+            className={`w-6 h-6 rounded-full flex items-center justify-center ${getUserAvatarStyle(user.role)}`}
+          >
+            <Icon name="user" size="14px" />
           </div>
           <div className="flex flex-col">
             <span className="font-medium text-foreground text-sm">
@@ -246,7 +284,9 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         </div>
       </td>
       <td className="px-3 py-2">
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+        <span
+          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleStyle(user.role)}`}
+        >
           {user.role}
         </span>
       </td>
@@ -364,6 +404,13 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                     className="text-blue-600 dark:text-blue-400"
                   />
                   Select User
+                  {usersRoleFilter && (
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${getRoleStyle(usersRoleFilter)}`}
+                    >
+                      {usersRoleFilter}
+                    </span>
+                  )}
                 </h3>
                 {selectedUser && (
                   <span className="text-xs text-green-800 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
@@ -373,21 +420,43 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
               </div>
 
               <div className="border border-border rounded-xl overflow-hidden bg-background">
-                {/* Search */}
+                {/* Search and Filter */}
                 <div className="p-3 border-b border-border bg-muted/30">
-                  <div className="relative">
-                    <Icon
-                      name="search"
-                      size="14px"
-                      className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Search users..."
-                      value={usersSearchTerm}
-                      onChange={(e) => handleUserSearch(e.target.value)}
-                      className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
-                    />
+                  <div className="flex gap-2">
+                    {/* Search Input */}
+                    <div className="relative flex-1">
+                      <Icon
+                        name="search"
+                        size="14px"
+                        className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Search users..."
+                        value={usersSearchTerm}
+                        onChange={(e) => handleUserSearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                      />
+                    </div>
+
+                    {/* Role Filter */}
+                    <div className="relative">
+                      <select
+                        value={usersRoleFilter}
+                        onChange={(e) => handleUserRoleFilter(e.target.value)}
+                        className="pl-3 pr-8 py-1.5 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm min-w-[100px] appearance-none cursor-pointer"
+                      >
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="expert">Expert</option>
+                        <option value="company">Company</option>
+                      </select>
+                      <Icon
+                        name="chevron-down"
+                        size="14px"
+                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
+                      />
+                    </div>
                   </div>
                 </div>
 

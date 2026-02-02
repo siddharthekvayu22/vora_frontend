@@ -132,7 +132,7 @@ function AccessApproved() {
   };
 
   /* ---------------- REVOKE ACCESS ---------------- */
-  const handleRevokeAccess = async (adminNotes) => {
+  const handleRevokeAccess = async () => {
     try {
       const accessRecord = revokeModalState.accessRecord;
       const expertId = accessRecord?.expert?.id;
@@ -144,11 +144,7 @@ function AccessApproved() {
         return;
       }
 
-      const response = await revokeFrameworkAccess(
-        expertId,
-        frameworkId,
-        adminNotes,
-      );
+      const response = await revokeFrameworkAccess(expertId, frameworkId);
       toast.success(
         response.message || "Framework access revoked successfully",
       );

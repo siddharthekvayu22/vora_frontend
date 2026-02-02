@@ -139,7 +139,7 @@ function AccessRequests() {
   };
 
   /* ---------------- APPROVE/REJECT ACCESS ---------------- */
-  const handleApproveAccess = async (adminApproveMessage) => {
+  const handleApproveAccess = async () => {
     try {
       const accessRecord = approveModalState.accessRecord;
       const requestId = accessRecord?.id;
@@ -150,10 +150,7 @@ function AccessRequests() {
         return;
       }
 
-      const response = await approveFrameworkAccessRequest(
-        requestId,
-        adminApproveMessage,
-      );
+      const response = await approveFrameworkAccessRequest(requestId);
       toast.success(
         response.message || "Framework access approved successfully",
       );
@@ -165,7 +162,7 @@ function AccessRequests() {
     }
   };
 
-  const handleRejectAccess = async (adminRejectMessage) => {
+  const handleRejectAccess = async () => {
     try {
       const accessRecord = rejectModalState.accessRecord;
       const requestId = accessRecord?.id;
@@ -176,10 +173,7 @@ function AccessRequests() {
         return;
       }
 
-      const response = await rejectFrameworkAccessRequest(
-        requestId,
-        adminRejectMessage,
-      );
+      const response = await rejectFrameworkAccessRequest(requestId);
       toast.success(
         response.message || "Framework access rejected successfully",
       );

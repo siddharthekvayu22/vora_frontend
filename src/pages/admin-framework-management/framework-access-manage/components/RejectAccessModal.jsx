@@ -15,17 +15,11 @@ export default function RejectAccessModal({
   onCancel,
 }) {
   const [rejecting, setRejecting] = useState(false);
-  const [adminRejectMessage, setAdminRejectMessage] = useState("");
 
   const handleConfirm = async () => {
-    if (!adminRejectMessage.trim()) {
-      toast.error("Please provide a rejection message");
-      return;
-    }
-
     setRejecting(true);
     try {
-      await onConfirm(adminRejectMessage);
+      await onConfirm();
     } catch (error) {
       console.error("Error rejecting access:", error);
       toast.error(error.message || "Failed to reject access");
@@ -64,8 +58,7 @@ export default function RejectAccessModal({
 
         <div className="p-4 flex flex-col">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            You are about to reject framework access for this expert. Please
-            provide a rejection message explaining the reason.
+            You are about to reject framework access for this expert.
           </p>
 
           {/* Access Details */}
@@ -122,21 +115,6 @@ export default function RejectAccessModal({
               )}
             </div>
           </div>
-
-          {/* Rejection Message */}
-          <div className="form-group">
-            <label htmlFor="admin-reject-message" className="form-label">
-              Rejection Message <span className="required">*</span>
-            </label>
-            <textarea
-              id="admin-reject-message"
-              className="form-input"
-              rows={4}
-              placeholder="Please provide a message explaining the reason for rejection..."
-              value={adminRejectMessage}
-              onChange={(e) => setAdminRejectMessage(e.target.value)}
-            />
-          </div>
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
@@ -153,7 +131,7 @@ export default function RejectAccessModal({
             type="button"
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={handleConfirm}
-            disabled={rejecting || !adminRejectMessage.trim()}
+            disabled={rejecting}
           >
             {rejecting ? (
               <>

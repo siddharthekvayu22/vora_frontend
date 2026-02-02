@@ -15,17 +15,11 @@ export default function RevokeAccessModal({
   onCancel,
 }) {
   const [revoking, setRevoking] = useState(false);
-  const [adminNotes, setAdminNotes] = useState("");
 
   const handleConfirm = async () => {
-    if (!adminNotes.trim()) {
-      toast.error("Please provide admin notes for revoking access");
-      return;
-    }
-
     setRevoking(true);
     try {
-      await onConfirm(adminNotes);
+      await onConfirm();
     } catch (error) {
       console.error("Error revoking access:", error);
       toast.error(error.message || "Failed to revoke access");
@@ -117,21 +111,6 @@ export default function RevokeAccessModal({
               </div>
             </div>
           </div>
-
-          {/* Admin Notes */}
-          <div className="form-group">
-            <label htmlFor="admin-notes" className="form-label">
-              Admin Notes <span className="required">*</span>
-            </label>
-            <textarea
-              id="admin-notes"
-              className="form-input"
-              rows={2}
-              placeholder="Please provide a reason for revoking access..."
-              value={adminNotes}
-              onChange={(e) => setAdminNotes(e.target.value)}
-            />
-          </div>
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
@@ -148,7 +127,7 @@ export default function RevokeAccessModal({
             type="button"
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={handleConfirm}
-            disabled={revoking || !adminNotes.trim()}
+            disabled={revoking}
           >
             {revoking ? (
               <>

@@ -227,17 +227,6 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                     : "-"}
                 </p>
               </div>
-
-              <div className="sm:col-span-2">
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  Request Message
-                </p>
-                <div className="bg-background border border-border rounded-lg p-3">
-                  <p className="text-sm text-foreground leading-relaxed">
-                    {accessRecord.requestMessage || "-"}
-                  </p>
-                </div>
-              </div>
             </div>
           </section>
 
@@ -287,25 +276,12 @@ export default function AccessViewModal({ accessRecord, onClose }) {
 
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">
-                          Admin Role
+                          Role
                         </p>
                         <p className="text-sm capitalize text-foreground">
                           {accessRecord.approval.approvedBy?.role || "-"}
                         </p>
                       </div>
-
-                      {accessRecord.adminApproveMessage && (
-                        <div className="sm:col-span-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">
-                            Approval Message
-                          </p>
-                          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
-                            <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
-                              {accessRecord.adminApproveMessage}
-                            </p>
-                          </div>
-                        </div>
-                      )}
                     </>
                   )}
 
@@ -344,25 +320,12 @@ export default function AccessViewModal({ accessRecord, onClose }) {
 
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">
-                          Admin Role
+                          Role
                         </p>
                         <p className="text-sm capitalize text-foreground">
                           {accessRecord.rejection.rejectedBy?.role || "-"}
                         </p>
                       </div>
-
-                      {accessRecord.adminRejectMessage && (
-                        <div className="sm:col-span-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">
-                            Rejection Message
-                          </p>
-                          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                            <p className="text-sm text-red-800 dark:text-red-200 leading-relaxed">
-                              {accessRecord.adminRejectMessage}
-                            </p>
-                          </div>
-                        </div>
-                      )}
                     </>
                   )}
 
@@ -401,25 +364,12 @@ export default function AccessViewModal({ accessRecord, onClose }) {
 
                       <div>
                         <p className="text-xs font-medium text-muted-foreground mb-1">
-                          Admin Role
+                          Role
                         </p>
                         <p className="text-sm capitalize text-foreground">
                           {accessRecord.revocation.revokedBy?.role || "-"}
                         </p>
                       </div>
-
-                      {accessRecord.adminRevokeMessage && (
-                        <div className="sm:col-span-2">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">
-                            Revocation Message
-                          </p>
-                          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
-                            <p className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">
-                              {accessRecord.adminRevokeMessage}
-                            </p>
-                          </div>
-                        </div>
-                      )}
                     </>
                   )}
               </div>

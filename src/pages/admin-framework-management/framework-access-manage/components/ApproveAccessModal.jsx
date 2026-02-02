@@ -15,17 +15,11 @@ export default function ApproveAccessModal({
   onCancel,
 }) {
   const [approving, setApproving] = useState(false);
-  const [adminApproveMessage, setAdminApproveMessage] = useState("");
 
   const handleConfirm = async () => {
-    if (!adminApproveMessage.trim()) {
-      toast.error("Please provide an approval message");
-      return;
-    }
-
     setApproving(true);
     try {
-      await onConfirm(adminApproveMessage);
+      await onConfirm();
     } catch (error) {
       console.error("Error approving access:", error);
       toast.error(error.message || "Failed to approve access");
@@ -64,8 +58,7 @@ export default function ApproveAccessModal({
 
         <div className="p-4 flex flex-col">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            You are about to approve framework access for this expert. Please
-            provide an approval message.
+            You are about to approve framework access for this expert.
           </p>
 
           {/* Access Details */}
@@ -122,21 +115,6 @@ export default function ApproveAccessModal({
               )}
             </div>
           </div>
-
-          {/* Approval Message */}
-          <div className="form-group">
-            <label htmlFor="admin-approve-message" className="form-label">
-              Approval Message <span className="required">*</span>
-            </label>
-            <textarea
-              id="admin-approve-message"
-              className="form-input"
-              rows={4}
-              placeholder="Please provide a message explaining the approval..."
-              value={adminApproveMessage}
-              onChange={(e) => setAdminApproveMessage(e.target.value)}
-            />
-          </div>
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
@@ -153,7 +131,7 @@ export default function ApproveAccessModal({
             type="button"
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={handleConfirm}
-            disabled={approving || !adminApproveMessage.trim()}
+            disabled={approving}
           >
             {approving ? (
               <>

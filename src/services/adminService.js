@@ -85,12 +85,11 @@ export function deleteFrameworkCategory(categoryId) {
 /**
  * Revoke framework access
  */
-export function revokeFrameworkAccess(expertId, frameworkId, adminNotes) {
+export function revokeFrameworkAccess(expertId, frameworkId) {
   return apiRequest(
     `/admin/framework-access/access/revoke/${expertId}/${frameworkId}`,
     {
       method: "DELETE",
-      body: JSON.stringify({ adminNotes }),
     },
     true,
   );
@@ -99,12 +98,11 @@ export function revokeFrameworkAccess(expertId, frameworkId, adminNotes) {
 /**
  * Approve framework access request
  */
-export function approveFrameworkAccessRequest(requestId, adminApproveMessage) {
+export function approveFrameworkAccessRequest(requestId) {
   return apiRequest(
     `/admin/framework-access/access/approve/${requestId}`,
     {
       method: "PUT",
-      body: JSON.stringify({ adminApproveMessage }),
     },
     true,
   );
@@ -113,12 +111,11 @@ export function approveFrameworkAccessRequest(requestId, adminApproveMessage) {
 /**
  * Reject framework access request
  */
-export function rejectFrameworkAccessRequest(requestId, adminRejectMessage) {
+export function rejectFrameworkAccessRequest(requestId) {
   return apiRequest(
     `/admin/framework-access/access/reject/${requestId}`,
     {
       method: "PUT",
-      body: JSON.stringify({ adminRejectMessage }),
     },
     true,
   );
@@ -127,16 +124,11 @@ export function rejectFrameworkAccessRequest(requestId, adminRejectMessage) {
 /**
  * Assign framework access directly
  */
-export function assignFrameworkAccess(
-  expertId,
-  frameworkId,
-  adminAssignMessage,
-) {
+export function assignFrameworkAccess(expertId, frameworkId) {
   return apiRequest(
     `/admin/framework-access/access/${expertId}/${frameworkId}/assign`,
     {
       method: "POST",
-      body: JSON.stringify({ adminAssignMessage }),
     },
     true,
   );

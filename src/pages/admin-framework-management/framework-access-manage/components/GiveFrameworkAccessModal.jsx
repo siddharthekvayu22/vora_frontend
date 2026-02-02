@@ -57,7 +57,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         sortOrder: "desc",
       });
 
-      setUsers(res.users || []);
+      setUsers(res.data || []);
       setUsersPagination((p) => ({
         ...p,
         totalPages: res.pagination?.totalPages || 1,
@@ -81,7 +81,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       const res = await getAdminFrameworkCategory();
 
       // Apply client-side pagination and search since the API doesn't support it
-      let filteredFrameworks = res.categories || [];
+      let filteredFrameworks = res.data || [];
 
       // Apply search filter
       if (frameworksSearchTerm) {
@@ -90,7 +90,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             framework.frameworkCategoryName
               ?.toLowerCase()
               .includes(frameworksSearchTerm.toLowerCase()) ||
-            framework.frameworkCode
+            framework.code
               ?.toLowerCase()
               .includes(frameworksSearchTerm.toLowerCase()) ||
             framework.description
@@ -252,7 +252,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
               {framework.frameworkCategoryName}
             </span>
             <span className="text-xs text-muted-foreground font-mono">
-              {framework.frameworkCode}
+              {framework.code}
             </span>
           </div>
         </div>

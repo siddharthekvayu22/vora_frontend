@@ -213,6 +213,11 @@ function OfficialFrameworkCategory() {
             </span>
           </div>
         </div>
+
+        <button className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-sm font-medium transition-colors shadow-sm cursor-pointer">
+          <Icon name="plus" size="16px" />
+          Request access
+        </button>
       </div>
 
       {/* Data Table */}

@@ -4,7 +4,7 @@ import { apiRequest } from "./apiService";
  * Get all official frameworks
  */
 export function getAllOfficialFrameworks() {
-  return apiRequest("/official-frameworks/frameworks", true);
+  return apiRequest("/official-frameworks/frameworks/my-frameworks", true);
 }
 
 /**

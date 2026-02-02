@@ -12,6 +12,7 @@ import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
 import RevokeAccessModal from "./components/RevokeAccessModal";
 import AccessViewModal from "./components/AccessViewModal";
+import GiveFrameworkAccessModal from "./components/GiveFrameworkAccessModal";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -42,6 +43,10 @@ function AccessApproved() {
   const [viewModalState, setViewModalState] = useState({
     isOpen: false,
     accessRecord: null,
+  });
+
+  const [giveAccessModalState, setGiveAccessModalState] = useState({
+    isOpen: false,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -154,6 +159,12 @@ function AccessApproved() {
       toast.error(e.message || "Failed to revoke framework access");
       console.error("Revoke access error:", e);
     }
+  };
+
+  /* ---------------- GIVE ACCESS SUCCESS ---------------- */
+  const handleGiveAccessSuccess = () => {
+    setGiveAccessModalState({ isOpen: false });
+    fetchAccessApproved();
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -319,7 +330,10 @@ function AccessApproved() {
           </div>
         </div>
 
-        <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
+        <button
+          onClick={() => setGiveAccessModalState({ isOpen: true })}
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
           <Icon name="plus" size="18px" />
           Give Framework Access
         </button>
@@ -355,6 +369,13 @@ function AccessApproved() {
           onClose={() =>
             setViewModalState({ isOpen: false, accessRecord: null })
           }
+        />
+      )}
+
+      {giveAccessModalState.isOpen && (
+        <GiveFrameworkAccessModal
+          onSuccess={handleGiveAccessSuccess}
+          onClose={() => setGiveAccessModalState({ isOpen: false })}
         />
       )}
     </div>

@@ -124,7 +124,8 @@ function OfficialFrameworkAccess() {
   /* ---------------- REQUEST ACCESS HANDLERS ---------------- */
   const handleRequestAccessSuccess = () => {
     setRequestModalState({ isOpen: false, framework: null });
-    // Optionally refresh data or show success message
+    // Refresh the table data to show the new pending request
+    fetchOfficialFrameworkAccess();
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -133,7 +134,7 @@ function OfficialFrameworkAccess() {
       key: "frameworkCategory.frameworkCode",
       label: "Framework Code",
       sortable: true,
-      render: (value, row) => (
+      render: (_, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row?.frameworkCategory?.frameworkCode}
         </span>
@@ -143,7 +144,7 @@ function OfficialFrameworkAccess() {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
       sortable: true,
-      render: (value, row) => (
+      render: (_, row) => (
         <span className="font-medium text-foreground">
           {row?.frameworkCategory?.frameworkCategoryName}
         </span>
@@ -153,7 +154,7 @@ function OfficialFrameworkAccess() {
       key: "expert.name",
       label: "Expert Name",
       sortable: true,
-      render: (value, row) => (
+      render: (_, row) => (
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
             <Icon
@@ -195,7 +196,7 @@ function OfficialFrameworkAccess() {
       key: "actionBy",
       label: "Action By",
       sortable: false,
-      render: (value, row) => {
+      render: (_, row) => {
         // Handle different statuses and their corresponding admin actions
         if (row.status === "approved" && row.approval?.approvedBy) {
           return (
@@ -301,17 +302,29 @@ function OfficialFrameworkAccess() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() => setRequestModalState({ isOpen: true, framework: row })}
-        className="px-3 py-2 bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary rounded-full transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-2"
-        title="Request Access"
-      >
-        <Icon name="plus" size="12px" /> Request
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const isPending = row.status === "pending";
+
+    return (
+      <div className="flex gap-1 justify-center">
+        <button
+          onClick={() =>
+            !isPending && setRequestModalState({ isOpen: true, framework: row })
+          }
+          disabled={isPending}
+          className={`px-3 py-2 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
+            isPending
+              ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+              : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
+          }`}
+          title={isPending ? "Request already pending" : "Request Access"}
+        >
+          <Icon name="plus" size="12px" />
+          {isPending ? "Pending" : "Request"}
+        </button>
+      </div>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

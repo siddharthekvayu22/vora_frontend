@@ -6,19 +6,43 @@ import { requestFrameworkAccess } from "../../../services/officialFrameworkServi
 /**
  * RequestAccessModal Component - Modal for requesting framework access
  *
- * @param {Object} framework - Framework to request access for
+ * @param {Object} framework - Framework to request access for (can be direct framework or access record with nested frameworkCategory)
  * @param {Function} onSuccess - Success handler
  * @param {Function} onClose - Close handler
  */
 export default function RequestAccessModal({ framework, onSuccess, onClose }) {
   const [requesting, setRequesting] = useState(false);
 
+  // Handle both data structures: direct framework object or nested frameworkCategory
+  const getFrameworkData = () => {
+    if (framework?.frameworkCategory) {
+      // Data from OfficialFrameworkAccess (nested structure)
+      return {
+        id: framework.frameworkCategory.frameworkId,
+        frameworkCategoryName:
+          framework.frameworkCategory.frameworkCategoryName,
+        code: framework.frameworkCategory.frameworkCode,
+        description: framework.frameworkCategory.description,
+      };
+    } else {
+      // Data from OfficialFrameworkCategory (direct structure)
+      return {
+        id: framework?.id,
+        frameworkCategoryName: framework?.frameworkCategoryName,
+        code: framework?.code,
+        description: framework?.description,
+      };
+    }
+  };
+
+  const frameworkData = getFrameworkData();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setRequesting(true);
     try {
-      const response = await requestFrameworkAccess(framework.id);
+      const response = await requestFrameworkAccess(frameworkData.id);
 
       toast.success(
         response.message || "Framework access requested successfully",
@@ -80,21 +104,21 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-base font-semibold text-foreground">
-                      {framework?.frameworkCategoryName}
+                      {frameworkData?.frameworkCategoryName}
                     </h4>
                     <p className="text-sm text-muted-foreground">
-                      Code: {framework?.code}
+                      Code: {frameworkData?.code}
                     </p>
                   </div>
                 </div>
 
-                {framework?.description && (
+                {frameworkData?.description && (
                   <div className="bg-background p-3 rounded-lg border border-border">
                     <p className="text-xs text-muted-foreground mb-1">
                       Description:
                     </p>
                     <p className="text-sm text-foreground line-clamp-3">
-                      {framework.description}
+                      {frameworkData.description}
                     </p>
                   </div>
                 )}

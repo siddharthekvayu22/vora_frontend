@@ -9,9 +9,6 @@ import Dashboard from "../pages/dashboard-management/Dashboard";
 import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
 import Users from "../pages/user-management/Users";
 import UserDetails from "../pages/user-management/UserDetails";
-import Documents from "../pages/document-management/Documents";
-import Frameworks from "../pages/framework-management/Frameworks";
-import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
 import Category from "../pages/admin-framework-management/framework-category-manage/Category";
 import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
@@ -174,36 +171,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <UserDetails />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/documents"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Documents />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/frameworks"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Frameworks />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/frameworks/:id"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <FrameworkDetails />
             </Layout>
           </ProtectedRoute>
         }

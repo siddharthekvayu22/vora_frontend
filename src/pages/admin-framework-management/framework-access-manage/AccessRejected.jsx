@@ -212,19 +212,18 @@ function AccessRejected() {
             <span className="text-xs text-muted-foreground">
               {row.rejection?.rejectedBy?.email}
             </span>
-            <span className="text-xs whitespace-nowrap">
-              {formatDate(row.rejection?.rejectedAt)}
-            </span>
           </div>
         </div>
       ),
     },
     {
-      key: "createdAt",
-      label: "Created At",
+      key: "rejection.rejectedAt",
+      label: "Rejected At",
       sortable: true,
-      render: (value) => (
-        <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
+      render: (value, row) => (
+        <span className="text-sm whitespace-nowrap">
+          {formatDate(row.rejection?.rejectedAt)}
+        </span>
       ),
     },
   ];

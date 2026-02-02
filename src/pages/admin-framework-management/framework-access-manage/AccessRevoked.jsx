@@ -193,16 +193,6 @@ function AccessRevoked() {
       ),
     },
     {
-      key: "adminRevokeMessage",
-      label: "Revoke Message",
-      sortable: false,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground line-clamp-2 max-w-xs">
-          {value || "-"}
-        </span>
-      ),
-    },
-    {
       key: "revocation.revokedBy.name",
       label: "Revoked By",
       sortable: false,

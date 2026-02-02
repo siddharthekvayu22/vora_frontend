@@ -294,14 +294,14 @@ export default function AccessViewModal({ accessRecord, onClose }) {
                         </p>
                       </div>
 
-                      {accessRecord.adminAssignMessage && (
+                      {accessRecord.adminApproveMessage && (
                         <div className="sm:col-span-2">
                           <p className="text-xs font-medium text-muted-foreground mb-1">
-                            Assignment Message
+                            Approval Message
                           </p>
                           <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
                             <p className="text-sm text-green-800 dark:text-green-200 leading-relaxed">
-                              {accessRecord.adminAssignMessage}
+                              {accessRecord.adminApproveMessage}
                             </p>
                           </div>
                         </div>

@@ -17,7 +17,15 @@ export function getOfficialFrameworkCategory() {
   );
 }
 
+/**
+ * Get available official frameworks category access
+ */
+export function getOfficialFrameworkCategoryAccess() {
+  return apiRequest("/official-frameworks/frameworks/access/my-access", true);
+}
+
 export default {
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
+  getOfficialFrameworkCategoryAccess,
 };

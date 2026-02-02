@@ -212,16 +212,13 @@ function AccessRevoked() {
             <span className="text-xs text-muted-foreground">
               {row.revocation?.revokedBy?.email}
             </span>
-            <span className="text-xs text-muted-foreground">
-              {formatDate(row.revocation?.revokedAt)}
-            </span>
           </div>
         </div>
       ),
     },
     {
-      key: "createdAt",
-      label: "Created At",
+      key: "revocation.revokedAt",
+      label: "Revoked At",
       sortable: true,
       render: (value) => (
         <span className="text-sm text-muted-foreground whitespace-nowrap">

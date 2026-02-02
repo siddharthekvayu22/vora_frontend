@@ -249,29 +249,11 @@ function AccessRequests() {
       key: "status",
       label: "Status",
       sortable: true,
-      render: (value) => {
-        const getStatusStyle = (status) => {
-          switch (status) {
-            case "approved":
-              return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-            case "rejected":
-              return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-            case "revoked":
-              return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400";
-            case "pending":
-            default:
-              return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
-          }
-        };
-
-        return (
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(value)}`}
-          >
-            {value?.charAt(0).toUpperCase() + value?.slice(1)}
-          </span>
-        );
-      },
+      render: (value) => (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+          {value?.charAt(0).toUpperCase() + value?.slice(1)}
+        </span>
+      ),
     },
     {
       key: "actionBy",

@@ -364,8 +364,14 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200">
-      <div className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-[70px]">
           <div className="absolute top-0 right-0 w-[120px] h-[120px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>

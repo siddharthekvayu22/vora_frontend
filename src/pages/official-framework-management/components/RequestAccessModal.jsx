@@ -18,10 +18,10 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
     if (framework?.frameworkCategory) {
       // Data from OfficialFrameworkAccess (nested structure)
       return {
-        id: framework.frameworkCategory.frameworkId,
+        id: framework.frameworkCategory.id,
         frameworkCategoryName:
           framework.frameworkCategory.frameworkCategoryName,
-        code: framework.frameworkCategory.frameworkCode,
+        code: framework.frameworkCategory.code,
         description: framework.frameworkCategory.description,
       };
     } else {

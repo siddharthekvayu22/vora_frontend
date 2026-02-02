@@ -7,6 +7,23 @@ import {
   assignFrameworkAccess,
 } from "../../../../services/adminService";
 
+// Debounce utility function
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 /**
  * GiveFrameworkAccessModal Component - Allows admin to assign framework access to users
  * Features two side-by-side tables for user and framework selection
@@ -31,6 +48,11 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     hasNextPage: false,
   });
   const [usersSearchTerm, setUsersSearchTerm] = useState("");
+  const [frameworksSearchTerm, setFrameworksSearchTerm] = useState("");
+
+  // Debounced search terms to reduce API calls
+  const debouncedUsersSearchTerm = useDebounce(usersSearchTerm, 500);
+  const debouncedFrameworksSearchTerm = useDebounce(frameworksSearchTerm, 500);
 
   // Framework categories state
   const [frameworks, setFrameworks] = useState([]);
@@ -43,7 +65,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     hasPrevPage: false,
     hasNextPage: false,
   });
-  const [frameworksSearchTerm, setFrameworksSearchTerm] = useState("");
 
   /* ---------------- FETCH USERS ---------------- */
   const fetchUsers = useCallback(async () => {
@@ -52,7 +73,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       const res = await getAllUsers({
         page: usersPagination.currentPage,
         limit: usersPagination.limit,
-        search: usersSearchTerm,
+        search: debouncedUsersSearchTerm,
         sortBy: "createdAt",
         sortOrder: "desc",
       });
@@ -72,7 +93,11 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     } finally {
       setUsersLoading(false);
     }
-  }, [usersPagination.currentPage, usersPagination.limit, usersSearchTerm]);
+  }, [
+    usersPagination.currentPage,
+    usersPagination.limit,
+    debouncedUsersSearchTerm,
+  ]);
 
   /* ---------------- FETCH FRAMEWORK CATEGORIES ---------------- */
   const fetchFrameworks = useCallback(async () => {
@@ -84,18 +109,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       let filteredFrameworks = res.data || [];
 
       // Apply search filter
-      if (frameworksSearchTerm) {
+      if (debouncedFrameworksSearchTerm) {
         filteredFrameworks = filteredFrameworks.filter(
           (framework) =>
             framework.frameworkCategoryName
               ?.toLowerCase()
-              .includes(frameworksSearchTerm.toLowerCase()) ||
+              .includes(debouncedFrameworksSearchTerm.toLowerCase()) ||
             framework.code
               ?.toLowerCase()
-              .includes(frameworksSearchTerm.toLowerCase()) ||
+              .includes(debouncedFrameworksSearchTerm.toLowerCase()) ||
             framework.description
               ?.toLowerCase()
-              .includes(frameworksSearchTerm.toLowerCase()),
+              .includes(debouncedFrameworksSearchTerm.toLowerCase()),
         );
       }
 
@@ -127,7 +152,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
   }, [
     frameworksPagination.currentPage,
     frameworksPagination.limit,
-    frameworksSearchTerm,
+    debouncedFrameworksSearchTerm,
   ]);
 
   /* ---------------- EFFECTS ---------------- */

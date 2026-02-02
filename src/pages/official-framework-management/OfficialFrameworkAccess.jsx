@@ -7,6 +7,7 @@ import { formatDate } from "../../utils/dateFormatter";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategoryAccess } from "../../services/officialFrameworkService";
+import RequestAccessModal from "./components/RequestAccessModal";
 
 function OfficialFrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -30,6 +31,11 @@ function OfficialFrameworkAccess() {
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
+  });
+
+  const [requestModalState, setRequestModalState] = useState({
+    isOpen: false,
+    framework: null,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -113,6 +119,12 @@ function OfficialFrameworkAccess() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  /* ---------------- REQUEST ACCESS HANDLERS ---------------- */
+  const handleRequestAccessSuccess = () => {
+    setRequestModalState({ isOpen: false, framework: null });
+    // Optionally refresh data or show success message
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -289,6 +301,18 @@ function OfficialFrameworkAccess() {
     },
   ];
 
+  const renderActions = (row) => (
+    <div className="flex gap-1 justify-center">
+      <button
+        onClick={() => setRequestModalState({ isOpen: true, framework: row })}
+        className="px-3 py-2 bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary rounded-full transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-2"
+        title="Request Access"
+      >
+        <Icon name="plus" size="12px" /> Request
+      </button>
+    </div>
+  );
+
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5 space-y-8">
@@ -337,10 +361,22 @@ function OfficialFrameworkAccess() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
+        renderActions={renderActions}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         searchPlaceholder="Search framework, expert, status..."
         emptyMessage={emptyMessage}
       />
+
+      {/* Request Access Modal */}
+      {requestModalState.isOpen && (
+        <RequestAccessModal
+          framework={requestModalState.framework}
+          onSuccess={handleRequestAccessSuccess}
+          onClose={() =>
+            setRequestModalState({ isOpen: false, framework: null })
+          }
+        />
+      )}
     </div>
   );
 }

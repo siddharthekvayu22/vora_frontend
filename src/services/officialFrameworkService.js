@@ -24,8 +24,22 @@ export function getOfficialFrameworkCategoryAccess() {
   return apiRequest("/official-frameworks/frameworks/access/my-access", true);
 }
 
+/**
+ * Request framework access
+ */
+export function requestFrameworkAccess(frameworkId) {
+  return apiRequest(
+    `/official-frameworks/frameworks/access/${frameworkId}/request`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
 export default {
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,
+  requestFrameworkAccess,
 };

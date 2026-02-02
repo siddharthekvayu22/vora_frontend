@@ -180,20 +180,104 @@ function OfficialFrameworkAccess() {
       ),
     },
     {
-      key: "approval",
-      label: "Approved By",
+      key: "actionBy",
+      label: "Action By",
       sortable: false,
-      render: (value) =>
-        value?.approvedBy ? (
-          <div className="flex flex-col">
-            <span className="font-medium">{value.approvedBy.name}</span>
-            <span className="text-xs text-muted-foreground">
-              {formatDate(value.approvedAt)}
-            </span>
-          </div>
-        ) : (
-          <span className="text-muted-foreground text-sm">—</span>
-        ),
+      render: (value, row) => {
+        // Handle different statuses and their corresponding admin actions
+        if (row.status === "approved" && row.approval?.approvedBy) {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Icon
+                  name="user-check"
+                  size="16px"
+                  className="text-green-600 dark:text-green-400"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-foreground text-sm">
+                  {row.approval.approvedBy.name}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {row.approval.approvedBy.email}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(row.approval.approvedAt)}
+                </span>
+              </div>
+            </div>
+          );
+        } else if (row.status === "rejected" && row.rejection?.rejectedBy) {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                <Icon
+                  name="user-x"
+                  size="16px"
+                  className="text-red-600 dark:text-red-400"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-foreground text-sm">
+                  {row.rejection.rejectedBy.name}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {row.rejection.rejectedBy.email}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(row.rejection.rejectedAt)}
+                </span>
+              </div>
+            </div>
+          );
+        } else if (row.status === "revoked" && row.revocation?.revokedBy) {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                <Icon
+                  name="user-minus"
+                  size="16px"
+                  className="text-orange-600 dark:text-orange-400"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-foreground text-sm">
+                  {row.revocation.revokedBy.name}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {row.revocation.revokedBy.email}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDate(row.revocation.revokedAt)}
+                </span>
+              </div>
+            </div>
+          );
+        } else if (row.status === "pending") {
+          return (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                <Icon
+                  name="clock"
+                  size="16px"
+                  className="text-yellow-600 dark:text-yellow-400"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium text-foreground text-sm">
+                  Pending
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Awaiting admin action
+                </span>
+              </div>
+            </div>
+          );
+        } else {
+          return <span className="text-muted-foreground text-sm">—</span>;
+        }
+      },
     },
     {
       key: "createdAt",

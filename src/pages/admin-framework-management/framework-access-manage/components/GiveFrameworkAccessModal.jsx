@@ -228,12 +228,12 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           : "border-l-4 border-transparent"
       }`}
     >
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+      <td className="px-3 py-2">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
             <Icon
               name="user"
-              size="16px"
+              size="14px"
               className="text-blue-600 dark:text-blue-400"
             />
           </div>
@@ -245,8 +245,8 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           </div>
         </div>
       </td>
-      <td className="px-4 py-3">
-        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+      <td className="px-3 py-2">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
           {user.role}
         </span>
       </td>
@@ -263,12 +263,12 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           : "border-l-4 border-transparent"
       }`}
     >
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+      <td className="px-3 py-2">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
             <Icon
               name="shield"
-              size="16px"
+              size="14px"
               className="text-purple-600 dark:text-purple-400"
             />
           </div>
@@ -282,7 +282,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           </div>
         </div>
       </td>
-      <td className="px-4 py-3">
+      <td className="px-3 py-2">
         <span className="text-xs text-muted-foreground line-clamp-2 max-w-xs">
           {framework.description}
         </span>
@@ -291,7 +291,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
   );
 
   const renderPagination = (pagination, onPageChange) => (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+    <div className="flex items-center justify-between px-3 py-2 border-t border-border">
       <div className="text-xs text-muted-foreground">
         Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
         {Math.min(
@@ -300,21 +300,21 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         )}{" "}
         of {pagination.totalItems} results
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(pagination.currentPage - 1)}
           disabled={!pagination.hasPrevPage}
-          className="px-3 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Previous
         </button>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-muted-foreground px-2">
           Page {pagination.currentPage} of {pagination.totalPages}
         </span>
         <button
           onClick={() => onPageChange(pagination.currentPage + 1)}
           disabled={!pagination.hasNextPage}
-          className="px-3 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Next
         </button>
@@ -327,40 +327,40 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-card rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="user-plus" size="20px" className="text-primary" />
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Icon name="user-plus" size="18px" className="text-primary" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground">
+              <h2 className="text-lg font-bold text-foreground">
                 Give Framework Access
               </h2>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Select a user and framework category to assign access
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
+            className="p-1.5 hover:bg-muted rounded-lg transition-colors"
           >
-            <Icon name="x" size="20px" className="text-muted-foreground" />
+            <Icon name="x" size="18px" className="text-muted-foreground" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="p-4 overflow-y-auto max-h-[calc(90vh-160px)]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Users Table */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <Icon name="users" size="18px" className="text-blue-600" />
+                <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+                  <Icon name="users" size="16px" className="text-blue-600" />
                   Select User
                 </h3>
                 {selectedUser && (
-                  <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
+                  <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                     Selected: {selectedUser.name}
                   </span>
                 )}
@@ -368,19 +368,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
               <div className="border border-border rounded-lg overflow-hidden">
                 {/* Search */}
-                <div className="p-4 border-b border-border">
+                <div className="p-3 border-b border-border">
                   <div className="relative">
                     <Icon
                       name="search"
-                      size="16px"
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                      size="14px"
+                      className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                     />
                     <input
                       type="text"
                       placeholder="Search users..."
                       value={usersSearchTerm}
                       onChange={(e) => handleUserSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                     />
                   </div>
                 </div>
@@ -390,10 +390,10 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                   <table className="w-full">
                     <thead className="bg-muted/30">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           User
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Role
                         </th>
                       </tr>
@@ -401,10 +401,10 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                     <tbody className="divide-y divide-border">
                       {usersLoading ? (
                         <tr>
-                          <td colSpan="2" className="px-4 py-8 text-center">
+                          <td colSpan="2" className="px-3 py-6 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                              <span className="text-muted-foreground">
+                              <span className="text-muted-foreground text-sm">
                                 Loading users...
                               </span>
                             </div>
@@ -414,7 +414,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                         <tr>
                           <td
                             colSpan="2"
-                            className="px-4 py-8 text-center text-muted-foreground"
+                            className="px-3 py-6 text-center text-muted-foreground text-sm"
                           >
                             No users found
                           </td>
@@ -434,14 +434,14 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             </div>
 
             {/* Framework Categories Table */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <Icon name="shield" size="18px" className="text-purple-600" />
+                <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+                  <Icon name="shield" size="16px" className="text-purple-600" />
                   Select Framework Category
                 </h3>
                 {selectedFramework && (
-                  <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">
+                  <span className="text-xs text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">
                     Selected: {selectedFramework.frameworkCategoryName}
                   </span>
                 )}
@@ -449,19 +449,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
               <div className="border border-border rounded-lg overflow-hidden">
                 {/* Search */}
-                <div className="p-4 border-b border-border">
+                <div className="p-3 border-b border-border">
                   <div className="relative">
                     <Icon
                       name="search"
-                      size="16px"
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                      size="14px"
+                      className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
                     />
                     <input
                       type="text"
                       placeholder="Search frameworks..."
                       value={frameworksSearchTerm}
                       onChange={(e) => handleFrameworkSearch(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                     />
                   </div>
                 </div>
@@ -471,10 +471,10 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                   <table className="w-full">
                     <thead className="bg-muted/30">
                       <tr>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Framework
                         </th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Description
                         </th>
                       </tr>
@@ -482,10 +482,10 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                     <tbody className="divide-y divide-border">
                       {frameworksLoading ? (
                         <tr>
-                          <td colSpan="2" className="px-4 py-8 text-center">
+                          <td colSpan="2" className="px-3 py-6 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                              <span className="text-muted-foreground">
+                              <span className="text-muted-foreground text-sm">
                                 Loading frameworks...
                               </span>
                             </div>
@@ -495,7 +495,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                         <tr>
                           <td
                             colSpan="2"
-                            className="px-4 py-8 text-center text-muted-foreground"
+                            className="px-3 py-6 text-center text-muted-foreground text-sm"
                           >
                             No framework categories found
                           </td>
@@ -520,20 +520,20 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
           {/* Selection Summary */}
           {(selectedUser || selectedFramework) && (
-            <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-border">
-              <h4 className="text-sm font-medium text-foreground mb-3">
+            <div className="mt-4 p-3 bg-muted/30 rounded-lg border border-border">
+              <h4 className="text-sm font-medium text-foreground mb-2">
                 Selection Summary
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <Icon name="user" size="16px" className="text-blue-600" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center gap-2">
+                  <Icon name="user" size="14px" className="text-blue-600" />
                   <span className="text-sm text-muted-foreground">User:</span>
                   <span className="text-sm font-medium text-foreground">
                     {selectedUser ? selectedUser.name : "Not selected"}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Icon name="shield" size="16px" className="text-purple-600" />
+                <div className="flex items-center gap-2">
+                  <Icon name="shield" size="14px" className="text-purple-600" />
                   <span className="text-sm text-muted-foreground">
                     Framework:
                   </span>
@@ -549,26 +549,26 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 p-6 border-t border-border">
+        <div className="flex items-center justify-end gap-2 p-4 border-t border-border">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-muted transition-colors"
+            className="px-3 py-1.5 text-sm border border-border rounded-lg hover:bg-muted transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleAssignAccess}
             disabled={!selectedUser || !selectedFramework || assigning}
-            className="px-6 py-2 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+            className="px-4 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
           >
             {assigning ? (
               <>
-                <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-3 h-3 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
                 Assigning...
               </>
             ) : (
               <>
-                <Icon name="check" size="16px" />
+                <Icon name="check" size="14px" />
                 Continue
               </>
             )}

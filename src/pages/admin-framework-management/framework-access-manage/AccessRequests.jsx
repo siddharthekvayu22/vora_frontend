@@ -277,7 +277,7 @@ function AccessRequests() {
                 <span className="text-xs text-muted-foreground">
                   {row.revocation.revokedBy.email}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs whitespace-nowrap">
                   {formatDate(row.revocation.revokedAt)}
                 </span>
               </div>
@@ -300,7 +300,7 @@ function AccessRequests() {
                 <span className="text-xs text-muted-foreground">
                   {row.rejection.rejectedBy.email}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs whitespace-nowrap">
                   {formatDate(row.rejection.rejectedAt)}
                 </span>
               </div>
@@ -323,7 +323,7 @@ function AccessRequests() {
                 <span className="text-xs text-muted-foreground">
                   {row.approval.approvedBy.email}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs whitespace-nowrap">
                   {formatDate(row.approval.approvedAt)}
                 </span>
               </div>
@@ -339,7 +339,7 @@ function AccessRequests() {
       label: "Created At",
       sortable: true,
       render: (value) => (
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
+        <span className="text-sm whitespace-nowrap">
           {formatDate(value)}
         </span>
       ),

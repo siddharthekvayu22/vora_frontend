@@ -317,7 +317,7 @@ function FrameworkDetails() {
                   <label className="text-sm font-medium text-muted-foreground">
                     Upload Date
                   </label>
-                  <p className="text-foreground font-medium">
+                  <p className="text-sm whitespace-nowrap">
                     {formatDate(framework.createdAt)}
                   </p>
                 </div>
@@ -325,7 +325,7 @@ function FrameworkDetails() {
                   <label className="text-sm font-medium text-muted-foreground">
                     Last Modified
                   </label>
-                  <p className="text-foreground font-medium">
+                  <p className="text-sm whitespace-nowrap">
                     {formatDate(framework.updatedAt)}
                   </p>
                 </div>
@@ -534,7 +534,7 @@ function FrameworkDetails() {
                           (control, index) => {
                             const deploymentPoints =
                               control?.Deployment_points?.split(
-                                /\s*\d+\.\s*/g
+                                /\s*\d+\.\s*/g,
                               ).filter(Boolean);
                             return (
                               <div
@@ -571,7 +571,7 @@ function FrameworkDetails() {
                                 )}
                               </div>
                             );
-                          }
+                          },
                         )}
                       </div>
                     </div>

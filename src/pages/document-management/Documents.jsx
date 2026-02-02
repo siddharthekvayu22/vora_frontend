@@ -251,13 +251,13 @@ function Documents() {
       // Show specific error messages based on status
       if (e.status === 404) {
         toast.error(
-          "Upload endpoint not found. Please check if the backend server is running and the API endpoint exists."
+          "Upload endpoint not found. Please check if the backend server is running and the API endpoint exists.",
         );
       } else if (e.status === 413) {
         toast.error("File too large. Please choose a smaller file.");
       } else if (e.status === 415) {
         toast.error(
-          "Unsupported file type. Please choose a supported file format."
+          "Unsupported file type. Please choose a supported file format.",
         );
       } else {
         toast.error(e.message || "Failed to save document");
@@ -394,9 +394,7 @@ function Documents() {
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="calendar" size="14px" className="text-muted-foreground" />
-          <span className="text-foreground whitespace-nowrap">
-            {formatDate(value)}
-          </span>
+          <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
         </div>
       ),
     },
@@ -407,7 +405,7 @@ function Documents() {
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="calendar" size="14px" className="text-muted-foreground" />
-          <span className="text-foreground whitespace-nowrap">
+          <span className="text-sm whitespace-nowrap">
             {formatDate(value)}
           </span>
         </div>

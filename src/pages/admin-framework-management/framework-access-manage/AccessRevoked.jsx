@@ -220,9 +220,9 @@ function AccessRevoked() {
       key: "revocation.revokedAt",
       label: "Revoked At",
       sortable: true,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
-          {formatDate(value)}
+      render: (value, row) => (
+        <span className="text-sm whitespace-nowrap">
+          {formatDate(row.revocation?.revokedAt)}
         </span>
       ),
     },

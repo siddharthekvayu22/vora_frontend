@@ -266,7 +266,7 @@ function AccessApproved() {
       label: "Approved At",
       sortable: true,
       render: (value, row) => (
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
+        <span className="text-sm whitespace-nowrap">
           {formatDate(row.approval?.approvedAt)}
         </span>
       ),

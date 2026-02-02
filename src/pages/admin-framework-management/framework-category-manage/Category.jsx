@@ -227,9 +227,7 @@ function Category() {
       label: "Created At",
       sortable: true,
       render: (value) => (
-        <span className="text-sm text-muted-foreground">
-          {formatDate(value)}
-        </span>
+        <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),
     },
   ];

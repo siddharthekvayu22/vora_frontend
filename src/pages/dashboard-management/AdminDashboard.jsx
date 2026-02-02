@@ -239,7 +239,7 @@ export default function AdminDashboard() {
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs whitespace-nowrap">
                       {formatDate(user.createdAt)}
                     </p>
                   </div>

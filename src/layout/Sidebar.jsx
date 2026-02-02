@@ -95,11 +95,33 @@ function Sidebar() {
         path: "/dashboard",
       },
       {
-        id: "official-framework",
-        title: "Frameworks",
-        description: "Official frameworks",
+        id: "official-framework-management",
+        title: "Framework Management",
+        description: "Manage framework & access",
         icon: "framework",
-        path: "/official-frameworks",
+        children: [
+          {
+            id: "official-framework",
+            title: "Frameworks",
+            description: "Official frameworks",
+            icon: "framework",
+            path: "/official-frameworks",
+          },
+          {
+            id: "official-framework-category",
+            title: "Framework Category",
+            description: "Official framework category",
+            icon: "framework",
+            path: "/official-framework-category",
+          },
+          {
+            id: "official-framework-access",
+            title: "Framework Access",
+            description: "Official framework access",
+            icon: "framework",
+            path: "/official-framework-access",
+          },
+        ],
       },
       {
         id: "reports",

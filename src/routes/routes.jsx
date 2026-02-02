@@ -16,6 +16,8 @@ import AccessRequests from "../pages/admin-framework-management/framework-access
 import AccessRejected from "../pages/admin-framework-management/framework-access-manage/AccessRejected";
 import AccessRevoked from "../pages/admin-framework-management/framework-access-manage/AccessRevoked";
 import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
+import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
+import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -162,6 +164,26 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <OfficialFramework />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/official-framework-category"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OfficialFrameworkCategory />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/official-framework-access"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OfficialFrameworkAccess />
             </Layout>
           </ProtectedRoute>
         }

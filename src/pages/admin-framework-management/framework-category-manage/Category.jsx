@@ -14,6 +14,7 @@ import Icon from "../../../components/Icon";
 import CategoryModal from "./components/CategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoryModal";
 import { formatDate } from "../../../utils/dateFormatter";
+import CustomBadge from "../../../components/CustomBadge";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -211,15 +212,10 @@ function Category() {
       label: "Status",
       sortable: true,
       render: (value) => (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            value
-              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {value ? "Active" : "Inactive"}
-        </span>
+        <CustomBadge
+          label={value ? "Active" : "Inactive"}
+          color={value ? "green" : "red"}
+        />
       ),
     },
     {

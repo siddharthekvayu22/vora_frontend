@@ -6,6 +6,7 @@ import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategory } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import RequestAccessModal from "./components/RequestAccessModal";
+import CustomBadge from "../../components/CustomBadge";
 
 function OfficialFrameworkCategory() {
   const [officialFrameworkCategory, setOfficialFrameworkCategory] = useState(
@@ -164,15 +165,10 @@ function OfficialFrameworkCategory() {
       label: "Status",
       sortable: true,
       render: (value) => (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            value
-              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {value ? "Active" : "Inactive"}
-        </span>
+        <CustomBadge
+          label={value ? "Active" : "Inactive"}
+          color={value ? "green" : "red"}
+        />
       ),
     },
     {
@@ -185,17 +181,24 @@ function OfficialFrameworkCategory() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() => setRequestModalState({ isOpen: true, framework: row })}
-        className="px-3 py-2 bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary rounded-full transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-2"
-        title="Request Access"
-      >
-        <Icon name="plus" size="12px" /> Request
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const isActive = row.isActive;
+    return (
+      <div className="flex gap-1 justify-center">
+        <button
+          disabled={!isActive}
+          onClick={() => setRequestModalState({ isOpen: true, framework: row })}
+          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
+            !isActive
+              ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
+              : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
+          }`}
+        >
+          <Icon name="plus" size="12px" /> Request
+        </button>
+      </div>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

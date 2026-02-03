@@ -6,6 +6,8 @@ import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategoryAccess } from "../../services/officialFrameworkService";
 import RequestAccessModal from "./components/RequestAccessModal";
+import CustomBadge from "../../components/CustomBadge";
+import UserMiniCard from "../../components/UserMiniCard";
 
 function OfficialFrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -153,17 +155,16 @@ function OfficialFrameworkAccess() {
       label: "Status",
       sortable: true,
       render: (value) => (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            value === "approved"
-              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-              : value === "rejected" || value === "revoked"
-                ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-          }`}
-        >
-          {value}
-        </span>
+        <CustomBadge
+          label={value?.charAt(0).toUpperCase() + value?.slice(1)}
+          color={
+            value === "revoked" || value === "rejected"
+              ? "red"
+              : value === "approved"
+                ? "green"
+                : "yellow"
+          }
+        />
       ),
     },
     {
@@ -174,92 +175,35 @@ function OfficialFrameworkAccess() {
         // Handle different statuses and their corresponding admin actions
         if (row.status === "approved" && row.approval?.approvedBy) {
           return (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <Icon
-                  name="user-check"
-                  size="16px"
-                  className="text-green-600 dark:text-green-400"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-medium text-foreground text-sm">
-                  {row.approval.approvedBy.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {row.approval.approvedBy.email}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(row.approval.approvedAt)}
-                </span>
-              </div>
-            </div>
+            <UserMiniCard
+              name={row.approval.approvedBy.name}
+              email={row.approval.approvedBy.email}
+              date={row.approval.approvedAt}
+            />
           );
         } else if (row.status === "rejected" && row.rejection?.rejectedBy) {
           return (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <Icon
-                  name="user-x"
-                  size="16px"
-                  className="text-red-600 dark:text-red-400"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-medium text-foreground text-sm">
-                  {row.rejection.rejectedBy.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {row.rejection.rejectedBy.email}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(row.rejection.rejectedAt)}
-                </span>
-              </div>
-            </div>
+            <UserMiniCard
+              name={row.rejection.rejectedBy.name}
+              email={row.rejection.rejectedBy.email}
+              date={row.rejection.rejectedAt}
+            />
           );
         } else if (row.status === "revoked" && row.revocation?.revokedBy) {
           return (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                <Icon
-                  name="user-minus"
-                  size="16px"
-                  className="text-orange-600 dark:text-orange-400"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-medium text-foreground text-sm">
-                  {row.revocation.revokedBy.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {row.revocation.revokedBy.email}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(row.revocation.revokedAt)}
-                </span>
-              </div>
-            </div>
+            <UserMiniCard
+              name={row.revocation.revokedBy.name}
+              email={row.revocation.revokedBy.email}
+              date={row.revocation.revokedAt}
+            />
           );
         } else if (row.status === "pending") {
           return (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
-                <Icon
-                  name="clock"
-                  size="16px"
-                  className="text-yellow-600 dark:text-yellow-400"
-                />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-medium text-foreground text-sm">
-                  Pending
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Awaiting admin action
-                </span>
-              </div>
-            </div>
+            <UserMiniCard
+              name="Pending"
+              email="Awaiting admin action"
+              icon="clock"
+            />
           );
         } else {
           return <span className="text-muted-foreground text-sm">—</span>;
@@ -289,7 +233,7 @@ function OfficialFrameworkAccess() {
             setRequestModalState({ isOpen: true, framework: row })
           }
           disabled={isDisabled}
-          className={`px-3 py-2 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
+          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
             isDisabled
               ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
               : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"

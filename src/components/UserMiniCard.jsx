@@ -5,6 +5,7 @@ const UserMiniCard = ({
   name,
   email,
   date,
+  icon = "user",
   isSelf = false,
   isEmailVerified,
 }) => {
@@ -31,7 +32,7 @@ const UserMiniCard = ({
   return (
     <div className="flex items-center gap-2">
       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
-        <Icon name="user" size="16px" />
+        <Icon name={icon} size="16px" />
       </div>
 
       <div>

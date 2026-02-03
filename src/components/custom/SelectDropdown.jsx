@@ -148,7 +148,7 @@ export default function SelectDropdown({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-50 py-1 max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
           {options.length === 0 ? (
             <div className="px-3 py-2 text-sm text-muted-foreground">
               No options available
@@ -160,7 +160,7 @@ export default function SelectDropdown({
                 type="button"
                 onClick={() => handleSelect(option.value)}
                 className={`
-                  w-full px-3 py-2 text-left text-sm transition-colors duration-150
+                  w-full px-3 py-2 text-left text-sm transition-colors duration-150 cursor-pointer
                   hover:bg-accent focus:bg-accent focus:outline-none
                   ${value === option.value ? "bg-primary/10 text-primary font-medium" : "text-foreground"}
                   ${focusedIndex === index ? "bg-accent" : ""}

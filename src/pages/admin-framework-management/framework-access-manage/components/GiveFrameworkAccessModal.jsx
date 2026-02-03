@@ -430,7 +430,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 )}
               </div>
 
-              <div className="border border-border rounded-xl overflow-hidden bg-background">
+              <div className="border border-border rounded-xl bg-background">
                 {/* Search and Filter */}
                 <div className="p-3 border-b border-border bg-muted/30">
                   <div className="flex gap-2">

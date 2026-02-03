@@ -14,6 +14,7 @@ import {
   toggleUserStatus,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
+import CustomBadge from "../../components/CustomBadge";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -197,6 +198,12 @@ function Users() {
     }
   };
 
+  const ROLE_COLOR_MAP = {
+    admin: "red",
+    expert: "blue",
+    company: "green",
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -250,48 +257,17 @@ function Users() {
       label: "Role",
       sortable: true,
       render: (v) => {
-        const getRoleStyles = (role) => {
-          switch (role?.toLowerCase()) {
-            case "admin":
-              return {
-                bg: "bg-red-100 dark:bg-red-900/30",
-                text: "text-red-700 dark:text-red-400",
-                border: "border-red-200 dark:border-red-800",
-                dot: "bg-red-500",
-              };
-            case "expert":
-              return {
-                bg: "bg-blue-100 dark:bg-blue-900/30",
-                text: "text-blue-700 dark:text-blue-400",
-                border: "border-blue-200 dark:border-blue-800",
-                dot: "bg-blue-500",
-              };
-            case "company":
-              return {
-                bg: "bg-green-100 dark:bg-green-900/30",
-                text: "text-green-700 dark:text-green-400",
-                border: "border-green-200 dark:border-green-800",
-                dot: "bg-green-500",
-              };
-            default:
-              return {
-                bg: "bg-gray-100 dark:bg-gray-900/30",
-                text: "text-gray-700 dark:text-gray-400",
-                border: "border-gray-200 dark:border-gray-800",
-                dot: "bg-gray-500",
-              };
-          }
+        const ROLE_COLOR = {
+          admin: "red",
+          expert: "blue",
+          company: "green",
         };
 
-        const styles = getRoleStyles(v);
-
         return (
-          <span
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold capitalize ${styles.bg} ${styles.text} border ${styles.border}`}
-          >
-            <div className={`w-2 h-2 rounded-full ${styles.dot}`}></div>
-            {v}
-          </span>
+          <CustomBadge
+            label={v}
+            color={ROLE_COLOR[v?.toLowerCase()] || "gray"}
+          />
         );
       },
     },
@@ -300,20 +276,10 @@ function Users() {
       label: "Status",
       sortable: true,
       render: (v) => (
-        <span
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
-            v
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800"
-          }`}
-        >
-          <div
-            className={`w-2 h-2 rounded-full ${
-              v ? "bg-green-500" : "bg-red-500"
-            }`}
-          ></div>
-          {v ? "Active" : "Inactive"}
-        </span>
+        <CustomBadge
+          label={v ? "Active" : "Inactive"}
+          color={v ? "green" : "red"}
+        />
       ),
     },
     {
@@ -384,9 +350,7 @@ function Users() {
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="calendar" size="14px" className="text-muted-foreground" />
-          <span className="text-sm whitespace-nowrap">
-            {formatDate(value)}
-          </span>
+          <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
         </div>
       ),
     },

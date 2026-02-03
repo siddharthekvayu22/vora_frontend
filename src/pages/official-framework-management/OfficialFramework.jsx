@@ -6,7 +6,10 @@ import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
-import { getAllOfficialFrameworks } from "../../services/officialFrameworkService";
+import {
+  downloadOfficialFrameworkFile,
+  getAllOfficialFrameworks,
+} from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
 function OfficialFramework() {
@@ -33,6 +36,8 @@ function OfficialFramework() {
     sortBy: "createdAt",
     sortOrder: "desc",
   });
+
+  const [downloadingId, setDownloadingId] = useState(null);
 
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
@@ -123,6 +128,23 @@ function OfficialFramework() {
     toast.success("Framework uploaded successfully!");
   };
 
+  const handleDownloadFramework = async (row) => {
+    if (!row.fileInfo?.fileId) return;
+
+    try {
+      setDownloadingId(row.fileInfo.fileId);
+
+      await downloadOfficialFrameworkFile(
+        row.fileInfo.fileId,
+        row.fileInfo.originalFileName,
+      );
+    } catch (err) {
+      toast.error(err.message || "Failed to download framework");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -175,32 +197,40 @@ function OfficialFramework() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Download Framework"
-        onClick={() => {
-          // Handle download framework
-          if (row.fileInfo?.fileUrl) {
-            window.open(row.fileInfo.fileUrl, "_blank");
-          }
-        }}
-      >
-        <Icon name="download" size="16px" />
-      </button>
-      <button
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Delete Framework"
-        onClick={() => {
-          // Handle delete framework
-          console.log("Delete framework:", row);
-        }}
-      >
-        <Icon name="trash" size="16px" />
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const isDownloading = downloadingId === row.fileInfo?.fileId;
+    return (
+      <div className="flex gap-1 justify-center">
+        <button
+          className={`px-3 py-2 rounded-full transition-all duration-200 cursor-pointer
+          ${
+            isDownloading
+              ? "text-green-400 opacity-60 cursor-not-allowed"
+              : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 hover:scale-105"
+          }`}
+          title="Download Framework"
+          disabled={isDownloading}
+          onClick={() => handleDownloadFramework(row)}
+        >
+          {isDownloading ? (
+            <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
+          ) : (
+            <Icon name="download" size="16px" />
+          )}
+        </button>
+        <button
+          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Delete Framework"
+          onClick={() => {
+            // Handle delete framework
+            console.log("Delete framework:", row);
+          }}
+        >
+          <Icon name="trash" size="16px" />
+        </button>
+      </div>
+    );
+  };
 
   const renderHeaderButtons = () => (
     <button

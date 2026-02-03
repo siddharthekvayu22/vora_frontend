@@ -51,10 +51,35 @@ export function uploadFramework(formData) {
   );
 }
 
+/**
+ * Download framework file
+ */
+export async function downloadOfficialFrameworkFile(fileId, fileName) {
+  const blob = await apiRequest(
+    `/files/${fileId}/download`,
+    {
+      method: "GET",
+      responseType: "blob", // 🔥 important
+    },
+    true,
+  );
+
+  // Trigger browser download
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName || "framework";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
+
 export default {
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,
   requestFrameworkAccess,
   uploadFramework,
+  downloadOfficialFrameworkFile,
 };

@@ -50,6 +50,17 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
   try {
     const response = await fetch(url, options);
 
+    // ✅ HANDLE BLOB RESPONSE (DOWNLOAD)
+    if (options.responseType === "blob") {
+      if (!response.ok) {
+        throw {
+          status: response.status,
+          message: "Failed to download file",
+        };
+      }
+      return response.blob();
+    }
+
     // Check if response has content before trying to parse JSON
     const contentType = response.headers.get("content-type");
     let data = null;

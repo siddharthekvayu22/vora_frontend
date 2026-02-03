@@ -37,9 +37,24 @@ export function requestFrameworkAccess(frameworkId) {
   );
 }
 
+/**
+ * Upload framework file
+ */
+export function uploadFramework(formData) {
+  return apiRequest(
+    "/files/upload",
+    {
+      method: "POST",
+      body: formData, // FormData object
+    },
+    true,
+  );
+}
+
 export default {
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,
   requestFrameworkAccess,
+  uploadFramework,
 };

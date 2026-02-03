@@ -3,7 +3,9 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
+import UploadFrameworkModal from "./components/UploadFrameworkModal";
 import { getAllOfficialFrameworks } from "../../services/officialFrameworkService";
+import { formatDate } from "../../utils/dateFormatter";
 
 function OfficialFramework() {
   const [officialFramework, setOfficialFramework] = useState([]);
@@ -11,6 +13,7 @@ function OfficialFramework() {
   const [emptyMessage, setEmptyMessage] = useState(
     "No official framework found",
   );
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -112,6 +115,12 @@ function OfficialFramework() {
     setSortConfig({ sortBy: key, sortOrder: order });
   };
 
+  const handleUploadSuccess = (newFramework) => {
+    // Refresh the framework list after successful upload
+    fetchOfficialFramework();
+    toast.success("Framework uploaded successfully!");
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -192,7 +201,10 @@ function OfficialFramework() {
   );
 
   const renderHeaderButtons = () => (
-    <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
+    <button
+      onClick={() => setUploadModalOpen(true)}
+      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+    >
       <Icon name="plus" size="18px" />
       Add New Framework
     </button>
@@ -214,6 +226,13 @@ function OfficialFramework() {
         renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search framework, code, category..."
         emptyMessage={emptyMessage}
+      />
+
+      {/* Upload Framework Modal */}
+      <UploadFrameworkModal
+        isOpen={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onSuccess={handleUploadSuccess}
       />
     </div>
   );

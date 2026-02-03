@@ -1,4 +1,5 @@
 import Icon from "@/components/Icon";
+import { formatDate } from "../utils/dateFormatter";
 
 const UserMiniCard = ({
   name,
@@ -28,9 +29,9 @@ const UserMiniCard = ({
 
   // NORMAL USER
   return (
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
-        <Icon name="user" size="18px" />
+    <div className="flex items-center gap-2">
+      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
+        <Icon name="user" size="16px" />
       </div>
 
       <div>
@@ -61,7 +62,7 @@ const UserMiniCard = ({
 
         {date && (
           <span className="text-[11px] text-muted-foreground whitespace-nowrap">
-            {date}
+            {formatDate(date)}
           </span>
         )}
       </div>

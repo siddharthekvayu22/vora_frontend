@@ -13,6 +13,8 @@ import { formatDate } from "../../../utils/dateFormatter";
 import RevokeAccessModal from "./components/RevokeAccessModal";
 import AccessViewModal from "./components/AccessViewModal";
 import GiveFrameworkAccessModal from "./components/GiveFrameworkAccessModal";
+import UserMiniCard from "../../../components/UserMiniCard";
+import CustomBadge from "../../../components/CustomBadge";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -174,23 +176,7 @@ function AccessApproved() {
       label: "Expert Name",
       sortable: true,
       render: (value, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <Icon
-              name="user"
-              size="16px"
-              className="text-blue-600 dark:text-blue-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-foreground">
-              {row.expert?.name}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {row.expert?.email}
-            </span>
-          </div>
-        </div>
+        <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
       ),
     },
     {
@@ -232,9 +218,10 @@ function AccessApproved() {
       label: "Status",
       sortable: true,
       render: (value) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
-          {value?.charAt(0).toUpperCase() + value?.slice(1)}
-        </span>
+        <CustomBadge
+          label={value?.charAt(0).toUpperCase() + value?.slice(1)}
+          color={"green"}
+        />
       ),
     },
     {
@@ -242,23 +229,10 @@ function AccessApproved() {
       label: "Approved By",
       sortable: false,
       render: (value, row) => (
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <Icon
-              name="user-check"
-              size="16px"
-              className="text-green-600 dark:text-green-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-foreground text-sm">
-              {row.approval?.approvedBy?.name}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {row.approval?.approvedBy?.email}
-            </span>
-          </div>
-        </div>
+        <UserMiniCard
+          name={row.approval?.approvedBy?.name}
+          email={row.approval?.approvedBy?.email}
+        />
       ),
     },
     {

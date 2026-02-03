@@ -303,17 +303,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           : "border-l-4 border-transparent"
       }`}
     >
-      <td className="px-3 py-2">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+      <td className="px-3 py-2 align-top">
+        <div className="flex items-start gap-2">
+          <div className="w-7 h-7 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
             <Icon
-              name="shield"
+              name="layers"
               size="14px"
               className="text-purple-600 dark:text-purple-400"
             />
           </div>
-          <div className="flex flex-col">
-            <span className="font-medium text-foreground text-sm">
+
+          <div className="flex flex-col min-w-0">
+            <span className="font-medium text-foreground text-sm line-clamp-1">
               {framework.frameworkCategoryName}
             </span>
             <span className="text-xs text-muted-foreground font-mono">
@@ -322,7 +323,8 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           </div>
         </div>
       </td>
-      <td className="px-3 py-2">
+
+      <td className="px-3 py-2 align-top">
         <span className="text-xs text-muted-foreground line-clamp-2 max-w-xs">
           {framework.description}
         </span>

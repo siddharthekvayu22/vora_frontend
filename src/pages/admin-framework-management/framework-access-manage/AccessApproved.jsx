@@ -195,23 +195,6 @@ function AccessApproved() {
       label: "Framework Name",
       sortable: true,
       render: (value, row) => (
-        // <div className="flex items-center gap-3">
-        //   <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-        //     <Icon
-        //       name="shield"
-        //       size="16px"
-        //       className="text-purple-600 dark:text-purple-400"
-        //     />
-        //   </div>
-        //   <div className="flex flex-col">
-        //     <span className="font-medium text-foreground">
-        //       {row.frameworkCategory?.frameworkCategoryName}
-        //     </span>
-        //     <span className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
-        //       {row.frameworkCategory?.description}
-        //     </span>
-        //   </div>
-        // </div>
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
           description={row.frameworkCategory?.description}

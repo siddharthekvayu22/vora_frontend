@@ -195,7 +195,7 @@ function Sidebar() {
           onClick={() => setIsOpen(true)}
           aria-label="Open sidebar"
           className="
-      fixed left-5 top-5 z-50
+      fixed left-2 top-5 z-50
       flex h-11 w-11 items-center justify-center
       rounded-2xl
       bg-gradient-to-br from-primary to-primary/70

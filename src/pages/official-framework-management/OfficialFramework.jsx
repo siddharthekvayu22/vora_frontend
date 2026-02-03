@@ -4,6 +4,8 @@ import { useSearchParams } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
+import UserMiniCard from "../../components/custom/UserMiniCard";
+import FileTypeCard from "../../components/custom/FileTypeCard";
 import { getAllOfficialFrameworks } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -115,7 +117,7 @@ function OfficialFramework() {
     setSortConfig({ sortBy: key, sortOrder: order });
   };
 
-  const handleUploadSuccess = (newFramework) => {
+  const handleUploadSuccess = () => {
     // Refresh the framework list after successful upload
     fetchOfficialFramework();
     toast.success("Framework uploaded successfully!");
@@ -143,36 +145,25 @@ function OfficialFramework() {
     },
     {
       key: "frameworkType",
-      label: "Type",
+      label: "File Info",
       sortable: true,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground uppercase">
-          {value || "PDF"}
-        </span>
-      ),
-    },
-    {
-      key: "fileSize",
-      label: "File Size",
-      sortable: true,
-      render: (value) => (
-        <span className="text-sm text-muted-foreground">{value || "—"}</span>
+      render: (value, row) => (
+        <FileTypeCard
+          fileType={value || row.fileType}
+          fileSize={row.fileSize}
+          fileName={row.fileName || row.frameworkName}
+        />
       ),
     },
     {
       key: "uploadedBy",
       label: "Uploaded By",
       sortable: true,
-      render: (value) => (
-        <div className="flex flex-col">
-          <span className="text-sm font-medium text-foreground">
-            {value?.name || "—"}
-          </span>
-          <span className="text-xs text-muted-foreground">
-            {value?.email || ""}
-          </span>
-        </div>
-      ),
+      render: (value, row) => {
+        return (
+          <UserMiniCard name={value.name} email={value.email} icon="user" />
+        );
+      },
     },
     {
       key: "createdAt",

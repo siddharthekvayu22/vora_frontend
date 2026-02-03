@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
+import SelectDropdown from "../../../../components/custom/SelectDropdown";
 import { getAllUsers } from "../../../../services/userService";
 import {
   getAdminFrameworkCategory,
@@ -450,23 +451,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                     </div>
 
                     {/* Role Filter */}
-                    <div className="relative">
-                      <select
-                        value={usersRoleFilter}
-                        onChange={(e) => handleUserRoleFilter(e.target.value)}
-                        className="pl-3 pr-8 py-1.5 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm min-w-[100px] appearance-none cursor-pointer"
-                      >
-                        <option value="">All Roles</option>
-                        <option value="admin">Admin</option>
-                        <option value="expert">Expert</option>
-                        <option value="company">Company</option>
-                      </select>
-                      <Icon
-                        name="chevron-down"
-                        size="14px"
-                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
-                      />
-                    </div>
+                    <SelectDropdown
+                      value={usersRoleFilter}
+                      onChange={handleUserRoleFilter}
+                      options={[
+                        { value: "", label: "All Roles" },
+                        { value: "admin", label: "Admin" },
+                        { value: "expert", label: "Expert" },
+                        { value: "company", label: "Company" },
+                      ]}
+                      placeholder="All Roles"
+                      size="md"
+                      variant="default"
+                    />
                   </div>
                 </div>
 

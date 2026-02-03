@@ -49,6 +49,7 @@ import {
   MdArrowDownward,
   MdArrowBack,
   MdArrowForward,
+  MdKeyboardArrowDown,
 
   // Time & Calendar
   MdAccessTime,
@@ -173,7 +174,7 @@ const iconMap = {
   "arrow-down": MdArrowDownward,
   "arrow-left": MdArrowBack,
   "arrow-right": MdArrowForward,
-  "chevron-down": FaAngleDown,
+  "chevron-down": MdKeyboardArrowDown,
 
   // Action icons
   plus: MdAdd,

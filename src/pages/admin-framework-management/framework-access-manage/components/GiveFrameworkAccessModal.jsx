@@ -391,7 +391,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             </div>
             <button
               onClick={onClose}
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200"
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               title="Close"
             >
               <Icon name="x" size="18px" />
@@ -648,14 +648,14 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         <div className="flex gap-2 justify-end p-3 border-t border-border">
           <button
             onClick={onClose}
-            className="flex-1 px-3 py-1.5 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"
+            className="flex-1 px-3 py-1.5 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleAssignAccess}
             disabled={!selectedUser || !selectedFramework || assigning}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
           >
             {assigning ? (
               <>

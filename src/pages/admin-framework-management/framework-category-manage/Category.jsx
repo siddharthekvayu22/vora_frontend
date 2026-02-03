@@ -249,54 +249,21 @@ function Category() {
     </div>
   );
 
+  const renderHeaderButtons = () => (
+    <button
+      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+      onClick={() =>
+        setModalState({ isOpen: true, mode: "create", category: null })
+      }
+    >
+      <Icon name="plus" size="18px" />
+      Add New Framework Category
+    </button>
+  );
+
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5 space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-wrap justify-between items-start gap-6 p-6 bg-gradient-to-r from-card to-muted/30 rounded-xl border border-border shadow-sm">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="users" size="20px" className="text-primary" />
-            </div>
-            <div className="">
-              <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Framework Category
-              </h1>
-              <p className="text-muted-foreground text-xs">
-                Manage framework category
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Framework Category:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.totalItems}
-              </span>
-            </span>
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-secondary"></div>
-              Active Page:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.currentPage}
-              </span>
-            </span>
-          </div>
-        </div>
-
-        <button
-          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-          onClick={() =>
-            setModalState({ isOpen: true, mode: "create", category: null })
-          }
-        >
-          <Icon name="plus" size="18px" />
-          Add New Framework Category
-        </button>
-      </div>
-
       {/* Data Table */}
       <DataTable
         columns={columns}
@@ -307,6 +274,7 @@ function Category() {
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
+        renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search category..."
         emptyMessage={emptyMessage}
       />

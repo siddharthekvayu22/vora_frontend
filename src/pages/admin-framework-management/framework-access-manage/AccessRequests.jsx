@@ -276,41 +276,6 @@ function AccessRequests() {
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5 space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-wrap justify-between items-start gap-6 p-6 bg-gradient-to-r from-card to-muted/30 rounded-xl border border-border shadow-sm">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="clock" size="20px" className="text-primary" />
-            </div>
-            <div className="">
-              <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Access Requests
-              </h1>
-              <p className="text-muted-foreground text-xs">
-                Manage access requests
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Access Requests:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.totalItems}
-              </span>
-            </span>
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-secondary"></div>
-              Active Page:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.currentPage}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Data Table */}
       <DataTable
         columns={columns}

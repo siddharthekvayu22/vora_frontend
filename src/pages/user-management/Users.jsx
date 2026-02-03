@@ -14,8 +14,8 @@ import {
   toggleUserStatus,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
-import CustomBadge from "../../components/CustomBadge";
-import UserMiniCard from "../../components/UserMiniCard";
+import CustomBadge from "../../components/custom/CustomBadge";
+import UserMiniCard from "../../components/custom/UserMiniCard";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();

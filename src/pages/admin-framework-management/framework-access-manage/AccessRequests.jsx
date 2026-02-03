@@ -14,9 +14,9 @@ import { formatDate } from "../../../utils/dateFormatter";
 import AccessViewModal from "./components/AccessViewModal";
 import ApproveAccessModal from "./components/ApproveAccessModal";
 import RejectAccessModal from "./components/RejectAccessModal";
-import UserMiniCard from "../../../components/UserMiniCard";
-import FrameworkMiniCard from "../../../components/FrameworkMiniCard";
-import CustomBadge from "../../../components/CustomBadge";
+import UserMiniCard from "../../../components/custom/UserMiniCard";
+import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
+import CustomBadge from "../../../components/custom/CustomBadge";
 
 function AccessRequests() {
   const [accessRequests, setAccessRequests] = useState([]);

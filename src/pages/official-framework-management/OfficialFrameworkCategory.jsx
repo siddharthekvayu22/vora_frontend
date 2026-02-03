@@ -6,7 +6,7 @@ import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategory } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import RequestAccessModal from "./components/RequestAccessModal";
-import CustomBadge from "../../components/CustomBadge";
+import CustomBadge from "../../components/custom/CustomBadge";
 
 function OfficialFrameworkCategory() {
   const [officialFrameworkCategory, setOfficialFrameworkCategory] = useState(

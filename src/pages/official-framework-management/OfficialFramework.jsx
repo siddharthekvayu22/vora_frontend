@@ -149,9 +149,9 @@ function OfficialFramework() {
       sortable: true,
       render: (value, row) => (
         <FileTypeCard
-          fileType={value || row.fileType}
-          fileSize={row.fileSize}
-          fileName={row.fileName || row.frameworkName}
+          fileType={value || row.frameworkType}
+          fileSize={row.fileInfo?.fileSize}
+          fileName={row.fileInfo?.originalFileName || row.frameworkName}
         />
       ),
     },
@@ -182,8 +182,8 @@ function OfficialFramework() {
         title="Download Framework"
         onClick={() => {
           // Handle download framework
-          if (row.fileUrl) {
-            window.open(row.fileUrl, "_blank");
+          if (row.fileInfo?.fileUrl) {
+            window.open(row.fileInfo.fileUrl, "_blank");
           }
         }}
       >

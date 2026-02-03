@@ -178,16 +178,6 @@ function OfficialFramework() {
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
       <button
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="View Framework"
-        onClick={() => {
-          // Handle view framework
-          console.log("View framework:", row);
-        }}
-      >
-        <Icon name="eye" size="16px" />
-      </button>
-      <button
         className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
         title="Download Framework"
         onClick={() => {

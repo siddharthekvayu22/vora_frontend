@@ -21,8 +21,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     frameworkCategoryId: "",
     frameworkName: "",
     frameworkCode: "",
-    version: "",
-    description: "",
     file: null,
   });
 
@@ -120,9 +118,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     if (!formData.frameworkCode.trim()) {
       newErrors.frameworkCode = "Framework code is required";
     }
-    if (!formData.version.trim()) {
-      newErrors.version = "Version is required";
-    }
     if (!formData.file) {
       newErrors.file = "Framework file is required";
     }
@@ -152,15 +147,13 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         frameworkCode: formData.frameworkCode,
         frameworkCategoryId: formData.frameworkCategoryId,
         frameworkName: formData.frameworkName,
-        version: formData.version,
-        description: formData.description,
       };
       uploadFormData.append("metadata", JSON.stringify(metadata));
 
       // Upload framework using the service
       const result = await uploadFramework(uploadFormData);
 
-      toast.success("Framework uploaded successfully!");
+      toast.success(result.message || "Framework uploaded successfully!");
       onSuccess?.(result.data);
       handleClose();
     } catch (error) {
@@ -177,8 +170,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       frameworkCategoryId: "",
       frameworkName: "",
       frameworkCode: "",
-      version: "",
-      description: "",
       file: null,
     });
     setErrors({});
@@ -307,35 +298,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                 {errors.frameworkCode && (
                   <span className="error-message">{errors.frameworkCode}</span>
                 )}
-              </div>
-
-              {/* Version */}
-              <div className="form-group">
-                <label className="form-label">
-                  Version <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-input ${errors.version ? "error" : ""}`}
-                  value={formData.version}
-                  onChange={(e) => handleChange("version", e.target.value)}
-                  placeholder="e.g., 1.0, 2022, v1.2"
-                />
-                {errors.version && (
-                  <span className="error-message">{errors.version}</span>
-                )}
-              </div>
-
-              {/* Description */}
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-input"
-                  value={formData.description}
-                  onChange={(e) => handleChange("description", e.target.value)}
-                  placeholder="Brief description of the framework..."
-                  rows={3}
-                />
               </div>
 
               {/* File Upload */}

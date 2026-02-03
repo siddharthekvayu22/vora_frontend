@@ -142,40 +142,41 @@ function OfficialFramework() {
       ),
     },
     {
-      key: "category",
-      label: "Category",
+      key: "frameworkType",
+      label: "Type",
       sortable: true,
       render: (value) => (
-        <span className="text-sm text-muted-foreground">
-          {value?.frameworkCategoryName || "—"}
+        <span className="text-sm text-muted-foreground uppercase">
+          {value || "PDF"}
         </span>
       ),
     },
     {
-      key: "version",
-      label: "Version",
-      sortable: true,
-      render: (value) => <span className="text-sm">{value || "—"}</span>,
-    },
-    {
-      key: "isActive",
-      label: "Status",
+      key: "fileSize",
+      label: "File Size",
       sortable: true,
       render: (value) => (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            value
-              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-          }`}
-        >
-          {value ? "Active" : "Inactive"}
-        </span>
+        <span className="text-sm text-muted-foreground">{value || "—"}</span>
+      ),
+    },
+    {
+      key: "uploadedBy",
+      label: "Uploaded By",
+      sortable: true,
+      render: (value) => (
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-foreground">
+            {value?.name || "—"}
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {value?.email || ""}
+          </span>
+        </div>
       ),
     },
     {
       key: "createdAt",
-      label: "Created At",
+      label: "Uploaded At",
       sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
@@ -187,13 +188,33 @@ function OfficialFramework() {
     <div className="flex gap-1 justify-center">
       <button
         className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Edit Category"
+        title="View Framework"
+        onClick={() => {
+          // Handle view framework
+          console.log("View framework:", row);
+        }}
       >
-        <Icon name="edit" size="16px" />
+        <Icon name="eye" size="16px" />
+      </button>
+      <button
+        className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+        title="Download Framework"
+        onClick={() => {
+          // Handle download framework
+          if (row.fileUrl) {
+            window.open(row.fileUrl, "_blank");
+          }
+        }}
+      >
+        <Icon name="download" size="16px" />
       </button>
       <button
         className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Delete Category"
+        title="Delete Framework"
+        onClick={() => {
+          // Handle delete framework
+          console.log("Delete framework:", row);
+        }}
       >
         <Icon name="trash" size="16px" />
       </button>
@@ -224,7 +245,7 @@ function OfficialFramework() {
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
-        searchPlaceholder="Search framework, code, category..."
+        searchPlaceholder="Search framework name, code, or uploader..."
         emptyMessage={emptyMessage}
       />
 

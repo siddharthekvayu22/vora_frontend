@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 import SelectDropdown from "../../../components/custom/SelectDropdown";
+import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
   uploadFramework,
@@ -86,15 +87,26 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type (PDF only)
-      if (file.type !== "application/pdf") {
-        toast.error("Only PDF files are allowed");
+      // Define allowed file types - only Word, Excel, and PDF
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ];
+
+      // Validate file type
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(
+          "File type not supported. Please upload PDF, DOC, DOCX, XLS, or XLSX files.",
+        );
         return;
       }
 
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error("File size must be less than 10MB");
+      // Validate file size (max 50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error("File size must be less than 50MB");
         return;
       }
 
@@ -102,6 +114,16 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       if (errors.file) {
         setErrors((prev) => ({ ...prev, file: "" }));
       }
+    }
+  };
+
+  // Handle file removal
+  const handleFileRemove = () => {
+    setFormData((prev) => ({ ...prev, file: null }));
+    // Reset the file input
+    const fileInput = document.getElementById("framework-file");
+    if (fileInput) {
+      fileInput.value = "";
     }
   };
 
@@ -303,38 +325,72 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               {/* File Upload */}
               <div className="form-group">
                 <label className="form-label">
-                  Framework File (PDF) <span className="required">*</span>
+                  Framework File <span className="required">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx"
                     onChange={handleFileChange}
                     className="hidden"
                     id="framework-file"
                   />
-                  <label
-                    htmlFor="framework-file"
-                    className={`flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                      errors.file ? "border-red-500" : "border-border"
-                    }`}
-                  >
-                    <div className="text-center">
-                      <Icon
-                        name="upload"
-                        size="32px"
-                        className="text-muted-foreground mb-2 mx-auto"
-                      />
-                      <p className="text-sm font-medium text-foreground">
-                        {formData.file
-                          ? formData.file.name
-                          : "Click to upload PDF file"}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Maximum file size: 10MB
-                      </p>
+
+                  {!formData.file ? (
+                    <label
+                      htmlFor="framework-file"
+                      className={`flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
+                        errors.file ? "border-red-500" : "border-border"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <Icon
+                          name="upload"
+                          size="32px"
+                          className="text-muted-foreground mb-2 mx-auto"
+                        />
+                        <p className="text-sm font-medium text-foreground">
+                          Click to upload framework file
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Supports: PDF, DOC, DOCX, XLS, XLSX
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Maximum file size: 50MB
+                        </p>
+                      </div>
+                    </label>
+                  ) : (
+                    <div
+                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
+                        errors.file
+                          ? "border-red-500"
+                          : "border-green-200 bg-green-50 dark:bg-green-900/20"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <FileTypeCard
+                          fileName={formData.file.name}
+                          fileSize={formData.file.size}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <label
+                          htmlFor="framework-file"
+                          className="px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
+                        >
+                          Change
+                        </label>
+                        <button
+                          type="button"
+                          onClick={handleFileRemove}
+                          className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
-                  </label>
+                  )}
                 </div>
                 {errors.file && (
                   <span className="error-message">{errors.file}</span>

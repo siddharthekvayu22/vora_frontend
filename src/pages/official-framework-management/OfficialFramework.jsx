@@ -174,6 +174,30 @@ function OfficialFramework() {
     },
   ];
 
+  const renderActions = (row) => (
+    <div className="flex gap-1 justify-center">
+      <button
+        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+        title="Edit Category"
+      >
+        <Icon name="edit" size="16px" />
+      </button>
+      <button
+        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+        title="Delete Category"
+      >
+        <Icon name="trash" size="16px" />
+      </button>
+    </div>
+  );
+
+  const renderHeaderButtons = () => (
+    <button className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer">
+      <Icon name="plus" size="18px" />
+      Add New Framework
+    </button>
+  );
+
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5">
@@ -186,6 +210,8 @@ function OfficialFramework() {
         onSort={handleSort}
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
+        renderActions={renderActions}
+        renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search framework, code, category..."
         emptyMessage={emptyMessage}
       />

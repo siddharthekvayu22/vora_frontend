@@ -278,23 +278,25 @@ function OfficialFrameworkAccess() {
 
   const renderActions = (row) => {
     const isPending = row.status === "pending";
+    const isApproved = row.status === "approved";
+    const isDisabled = isPending || isApproved;
 
     return (
       <div className="flex gap-1 justify-center">
         <button
           onClick={() =>
-            !isPending && setRequestModalState({ isOpen: true, framework: row })
+            !isDisabled &&
+            setRequestModalState({ isOpen: true, framework: row })
           }
-          disabled={isPending}
+          disabled={isDisabled}
           className={`px-3 py-2 rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
-            isPending
+            isDisabled
               ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
               : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
           }`}
-          title={isPending ? "Request already pending" : "Request Access"}
         >
           <Icon name="plus" size="12px" />
-          {isPending ? "Pending" : "Request"}
+          {isPending ? "Pending" : isApproved ? "Approved" : "Request"}
         </button>
       </div>
     );

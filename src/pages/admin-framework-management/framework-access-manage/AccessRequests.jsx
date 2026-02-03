@@ -3,9 +3,20 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getAdminFrameworkAccessRequests } from "../../../services/adminService";
+import {
+  getAdminFrameworkAccessRequests,
+  approveFrameworkAccessRequest,
+  rejectFrameworkAccessRequest,
+} from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
+import { formatDate } from "../../../utils/dateFormatter";
+import AccessViewModal from "./components/AccessViewModal";
+import ApproveAccessModal from "./components/ApproveAccessModal";
+import RejectAccessModal from "./components/RejectAccessModal";
+import UserMiniCard from "../../../components/UserMiniCard";
+import FrameworkMiniCard from "../../../components/FrameworkMiniCard";
+import CustomBadge from "../../../components/CustomBadge";
 
 function AccessRequests() {
   const [accessRequests, setAccessRequests] = useState([]);
@@ -26,6 +37,21 @@ function AccessRequests() {
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
+  });
+
+  const [viewModalState, setViewModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
+  });
+
+  const [approveModalState, setApproveModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
+  });
+
+  const [rejectModalState, setRejectModalState] = useState({
+    isOpen: false,
+    accessRecord: null,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -115,64 +141,141 @@ function AccessRequests() {
     setSortConfig({ sortBy: key, sortOrder: order });
   };
 
-  /* ---------------- TABLE CONFIG ---------------- */
-  const columns = [];
+  /* ---------------- APPROVE/REJECT ACCESS ---------------- */
+  const handleApproveAccess = async () => {
+    try {
+      const accessRecord = approveModalState.accessRecord;
+      const requestId = accessRecord?.id;
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Approve Request"
-      >
-        <Icon name="check" size="16px" />
-      </button>
-      <button
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Reject Request"
-      >
-        <Icon name="x" size="16px" />
-      </button>
-    </div>
-  );
+      if (!requestId) {
+        toast.error("Invalid access record. Cannot approve access.");
+        console.error("Access record:", accessRecord);
+        return;
+      }
+
+      const response = await approveFrameworkAccessRequest(requestId);
+      toast.success(
+        response.message || "Framework access approved successfully",
+      );
+      setApproveModalState({ isOpen: false, accessRecord: null });
+      fetchAccessRequests();
+    } catch (e) {
+      toast.error(e.message || "Failed to approve framework access");
+      console.error("Approve access error:", e);
+    }
+  };
+
+  const handleRejectAccess = async () => {
+    try {
+      const accessRecord = rejectModalState.accessRecord;
+      const requestId = accessRecord?.id;
+
+      if (!requestId) {
+        toast.error("Invalid access record. Cannot reject access.");
+        console.error("Access record:", accessRecord);
+        return;
+      }
+
+      const response = await rejectFrameworkAccessRequest(requestId);
+      toast.success(
+        response.message || "Framework access rejected successfully",
+      );
+      setRejectModalState({ isOpen: false, accessRecord: null });
+      fetchAccessRequests();
+    } catch (e) {
+      toast.error(e.message || "Failed to reject framework access");
+      console.error("Reject access error:", e);
+    }
+  };
+
+  /* ---------------- TABLE CONFIG ---------------- */
+  const columns = [
+    {
+      key: "expert.name",
+      label: "Expert Name",
+      sortable: true,
+      render: (value, row) => (
+        <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
+      ),
+    },
+    {
+      key: "frameworkCategory.frameworkCode",
+      label: "Framework Code",
+      sortable: true,
+      render: (value, row) => (
+        <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
+          {row.frameworkCategory?.frameworkCode}
+        </span>
+      ),
+    },
+    {
+      key: "frameworkCategory.frameworkCategoryName",
+      label: "Framework Name",
+      sortable: true,
+      render: (value, row) => (
+        <FrameworkMiniCard
+          name={row.frameworkCategory?.frameworkCategoryName}
+          description={row.frameworkCategory?.description}
+        />
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      sortable: true,
+      render: (value) => (
+        <CustomBadge
+          label={value?.charAt(0).toUpperCase() + value?.slice(1)}
+          color={"yellow"}
+        />
+      ),
+    },
+    {
+      key: "createdAt",
+      label: "Created At",
+      sortable: true,
+      render: (value) => (
+        <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
+      ),
+    },
+  ];
+
+  const renderActions = (row) => {
+    return (
+      <div className="flex gap-1 justify-center">
+        <button
+          onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
+          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="View Details"
+        >
+          <Icon name="eye" size="16px" />
+        </button>
+
+        <button
+          onClick={() =>
+            setApproveModalState({ isOpen: true, accessRecord: row })
+          }
+          className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Approve Request"
+        >
+          <Icon name="check" size="16px" />
+        </button>
+        <button
+          onClick={() =>
+            setRejectModalState({ isOpen: true, accessRecord: row })
+          }
+          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Reject Request"
+        >
+          <Icon name="x" size="16px" />
+        </button>
+      </div>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5 space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-wrap justify-between items-start gap-6 p-6 bg-gradient-to-r from-card to-muted/30 rounded-xl border border-border shadow-sm">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="clock" size="20px" className="text-primary" />
-            </div>
-            <div className="">
-              <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                Access Requests
-              </h1>
-              <p className="text-muted-foreground text-xs">
-                Manage access requests
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Pending Requests:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.totalItems}
-              </span>
-            </span>
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-secondary"></div>
-              Active Page:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.currentPage}
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Data Table */}
       <DataTable
         columns={columns}
@@ -186,6 +289,35 @@ function AccessRequests() {
         searchPlaceholder="Search access requests..."
         emptyMessage={emptyMessage}
       />
+
+      {viewModalState.isOpen && (
+        <AccessViewModal
+          accessRecord={viewModalState.accessRecord}
+          onClose={() =>
+            setViewModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
+
+      {approveModalState.isOpen && (
+        <ApproveAccessModal
+          accessRecord={approveModalState.accessRecord}
+          onConfirm={handleApproveAccess}
+          onCancel={() =>
+            setApproveModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
+
+      {rejectModalState.isOpen && (
+        <RejectAccessModal
+          accessRecord={rejectModalState.accessRecord}
+          onConfirm={handleRejectAccess}
+          onCancel={() =>
+            setRejectModalState({ isOpen: false, accessRecord: null })
+          }
+        />
+      )}
     </div>
   );
 }

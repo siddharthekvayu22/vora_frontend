@@ -51,7 +51,7 @@ function Sidebar() {
             id: "framework-access",
             title: "Access Approved",
             description: "Manage approved access",
-            icon: "shield",
+            icon: "check-circle",
             path: "/framework-access/approved",
           },
           {
@@ -60,6 +60,20 @@ function Sidebar() {
             description: "Manage access requests",
             icon: "clock",
             path: "/framework-access/requests",
+          },
+          {
+            id: "framework-access-rejected",
+            title: "Access Rejected",
+            description: "View rejected access",
+            icon: "x-circle",
+            path: "/framework-access/rejected",
+          },
+          {
+            id: "framework-access-revoked",
+            title: "Access Revoked",
+            description: "View revoked access",
+            icon: "user-minus",
+            path: "/framework-access/revoked",
           },
         ],
       },
@@ -81,11 +95,33 @@ function Sidebar() {
         path: "/dashboard",
       },
       {
-        id: "frameworks",
-        title: "Frameworks",
-        description: "Compliance frameworks",
+        id: "official-framework-management",
+        title: "Framework Management",
+        description: "Manage framework & access",
         icon: "framework",
-        path: "/frameworks",
+        children: [
+          {
+            id: "official-framework",
+            title: "Frameworks",
+            description: "Official frameworks",
+            icon: "framework",
+            path: "/official-frameworks",
+          },
+          {
+            id: "official-framework-category",
+            title: "Framework Category",
+            description: "Official framework category",
+            icon: "framework",
+            path: "/official-framework-category",
+          },
+          {
+            id: "official-framework-access",
+            title: "Framework Access",
+            description: "Official framework access",
+            icon: "framework",
+            path: "/official-framework-access",
+          },
+        ],
       },
       {
         id: "reports",
@@ -159,7 +195,7 @@ function Sidebar() {
           onClick={() => setIsOpen(true)}
           aria-label="Open sidebar"
           className="
-      fixed left-5 top-5 z-50
+      fixed left-2 top-5 z-50
       flex h-11 w-11 items-center justify-center
       rounded-2xl
       bg-gradient-to-br from-primary to-primary/70

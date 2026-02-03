@@ -28,6 +28,20 @@ export function getAdminFrameworkAccessRequests() {
 }
 
 /**
+ * Get admin framework access rejected
+ */
+export function getAdminFrameworkAccessRejected() {
+  return apiRequest("/admin/framework-access/access/rejected", true);
+}
+
+/**
+ * Get admin framework access revoked
+ */
+export function getAdminFrameworkAccessRevoked() {
+  return apiRequest("/admin/framework-access/access/revoked", true);
+}
+
+/**
  * Create framework category
  */
 export function createFrameworkCategory(categoryData) {
@@ -68,12 +82,70 @@ export function deleteFrameworkCategory(categoryId) {
   );
 }
 
+/**
+ * Revoke framework access
+ */
+export function revokeFrameworkAccess(expertId, frameworkId) {
+  return apiRequest(
+    `/admin/framework-access/access/revoke/${expertId}/${frameworkId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
+/**
+ * Approve framework access request
+ */
+export function approveFrameworkAccessRequest(requestId) {
+  return apiRequest(
+    `/admin/framework-access/access/approve/${requestId}`,
+    {
+      method: "PUT",
+    },
+    true,
+  );
+}
+
+/**
+ * Reject framework access request
+ */
+export function rejectFrameworkAccessRequest(requestId) {
+  return apiRequest(
+    `/admin/framework-access/access/reject/${requestId}`,
+    {
+      method: "PUT",
+    },
+    true,
+  );
+}
+
+/**
+ * Assign framework access directly
+ */
+export function assignFrameworkAccess(expertId, frameworkId) {
+  return apiRequest(
+    `/admin/framework-access/access/${expertId}/${frameworkId}/assign`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
 export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
   getAdminFrameworkAccessRequests,
+  getAdminFrameworkAccessRejected,
+  getAdminFrameworkAccessRevoked,
   createFrameworkCategory,
   updateFrameworkCategory,
   deleteFrameworkCategory,
+  revokeFrameworkAccess,
+  approveFrameworkAccessRequest,
+  rejectFrameworkAccessRequest,
+  assignFrameworkAccess,
 };

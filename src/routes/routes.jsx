@@ -9,13 +9,15 @@ import Dashboard from "../pages/dashboard-management/Dashboard";
 import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
 import Users from "../pages/user-management/Users";
 import UserDetails from "../pages/user-management/UserDetails";
-import Documents from "../pages/document-management/Documents";
-import Frameworks from "../pages/framework-management/Frameworks";
-import FrameworkDetails from "../pages/framework-management/FrameworkDetails";
 import Profile from "../pages/profile-management/Profile";
 import Category from "../pages/admin-framework-management/framework-category-manage/Category";
 import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
 import AccessRequests from "../pages/admin-framework-management/framework-access-manage/AccessRequests";
+import AccessRejected from "../pages/admin-framework-management/framework-access-manage/AccessRejected";
+import AccessRevoked from "../pages/admin-framework-management/framework-access-manage/AccessRevoked";
+import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
+import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
+import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -137,6 +139,56 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/framework-access/rejected"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AccessRejected />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/framework-access/revoked"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <AccessRevoked />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/official-frameworks"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OfficialFramework />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/official-framework-category"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OfficialFrameworkCategory />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/official-framework-access"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <OfficialFrameworkAccess />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/users"
         element={
           <ProtectedRoute>
@@ -152,36 +204,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <UserDetails />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/documents"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Documents />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/frameworks"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Frameworks />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/frameworks/:id"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <FrameworkDetails />
             </Layout>
           </ProtectedRoute>
         }

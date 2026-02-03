@@ -3,25 +3,20 @@ import { useCallback } from "react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import {
-  getAdminFrameworkAccess,
-  revokeFrameworkAccess,
-} from "../../../services/adminService";
+import { getAdminFrameworkAccessRevoked } from "../../../services/adminService";
 import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
-import RevokeAccessModal from "./components/RevokeAccessModal";
 import AccessViewModal from "./components/AccessViewModal";
-import GiveFrameworkAccessModal from "./components/GiveFrameworkAccessModal";
 import UserMiniCard from "../../../components/UserMiniCard";
-import CustomBadge from "../../../components/CustomBadge";
 import FrameworkMiniCard from "../../../components/FrameworkMiniCard";
+import CustomBadge from "../../../components/CustomBadge";
 
-function AccessApproved() {
-  const [accessApproved, setAccessApproved] = useState([]);
+function AccessRevoked() {
+  const [accessRevoked, setAccessRevoked] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState("No approved access found");
+  const [emptyMessage, setEmptyMessage] = useState("No revoked access found");
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -38,18 +33,9 @@ function AccessApproved() {
     sortOrder: "desc",
   });
 
-  const [revokeModalState, setRevokeModalState] = useState({
-    isOpen: false,
-    accessRecord: null,
-  });
-
   const [viewModalState, setViewModalState] = useState({
     isOpen: false,
     accessRecord: null,
-  });
-
-  const [giveAccessModalState, setGiveAccessModalState] = useState({
-    isOpen: false,
   });
 
   /* ---------------- URL SYNC ---------------- */
@@ -64,11 +50,11 @@ function AccessApproved() {
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
-  /* ---------------- FETCH ACCESS APPROVED ---------------- */
-  const fetchAccessApproved = useCallback(async () => {
+  /* ---------------- FETCH ACCESS REVOKED ---------------- */
+  const fetchAccessRevoked = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getAdminFrameworkAccess({
+      const res = await getAdminFrameworkAccessRevoked({
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
@@ -76,7 +62,7 @@ function AccessApproved() {
         sortOrder: sortConfig.sortOrder,
       });
 
-      setAccessApproved(res.data || []);
+      setAccessRevoked(res.data || []);
 
       // Set the message from backend response, especially for empty results
       if (res.message && res.data?.length === 0) {
@@ -85,9 +71,9 @@ function AccessApproved() {
         searchTerm &&
         (res.users?.length === 0 || res.data?.length === 0)
       ) {
-        setEmptyMessage(`No approved access for "${searchTerm}"`);
+        setEmptyMessage(`No revoked access for "${searchTerm}"`);
       } else {
-        setEmptyMessage("No approved access");
+        setEmptyMessage("No revoked access");
       }
 
       setPagination((p) => ({
@@ -98,17 +84,17 @@ function AccessApproved() {
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
     } catch (err) {
-      toast.error(err.message || "Failed to load approved access");
-      setAccessApproved([]);
-      setEmptyMessage("Failed to load approved access");
+      toast.error(err.message || "Failed to load revoked access");
+      setAccessRevoked([]);
+      setEmptyMessage("Failed to load revoked access");
     } finally {
       setLoading(false);
     }
   }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
 
   useEffect(() => {
-    fetchAccessApproved();
-  }, [fetchAccessApproved]);
+    fetchAccessRevoked();
+  }, [fetchAccessRevoked]);
 
   /* ---------------- HANDLERS ---------------- */
   const handlePageChange = (page) => {
@@ -137,37 +123,6 @@ function AccessApproved() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
-  };
-
-  /* ---------------- REVOKE ACCESS ---------------- */
-  const handleRevokeAccess = async () => {
-    try {
-      const accessRecord = revokeModalState.accessRecord;
-      const expertId = accessRecord?.expert?.id;
-      const frameworkId = accessRecord?.frameworkCategory?.frameworkId;
-
-      if (!expertId || !frameworkId) {
-        toast.error("Invalid access record. Cannot revoke access.");
-        console.error("Access record:", accessRecord);
-        return;
-      }
-
-      const response = await revokeFrameworkAccess(expertId, frameworkId);
-      toast.success(
-        response.message || "Framework access revoked successfully",
-      );
-      setRevokeModalState({ isOpen: false, accessRecord: null });
-      fetchAccessApproved();
-    } catch (e) {
-      toast.error(e.message || "Failed to revoke framework access");
-      console.error("Revoke access error:", e);
-    }
-  };
-
-  /* ---------------- GIVE ACCESS SUCCESS ---------------- */
-  const handleGiveAccessSuccess = () => {
-    setGiveAccessModalState({ isOpen: false });
-    fetchAccessApproved();
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -208,28 +163,28 @@ function AccessApproved() {
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
-          color={"green"}
+          color={"red"}
         />
       ),
     },
     {
-      key: "approval.approvedBy.name",
-      label: "Approved By",
+      key: "revocation.revokedBy.name",
+      label: "Revoked By",
       sortable: false,
       render: (value, row) => (
         <UserMiniCard
-          name={row.approval?.approvedBy?.name}
-          email={row.approval?.approvedBy?.email}
+          name={row.revocation?.revokedBy?.name}
+          email={row.revocation?.revokedBy?.email}
         />
       ),
     },
     {
-      key: "approval.approvedAt",
-      label: "Approved At",
+      key: "revocation.revokedAt",
+      label: "Revoked At",
       sortable: true,
       render: (value, row) => (
         <span className="text-sm whitespace-nowrap">
-          {formatDate(row.approval?.approvedAt)}
+          {formatDate(row.revocation?.revokedAt)}
         </span>
       ),
     },
@@ -237,6 +192,7 @@ function AccessApproved() {
 
   const renderActions = (row) => (
     <div className="flex gap-1 justify-center">
+      {/* View button - always shown */}
       <button
         onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
         className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
@@ -244,25 +200,7 @@ function AccessApproved() {
       >
         <Icon name="eye" size="16px" />
       </button>
-
-      <button
-        onClick={() => setRevokeModalState({ isOpen: true, accessRecord: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Revoke Access"
-      >
-        <Icon name="trash" size="16px" />
-      </button>
     </div>
-  );
-
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() => setGiveAccessModalState({ isOpen: true })}
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Give Framework Access
-    </button>
   );
 
   /* ---------------- UI ---------------- */
@@ -271,27 +209,16 @@ function AccessApproved() {
       {/* Data Table */}
       <DataTable
         columns={columns}
-        data={accessApproved}
+        data={accessRevoked}
         loading={loading}
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        renderHeaderActions={renderHeaderButtons}
-        searchPlaceholder="Search approved access..."
+        searchPlaceholder="Search revoked access..."
         emptyMessage={emptyMessage}
       />
-
-      {revokeModalState.isOpen && (
-        <RevokeAccessModal
-          accessRecord={revokeModalState.accessRecord}
-          onConfirm={handleRevokeAccess}
-          onCancel={() =>
-            setRevokeModalState({ isOpen: false, accessRecord: null })
-          }
-        />
-      )}
 
       {viewModalState.isOpen && (
         <AccessViewModal
@@ -301,15 +228,8 @@ function AccessApproved() {
           }
         />
       )}
-
-      {giveAccessModalState.isOpen && (
-        <GiveFrameworkAccessModal
-          onSuccess={handleGiveAccessSuccess}
-          onClose={() => setGiveAccessModalState({ isOpen: false })}
-        />
-      )}
     </div>
   );
 }
 
-export default AccessApproved;
+export default AccessRevoked;

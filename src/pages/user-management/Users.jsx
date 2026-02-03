@@ -14,6 +14,8 @@ import {
   toggleUserStatus,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
+import CustomBadge from "../../components/CustomBadge";
+import UserMiniCard from "../../components/UserMiniCard";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -203,36 +205,13 @@ function Users() {
       key: "name",
       label: "Name",
       sortable: true,
-      render: (value, row) => {
-        return (
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
-              <Icon name="user" size="18px" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground whitespace-nowrap block capitalize">
-                  {value}
-                </span>
-                {row.isEmailVerified ? (
-                  <div
-                    className={`w-2 h-2 rounded-full bg-green-500 cursor-pointer`}
-                    title="Email verified"
-                  ></div>
-                ) : (
-                  <div
-                    className={`w-2 h-2 rounded-full bg-yellow-500 cursor-pointer`}
-                    title="Email verified pending"
-                  ></div>
-                )}
-              </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {row.email}
-              </span>
-            </div>
-          </div>
-        );
-      },
+      render: (value, row) => (
+        <UserMiniCard
+          name={value}
+          email={row.email}
+          isEmailVerified={row.isEmailVerified}
+        />
+      ),
     },
     {
       key: "phone",
@@ -250,48 +229,17 @@ function Users() {
       label: "Role",
       sortable: true,
       render: (v) => {
-        const getRoleStyles = (role) => {
-          switch (role?.toLowerCase()) {
-            case "admin":
-              return {
-                bg: "bg-red-100 dark:bg-red-900/30",
-                text: "text-red-700 dark:text-red-400",
-                border: "border-red-200 dark:border-red-800",
-                dot: "bg-red-500",
-              };
-            case "expert":
-              return {
-                bg: "bg-blue-100 dark:bg-blue-900/30",
-                text: "text-blue-700 dark:text-blue-400",
-                border: "border-blue-200 dark:border-blue-800",
-                dot: "bg-blue-500",
-              };
-            case "company":
-              return {
-                bg: "bg-green-100 dark:bg-green-900/30",
-                text: "text-green-700 dark:text-green-400",
-                border: "border-green-200 dark:border-green-800",
-                dot: "bg-green-500",
-              };
-            default:
-              return {
-                bg: "bg-gray-100 dark:bg-gray-900/30",
-                text: "text-gray-700 dark:text-gray-400",
-                border: "border-gray-200 dark:border-gray-800",
-                dot: "bg-gray-500",
-              };
-          }
+        const ROLE_COLOR = {
+          admin: "red",
+          expert: "blue",
+          company: "green",
         };
 
-        const styles = getRoleStyles(v);
-
         return (
-          <span
-            className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold capitalize ${styles.bg} ${styles.text} border ${styles.border}`}
-          >
-            <div className={`w-2 h-2 rounded-full ${styles.dot}`}></div>
-            {v}
-          </span>
+          <CustomBadge
+            label={v}
+            color={ROLE_COLOR[v?.toLowerCase()] || "gray"}
+          />
         );
       },
     },
@@ -300,20 +248,10 @@ function Users() {
       label: "Status",
       sortable: true,
       render: (v) => (
-        <span
-          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ${
-            v
-              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
-              : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800"
-          }`}
-        >
-          <div
-            className={`w-2 h-2 rounded-full ${
-              v ? "bg-green-500" : "bg-red-500"
-            }`}
-          ></div>
-          {v ? "Active" : "Inactive"}
-        </span>
+        <CustomBadge
+          label={v ? "Active" : "Inactive"}
+          color={v ? "green" : "red"}
+        />
       ),
     },
     {
@@ -321,60 +259,21 @@ function Users() {
       label: "Created By",
       sortable: true,
       render: (value, row) => {
-        // If createdBy is "self", show self-created
         if (row.createdBy === "self") {
+          return <UserMiniCard isSelf />;
+        }
+
+        if (value?.name) {
           return (
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 flex items-center justify-center text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800">
-                <Icon name="user-check" size="18px" />
-              </div>
-              <div>
-                <span className="font-semibold text-foreground block whitespace-nowrap">
-                  Self Created
-                </span>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  User Registration
-                </span>
-              </div>
-            </div>
+            <UserMiniCard
+              name={value.name}
+              email={value.email}
+              date={value.createdAt}
+            />
           );
         }
 
-        // If createdByAdmin exists, show admin info
-        if (value && value.name) {
-          return (
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                <Icon name="user" size="18px" />
-              </div>
-              <div>
-                <span className="font-semibold text-foreground block whitespace-nowrap capitalize">
-                  {value.name}
-                </span>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  {value.email}
-                </span>
-              </div>
-            </div>
-          );
-        }
-
-        // Fallback for unknown cases
-        return (
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900/30 dark:to-gray-800/20 flex items-center justify-center text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-800">
-              <Icon name="help-circle" size="18px" />
-            </div>
-            <div>
-              <span className="font-semibold text-foreground block whitespace-nowrap">
-                Unknown
-              </span>
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                Creator Unknown
-              </span>
-            </div>
-          </div>
-        );
+        return "-";
       },
     },
     {
@@ -384,9 +283,7 @@ function Users() {
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="calendar" size="14px" className="text-muted-foreground" />
-          <span className="text-foreground whitespace-nowrap">
-            {formatDate(value)}
-          </span>
+          <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
         </div>
       ),
     },
@@ -422,54 +319,21 @@ function Users() {
     </div>
   );
 
+  const renderHeaderButtons = () => (
+    <button
+      onClick={() =>
+        setModalState({ isOpen: true, mode: "create", user: null })
+      }
+      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+    >
+      <Icon name="plus" size="18px" />
+      Add New User
+    </button>
+  );
+
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5 space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-wrap justify-between items-start gap-6 p-6 bg-gradient-to-r from-card to-muted/30 rounded-xl border border-border shadow-sm">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon name="users" size="20px" className="text-primary" />
-            </div>
-            <div className="">
-              <h1 className="text-xl font-bold text-foreground flex items-center gap-3">
-                User Management
-              </h1>
-              <p className="text-muted-foreground text-xs">
-                Manage system users and their permissions
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mt-3">
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary"></div>
-              Total Users:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.totalItems}
-              </span>
-            </span>
-            <span className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-secondary"></div>
-              Active Page:{" "}
-              <span className="font-medium text-foreground">
-                {pagination.currentPage}
-              </span>
-            </span>
-          </div>
-        </div>
-
-        <button
-          onClick={() =>
-            setModalState({ isOpen: true, mode: "create", user: null })
-          }
-          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-        >
-          <Icon name="plus" size="18px" />
-          Add New User
-        </button>
-      </div>
-
       {/* Data Table */}
       <DataTable
         columns={columns}
@@ -480,6 +344,7 @@ function Users() {
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
+        renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search users by name, email, or phone..."
         emptyMessage={emptyMessage}
       />

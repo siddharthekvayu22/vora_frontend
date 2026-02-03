@@ -109,6 +109,7 @@ import {
   HiOutlineDocumentText,
   HiOutlineClipboardList,
 } from "react-icons/hi";
+import { FaAngleDown } from "react-icons/fa";
 
 // Icon mapping from old names to React Icons components
 const iconMap = {
@@ -172,6 +173,7 @@ const iconMap = {
   "arrow-down": MdArrowDownward,
   "arrow-left": MdArrowBack,
   "arrow-right": MdArrowForward,
+  "chevron-down": FaAngleDown,
 
   // Action icons
   plus: MdAdd,

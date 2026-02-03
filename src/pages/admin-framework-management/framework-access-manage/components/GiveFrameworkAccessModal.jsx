@@ -6,6 +6,7 @@ import {
   getAdminFrameworkCategory,
   assignFrameworkAccess,
 } from "../../../../services/adminService";
+import CustomBadge from "../../../../components/custom/CustomBadge";
 
 // Debounce utility function
 function useDebounce(value, delay) {
@@ -245,19 +246,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     }
   };
 
-  const getUserAvatarStyle = (role) => {
-    switch (role?.toLowerCase()) {
-      case "admin":
-        return "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
-      case "expert":
-        return "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400";
-      case "company":
-        return "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400";
-      default:
-        return "bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400";
-    }
-  };
-
   const renderUserRow = (user) => (
     <tr
       key={user.id}
@@ -271,7 +259,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center ${getUserAvatarStyle(user.role)}`}
+            className={`w-6 h-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20`}
           >
             <Icon name="user" size="14px" />
           </div>
@@ -284,11 +272,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         </div>
       </td>
       <td className="px-3 py-2">
-        <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleStyle(user.role)}`}
+        <CustomBadge
+          label={user.role}
+          color={
+            user.role === "admin"
+              ? "blue"
+              : user.role === "expert"
+                ? "green"
+                : "gray"
+          }
         >
           {user.role}
-        </span>
+        </CustomBadge>
       </td>
     </tr>
   );
@@ -305,12 +300,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     >
       <td className="px-3 py-2 align-top">
         <div className="flex items-start gap-2">
-          <div className="w-7 h-7 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-            <Icon
-              name="layers"
-              size="14px"
-              className="text-purple-600 dark:text-purple-400"
-            />
+          <div className="">
+            <div
+              className="w-7 h-7 rounded-full 
+                  bg-purple-100 dark:bg-purple-900/40
+                  flex items-center justify-center
+                  border border-purple-200 dark:border-purple-800"
+            >
+              <Icon
+                name="shield"
+                size="16px"
+                className="text-purple-600 dark:text-purple-400"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col min-w-0">
@@ -414,7 +416,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                   Select User
                   {usersRoleFilter && (
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${getRoleStyle(usersRoleFilter)}`}
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400`}
                     >
                       {usersRoleFilter}
                     </span>

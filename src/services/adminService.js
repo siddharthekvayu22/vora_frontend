@@ -10,8 +10,20 @@ export function getAdminDashboardAnalytics() {
 /**
  * Get admin framework category
  */
-export function getAdminFrameworkCategory() {
-  return apiRequest("/admin/framework-categories/categories", true);
+export function getAdminFrameworkCategory({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+  return apiRequest(
+    `/admin/framework-categories/categories?${params.toString()}`,
+    true,
+  );
 }
 /**
  * Get admin framework access

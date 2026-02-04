@@ -1,6 +1,7 @@
 import CardWrapper from "./components/CardWrapper";
 import MetricCard from "./components/MetricCard";
 import ProgressBar from "./components/ProgressBar";
+import Icon from "../../components/Icon";
 
 /* ---------- CONFIG DATA ---------- */
 
@@ -10,28 +11,28 @@ const metrics = [
     value: 12,
     trend: "+8% vs last week",
     trendColor: "text-emerald-400",
-    icon: "⏸",
+    icon: "clock",
   },
   {
     label: "COMPLIANCE SCORE",
     value: "92%",
     trend: "0% change",
     trendColor: "text-muted-foreground",
-    icon: "↗",
+    icon: "arrow-up",
   },
   {
     label: "OVERDUE FINDINGS",
     value: 5,
     trend: "-3% vs last week",
     trendColor: "text-red-500",
-    icon: "⚠",
+    icon: "warning",
   },
   {
     label: "AVG. RESOLUTION TIME",
     value: "3.2d",
     trend: "+12% faster",
     trendColor: "text-emerald-400",
-    icon: "⏱",
+    icon: "clock",
   },
 ];
 
@@ -39,25 +40,25 @@ const quickActions = [
   {
     title: "Upload Document",
     desc: "Upload and analyze compliance documents",
-    icon: "📄",
+    icon: "document",
     color: "bg-blue-500/20 text-blue-400",
   },
   {
     title: "Upload Framework",
     desc: "Add custom compliance frameworks",
-    icon: "✓",
+    icon: "check",
     color: "bg-emerald-500/20 text-emerald-400",
   },
   {
     title: "New Audit",
     desc: "Start a new compliance audit",
-    icon: "🔍",
+    icon: "search",
     color: "bg-amber-500/20 text-amber-400",
   },
   {
     title: "Generate Report",
     desc: "Create compliance reports",
-    icon: "📊",
+    icon: "chart",
     color: "bg-purple-500/20 text-purple-400",
   },
 ];
@@ -146,7 +147,11 @@ export default function Dashboard() {
       <CardWrapper title="Key Metrics">
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m) => (
-            <MetricCard key={m.label} {...m} icon={<span>{m.icon}</span>} />
+            <MetricCard
+              key={m.label}
+              {...m}
+              icon={<Icon name={m.icon} size="20px" />}
+            />
           ))}
         </div>
       </CardWrapper>
@@ -162,14 +167,14 @@ export default function Dashboard() {
               <div
                 className={`h-12 w-12 rounded-xl flex items-center justify-center ${a.color}`}
               >
-                {a.icon}
+                <Icon name={a.icon} size="20px" />
               </div>
               <div className="flex-1 text-left">
                 <p className="font-semibold">{a.title}</p>
                 <p className="text-sm text-muted-foreground">{a.desc}</p>
               </div>
               <span className="text-muted-foreground group-hover:translate-x-1 transition">
-                →
+                <Icon name="arrow-right" size="16px" />
               </span>
             </button>
           ))}
@@ -180,7 +185,11 @@ export default function Dashboard() {
       <div className="grid xl:grid-cols-2 gap-6">
         <CardWrapper
           title="Active Audits"
-          right={<span className="text-primary">View All →</span>}
+          right={
+            <span className="text-primary flex items-center gap-1">
+              View All <Icon name="arrow-right" size="14px" />
+            </span>
+          }
         >
           {activeAudits.map((a) => (
             <div

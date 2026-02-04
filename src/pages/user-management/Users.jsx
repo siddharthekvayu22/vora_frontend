@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import DataTable from "../../components/data-table/DataTable";
 import UserModal from "./components/UserModal";
-import UserViewModal from "./components/UserViewModal";
 import DeleteUserModal from "./components/DeleteUserModal";
 import Icon from "../../components/Icon";
 import {
@@ -14,8 +13,8 @@ import {
   toggleUserStatus,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
-import CustomBadge from "../../components/CustomBadge";
-import UserMiniCard from "../../components/UserMiniCard";
+import CustomBadge from "../../components/custom/CustomBadge";
+import UserMiniCard from "../../components/custom/UserMiniCard";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -41,11 +40,6 @@ function Users() {
   const [modalState, setModalState] = useState({
     isOpen: false,
     mode: "view",
-    user: null,
-  });
-
-  const [viewModalState, setViewModalState] = useState({
-    isOpen: false,
     user: null,
   });
 
@@ -348,17 +342,6 @@ function Users() {
         searchPlaceholder="Search users by name, email, or phone..."
         emptyMessage={emptyMessage}
       />
-
-      {viewModalState.isOpen && (
-        <UserViewModal
-          user={viewModalState.user}
-          onClose={() => setViewModalState({ isOpen: false, user: null })}
-          onEdit={(u) => {
-            setViewModalState({ isOpen: false, user: null });
-            setModalState({ isOpen: true, mode: "edit", user: u });
-          }}
-        />
-      )}
 
       {modalState.isOpen && (
         <UserModal

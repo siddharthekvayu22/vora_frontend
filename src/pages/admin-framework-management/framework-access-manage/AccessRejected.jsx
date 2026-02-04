@@ -8,9 +8,9 @@ import DataTable from "../../../components/data-table/DataTable";
 import Icon from "../../../components/Icon";
 import { formatDate } from "../../../utils/dateFormatter";
 import AccessViewModal from "./components/AccessViewModal";
-import UserMiniCard from "../../../components/UserMiniCard";
-import FrameworkMiniCard from "../../../components/FrameworkMiniCard";
-import CustomBadge from "../../../components/CustomBadge";
+import UserMiniCard from "../../../components/custom/UserMiniCard";
+import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
+import CustomBadge from "../../../components/custom/CustomBadge";
 
 function AccessRejected() {
   const [accessRejected, setAccessRejected] = useState([]);

@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
+import SelectDropdown from "../../../../components/custom/SelectDropdown";
 import { getAllUsers } from "../../../../services/userService";
 import {
   getAdminFrameworkCategory,
   assignFrameworkAccess,
 } from "../../../../services/adminService";
+import CustomBadge from "../../../../components/custom/CustomBadge";
 
 // Debounce utility function
 function useDebounce(value, delay) {
@@ -245,19 +247,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     }
   };
 
-  const getUserAvatarStyle = (role) => {
-    switch (role?.toLowerCase()) {
-      case "admin":
-        return "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
-      case "expert":
-        return "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400";
-      case "company":
-        return "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400";
-      default:
-        return "bg-gray-100 dark:bg-gray-900/30 text-gray-600 dark:text-gray-400";
-    }
-  };
-
   const renderUserRow = (user) => (
     <tr
       key={user.id}
@@ -271,7 +260,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       <td className="px-3 py-2">
         <div className="flex items-center gap-2">
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center ${getUserAvatarStyle(user.role)}`}
+            className={`w-6 h-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20`}
           >
             <Icon name="user" size="14px" />
           </div>
@@ -284,11 +273,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         </div>
       </td>
       <td className="px-3 py-2">
-        <span
-          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getRoleStyle(user.role)}`}
+        <CustomBadge
+          label={user.role}
+          color={
+            user.role === "admin"
+              ? "blue"
+              : user.role === "expert"
+                ? "green"
+                : "gray"
+          }
         >
           {user.role}
-        </span>
+        </CustomBadge>
       </td>
     </tr>
   );
@@ -305,12 +301,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     >
       <td className="px-3 py-2 align-top">
         <div className="flex items-start gap-2">
-          <div className="w-7 h-7 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-            <Icon
-              name="layers"
-              size="14px"
-              className="text-purple-600 dark:text-purple-400"
-            />
+          <div className="">
+            <div
+              className="w-7 h-7 rounded-full 
+                  bg-purple-100 dark:bg-purple-900/40
+                  flex items-center justify-center
+                  border border-purple-200 dark:border-purple-800"
+            >
+              <Icon
+                name="shield"
+                size="16px"
+                className="text-purple-600 dark:text-purple-400"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col min-w-0">
@@ -391,7 +394,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             </div>
             <button
               onClick={onClose}
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200"
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               title="Close"
             >
               <Icon name="x" size="18px" />
@@ -414,7 +417,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                   Select User
                   {usersRoleFilter && (
                     <span
-                      className={`text-xs px-2 py-0.5 rounded-full font-medium ${getRoleStyle(usersRoleFilter)}`}
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400`}
                     >
                       {usersRoleFilter}
                     </span>
@@ -427,7 +430,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 )}
               </div>
 
-              <div className="border border-border rounded-xl overflow-hidden bg-background">
+              <div className="border border-border rounded-xl bg-background">
                 {/* Search and Filter */}
                 <div className="p-3 border-b border-border bg-muted/30">
                   <div className="flex gap-2">
@@ -448,23 +451,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                     </div>
 
                     {/* Role Filter */}
-                    <div className="relative">
-                      <select
-                        value={usersRoleFilter}
-                        onChange={(e) => handleUserRoleFilter(e.target.value)}
-                        className="pl-3 pr-8 py-1.5 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm min-w-[100px] appearance-none cursor-pointer"
-                      >
-                        <option value="">All Roles</option>
-                        <option value="admin">Admin</option>
-                        <option value="expert">Expert</option>
-                        <option value="company">Company</option>
-                      </select>
-                      <Icon
-                        name="chevron-down"
-                        size="14px"
-                        className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
-                      />
-                    </div>
+                    <SelectDropdown
+                      value={usersRoleFilter}
+                      onChange={handleUserRoleFilter}
+                      options={[
+                        { value: "", label: "All Roles" },
+                        { value: "admin", label: "Admin" },
+                        { value: "expert", label: "Expert" },
+                        { value: "company", label: "Company" },
+                      ]}
+                      placeholder="All Roles"
+                      size="md"
+                      variant="default"
+                    />
                   </div>
                 </div>
 
@@ -648,14 +647,14 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         <div className="flex gap-2 justify-end p-3 border-t border-border">
           <button
             onClick={onClose}
-            className="flex-1 px-3 py-1.5 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"
+            className="flex-1 px-3 py-1.5 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleAssignAccess}
             disabled={!selectedUser || !selectedFramework || assigning}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
           >
             {assigning ? (
               <>

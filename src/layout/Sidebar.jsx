@@ -270,7 +270,7 @@ function Sidebar() {
             onClick={() => setIsOpen(false)}
             className="relative z-10 flex h-9 w-9 items-center justify-center
                        rounded-lg border border-white/30 bg-white/20
-                       text-white transition hover:rotate-90 hover:bg-red-500"
+                       text-white transition hover:rotate-90 hover:bg-red-500 cursor-pointer"
           >
             <Icon name="close" size="20px" />
           </button>

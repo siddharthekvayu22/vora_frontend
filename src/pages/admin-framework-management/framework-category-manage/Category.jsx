@@ -14,7 +14,7 @@ import Icon from "../../../components/Icon";
 import CategoryModal from "./components/CategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoryModal";
 import { formatDate } from "../../../utils/dateFormatter";
-import CustomBadge from "../../../components/CustomBadge";
+import CustomBadge from "../../../components/custom/CustomBadge";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);

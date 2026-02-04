@@ -6,8 +6,8 @@ import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategoryAccess } from "../../services/officialFrameworkService";
 import RequestAccessModal from "./components/RequestAccessModal";
-import CustomBadge from "../../components/CustomBadge";
-import UserMiniCard from "../../components/UserMiniCard";
+import CustomBadge from "../../components/custom/CustomBadge";
+import UserMiniCard from "../../components/custom/UserMiniCard";
 
 function OfficialFrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);

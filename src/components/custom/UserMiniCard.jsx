@@ -1,5 +1,5 @@
 import Icon from "@/components/Icon";
-import { formatDate } from "../utils/dateFormatter";
+import { formatDate } from "../../utils/dateFormatter";
 
 const UserMiniCard = ({
   name,

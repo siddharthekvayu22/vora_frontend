@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
+import SelectDropdown from "../../../components/custom/SelectDropdown";
 
 /**
- * UserModal Component - Handles View, Create, and Edit modes
+ * UserModal Component - Handles Create and Edit modes
  *
- * @param {string} mode - 'view' | 'create' | 'edit'
- * @param {Object} user - User data (for view/edit modes)
+ * @param {string} mode - 'create' | 'edit'
+ * @param {Object} user - User data (for edit mode)
  * @param {Function} onSave - Save handler for create/edit
  * @param {Function} onClose - Close handler
  */
 export default function UserModal({
-  mode = "view",
+  mode = "create",
   user = null,
   onSave,
   onClose,
@@ -25,10 +26,8 @@ export default function UserModal({
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
-  const isReadOnly = mode === "view";
-
   useEffect(() => {
-    if (user && (mode === "view" || mode === "edit")) {
+    if (user && mode === "edit") {
       setFormData({
         name: user.name || "",
         email: user.email || "",
@@ -62,6 +61,20 @@ export default function UserModal({
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone is required";
+    }
+
+    if (!formData.role) {
+      newErrors.role = "Role is required";
+    }
+
+    // Show errors in toast instead of inline
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      toast.error(firstError);
     }
 
     setErrors(newErrors);
@@ -125,7 +138,7 @@ export default function UserModal({
               </h2>
             </div>
             <button
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200"
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onClose}
               title="Close"
             >
@@ -139,143 +152,99 @@ export default function UserModal({
             {/* Email Field */}
             <div className="form-group">
               <label htmlFor="user-email" className="form-label">
-                Email Address{" "}
-                {!isReadOnly && <span className="required">*</span>}
+                Email Address <span className="required">*</span>
               </label>
-              {isReadOnly ? (
-                <div className="py-2 text-foreground">
-                  {formData.email || "-"}
-                </div>
-              ) : (
-                <>
-                  <input
-                    id="user-email"
-                    type="email"
-                    className={`form-input ${errors.email ? "error" : ""} ${
-                      mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
-                    }`}
-                    value={formData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    placeholder="Enter email address"
-                    disabled={mode === "edit"}
-                  />
-                  {errors.email && (
-                    <span className="error-message">{errors.email}</span>
-                  )}
-                </>
-              )}
+              <input
+                id="user-email"
+                type="email"
+                className={`form-input ${errors.email ? "error" : ""} ${
+                  mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                placeholder="Enter email address"
+                disabled={mode === "edit"}
+              />
             </div>
 
             {/* Name Field */}
             <div className="form-group">
               <label htmlFor="user-name" className="form-label">
-                Full Name {!isReadOnly && <span className="required">*</span>}
+                Full Name <span className="required">*</span>
               </label>
-              {isReadOnly ? (
-                <div className="py-2 text-foreground">
-                  {formData.name || "-"}
-                </div>
-              ) : (
-                <>
-                  <input
-                    id="user-name"
-                    type="text"
-                    className={`form-input ${errors.name ? "error" : ""}`}
-                    value={formData.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    placeholder="Enter full name"
-                  />
-                  {errors.name && (
-                    <span className="error-message">{errors.name}</span>
-                  )}
-                </>
-              )}
+              <input
+                id="user-name"
+                type="text"
+                className={`form-input ${errors.name ? "error" : ""}`}
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                placeholder="Enter full name"
+                required
+              />
             </div>
 
             {/* Phone Field */}
             <div className="form-group">
               <label htmlFor="user-phone" className="form-label">
-                Phone Number
+                Phone Number <span className="required">*</span>
               </label>
-              {isReadOnly ? (
-                <div className="py-2 text-foreground">
-                  {formData.phone || "-"}
-                </div>
-              ) : (
-                <input
-                  id="user-phone"
-                  type="tel"
-                  className="form-input"
-                  value={formData.phone}
-                  onChange={(e) => handleChange("phone", e.target.value)}
-                  placeholder="Enter phone number"
-                />
-              )}
+              <input
+                id="user-phone"
+                type="tel"
+                className="form-input"
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                placeholder="Enter phone number"
+                required
+              />
             </div>
 
             {/* Role */}
             <div className="form-group">
               <label htmlFor="user-role" className="form-label">
-                Role {!isReadOnly && <span className="required">*</span>}
+                Role <span className="required">*</span>
               </label>
-              {isReadOnly ? (
-                <div className="py-2">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      formData.role === "admin"
-                        ? "bg-red-100 text-red-800"
-                        : formData.role === "expert"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {formData.role}
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <select
-                    id="user-role"
-                    className={`form-select ${errors.role ? "error" : ""}`}
-                    value={formData.role}
-                    onChange={(e) => handleChange("role", e.target.value)}
-                  >
-                    <option value="expert">Expert</option>
-                    <option value="admin">Admin</option>
-                    <option value="company">Company</option>
-                  </select>
-                </>
-              )}
+              <SelectDropdown
+                value={formData.role}
+                onChange={(value) => handleChange("role", value)}
+                options={[
+                  { value: "expert", label: "Expert" },
+                  { value: "admin", label: "Admin" },
+                  { value: "company", label: "Company" },
+                ]}
+                placeholder="Select role"
+                variant="default"
+                size="lg"
+                buttonClassName="border-2 py-[0.60rem] rounded-sm"
+              />
             </div>
           </div>
 
           <div className="flex gap-2 justify-end p-3 border-t border-border">
             <button
               type="button"
-              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200"
+              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
               onClick={onClose}
             >
-              {isReadOnly ? "Close" : "Cancel"}
+              Cancel
             </button>
-            {!isReadOnly && (
-              <button
-                type="submit"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200"
-                disabled={saving}
-              >
-                {saving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Icon name="check" size="16px" />
-                    {mode === "create" ? "Create User" : "Save Changes"}
-                  </>
-                )}
-              </button>
-            )}
+            <button
+              type="submit"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Icon name="check" size="16px" />
+                  {mode === "create" ? "Create User" : "Save Changes"}
+                </>
+              )}
+            </button>
           </div>
         </form>
       </div>

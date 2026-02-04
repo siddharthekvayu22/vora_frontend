@@ -82,7 +82,7 @@ export default function AdminDashboard() {
         },
       ],
       trendColor: "text-blue-500",
-      icon: "👥",
+      icon: "users",
       subtitle: [
         {
           text: `${stats.usersByRole.admin || 0} Admin`,
@@ -103,14 +103,14 @@ export default function AdminDashboard() {
       value: stats.totalOfficialFrameworks || 0,
       trend: "Official frameworks available",
       trendColor: "text-purple-500",
-      icon: "📋",
+      icon: "framework",
     },
     {
       label: "TOTAL COMPANY FRAMEWORKS",
       value: stats.totalCompanyFrameworks || 0,
       trend: "Comapny uploaded frameworks",
       trendColor: "text-green-500",
-      icon: "📋",
+      icon: "framework",
     },
 
     {
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
       value: stats.totalCompanyDocuments || 0,
       trend: "Company uploaded Documents",
       trendColor: "text-orange-500",
-      icon: "📄",
+      icon: "document",
     },
   ];
 
@@ -127,21 +127,21 @@ export default function AdminDashboard() {
     {
       title: "Manage Users",
       desc: "View and manage system users",
-      icon: "👥",
+      icon: "users",
       color: "bg-blue-500/20 text-blue-400",
       path: "/users",
     },
     {
       title: "Framework Management",
       desc: "Manage compliance frameworks",
-      icon: "🏗",
+      icon: "framework",
       color: "bg-purple-500/20 text-purple-400",
       path: "/",
     },
     {
       title: "System Settings",
       desc: "Configure system settings",
-      icon: "⚙",
+      icon: "settings",
       color: "bg-gray-500/20 text-gray-400",
       path: "/settings",
     },
@@ -181,7 +181,11 @@ export default function AdminDashboard() {
       <CardWrapper title="System Overview">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m) => (
-            <MetricCard key={m.label} {...m} icon={<span>{m.icon}</span>} />
+            <MetricCard
+              key={m.label}
+              {...m}
+              icon={<Icon name={m.icon} size="20px" />}
+            />
           ))}
         </div>
       </CardWrapper>
@@ -192,8 +196,11 @@ export default function AdminDashboard() {
         <CardWrapper
           title="Recently Created Users"
           right={
-            <Link to={"/users"} className="text-primary cursor-pointer">
-              View All →
+            <Link
+              to={"/users"}
+              className="text-primary cursor-pointer flex items-center gap-1"
+            >
+              View All <Icon name="arrow-right" size="14px" />
             </Link>
           }
           className="flex flex-col"
@@ -271,14 +278,14 @@ export default function AdminDashboard() {
               <div
                 className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${a.color}`}
               >
-                {a.icon}
+                <Icon name={a.icon} size="18px" />
               </div>
               <div className="flex-1 text-left min-w-0">
                 <p className="font-semibold text-sm">{a.title}</p>
                 <p className="text-xs text-muted-foreground">{a.desc}</p>
               </div>
               <span className="text-muted-foreground group-hover:translate-x-1 transition flex-shrink-0">
-                →
+                <Icon name="arrow-right" size="16px" />
               </span>
             </button>
           ))}

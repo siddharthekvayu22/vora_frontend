@@ -47,7 +47,7 @@ export default function ApproveAccessModal({
               </h2>
             </div>
             <button
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200"
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onCancel}
               title="Close"
             >
@@ -62,7 +62,7 @@ export default function ApproveAccessModal({
           </p>
 
           {/* Access Details */}
-          <div className="bg-muted rounded-xl p-3 border-l-4 border-green-500 mb-4">
+          <div className="bg-muted rounded-xl p-3 border-l-4 border-primary mb-4">
             <div className="space-y-3">
               {/* Expert Info */}
               <div className="flex items-center gap-3">
@@ -129,7 +129,7 @@ export default function ApproveAccessModal({
 
           <button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-green-500 text-white hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
             onClick={handleConfirm}
             disabled={approving}
           >

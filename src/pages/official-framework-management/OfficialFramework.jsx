@@ -9,6 +9,7 @@ import FileTypeCard from "../../components/custom/FileTypeCard";
 import {
   downloadOfficialFrameworkFile,
   getAllOfficialFrameworks,
+  deleteOfficialFramework,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -38,6 +39,7 @@ function OfficialFramework() {
   });
 
   const [downloadingId, setDownloadingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
@@ -128,6 +130,22 @@ function OfficialFramework() {
     toast.success("Framework uploaded successfully!");
   };
 
+  const handleDeleteFramework = async (framework) => {
+    try {
+      setDeletingId(framework.id);
+
+      const result = await deleteOfficialFramework(framework.id);
+      toast.success(result.message || "Framework deleted successfully");
+
+      fetchOfficialFramework(); // refresh list
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error(error.message || "Failed to delete framework");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const handleDownloadFramework = async (row) => {
     if (!row.fileInfo?.fileId) return;
 
@@ -199,6 +217,7 @@ function OfficialFramework() {
 
   const renderActions = (row) => {
     const isDownloading = downloadingId === row.fileInfo?.fileId;
+    const isDeleting = deletingId === row.id;
     return (
       <div className="flex gap-1 justify-center">
         <button
@@ -219,14 +238,21 @@ function OfficialFramework() {
           )}
         </button>
         <button
-          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          className={`px-3 py-2 rounded-full transition-all duration-200 cursor-pointer
+          ${
+            isDeleting
+              ? "text-red-400 opacity-60 cursor-not-allowed"
+              : "hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 hover:scale-105"
+          }`}
           title="Delete Framework"
-          onClick={() => {
-            // Handle delete framework
-            console.log("Delete framework:", row);
-          }}
+          disabled={isDeleting || isDownloading}
+          onClick={() => handleDeleteFramework(row)}
         >
-          <Icon name="trash" size="16px" />
+          {isDeleting ? (
+            <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+          ) : (
+            <Icon name="trash" size="16px" />
+          )}
         </button>
       </div>
     );

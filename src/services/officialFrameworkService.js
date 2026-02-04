@@ -75,6 +75,19 @@ export async function downloadOfficialFrameworkFile(fileId, fileName) {
   window.URL.revokeObjectURL(url);
 }
 
+/**
+ * Delete official framework
+ */
+export function deleteOfficialFramework(frameworkId) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
 export default {
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
@@ -82,4 +95,5 @@ export default {
   requestFrameworkAccess,
   uploadFramework,
   downloadOfficialFrameworkFile,
+  deleteOfficialFramework,
 };

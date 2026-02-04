@@ -47,94 +47,101 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [field]: value,
     }));
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 bg-background rounded-2xl border border-border shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-semibold text-foreground">
-            Edit Profile
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-accent rounded-lg transition-colors"
-          >
-            <Icon name="close" size="20px" />
-          </button>
+        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon name="edit" size="24px" />
+              <h2 className="text-xl font-bold text-white drop-shadow-sm">
+                Edit Profile
+              </h2>
+            </div>
+            <button
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={onClose}
+              title="Close"
+            >
+              <Icon name="x" size="20px" />
+            </button>
+          </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Name Field */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Full Name *
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Enter your full name"
-              required
-            />
+        <form onSubmit={handleSubmit}>
+          <div className="p-4 flex flex-col">
+            {/* Name Field */}
+            <div className="form-group">
+              <label htmlFor="profile-name" className="form-label">
+                Full Name <span className="required">*</span>
+              </label>
+              <input
+                id="profile-name"
+                type="text"
+                className="form-input"
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            {/* Phone Field */}
+            <div className="form-group">
+              <label htmlFor="profile-phone" className="form-label">
+                Phone Number
+              </label>
+              <input
+                id="profile-phone"
+                type="tel"
+                className="form-input"
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                placeholder="Enter your phone number"
+              />
+            </div>
           </div>
 
-          {/* Phone Field */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder="Enter your phone number"
-            />
-          </div>
-
-          {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-2 justify-end p-3 border-t border-border">
             <button
               type="button"
+              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
               disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
               disabled={loading}
             >
               {loading ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Updating...
                 </>
               ) : (
-                "Update Profile"
+                <>
+                  <Icon name="check" size="16px" />
+                  Update Profile
+                </>
               )}
             </button>
           </div>

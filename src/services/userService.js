@@ -61,8 +61,8 @@ export function updateUserByAdmin(userId, userData) {
 /**
  * Own profile
  */
-export function userProfile(userData) {
-  return apiRequest("/users/profile", true);
+export function userProfile() {
+  return apiRequest("/profile", true);
 }
 
 /**
@@ -77,13 +77,6 @@ export function updateUser(userData) {
     },
     true,
   );
-}
-
-/**
- * Get user statistics by ID
- */
-export function getUserDetails(userId) {
-  return apiRequest(`/users/${userId}`, true);
 }
 
 /**

@@ -275,7 +275,9 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     ...approvedCategories,
                   ]}
                   placeholder="Choose framework category"
-                  variant="outline"
+                  variant="default"
+                  size="lg"
+                  buttonClassName="border-2 py-[0.60rem] rounded-sm"
                 />
                 {errors.frameworkCategoryId && (
                   <span className="error-message">
@@ -339,7 +341,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   {!formData.file ? (
                     <label
                       htmlFor="framework-file"
-                      className={`flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
+                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
                         errors.file ? "border-red-500" : "border-border"
                       }`}
                     >

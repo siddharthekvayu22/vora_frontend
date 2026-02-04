@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import Dashboard from "../pages/dashboard-management/Dashboard";
 import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
 import Users from "../pages/user-management/Users";
-import UserDetails from "../pages/user-management/UserDetails";
 import Profile from "../pages/profile-management/Profile";
 import Category from "../pages/admin-framework-management/framework-category-manage/Category";
 import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
@@ -194,16 +193,6 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <Users />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/users/:userId"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <UserDetails />
             </Layout>
           </ProtectedRoute>
         }

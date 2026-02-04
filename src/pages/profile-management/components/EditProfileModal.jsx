@@ -113,17 +113,6 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
             />
           </div>
 
-          {/* Email Info */}
-          <div className="p-4 bg-accent rounded-lg border border-border">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Icon name="info" size="16px" />
-              <span className="text-sm">Email cannot be changed from here</span>
-            </div>
-            <div className="text-sm text-muted-foreground mt-1">
-              Current email: {profileData?.email}
-            </div>
-          </div>
-
           {/* Buttons */}
           <div className="flex gap-3 pt-4">
             <button

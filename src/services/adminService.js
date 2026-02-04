@@ -47,22 +47,58 @@ export function getAdminFrameworkAccess({
 /**
  * Get admin framework access requests
  */
-export function getAdminFrameworkAccessRequests() {
-  return apiRequest("/admin/framework-access/access/requests", true);
+export function getAdminFrameworkAccessRequests({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+  return apiRequest(
+    `/admin/framework-access/access/requests?${params.toString()}`,
+    true,
+  );
 }
 
 /**
  * Get admin framework access rejected
  */
-export function getAdminFrameworkAccessRejected() {
-  return apiRequest("/admin/framework-access/access/rejected", true);
+export function getAdminFrameworkAccessRejected({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+  return apiRequest(
+    `/admin/framework-access/access/rejected?${params.toString()}`,
+    true,
+  );
 }
 
 /**
  * Get admin framework access revoked
  */
-export function getAdminFrameworkAccessRevoked() {
-  return apiRequest("/admin/framework-access/access/revoked", true);
+export function getAdminFrameworkAccessRevoked({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+  return apiRequest(
+    `/admin/framework-access/access/revoked?${params.toString()}`,
+    true,
+  );
 }
 
 /**

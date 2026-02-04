@@ -4,7 +4,7 @@
  */
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api`;
-const TENANT_ID = `${import.meta.env.VITE_TENANT_ID}`;
+const TENANT_ID = import.meta.env.VITE_TENANT_ID;
 
 /**
  * Get auth token from sessionStorage (matches AuthContext)
@@ -22,13 +22,13 @@ function getAuthToken() {
 export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
   const url = `${API_BASE_URL}${endpoint}`;
 
-  let options = {};
+  let options = { method: "GET" };
   let requireAuth = false;
 
   if (typeof optionsOrAuth === "boolean") {
     requireAuth = optionsOrAuth;
   } else if (typeof optionsOrAuth === "object") {
-    options = optionsOrAuth;
+    options = { method: "GET", ...optionsOrAuth };
     requireAuth = maybeAuth || false;
   }
 
@@ -65,21 +65,16 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
     const contentType = response.headers.get("content-type");
     let data = null;
 
-    if (contentType && contentType.includes("application/json")) {
-      const text = await response.text();
-      if (text) {
-        data = JSON.parse(text);
-      }
+    if (contentType?.includes("application/json")) {
+      data = await response.json();
     }
 
     if (!response.ok) {
-      // Handle 401 Unauthorized responses
       if (response.status === 401) {
-        // Dispatch custom event for AuthContext to handle
         window.dispatchEvent(
           new CustomEvent("unauthorized-response", {
             detail: {
-              status: response.status,
+              status: 401,
               message:
                 data?.message ||
                 "Your session has expired. Please log in again.",
@@ -90,59 +85,17 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
 
       throw {
         status: response.status,
-        message: data?.message || data?.error || "Something went wrong",
+        message: data?.message || "Something went wrong",
         data,
       };
     }
 
-    // Normalize successful responses to standard format
-    if (data && typeof data === "object") {
-      // If response already has the correct format, return as is
-      if (
-        data.hasOwnProperty("success") &&
-        data.hasOwnProperty("message") &&
-        data.hasOwnProperty("data")
-      ) {
-        return data;
-      }
-
-      // If response has message and data properties but no success flag
-      if (data.hasOwnProperty("message") && data.hasOwnProperty("data")) {
-        return {
-          success: true,
-          message: data.message,
-          data: data.data,
-        };
-      }
-
-      // If response has only data property
-      if (data.hasOwnProperty("data") && !data.hasOwnProperty("message")) {
-        return {
-          success: true,
-          message: "Operation successful",
-          data: data.data,
-        };
-      }
-
-      // If response is just the data object itself (no wrapper)
-      return {
-        success: true,
-        message: "Operation successful",
-        data: data,
-      };
-    }
-
-    // For non-object responses or null/empty responses
-    return {
-      success: true,
-      message: "Operation successful",
-      data: data,
-    };
+    return data;
   } catch (error) {
     if (error?.status) throw error;
     throw {
       status: 500,
-      message: error?.message || "Network error. Please check your connection.",
+      message: error?.message,
       data: null,
     };
   }

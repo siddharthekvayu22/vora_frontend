@@ -62,14 +62,16 @@ function ChangePasswordModal({ isOpen, onClose }) {
     try {
       setLoading(true);
 
-      await changePassword(currentPassword, newPassword);
+      const result = await changePassword(currentPassword, newPassword);
 
-      toast.success("Password changed successfully. Please login again.");
+      toast.success(
+        result.message || "Password changed successfully. Please login again.",
+      );
 
       // Force logout for security
       setTimeout(() => {
         logout("Please login with your new password", true);
-      }, 1500);
+      }, 1000);
     } catch (error) {
       toast.error(error?.message || "Failed to change password");
     } finally {

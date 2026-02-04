@@ -3,16 +3,39 @@ import { apiRequest } from "./apiService";
 /**
  * Get all official frameworks
  */
-export function getAllOfficialFrameworks() {
-  return apiRequest("/official-frameworks/frameworks/my-frameworks", true);
+export function getAllOfficialFrameworks({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+
+  return apiRequest(
+    `/official-frameworks/frameworks/my-frameworks?${params.toString()}`,
+    true,
+  );
 }
 
 /**
  * Get available official frameworks category
  */
-export function getOfficialFrameworkCategory() {
+export function getOfficialFrameworkCategory({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+
   return apiRequest(
-    "/official-frameworks/frameworks/categories/available",
+    `/official-frameworks/frameworks/categories/available?${params.toString()}`,
     true,
   );
 }
@@ -20,8 +43,21 @@ export function getOfficialFrameworkCategory() {
 /**
  * Get available official frameworks category access
  */
-export function getOfficialFrameworkCategoryAccess() {
-  return apiRequest("/official-frameworks/frameworks/access/my-access", true);
+export function getOfficialFrameworkCategoryAccess({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+
+  return apiRequest(
+    `/official-frameworks/frameworks/access/my-access?${params.toString()}`,
+    true,
+  );
 }
 
 /**

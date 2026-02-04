@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
+import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
 import {
@@ -20,6 +21,8 @@ function OfficialFramework() {
     "No official framework found",
   );
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [frameworkToDelete, setFrameworkToDelete] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -39,7 +42,6 @@ function OfficialFramework() {
   });
 
   const [downloadingId, setDownloadingId] = useState(null);
-  const [deletingId, setDeletingId] = useState(null);
 
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
@@ -130,20 +132,30 @@ function OfficialFramework() {
     toast.success("Framework uploaded successfully!");
   };
 
-  const handleDeleteFramework = async (framework) => {
+  const handleDeleteFramework = (framework) => {
+    setFrameworkToDelete(framework);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!frameworkToDelete) return;
+
     try {
-      setDeletingId(framework.id);
-
-      const result = await deleteOfficialFramework(framework.id);
-      toast.success(result.message || "Framework deleted successfully");
-
-      fetchOfficialFramework(); // refresh list
+      await deleteOfficialFramework(frameworkToDelete.id);
+      toast.success("Framework deleted successfully");
+      fetchOfficialFramework(); // Refresh the list
+      setDeleteModalOpen(false);
+      setFrameworkToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(error.message || "Failed to delete framework");
-    } finally {
-      setDeletingId(null);
+      throw error; // Re-throw to let modal handle loading state
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setFrameworkToDelete(null);
   };
 
   const handleDownloadFramework = async (row) => {
@@ -217,7 +229,7 @@ function OfficialFramework() {
 
   const renderActions = (row) => {
     const isDownloading = downloadingId === row.fileInfo?.fileId;
-    const isDeleting = deletingId === row.id;
+
     return (
       <div className="flex gap-1 justify-center">
         <button
@@ -238,21 +250,11 @@ function OfficialFramework() {
           )}
         </button>
         <button
-          className={`px-3 py-2 rounded-full transition-all duration-200 cursor-pointer
-          ${
-            isDeleting
-              ? "text-red-400 opacity-60 cursor-not-allowed"
-              : "hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 hover:scale-105"
-          }`}
+          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
           title="Delete Framework"
-          disabled={isDeleting || isDownloading}
           onClick={() => handleDeleteFramework(row)}
         >
-          {isDeleting ? (
-            <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
-          ) : (
-            <Icon name="trash" size="16px" />
-          )}
+          <Icon name="trash" size="16px" />
         </button>
       </div>
     );
@@ -292,6 +294,15 @@ function OfficialFramework() {
         onClose={() => setUploadModalOpen(false)}
         onSuccess={handleUploadSuccess}
       />
+
+      {/* Delete Framework Modal */}
+      {deleteModalOpen && frameworkToDelete && (
+        <DeleteOfficialFrameworkModal
+          framework={frameworkToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 }

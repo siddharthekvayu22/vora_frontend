@@ -246,6 +246,7 @@ export default function UserModal({
                     placeholder="Select role"
                     variant="default"
                     size="lg"
+                    buttonClassName="border-2 py-[0.65rem] rounded-sm"
                   />
                   {errors.role && (
                     <span className="error-message">{errors.role}</span>

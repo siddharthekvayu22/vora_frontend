@@ -11,6 +11,7 @@ export default function SelectDropdown({
   options = [],
   placeholder = "Select option",
   className = "",
+  buttonClassName = "", // New prop for button-specific styling
   disabled = false,
   size = "md", // sm, md, lg
   variant = "default", // default, outline, ghost
@@ -124,7 +125,7 @@ export default function SelectDropdown({
         className={`
           ${sizeClasses[size]}
           ${variantClasses[variant]}
-          rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20
+          ${buttonClassName} rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20
           flex items-center justify-between w-full cursor-pointer
           transition-all duration-200
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}

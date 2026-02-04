@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
+import SelectDropdown from "../../../components/custom/SelectDropdown";
 
 /**
  * UserModal Component - Handles View, Create, and Edit modes
@@ -234,16 +235,21 @@ export default function UserModal({
                 </div>
               ) : (
                 <>
-                  <select
-                    id="user-role"
-                    className={`form-select ${errors.role ? "error" : ""}`}
+                  <SelectDropdown
                     value={formData.role}
-                    onChange={(e) => handleChange("role", e.target.value)}
-                  >
-                    <option value="expert">Expert</option>
-                    <option value="admin">Admin</option>
-                    <option value="company">Company</option>
-                  </select>
+                    onChange={(value) => handleChange("role", value)}
+                    options={[
+                      { value: "expert", label: "Expert" },
+                      { value: "admin", label: "Admin" },
+                      { value: "company", label: "Company" },
+                    ]}
+                    placeholder="Select role"
+                    variant="default"
+                    size="lg"
+                  />
+                  {errors.role && (
+                    <span className="error-message">{errors.role}</span>
+                  )}
                 </>
               )}
             </div>

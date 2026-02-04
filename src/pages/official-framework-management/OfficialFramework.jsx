@@ -141,8 +141,8 @@ function OfficialFramework() {
     if (!frameworkToDelete) return;
 
     try {
-      await deleteOfficialFramework(frameworkToDelete.id);
-      toast.success("Framework deleted successfully");
+      const result = await deleteOfficialFramework(frameworkToDelete.id);
+      toast.success(result.message || "Framework deleted successfully");
       fetchOfficialFramework(); // Refresh the list
       setDeleteModalOpen(false);
       setFrameworkToDelete(null);

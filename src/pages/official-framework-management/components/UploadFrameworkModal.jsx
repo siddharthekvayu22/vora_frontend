@@ -68,7 +68,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
 
-    // Auto-generate framework code when category is selected
+    // Auto-generate framework code and name when category is selected
     if (field === "frameworkCategoryId") {
       const selectedCategory = approvedCategories.find(
         (cat) => cat.value === value,
@@ -77,6 +77,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         setFormData((prev) => ({
           ...prev,
           frameworkCode: selectedCategory.code,
+          frameworkName: selectedCategory.label, // Auto-populate framework name
           [field]: value,
         }));
       }
@@ -142,6 +143,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     }
     if (!formData.file) {
       newErrors.file = "Framework file is required";
+    }
+
+    // Show errors in toast instead of inline
+    if (Object.keys(newErrors).length > 0) {
+      const firstError = Object.values(newErrors)[0];
+      toast.error(firstError);
     }
 
     setErrors(newErrors);
@@ -279,11 +286,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   size="lg"
                   buttonClassName="border-2 py-[0.60rem] rounded-sm"
                 />
-                {errors.frameworkCategoryId && (
-                  <span className="error-message">
-                    {errors.frameworkCategoryId}
-                  </span>
-                )}
               </div>
 
               {/* Framework Name */}
@@ -300,9 +302,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   }
                   placeholder="e.g., ISO 27001 Security Framework"
                 />
-                {errors.frameworkName && (
-                  <span className="error-message">{errors.frameworkName}</span>
-                )}
               </div>
 
               {/* Framework Code */}
@@ -319,9 +318,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   }
                   placeholder="e.g., iso27001"
                 />
-                {errors.frameworkCode && (
-                  <span className="error-message">{errors.frameworkCode}</span>
-                )}
               </div>
 
               {/* File Upload */}
@@ -394,9 +390,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     </div>
                   )}
                 </div>
-                {errors.file && (
-                  <span className="error-message">{errors.file}</span>
-                )}
               </div>
             </form>
           )}

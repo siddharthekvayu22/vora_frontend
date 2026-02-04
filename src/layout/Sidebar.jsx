@@ -77,13 +77,13 @@ function Sidebar() {
           },
         ],
       },
-      {
-        id: "settings",
-        title: "Settings",
-        description: "Admin settings",
-        icon: "settings",
-        path: "/settings",
-      },
+      // {
+      //   id: "settings",
+      //   title: "Settings",
+      //   description: "Admin settings",
+      //   icon: "settings",
+      //   path: "/settings",
+      // },
     ],
 
     expert: [
@@ -123,13 +123,13 @@ function Sidebar() {
           },
         ],
       },
-      {
-        id: "reports",
-        title: "Reports",
-        description: "Compliance reports",
-        icon: "chart",
-        path: "/reports",
-      },
+      // {
+      //   id: "reports",
+      //   title: "Reports",
+      //   description: "Compliance reports",
+      //   icon: "chart",
+      //   path: "/reports",
+      // },
     ],
 
     user: [

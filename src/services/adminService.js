@@ -28,8 +28,20 @@ export function getAdminFrameworkCategory({
 /**
  * Get admin framework access
  */
-export function getAdminFrameworkAccess() {
-  return apiRequest("/admin/framework-access/access/approved", true);
+export function getAdminFrameworkAccess({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+  return apiRequest(
+    `/admin/framework-access/access/approved?${params.toString()}`,
+    true,
+  );
 }
 
 /**

@@ -138,9 +138,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     if (!formData.frameworkName.trim()) {
       newErrors.frameworkName = "Framework name is required";
     }
-    if (!formData.frameworkCode.trim()) {
-      newErrors.frameworkCode = "Framework code is required";
-    }
     if (!formData.file) {
       newErrors.file = "Framework file is required";
     }
@@ -301,22 +298,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     handleChange("frameworkName", e.target.value)
                   }
                   placeholder="e.g., ISO 27001 Security Framework"
-                />
-              </div>
-
-              {/* Framework Code */}
-              <div className="form-group">
-                <label className="form-label">
-                  Framework Code <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-input font-mono ${errors.frameworkCode ? "error" : ""}`}
-                  value={formData.frameworkCode}
-                  onChange={(e) =>
-                    handleChange("frameworkCode", e.target.value)
-                  }
-                  placeholder="e.g., iso27001"
                 />
               </div>
 

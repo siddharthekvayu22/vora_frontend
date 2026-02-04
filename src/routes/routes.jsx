@@ -17,6 +17,7 @@ import AccessRevoked from "../pages/admin-framework-management/framework-access-
 import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
 import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
 import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
+import ExpertDashboard from "../pages/dashboard-management/ExpertDashboard";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -29,9 +30,7 @@ function AppRoutes() {
       case "admin":
         return "/admin-dashboard";
       case "expert":
-        return "/dashboard";
-      case "user":
-        return "/dashboard";
+        return "/expert-dashboard";
       default:
         return "/dashboard";
     }
@@ -103,6 +102,16 @@ function AppRoutes() {
           <ProtectedRoute>
             <Layout>
               <AdminDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/expert-dashboard"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ExpertDashboard />
             </Layout>
           </ProtectedRoute>
         }

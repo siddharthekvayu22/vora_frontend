@@ -88,11 +88,11 @@ function Sidebar() {
 
     expert: [
       {
-        id: "dashboard",
+        id: "expert-dashboard",
         title: "Dashboard",
-        description: "Overview & analytics",
+        description: "Expert overview & analytics",
         icon: "dashboard",
-        path: "/dashboard",
+        path: "/expert-dashboard",
       },
       {
         id: "official-framework-management",

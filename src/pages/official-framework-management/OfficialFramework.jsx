@@ -129,7 +129,7 @@ function OfficialFramework() {
   const handleUploadSuccess = () => {
     // Refresh the framework list after successful upload
     fetchOfficialFramework();
-    toast.success("Framework uploaded successfully!");
+    // toast.success("Framework uploaded successfully!");
   };
 
   const handleDeleteFramework = (framework) => {
@@ -192,7 +192,9 @@ function OfficialFramework() {
       label: "Framework Name",
       sortable: true,
       render: (value) => (
-        <span className="font-medium text-foreground">{value}</span>
+        <span className="font-medium text-foreground line-clamp-1">
+          {value}
+        </span>
       ),
     },
     {

@@ -19,9 +19,14 @@ const FrameworkMiniCard = ({ name, description }) => {
       </div>
 
       <div className="flex flex-col">
-        <span className="font-medium text-foreground line-clamp-1">{name}</span>
+        <span className="font-medium text-foreground line-clamp-1" title={name}>
+          {name}
+        </span>
         {description && (
-          <span className="text-xs text-muted-foreground line-clamp-1 max-w-xs">
+          <span
+            className="text-xs text-muted-foreground line-clamp-1 max-w-xs"
+            title={description}
+          >
             {description}
           </span>
         )}

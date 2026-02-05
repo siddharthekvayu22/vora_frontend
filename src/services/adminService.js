@@ -149,7 +149,7 @@ export function revokeFrameworkAccess(expertId, frameworkId) {
   return apiRequest(
     `/admin/framework-access/access/revoke/${expertId}/${frameworkId}`,
     {
-      method: "DELETE",
+      method: "PUT",
     },
     true,
   );

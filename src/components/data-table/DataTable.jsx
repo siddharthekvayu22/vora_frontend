@@ -28,6 +28,7 @@ function debounce(func, wait) {
  * @param {string} emptyMessage - Message to show when no data
  * @param {Function} renderActions - Function to render action buttons for each row
  * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {Function} renderHeaderActions - Function to render custom actions in table header
  */
 export default function DataTable({
   columns = [],
@@ -43,6 +44,7 @@ export default function DataTable({
   onRefresh,
   searchTerm: externalSearchTerm = "",
   onClearSearch,
+  renderHeaderActions,
 }) {
   const [searchTerm, setSearchTerm] = useState(externalSearchTerm);
   const [isSearching, setIsSearching] = useState(false);
@@ -61,7 +63,7 @@ export default function DataTable({
         onSearch(searchValue);
       }
     }, 500), // 500ms delay
-    [onSearch]
+    [onSearch],
   );
 
   // Reset searching state when loading changes
@@ -86,7 +88,7 @@ export default function DataTable({
       }
       // Note: This won't work with server-side pagination
       console.warn(
-        "Client-side sorting with server-side pagination is not recommended"
+        "Client-side sorting with server-side pagination is not recommended",
       );
     }
   };
@@ -165,6 +167,7 @@ export default function DataTable({
           )}
         </div>
         <div className="flex items-center gap-4">
+          {renderHeaderActions && renderHeaderActions()}
           {onRefresh && (
             <button
               className="flex items-center gap-2 px-4 py-3 bg-accent border border-border rounded-lg text-accent-foreground text-sm cursor-pointer transition-all duration-200 hover:bg-primary hover:border-primary hover:text-primary-foreground hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -296,7 +299,7 @@ export default function DataTable({
             Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
             {Math.min(
               pagination.currentPage * pagination.limit,
-              pagination.totalItems
+              pagination.totalItems,
             )}{" "}
             of {pagination.totalItems} entries
           </div>
@@ -324,7 +327,7 @@ export default function DataTable({
             <div className="flex items-center gap-2">
               {generatePageNumbers(
                 pagination.currentPage,
-                pagination.totalPages
+                pagination.totalPages,
               ).map((page, idx) =>
                 page === "..." ? (
                   <span
@@ -346,7 +349,7 @@ export default function DataTable({
                   >
                     {page}
                   </button>
-                )
+                ),
               )}
             </div>
 

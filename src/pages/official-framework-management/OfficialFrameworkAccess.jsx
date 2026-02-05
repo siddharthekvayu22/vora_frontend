@@ -223,6 +223,7 @@ function OfficialFrameworkAccess() {
   const renderActions = (row) => {
     const isPending = row.status === "pending";
     const isApproved = row.status === "approved";
+    const isRevoked = row.status === "revoked";
     const isDisabled = isPending || isApproved;
 
     return (
@@ -233,14 +234,20 @@ function OfficialFrameworkAccess() {
             setRequestModalState({ isOpen: true, framework: row })
           }
           disabled={isDisabled}
-          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
+          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 whitespace-nowrap ${
             isDisabled
               ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
               : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
           }`}
         >
           <Icon name="plus" size="12px" />
-          {isPending ? "Pending" : isApproved ? "Approved" : "Request"}
+          {isPending
+            ? "Pending"
+            : isApproved
+              ? "Approved"
+              : isRevoked
+                ? "Re-request"
+                : "Request"}
         </button>
       </div>
     );

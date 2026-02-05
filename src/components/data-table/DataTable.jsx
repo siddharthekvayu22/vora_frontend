@@ -82,11 +82,6 @@ export default function DataTable({
       onSort(key);
     } else {
       // Fallback to client-side sorting (legacy behavior)
-      let direction = "asc";
-      if (sortConfig.sortBy === key && sortConfig.sortOrder === "asc") {
-        direction = "desc";
-      }
-      // Note: This won't work with server-side pagination
       console.warn(
         "Client-side sorting with server-side pagination is not recommended",
       );
@@ -134,23 +129,27 @@ export default function DataTable({
     <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
       {/* Table Header with Search */}
       <div className="flex justify-between items-center p-6 border-b border-border bg-gradient-to-r from-card to-muted/30">
-        <div className="flex items-center gap-3 bg-input border border-border rounded-lg px-4 py-3 flex-1 max-w-md transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm relative">
-          <Icon name="search" size="16px" className="text-muted-foreground" />
+        <div className="relative flex items-center gap-3 bg-input border border-border rounded-lg px-3 py-2.5 flex-1 max-w-md transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm">
+          <Icon
+            name="search"
+            size="14px"
+            className="text-muted-foreground flex-shrink-0"
+          />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={searchTerm}
             onChange={handleSearchChange}
-            className="flex-1 border-none bg-transparent text-foreground text-sm outline-none min-w-48 placeholder:text-muted-foreground"
+            className="flex-1 border-none bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
           {isSearching && (
-            <div className="flex items-center justify-center p-1">
-              <div className="w-3.5 h-3.5 border-2 border-border border-t-primary rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center flex-shrink-0">
+              <div className="w-3 h-3 border-2 border-border border-t-primary rounded-full animate-spin"></div>
             </div>
           )}
           {searchTerm && !isSearching && (
             <button
-              className="bg-transparent border-none text-muted-foreground cursor-pointer p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground flex items-center justify-center transition-all duration-200"
+              className="flex items-center justify-center flex-shrink-0 w-5 h-5 bg-transparent border-none text-muted-foreground cursor-pointer rounded-md hover:bg-accent hover:text-accent-foreground transition-all duration-200"
               onClick={() => {
                 setSearchTerm("");
                 // Clear search should be immediate, not debounced
@@ -162,7 +161,7 @@ export default function DataTable({
               }}
               title="Clear search"
             >
-              <Icon name="x" size="14px" />
+              <Icon name="x" size="12px" />
             </button>
           )}
         </div>

@@ -112,6 +112,20 @@ export async function downloadOfficialFrameworkFile(fileId, fileName) {
 }
 
 /**
+ * Update framework file
+ */
+export function updateFramework(frameworkId, formData) {
+  return apiRequest(
+    `/files/${frameworkId}`,
+    {
+      method: "PUT",
+      body: formData, // FormData object
+    },
+    true,
+  );
+}
+
+/**
  * Delete official framework
  */
 export function deleteOfficialFramework(frameworkId) {
@@ -130,6 +144,7 @@ export default {
   getOfficialFrameworkCategoryAccess,
   requestFrameworkAccess,
   uploadFramework,
+  updateFramework,
   downloadOfficialFrameworkFile,
   deleteOfficialFramework,
 };

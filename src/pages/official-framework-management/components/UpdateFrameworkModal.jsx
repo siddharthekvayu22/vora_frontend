@@ -5,7 +5,7 @@ import SelectDropdown from "../../../components/custom/SelectDropdown";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
-  updateFramework,
+  updateOfficialFramework,
 } from "../../../services/officialFrameworkService";
 
 /**
@@ -230,7 +230,7 @@ export default function UpdateFrameworkModal({
       updateFormData.append("metadata", JSON.stringify(metadata));
 
       // Update framework using the service
-      const result = await updateFramework(
+      const result = await updateOfficialFramework(
         framework.fileInfo?.fileId,
         updateFormData,
       );

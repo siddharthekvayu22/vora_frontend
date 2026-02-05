@@ -151,9 +151,9 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-
+    const fileId = frameworkToDelete.fileInfo.fileId;
     try {
-      const result = await deleteOfficialFramework(frameworkToDelete.id);
+      const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
       fetchOfficialFramework(); // Refresh the list
       setDeleteModalOpen(false);

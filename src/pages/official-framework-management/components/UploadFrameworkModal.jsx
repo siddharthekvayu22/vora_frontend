@@ -5,7 +5,7 @@ import SelectDropdown from "../../../components/custom/SelectDropdown";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
-  uploadFramework,
+  uploadOfficialFramework,
 } from "../../../services/officialFrameworkService";
 
 /**
@@ -177,7 +177,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       uploadFormData.append("metadata", JSON.stringify(metadata));
 
       // Upload framework using the service
-      const result = await uploadFramework(uploadFormData);
+      const result = await uploadOfficialFramework(uploadFormData);
 
       toast.success(result.message || "Framework uploaded successfully!");
       onSuccess?.(result.data);

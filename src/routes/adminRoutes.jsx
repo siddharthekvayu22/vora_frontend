@@ -15,7 +15,7 @@ const adminRoutes = [
   // Admin Dashboard
   <Route
     key="admin-dashboard"
-    path="dashboard"
+    path="/dashboard"
     element={
       <ProtectedRoute>
         <Layout>

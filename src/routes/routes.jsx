@@ -1,8 +1,6 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
 import ProtectedRoute from "../routes/ProtectedRoute";
-import PublicRoute from "../routes/PublicRoute";
-import AuthLayout from "../layout/AuthLayout";
 import { useAuth } from "../context/useAuth";
 import { useEffect } from "react";
 import Profile from "../pages/profile-management/Profile";
@@ -16,10 +14,14 @@ import authRoutes from "./authRoutes";
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
 
-  // Get routes based on user role
-  const getRoleBasedRoutes = () => {
-    if (!user) return authRoutes;
+  // Get routes based on authentication and user role
+  const getRoutes = () => {
+    // If not authenticated or no user, show auth routes
+    if (!isAuthenticated || !user) {
+      return authRoutes;
+    }
 
+    // If authenticated and has user, show role-based routes
     switch (user.role?.toLowerCase()) {
       case "admin":
         return adminRoutes;
@@ -28,49 +30,53 @@ function AppRoutes() {
       case "company":
         return companyRoutes;
       default:
-        return authRoutes;
+        return companyRoutes;
     }
   };
 
   return (
     <Routes>
-      {/* ================= ROLE-BASED ROUTES ================= */}
-      {isAuthenticated && getRoleBasedRoutes()}
+      {/* ================= DYNAMIC ROUTES ================= */}
+      {/* Show auth routes for non-authenticated, role-based routes for authenticated */}
+      {getRoutes()}
 
       {/* ================= SHARED ROUTES ================= */}
-      {/* Profile - All authenticated users */}
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Profile />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
+      {/* Profile - Only for authenticated users */}
+      {isAuthenticated && (
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Layout>
+                <Profile />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+      )}
 
       {/* ================= REDIRECTS ================= */}
+      {/* Root redirect - dashboard for authenticated, login for non-authenticated */}
       <Route
         path="/"
         element={
           isAuthenticated ? (
-            <Navigate to={"/dashboard"} replace />
+            <Navigate to="/dashboard" replace />
           ) : (
             <Navigate to="/auth/login" replace />
           )
         }
       />
 
-      {/* Catch all */}
+      {/* Catch all - redirect to dashboard or login */}
       <Route
         path="*"
         element={(() => {
           const NavigateBack = () => {
             const navigate = useNavigate();
             useEffect(() => {
-              if (isAuthenticated) {
-                navigate(-1);
+              if (isAuthenticated && user) {
+                navigate("/dashboard", { replace: true });
               } else {
                 navigate("/auth/login", { replace: true });
               }

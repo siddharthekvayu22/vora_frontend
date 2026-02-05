@@ -62,7 +62,7 @@ export default function DataTable({
         setIsSearching(true);
         onSearch(searchValue);
       }
-    }, 500), // 500ms delay
+    }, 1000), // 1000ms delay
     [onSearch],
   );
 

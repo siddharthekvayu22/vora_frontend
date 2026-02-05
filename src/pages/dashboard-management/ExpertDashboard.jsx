@@ -29,7 +29,7 @@ export default function ExpertDashboard() {
     totalFrameworks: 24,
     totalCategories: 8,
     successRate: 87.5, // (approved/total * 100)
-    avgUploadSize: "2.4 MB",
+    totalUploadSize: "200.4 MB",
     uploadFrequency: {
       thisMonth: 6,
       lastMonth: 4,
@@ -126,9 +126,9 @@ export default function ExpertDashboard() {
       icon: "check-circle",
     },
     {
-      label: "AVERAGE UPLOAD SIZE",
-      value: stats.avgUploadSize,
-      trend: "Average file size of uploads",
+      label: "TOTAL UPLOAD SIZE",
+      value: stats.totalUploadSize,
+      trend: "Total file size of uploads",
       trendColor: "text-orange-500",
       icon: "file",
     },
@@ -500,3 +500,278 @@ export default function ExpertDashboard() {
     </div>
   );
 }
+
+// api response need
+// {
+//   "success": true,
+//   "message": "Expert dashboard data retrieved successfully",
+//   "data": {
+//     "stats": {
+//       "totalFrameworks": 24,
+//       "totalCategories": 8,
+//       "successRate": 87.5,// (approved/total * 100)
+//       "totalUploadSize": "2.4 MB",
+//       "uploadFrequency": {
+//         "thisMonth": 6,
+//         "lastMonth": 4,
+//         "last7Days": 3
+//       },
+//       "fileTypeDistribution": {
+//         "pdf": 45,
+//         "docx": 35,
+//         "xlsx": 20
+//       },
+//       "mostUsedCategory": "ISO Standards",
+//       "largestFile": {
+//         "name": "ISO_27001_Complete_Guide.pdf",
+//         "size": "8.2 MB"
+//       },
+//       "firstUpload": "2024-01-15T10:30:00Z",
+//       "lastUpload": "2024-02-03T14:22:00Z",
+//       "pendingRequests": 2,
+//       "accessibleCategories": 5,
+//       "inaccessibleCategories": 3,
+//       "totalApprovedUploads": 21,
+//       "totalRejectedUploads": 3
+//     },
+//     "categoryPopularity": [
+//       {
+//         "id": "cat_1",
+//         "name": "ISO Standards",
+//         "count": 8,
+//         "percentage": 33.3
+//       },
+//       {
+//         "id": "cat_2",
+//         "name": "Security Frameworks",
+//         "count": 6,
+//         "percentage": 25.0
+//       },
+//       {
+//         "id": "cat_3",
+//         "name": "Quality Management",
+//         "count": 4,
+//         "percentage": 16.7
+//       },
+//       {
+//         "id": "cat_4",
+//         "name": "Risk Management",
+//         "count": 3,
+//         "percentage": 12.5
+//       },
+//       {
+//         "id": "cat_5",
+//         "name": "Data Protection",
+//         "count": 3,
+//         "percentage": 12.5
+//       }
+//     ],
+//     "recentUploads": [
+//       {
+//         "id": "fw_001",
+//         "frameworkName": "ISO 9001 Quality Management Framework",
+//         "frameworkCode": "iso9001",
+//         "frameworkType": "pdf",
+//         "fileInfo": {
+//           "fileId": "file_001",
+//           "originalFileName": "ISO_9001_QMS.pdf",
+//           "fileSize": "299.2 KB",
+//           "fileUrl": "uploads/frameworks/iso9001.pdf"
+//         },
+//         "category": {
+//           "id": "cat_1",
+//           "name": "ISO Standards"
+//         },
+//         "status": "approved",
+//         "uploadedAt": "2024-02-03T14:22:00Z",
+//         "approvedAt": "2024-02-03T16:30:00Z"
+//       },
+//       {
+//         "id": "fw_002",
+//         "frameworkName": "ISO 27001 Information Security",
+//         "frameworkCode": "iso27001",
+//         "frameworkType": "docx",
+//         "fileInfo": {
+//           "fileId": "file_002",
+//           "originalFileName": "ISO_27001_InfoSec.docx",
+//           "fileSize": "22.72 KB",
+//           "fileUrl": "uploads/frameworks/iso27001.docx"
+//         },
+//         "category": {
+//           "id": "cat_2",
+//           "name": "Security Frameworks"
+//         },
+//         "status": "pending",
+//         "uploadedAt": "2024-02-02T11:15:00Z",
+//         "submittedAt": "2024-02-02T11:15:00Z"
+//       },
+//       {
+//         "id": "fw_003",
+//         "frameworkName": "GDPR Compliance Framework",
+//         "frameworkCode": "gdpr2024",
+//         "frameworkType": "pdf",
+//         "fileInfo": {
+//           "fileId": "file_003",
+//           "originalFileName": "GDPR_Compliance_Guide.pdf",
+//           "fileSize": "1.8 MB",
+//           "fileUrl": "uploads/frameworks/gdpr.pdf"
+//         },
+//         "category": {
+//           "id": "cat_5",
+//           "name": "Data Protection"
+//         },
+//         "status": "approved",
+//         "uploadedAt": "2024-02-01T16:45:00Z",
+//         "approvedAt": "2024-02-01T18:20:00Z"
+//       },
+//       {
+//         "id": "fw_004",
+//         "frameworkName": "Risk Assessment Template",
+//         "frameworkCode": "risk_template",
+//         "frameworkType": "xlsx",
+//         "fileInfo": {
+//           "fileId": "file_004",
+//           "originalFileName": "Risk_Assessment_Template.xlsx",
+//           "fileSize": "456 KB",
+//           "fileUrl": "uploads/frameworks/risk_template.xlsx"
+//         },
+//         "category": {
+//           "id": "cat_4",
+//           "name": "Risk Management"
+//         },
+//         "status": "approved",
+//         "uploadedAt": "2024-01-30T09:30:00Z",
+//         "approvedAt": "2024-01-30T14:15:00Z"
+//       },
+//       {
+//         "id": "fw_005",
+//         "frameworkName": "SOC 2 Compliance Guide",
+//         "frameworkCode": "soc2_guide",
+//         "frameworkType": "pdf",
+//         "fileInfo": {
+//           "fileId": "file_005",
+//           "originalFileName": "SOC2_Compliance_Guide.pdf",
+//           "fileSize": "3.2 MB",
+//           "fileUrl": "uploads/frameworks/soc2.pdf"
+//         },
+//         "category": {
+//           "id": "cat_2",
+//           "name": "Security Frameworks"
+//         },
+//         "status": "rejected",
+//         "uploadedAt": "2024-01-28T13:20:00Z",
+//         "rejectedAt": "2024-01-29T10:45:00Z",
+//         "rejectionReason": "Document format does not meet compliance standards"
+//       }
+//     ],
+//     "uploadTrends": {
+//       "monthlyData": [
+//         {
+//           "month": "2024-01",
+//           "uploads": 8,
+//           "approved": 6,
+//           "rejected": 2,
+//           "pending": 0
+//         },
+//         {
+//           "month": "2024-02",
+//           "uploads": 6,
+//           "approved": 4,
+//           "rejected": 1,
+//           "pending": 1
+//         }
+//       ],
+//       "weeklyData": [
+//         {
+//           "week": "2024-W05",
+//           "uploads": 3,
+//           "approved": 2,
+//           "rejected": 0,
+//           "pending": 1
+//         }
+//       ]
+//     },
+//     "accessSummary": {
+//       "totalCategories": 8,
+//       "accessibleCategories": [
+//         {
+//           "id": "cat_1",
+//           "name": "ISO Standards",
+//           "accessGrantedAt": "2024-01-10T00:00:00Z"
+//         },
+//         {
+//           "id": "cat_2",
+//           "name": "Security Frameworks",
+//           "accessGrantedAt": "2024-01-10T00:00:00Z"
+//         },
+//         {
+//           "id": "cat_3",
+//           "name": "Quality Management",
+//           "accessGrantedAt": "2024-01-15T00:00:00Z"
+//         },
+//         {
+//           "id": "cat_4",
+//           "name": "Risk Management",
+//           "accessGrantedAt": "2024-01-20T00:00:00Z"
+//         },
+//         {
+//           "id": "cat_5",
+//           "name": "Data Protection",
+//           "accessGrantedAt": "2024-01-25T00:00:00Z"
+//         }
+//       ],
+//       "restrictedCategories": [
+//         {
+//           "id": "cat_6",
+//           "name": "Financial Compliance",
+//           "reason": "Requires additional certification"
+//         },
+//         {
+//           "id": "cat_7",
+//           "name": "Healthcare Standards",
+//           "reason": "Domain expertise required"
+//         },
+//         {
+//           "id": "cat_8",
+//           "name": "Government Frameworks",
+//           "reason": "Security clearance required"
+//         }
+//       ]
+//     },
+//     "accountTimeline": {
+//       "accountCreated": "2024-01-10T08:00:00Z",
+//       "firstUpload": "2024-01-15T10:30:00Z",
+//       "lastUpload": "2024-02-03T14:22:00Z",
+//       "totalDaysActive": 24,
+//       "averageUploadsPerWeek": 2.5
+//     }
+//   },
+//   "timestamp": "2024-02-05T10:30:00Z"
+// }
+
+// 📋 API Endpoint Suggestion:
+// GET /api/expert/dashboard
+// Headers:
+// - Authorization: Bearer {token}
+// - X-Tenant-ID: {tenantId}
+// 🔍 Key Data Points Explained:
+// Stats Object:
+// totalFrameworks: Total frameworks uploaded by expert
+// successRate: (totalApprovedUploads / totalFrameworks) * 100
+// totalUploadSize: Calculated total uploaded files
+// uploadFrequency: Upload counts for different time periods
+// CategoryPopularity Array:
+// Sorted by upload count (descending)
+// Includes percentage of total uploads per category
+// RecentUploads Array:
+// Last 5 uploads with complete file information
+// Status tracking (approved/pending/rejected)
+// Category information for each upload
+// UploadTrends Object:
+// Monthly and weekly breakdown for charts
+// Status distribution for trend analysis
+// AccessSummary Object:
+// Categories the expert can access vs restricted
+// Reasons for restrictions
+// Access grant timestamps
+// This API response provides all the data needed for the ExpertDashboard components and can be easily integrated with the existing static data structure!

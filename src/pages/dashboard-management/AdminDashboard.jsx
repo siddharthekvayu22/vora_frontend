@@ -61,38 +61,64 @@ export default function AdminDashboard() {
     );
   }
 
-  const { stats, charts, aiEnabled, recentCreatedUsers } = dashboardData;
+  const { stats, charts, recentCreatedUsers } = dashboardData;
 
   // Prepare metrics data
+  const totalUsers =
+    (stats.totalActiveUsers || 0) + (stats.totalInactiveUsers || 0);
+
   const metrics = [
     {
-      label: "TOTAL ACTIVE USERS",
-      value: stats.totalUsers,
-      trend: `${stats.usersByRole.admin} Admin, ${stats.usersByRole.expert} Expert, ${stats.usersByRole.user} User`,
+      label: "TOTAL USERS",
+      value: totalUsers,
+      trend: [
+        {
+          text: `${stats.totalActiveUsers || 0} Active`,
+          color: "text-green-600 dark:text-green-400",
+        },
+        {
+          text: `${stats.totalInactiveUsers || 0} Inactive`,
+          color: "text-red-600 dark:text-red-400",
+        },
+      ],
       trendColor: "text-blue-500",
-      icon: "👥",
+      icon: "users",
+      subtitle: [
+        {
+          text: `${stats.usersByRole.admin || 0} Admin`,
+          color: "text-pink-600 dark:text-pink-400",
+        },
+        {
+          text: `${stats.usersByRole.expert || 0} Expert`,
+          color: "text-blue-600 dark:text-blue-400",
+        },
+        {
+          text: `${stats.usersByRole.company || 0} Company`,
+          color: "text-yellow-600 dark:text-yellow-400",
+        },
+      ],
     },
     {
-      label: "TOTAL EXPERT FRAMEWORKS",
-      value: stats.totalExpertFrameworks,
-      trend: "Expert frameworks available",
+      label: "TOTAL OFFICIAL FRAMEWORKS",
+      value: stats.totalOfficialFrameworks || 0,
+      trend: "Official frameworks available",
       trendColor: "text-purple-500",
-      icon: "🏗",
+      icon: "framework",
     },
     {
-      label: "TOTAL USER FRAMEWORKS",
-      value: stats.totalUserFrameworks,
-      trend: "User uploaded frameworks",
+      label: "TOTAL COMPANY FRAMEWORKS",
+      value: stats.totalCompanyFrameworks || 0,
+      trend: "Comapny uploaded frameworks",
       trendColor: "text-green-500",
-      icon: "📋",
+      icon: "framework",
     },
 
     {
-      label: "TOTAL USER DOCUMENTS",
-      value: stats.totalDocuments,
-      trend: "User uploaded Documents",
+      label: "TOTAL COMPANY DOCUMENTS",
+      value: stats.totalCompanyDocuments || 0,
+      trend: "Company uploaded Documents",
       trendColor: "text-orange-500",
-      icon: "📄",
+      icon: "document",
     },
   ];
 
@@ -101,28 +127,21 @@ export default function AdminDashboard() {
     {
       title: "Manage Users",
       desc: "View and manage system users",
-      icon: "👥",
+      icon: "users",
       color: "bg-blue-500/20 text-blue-400",
       path: "/users",
     },
     {
       title: "Framework Management",
       desc: "Manage compliance frameworks",
-      icon: "🏗",
+      icon: "framework",
       color: "bg-purple-500/20 text-purple-400",
-      path: "/",
-    },
-    {
-      title: "Document Management",
-      desc: "Manage system documents",
-      icon: "📄",
-      color: "bg-orange-500/20 text-orange-400",
       path: "/",
     },
     {
       title: "System Settings",
       desc: "Configure system settings",
-      icon: "⚙",
+      icon: "settings",
       color: "bg-gray-500/20 text-gray-400",
       path: "/settings",
     },
@@ -134,7 +153,7 @@ export default function AdminDashboard() {
       name: "Admin",
       count: stats.usersByRole.admin,
       percentage: ((stats.usersByRole.admin / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-red-500",
     },
@@ -142,7 +161,7 @@ export default function AdminDashboard() {
       name: "Expert",
       count: stats.usersByRole.expert,
       percentage: ((stats.usersByRole.expert / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-blue-500",
     },
@@ -150,36 +169,43 @@ export default function AdminDashboard() {
       name: "User",
       count: stats.usersByRole.user,
       percentage: ((stats.usersByRole.user / stats.totalUsers) * 100).toFixed(
-        1
+        1,
       ),
       color: "bg-green-500",
     },
   ];
 
   return (
-    <div className="space-y-6 my-5">
+    <div className="space-y-4 my-4">
       {/* Metrics */}
       <CardWrapper title="System Overview">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {metrics.map((m) => (
-            <MetricCard key={m.label} {...m} icon={<span>{m.icon}</span>} />
+            <MetricCard
+              key={m.label}
+              {...m}
+              icon={<Icon name={m.icon} size="20px" />}
+            />
           ))}
         </div>
       </CardWrapper>
 
       {/* User Analytics */}
-      <div className="grid xl:grid-cols-2 gap-6 items-stretch">
+      <div className="grid xl:grid-cols-2 gap-4 items-stretch">
         {/* Recent Users */}
         <CardWrapper
           title="Recently Created Users"
           right={
-            <Link to={"/users"} className="text-primary cursor-pointer">
-              View All →
+            <Link
+              to={"/users"}
+              className="text-primary cursor-pointer flex items-center gap-1"
+            >
+              View All <Icon name="arrow-right" size="14px" />
             </Link>
           }
           className="flex flex-col"
         >
-          <div className="space-y-3 flex-1">
+          <div className="space-y-2 flex-1">
             {recentCreatedUsers.length === 0 ? (
               <div className="text-center py-8 flex-1 flex flex-col justify-center">
                 <Icon
@@ -193,34 +219,34 @@ export default function AdminDashboard() {
               recentCreatedUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-4 p-4 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
                 >
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                    <Icon name="user" size="20px" />
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Icon name="user" size="18px" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-semibold text-foreground">
+                      <h4 className="font-semibold text-foreground text-sm truncate">
                         {user.name}
                       </h4>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
                           user.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                            : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                              : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                         }`}
                       >
                         {user.role}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs text-muted-foreground truncate">
                       {user.email}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs whitespace-nowrap">
                       {formatDate(user.createdAt)}
                     </p>
                   </div>
@@ -231,7 +257,7 @@ export default function AdminDashboard() {
         </CardWrapper>
         {/* User Registration Chart */}
         <CardWrapper title="User Registration Trends" className="flex flex-col">
-          <div className="flex-1 min-h-[400px]">
+          <div className="flex-1 min-h-[350px]">
             <UserRegistrationChart data={charts.userCreation} />
           </div>
         </CardWrapper>
@@ -239,27 +265,27 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <CardWrapper title="Quick Actions">
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {quickActions.map((a) => (
             <button
               key={a.title}
-              className="group flex gap-4 rounded-2xl border border-border bg-accent p-6 shadow-lg hover:border-primary transition-all duration-200"
+              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
               onClick={() => {
                 // Navigate to the respective page
                 window.location.href = a.path;
               }}
             >
               <div
-                className={`h-12 w-12 rounded-xl flex items-center justify-center ${a.color}`}
+                className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${a.color}`}
               >
-                {a.icon}
+                <Icon name={a.icon} size="18px" />
               </div>
-              <div className="flex-1 text-left">
-                <p className="font-semibold">{a.title}</p>
-                <p className="text-sm text-muted-foreground">{a.desc}</p>
+              <div className="flex-1 text-left min-w-0">
+                <p className="font-semibold text-sm">{a.title}</p>
+                <p className="text-xs text-muted-foreground">{a.desc}</p>
               </div>
-              <span className="text-muted-foreground group-hover:translate-x-1 transition">
-                →
+              <span className="text-muted-foreground group-hover:translate-x-1 transition flex-shrink-0">
+                <Icon name="arrow-right" size="16px" />
               </span>
             </button>
           ))}

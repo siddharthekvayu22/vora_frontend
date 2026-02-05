@@ -19,9 +19,9 @@ function Header({ pageTitle, breadcrumbs = [] }) {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur">
-      <div className="flex items-center justify-between px-8 py-2">
+      <div className="flex items-center justify-between py-2">
         {/* LEFT */}
-        <div className="pl-8">
+        <div className="pl-16">
           <h1 className="text-2xl font-bold text-foreground capitalize">
             {pageTitle}
           </h1>

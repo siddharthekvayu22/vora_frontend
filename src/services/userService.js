@@ -9,6 +9,7 @@ export function getAllUsers({
   search = "",
   sortBy = "",
   sortOrder = "",
+  role = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -16,16 +17,17 @@ export function getAllUsers({
     ...(search && { search }),
     ...(sortBy && { sortBy }),
     ...(sortOrder && { sortOrder }),
+    ...(role && { role }),
   });
 
-  return apiRequest(`/user/all-users?${params.toString()}`, true);
+  return apiRequest(`/users/all-users?${params.toString()}`, true);
 }
 
 /**
  * Get user by ID
  */
 export function getUserById(userId) {
-  return apiRequest(`/user/${userId}`, true); // ✅ GET with auth
+  return apiRequest(`/users/${userId}`, true); // ✅ GET with auth
 }
 
 /**
@@ -33,12 +35,12 @@ export function getUserById(userId) {
  */
 export function createUser(userData) {
   return apiRequest(
-    "/user/create",
+    "/users/create",
     {
       method: "POST",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
 }
 
@@ -47,20 +49,20 @@ export function createUser(userData) {
  */
 export function updateUserByAdmin(userId, userData) {
   return apiRequest(
-    `/user/update/${userId}`,
+    `/users/${userId}`,
     {
       method: "PUT",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
 }
 
 /**
  * Own profile
  */
-export function userProfile(userData) {
-  return apiRequest("/user/profile", true);
+export function userProfile() {
+  return apiRequest("/profile", true);
 }
 
 /**
@@ -68,33 +70,38 @@ export function userProfile(userData) {
  */
 export function updateUser(userData) {
   return apiRequest(
-    "/user/profile/update",
+    "/profile/update",
     {
       method: "PUT",
       body: JSON.stringify(userData),
     },
-    true
+    true,
   );
-}
-
-/**
- * Get user statistics by ID
- */
-export function getUserDetails(userId) {
-  return apiRequest(`/user/${userId}`, true);
 }
 
 /**
  * Delete user
  */
-export function deleteUser(userId, deleteData = true) {
+export function deleteUser(userId) {
   return apiRequest(
-    `/user/${userId}`,
+    `/users/${userId}`,
     {
       method: "DELETE",
-      body: JSON.stringify({ deleteData }),
     },
-    true
+    true,
+  );
+}
+
+/**
+ * Toggle user status (active/inactive)
+ */
+export function toggleUserStatus(userId) {
+  return apiRequest(
+    `/users/${userId}/toggle-status`,
+    {
+      method: "PATCH",
+    },
+    true,
   );
 }
 
@@ -105,4 +112,5 @@ export default {
   updateUserByAdmin,
   updateUser,
   deleteUser,
+  toggleUserStatus,
 };

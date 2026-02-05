@@ -30,7 +30,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
   ];
 
   const isPasswordValid = rules.every((rule) =>
-    rule.test(formData.newPassword)
+    rule.test(formData.newPassword),
   );
 
   const handleSubmit = async (e) => {
@@ -62,14 +62,16 @@ function ChangePasswordModal({ isOpen, onClose }) {
     try {
       setLoading(true);
 
-      await changePassword(currentPassword, newPassword);
+      const result = await changePassword(currentPassword, newPassword);
 
-      toast.success("Password changed successfully. Please login again.");
+      toast.success(
+        result.message || "Password changed successfully. Please login again.",
+      );
 
       // Force logout for security
       setTimeout(() => {
         logout("Please login with your new password", true);
-      }, 1500);
+      }, 1000);
     } catch (error) {
       toast.error(error?.message || "Failed to change password");
     } finally {
@@ -77,11 +79,10 @@ function ChangePasswordModal({ isOpen, onClose }) {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [field]: value,
     }));
   };
 
@@ -95,159 +96,170 @@ function ChangePasswordModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      onClick={onClose}
+    >
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4 bg-background rounded-2xl border border-border shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <h2 className="text-xl font-semibold text-foreground">
-            Change Password
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-accent rounded-lg transition-colors"
-          >
-            <Icon name="close" size="20px" />
-          </button>
+        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Icon name="key" size="24px" />
+              <h2 className="text-xl font-bold text-white drop-shadow-sm">
+                Change Password
+              </h2>
+            </div>
+            <button
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={onClose}
+              title="Close"
+            >
+              <Icon name="x" size="20px" />
+            </button>
+          </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Current Password */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Current Password *
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.current ? "text" : "password"}
-                name="currentPassword"
-                value={formData.currentPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Enter current password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("current")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
-              >
-                <Icon
-                  name={showPasswords.current ? "eye-off" : "eye"}
-                  size="16px"
+        <form onSubmit={handleSubmit}>
+          <div className="p-4 flex flex-col">
+            {/* Current Password */}
+            <div className="form-group">
+              <label htmlFor="current-password" className="form-label">
+                Current Password <span className="required">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  id="current-password"
+                  type={showPasswords.current ? "text" : "password"}
+                  className="form-input pr-12"
+                  value={formData.currentPassword}
+                  onChange={(e) =>
+                    handleChange("currentPassword", e.target.value)
+                  }
+                  placeholder="Enter current password"
+                  required
                 />
-              </button>
-            </div>
-          </div>
-
-          {/* New Password */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              New Password *
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.new ? "text" : "password"}
-                name="newPassword"
-                value={formData.newPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Enter new password"
-                required
-                minLength={6}
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("new")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
-              >
-                <Icon
-                  name={showPasswords.new ? "eye-off" : "eye"}
-                  size="16px"
-                />
-              </button>
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Password must be at least 6 characters long
-            </div>
-          </div>
-
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Confirm New Password *
-            </label>
-            <div className="relative">
-              <input
-                type={showPasswords.confirm ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-3 pr-12 rounded-lg border border-border bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="Confirm new password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => togglePasswordVisibility("confirm")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
-              >
-                <Icon
-                  name={showPasswords.confirm ? "eye-off" : "eye"}
-                  size="16px"
-                />
-              </button>
-            </div>
-          </div>
-
-          {/* Password Strength Indicator */}
-          {formData.newPassword && (
-            <div className="p-3 bg-accent rounded-lg border border-border">
-              <div className="text-sm font-medium text-foreground mb-2">
-                Password Requirements:
-              </div>
-
-              <div className="space-y-1 text-xs">
-                {rules.map((rule, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-center gap-2 ${
-                      rule.test(formData.newPassword)
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    <Icon
-                      name={rule.test(formData.newPassword) ? "check" : "close"}
-                      size="12px"
-                    />
-                    {rule.label}
-                  </div>
-                ))}
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("current")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                >
+                  <Icon
+                    name={showPasswords.current ? "eye-off" : "eye"}
+                    size="16px"
+                  />
+                </button>
               </div>
             </div>
-          )}
 
-          {/* Buttons */}
-          <div className="flex gap-3 pt-4">
+            {/* New Password */}
+            <div className="form-group">
+              <label htmlFor="new-password" className="form-label">
+                New Password <span className="required">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  id="new-password"
+                  type={showPasswords.new ? "text" : "password"}
+                  className="form-input pr-12"
+                  value={formData.newPassword}
+                  onChange={(e) => handleChange("newPassword", e.target.value)}
+                  placeholder="Enter new password"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("new")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                >
+                  <Icon
+                    name={showPasswords.new ? "eye-off" : "eye"}
+                    size="16px"
+                  />
+                </button>
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Password must be at least 6 characters long
+              </div>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="form-group">
+              <label htmlFor="confirm-password" className="form-label">
+                Confirm New Password <span className="required">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  id="confirm-password"
+                  type={showPasswords.confirm ? "text" : "password"}
+                  className="form-input pr-12"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    handleChange("confirmPassword", e.target.value)
+                  }
+                  placeholder="Confirm new password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility("confirm")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                >
+                  <Icon
+                    name={showPasswords.confirm ? "eye-off" : "eye"}
+                    size="16px"
+                  />
+                </button>
+              </div>
+            </div>
+
+            {/* Password Strength Indicator */}
+            {formData.newPassword && (
+              <div className="p-3 bg-accent rounded-lg border border-border">
+                <div className="text-sm font-medium text-foreground mb-2">
+                  Password Requirements:
+                </div>
+
+                <div className="space-y-1 text-xs">
+                  {rules.map((rule, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center gap-2 ${
+                        rule.test(formData.newPassword)
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      <Icon
+                        name={
+                          rule.test(formData.newPassword) ? "check" : "close"
+                        }
+                        size="12px"
+                      />
+                      {rule.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2 justify-end p-3 border-t border-border">
             <button
               type="button"
+              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
               disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
               disabled={loading || !isPasswordValid}
             >
               {loading ? (
@@ -256,7 +268,10 @@ function ChangePasswordModal({ isOpen, onClose }) {
                   Changing...
                 </>
               ) : (
-                "Change Password"
+                <>
+                  <Icon name="check" size="16px" />
+                  Change Password
+                </>
               )}
             </button>
           </div>

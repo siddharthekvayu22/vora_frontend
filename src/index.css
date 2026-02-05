@@ -254,7 +254,6 @@ div[style*="position: fixed"][style*="pointer-events: none"]>div {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-foreground);
-    margin-bottom: 0.5rem;
   }
 
   /* Required field indicator */
@@ -272,7 +271,7 @@ div[style*="position: fixed"][style*="pointer-events: none"]>div {
 
   /* Form groups */
   .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .form-group>*+* {

@@ -24,7 +24,7 @@ function Sidebar() {
         title: "Dashboard",
         description: "Admin overview & analytics",
         icon: "dashboard",
-        path: "/admin-dashboard",
+        path: "/dashboard",
       },
 
       {
@@ -77,20 +77,20 @@ function Sidebar() {
           },
         ],
       },
-      {
-        id: "settings",
-        title: "Settings",
-        description: "Admin settings",
-        icon: "settings",
-        path: "/settings",
-      },
+      // {
+      //   id: "settings",
+      //   title: "Settings",
+      //   description: "Admin settings",
+      //   icon: "settings",
+      //   path: "/settings",
+      // },
     ],
 
     expert: [
       {
-        id: "dashboard",
+        id: "expert-dashboard",
         title: "Dashboard",
-        description: "Overview & analytics",
+        description: "Expert overview & analytics",
         icon: "dashboard",
         path: "/dashboard",
       },
@@ -123,13 +123,13 @@ function Sidebar() {
           },
         ],
       },
-      {
-        id: "reports",
-        title: "Reports",
-        description: "Compliance reports",
-        icon: "chart",
-        path: "/reports",
-      },
+      // {
+      //   id: "reports",
+      //   title: "Reports",
+      //   description: "Compliance reports",
+      //   icon: "chart",
+      //   path: "/reports",
+      // },
     ],
 
     user: [

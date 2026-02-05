@@ -147,7 +147,12 @@ function OfficialFrameworkCategory() {
       label: "Category Name",
       sortable: true,
       render: (value) => (
-        <span className="font-medium text-foreground">{value}</span>
+        <span
+          className="font-medium text-foreground line-clamp-1"
+          title={value}
+        >
+          {value}
+        </span>
       ),
     },
     {
@@ -155,7 +160,10 @@ function OfficialFrameworkCategory() {
       label: "Description",
       sortable: false,
       render: (value) => (
-        <span className="text-muted-foreground text-sm line-clamp-2 max-w-xs">
+        <span
+          className="text-muted-foreground text-sm line-clamp-2 max-w-xs"
+          title={value}
+        >
           {value}
         </span>
       ),

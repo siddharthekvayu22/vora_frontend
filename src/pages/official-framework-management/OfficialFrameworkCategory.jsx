@@ -183,18 +183,27 @@ function OfficialFrameworkCategory() {
 
   const renderActions = (row) => {
     const isActive = row.isActive;
+    const hasRequested = row.hasRequested;
+    const isDisabled = !isActive || hasRequested;
     return (
       <div className="flex gap-1 justify-center">
         <button
-          disabled={!isActive}
+          disabled={isDisabled}
           onClick={() => setRequestModalState({ isOpen: true, framework: row })}
           className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
-            !isActive
+            isDisabled
               ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
               : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
           }`}
         >
-          <Icon name="plus" size="12px" /> Request
+          {!isDisabled ? (
+            <>
+              <Icon name="plus" size="12px" />
+              Request
+            </>
+          ) : (
+            "Requested"
+          )}
         </button>
       </div>
     );

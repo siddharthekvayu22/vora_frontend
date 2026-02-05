@@ -76,7 +76,7 @@ export function requestFrameworkAccess(frameworkId) {
 /**
  * Upload framework file
  */
-export function uploadFramework(formData) {
+export function uploadOfficialFramework(formData) {
   return apiRequest(
     "/files/upload",
     {
@@ -112,11 +112,25 @@ export async function downloadOfficialFrameworkFile(fileId, fileName) {
 }
 
 /**
+ * Update framework file
+ */
+export function updateOfficialFramework(frameworkId, formData) {
+  return apiRequest(
+    `/files/${frameworkId}`,
+    {
+      method: "PUT",
+      body: formData, // FormData object
+    },
+    true,
+  );
+}
+
+/**
  * Delete official framework
  */
-export function deleteOfficialFramework(frameworkId) {
+export function deleteOfficialFramework(fileId) {
   return apiRequest(
-    `/official-frameworks/frameworks/${frameworkId}`,
+    `/files/${fileId}`,
     {
       method: "DELETE",
     },
@@ -129,7 +143,8 @@ export default {
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,
   requestFrameworkAccess,
-  uploadFramework,
+  uploadOfficialFramework,
+  updateOfficialFramework,
   downloadOfficialFrameworkFile,
   deleteOfficialFramework,
 };

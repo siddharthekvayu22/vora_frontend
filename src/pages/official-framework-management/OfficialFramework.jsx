@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
+import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
@@ -21,8 +22,10 @@ function OfficialFramework() {
     "No official framework found",
   );
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
+  const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -129,7 +132,16 @@ function OfficialFramework() {
   const handleUploadSuccess = () => {
     // Refresh the framework list after successful upload
     fetchOfficialFramework();
-    // toast.success("Framework uploaded successfully!");
+  };
+
+  const handleUpdateFramework = (framework) => {
+    setFrameworkToUpdate(framework);
+    setUpdateModalOpen(true);
+  };
+
+  const handleUpdateSuccess = () => {
+    // Refresh the framework list after successful update
+    fetchOfficialFramework();
   };
 
   const handleDeleteFramework = (framework) => {
@@ -139,9 +151,9 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-
+    const fileId = frameworkToDelete.fileInfo.fileId;
     try {
-      const result = await deleteOfficialFramework(frameworkToDelete.id);
+      const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
       fetchOfficialFramework(); // Refresh the list
       setDeleteModalOpen(false);
@@ -252,6 +264,13 @@ function OfficialFramework() {
           )}
         </button>
         <button
+          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
+          title="Edit Framework"
+          onClick={() => handleUpdateFramework(row)}
+        >
+          <Icon name="edit" size="16px" />
+        </button>
+        <button
           className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
           title="Delete Framework"
           onClick={() => handleDeleteFramework(row)}
@@ -295,6 +314,17 @@ function OfficialFramework() {
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
         onSuccess={handleUploadSuccess}
+      />
+
+      {/* Update Framework Modal */}
+      <UpdateFrameworkModal
+        isOpen={updateModalOpen}
+        onClose={() => {
+          setUpdateModalOpen(false);
+          setFrameworkToUpdate(null);
+        }}
+        onSuccess={handleUpdateSuccess}
+        framework={frameworkToUpdate}
       />
 
       {/* Delete Framework Modal */}

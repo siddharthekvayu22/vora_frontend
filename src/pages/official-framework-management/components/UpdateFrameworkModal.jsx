@@ -5,14 +5,19 @@ import SelectDropdown from "../../../components/custom/SelectDropdown";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
-  uploadOfficialFramework,
+  updateOfficialFramework,
 } from "../../../services/officialFrameworkService";
 
 /**
- * Upload Framework Modal Component
- * Allows experts to upload frameworks for categories they have approved access to
+ * Update Framework Modal Component
+ * Allows experts to update existing frameworks for categories they have approved access to
  */
-export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
+export default function UpdateFrameworkModal({
+  isOpen,
+  onClose,
+  onSuccess,
+  framework,
+}) {
   const [saving, setSaving] = useState(false);
   const [approvedCategories, setApprovedCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -26,6 +31,24 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
   });
 
   const [errors, setErrors] = useState({});
+
+  // Initialize form data when framework prop changes
+  useEffect(() => {
+    if (framework && isOpen && approvedCategories.length > 0) {
+      // Find the matching category based on framework code
+      const matchingCategory = approvedCategories.find(
+        (cat) => cat.code === framework.frameworkCode,
+      );
+
+      setFormData({
+        frameworkCategoryId:
+          matchingCategory?.value || framework.frameworkCategory?.id || "",
+        frameworkName: framework.frameworkName || "",
+        frameworkCode: framework.frameworkCode || "",
+        file: null, // File will be optional for updates
+      });
+    }
+  }, [framework, isOpen, approvedCategories]);
 
   // Fetch approved framework categories for the expert
   const fetchApprovedCategories = async () => {
@@ -60,6 +83,35 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     }
   }, [isOpen]);
 
+  // Initialize form data after categories are loaded
+  useEffect(() => {
+    if (framework && isOpen && approvedCategories.length > 0) {
+      // Find the matching category based on framework code
+      const matchingCategory = approvedCategories.find(
+        (cat) => cat.code === framework.frameworkCode,
+      );
+
+      console.log("Framework code:", framework.frameworkCode);
+      console.log(
+        "Available categories:",
+        approvedCategories.map((cat) => ({
+          code: cat.code,
+          label: cat.label,
+          name: cat.name,
+        })),
+      );
+      console.log("Matching category:", matchingCategory);
+
+      setFormData({
+        frameworkCategoryId:
+          matchingCategory?.value || framework.frameworkCategory?.id || "",
+        frameworkName: framework.frameworkName || "",
+        frameworkCode: framework.frameworkCode || "",
+        file: null, // File will be optional for updates
+      });
+    }
+  }, [framework, isOpen, approvedCategories]);
+
   // Handle form input changes
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -69,7 +121,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
 
-    // Auto-generate framework code and name when category is selected
+    // Auto-generate framework code when category is selected (but preserve existing name)
     if (field === "frameworkCategoryId") {
       const selectedCategory = approvedCategories.find(
         (cat) => cat.value === value,
@@ -78,7 +130,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         setFormData((prev) => ({
           ...prev,
           frameworkCode: selectedCategory.code,
-          frameworkName: selectedCategory.name, // Use the category name without code
           [field]: value,
         }));
       }
@@ -123,7 +174,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
   const handleFileRemove = () => {
     setFormData((prev) => ({ ...prev, file: null }));
     // Reset the file input
-    const fileInput = document.getElementById("framework-file");
+    const fileInput = document.getElementById("update-framework-file");
     if (fileInput) {
       fileInput.value = "";
     }
@@ -138,9 +189,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     }
     if (!formData.frameworkName.trim()) {
       newErrors.frameworkName = "Framework name is required";
-    }
-    if (!formData.file) {
-      newErrors.file = "Framework file is required";
     }
 
     // Show errors in toast instead of inline
@@ -164,27 +212,35 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     try {
       setSaving(true);
 
-      // Prepare form data for upload
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", formData.file);
-      uploadFormData.append("resourceType", "official-framework");
+      // Prepare form data for update
+      const updateFormData = new FormData();
+
+      // Only append file if a new file is selected
+      if (formData.file) {
+        updateFormData.append("file", formData.file);
+      }
+
+      updateFormData.append("resourceType", "official-framework");
 
       const metadata = {
         frameworkCode: formData.frameworkCode,
         frameworkCategoryId: formData.frameworkCategoryId,
         frameworkName: formData.frameworkName,
       };
-      uploadFormData.append("metadata", JSON.stringify(metadata));
+      updateFormData.append("metadata", JSON.stringify(metadata));
 
-      // Upload framework using the service
-      const result = await uploadOfficialFramework(uploadFormData);
+      // Update framework using the service
+      const result = await updateOfficialFramework(
+        framework.fileInfo?.fileId,
+        updateFormData,
+      );
 
-      toast.success(result.message || "Framework uploaded successfully!");
+      toast.success(result.message || "Framework updated successfully!");
       onSuccess?.(result.data);
       handleClose();
     } catch (error) {
-      console.error("Error uploading framework:", error);
-      toast.error(error.message || "Failed to upload framework");
+      console.error("Error updating framework:", error);
+      toast.error(error.message || "Failed to update framework");
     } finally {
       setSaving(false);
     }
@@ -218,9 +274,9 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Icon name="upload" size="24px" />
+              <Icon name="edit" size="24px" />
               <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Upload Framework
+                Update Framework
               </h2>
             </div>
             <button
@@ -301,10 +357,29 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                 />
               </div>
 
+              {/* Current File Info */}
+              {framework?.fileInfo && (
+                <div className="form-group">
+                  <label className="form-label">Current File</label>
+                  <div className="flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg border-blue-200 bg-blue-50 dark:bg-blue-900/20">
+                    <div className="flex items-center gap-3">
+                      <FileTypeCard
+                        fileName={framework.fileInfo.originalFileName}
+                        fileSize={framework.fileInfo.fileSize}
+                      />
+                    </div>
+                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                      Current File
+                    </span>
+                  </div>
+                </div>
+              )}
+
               {/* File Upload */}
               <div className="form-group">
                 <label className="form-label">
-                  Framework File <span className="required">*</span>
+                  New Framework File{" "}
+                  <span className="text-muted-foreground">(Optional)</span>
                 </label>
                 <div className="relative">
                   <input
@@ -312,12 +387,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     accept=".pdf,.doc,.docx,.xls,.xlsx"
                     onChange={handleFileChange}
                     className="hidden"
-                    id="framework-file"
+                    id="update-framework-file"
                   />
 
                   {!formData.file ? (
                     <label
-                      htmlFor="framework-file"
+                      htmlFor="update-framework-file"
                       className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
                         errors.file ? "border-red-500" : "border-border"
                       }`}
@@ -329,13 +404,16 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                           className="text-muted-foreground mb-2 mx-auto"
                         />
                         <p className="text-sm font-medium text-foreground">
-                          Click to upload framework file
+                          Click to upload new framework file
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Supports: PDF, DOC, DOCX, XLS, XLSX
                         </p>
                         <p className="text-xs text-muted-foreground">
                           Maximum file size: 50MB
+                        </p>
+                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                          Leave empty to keep current file
                         </p>
                       </div>
                     </label>
@@ -355,7 +433,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                       </div>
                       <div className="flex items-center gap-2">
                         <label
-                          htmlFor="framework-file"
+                          htmlFor="update-framework-file"
                           className="px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
                         >
                           Change
@@ -395,12 +473,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               {saving ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Uploading...
+                  Updating...
                 </>
               ) : (
                 <>
-                  <Icon name="upload" size="16px" />
-                  Upload Framework
+                  <Icon name="save" size="16px" />
+                  Update Framework
                 </>
               )}
             </button>

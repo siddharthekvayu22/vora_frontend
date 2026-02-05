@@ -262,7 +262,6 @@ function Users() {
             <UserMiniCard
               name={value.name}
               email={value.email}
-              date={value.createdAt}
             />
           );
         }

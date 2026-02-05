@@ -167,7 +167,6 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       const uploadFormData = new FormData();
       uploadFormData.append("file", formData.file);
       uploadFormData.append("resourceType", "official-framework");
-      uploadFormData.append("fileName", formData.frameworkName);
 
       const metadata = {
         frameworkCode: formData.frameworkCode,

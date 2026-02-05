@@ -8,6 +8,7 @@ import { getOfficialFrameworkCategoryAccess } from "../../services/officialFrame
 import RequestAccessModal from "./components/RequestAccessModal";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
+import FrameworkMiniCard from "../../components/custom/FrameworkMiniCard";
 
 function OfficialFrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -145,9 +146,10 @@ function OfficialFrameworkAccess() {
       label: "Framework Name",
       sortable: true,
       render: (_, row) => (
-        <span className="font-medium text-foreground">
-          {row?.frameworkCategory?.frameworkCategoryName}
-        </span>
+        <FrameworkMiniCard
+          name={row.frameworkCategory?.frameworkCategoryName}
+          description={row.frameworkCategory?.description}
+        />
       ),
     },
     {

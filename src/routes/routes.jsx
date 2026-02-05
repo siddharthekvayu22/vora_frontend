@@ -5,207 +5,40 @@ import PublicRoute from "../routes/PublicRoute";
 import AuthLayout from "../layout/AuthLayout";
 import { useAuth } from "../context/useAuth";
 import { useEffect } from "react";
-import Dashboard from "../pages/dashboard-management/Dashboard";
-import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
-import Users from "../pages/user-management/Users";
 import Profile from "../pages/profile-management/Profile";
-import Category from "../pages/admin-framework-management/framework-category-manage/Category";
-import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
-import AccessRequests from "../pages/admin-framework-management/framework-access-manage/AccessRequests";
-import AccessRejected from "../pages/admin-framework-management/framework-access-manage/AccessRejected";
-import AccessRevoked from "../pages/admin-framework-management/framework-access-manage/AccessRevoked";
-import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
-import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
-import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
-import ExpertDashboard from "../pages/dashboard-management/ExpertDashboard";
+
+// Import role-based routes
+import adminRoutes from "./adminRoutes";
+import expertRoutes from "./expertRoutes";
+import companyRoutes from "./companyRoutes";
+import authRoutes from "./authRoutes";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
 
-  // Role-based dashboard redirect
-  const getRoleBasedDashboard = () => {
-    if (!user) return "/dashboard";
+  // Get routes based on user role
+  const getRoleBasedRoutes = () => {
+    if (!user) return authRoutes;
 
     switch (user.role?.toLowerCase()) {
       case "admin":
-        return "/admin-dashboard";
+        return adminRoutes;
       case "expert":
-        return "/expert-dashboard";
+        return expertRoutes;
+      case "company":
+        return companyRoutes;
       default:
-        return "/dashboard";
+        return authRoutes;
     }
   };
 
   return (
     <Routes>
-      <Route
-        path="/auth/login"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/auth/register"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/auth/forgot-password"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/auth/reset-password"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/auth/verify-email"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/auth/verify-otp"
-        element={
-          <PublicRoute>
-            <AuthLayout />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Dashboard />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AdminDashboard />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/expert-dashboard"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <ExpertDashboard />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/framework-category"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Category />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/framework-access/approved"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AccessApproved />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/framework-access/requests"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AccessRequests />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/framework-access/rejected"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AccessRejected />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/framework-access/revoked"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <AccessRevoked />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/official-frameworks"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <OfficialFramework />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/official-framework-category"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <OfficialFrameworkCategory />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/official-framework-access"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <OfficialFrameworkAccess />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/users"
-        element={
-          <ProtectedRoute>
-            <Layout>
-              <Users />
-            </Layout>
-          </ProtectedRoute>
-        }
-      />
+      {/* ================= ROLE-BASED ROUTES ================= */}
+      {isAuthenticated && getRoleBasedRoutes()}
+
+      {/* ================= SHARED ROUTES ================= */}
+      {/* Profile - All authenticated users */}
       <Route
         path="/profile"
         element={
@@ -217,12 +50,12 @@ function AppRoutes() {
         }
       />
 
-      {/* Root redirect - role-based dashboard */}
+      {/* ================= REDIRECTS ================= */}
       <Route
         path="/"
         element={
           isAuthenticated ? (
-            <Navigate to={getRoleBasedDashboard()} replace />
+            <Navigate to={"/dashboard"} replace />
           ) : (
             <Navigate to="/auth/login" replace />
           )
@@ -236,7 +69,11 @@ function AppRoutes() {
           const NavigateBack = () => {
             const navigate = useNavigate();
             useEffect(() => {
-              navigate(-1);
+              if (isAuthenticated) {
+                navigate(-1);
+              } else {
+                navigate("/auth/login", { replace: true });
+              }
             }, [navigate]);
             return null;
           };

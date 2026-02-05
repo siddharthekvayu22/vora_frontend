@@ -24,7 +24,7 @@ function Sidebar() {
         title: "Dashboard",
         description: "Admin overview & analytics",
         icon: "dashboard",
-        path: "/admin-dashboard",
+        path: "/dashboard",
       },
 
       {
@@ -92,7 +92,7 @@ function Sidebar() {
         title: "Dashboard",
         description: "Expert overview & analytics",
         icon: "dashboard",
-        path: "/expert-dashboard",
+        path: "/dashboard",
       },
       {
         id: "official-framework-management",

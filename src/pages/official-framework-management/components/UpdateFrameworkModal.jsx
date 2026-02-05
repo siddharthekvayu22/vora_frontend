@@ -34,15 +34,21 @@ export default function UpdateFrameworkModal({
 
   // Initialize form data when framework prop changes
   useEffect(() => {
-    if (framework && isOpen) {
+    if (framework && isOpen && approvedCategories.length > 0) {
+      // Find the matching category based on framework code
+      const matchingCategory = approvedCategories.find(
+        (cat) => cat.code === framework.frameworkCode,
+      );
+
       setFormData({
-        frameworkCategoryId: framework.frameworkCategory?.id || "",
+        frameworkCategoryId:
+          matchingCategory?.value || framework.frameworkCategory?.id || "",
         frameworkName: framework.frameworkName || "",
         frameworkCode: framework.frameworkCode || "",
         file: null, // File will be optional for updates
       });
     }
-  }, [framework, isOpen]);
+  }, [framework, isOpen, approvedCategories]);
 
   // Fetch approved framework categories for the expert
   const fetchApprovedCategories = async () => {
@@ -55,8 +61,9 @@ export default function UpdateFrameworkModal({
         .filter((access) => access.status === "approved")
         .map((access) => ({
           value: access.frameworkCategory.id,
-          label: access.frameworkCategory.frameworkCategoryName,
+          label: `${access.frameworkCategory.frameworkCategoryName} (${access.frameworkCategory.code})`,
           code: access.frameworkCategory.code,
+          name: access.frameworkCategory.frameworkCategoryName,
         }));
 
       setApprovedCategories(approved);
@@ -75,6 +82,35 @@ export default function UpdateFrameworkModal({
       fetchApprovedCategories();
     }
   }, [isOpen]);
+
+  // Initialize form data after categories are loaded
+  useEffect(() => {
+    if (framework && isOpen && approvedCategories.length > 0) {
+      // Find the matching category based on framework code
+      const matchingCategory = approvedCategories.find(
+        (cat) => cat.code === framework.frameworkCode,
+      );
+
+      console.log("Framework code:", framework.frameworkCode);
+      console.log(
+        "Available categories:",
+        approvedCategories.map((cat) => ({
+          code: cat.code,
+          label: cat.label,
+          name: cat.name,
+        })),
+      );
+      console.log("Matching category:", matchingCategory);
+
+      setFormData({
+        frameworkCategoryId:
+          matchingCategory?.value || framework.frameworkCategory?.id || "",
+        frameworkName: framework.frameworkName || "",
+        frameworkCode: framework.frameworkCode || "",
+        file: null, // File will be optional for updates
+      });
+    }
+  }, [framework, isOpen, approvedCategories]);
 
   // Handle form input changes
   const handleChange = (field, value) => {

@@ -38,8 +38,9 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         .filter((access) => access.status === "approved")
         .map((access) => ({
           value: access.frameworkCategory.id,
-          label: access.frameworkCategory.frameworkCategoryName,
+          label: `${access.frameworkCategory.frameworkCategoryName} (${access.frameworkCategory.code})`,
           code: access.frameworkCategory.code,
+          name: access.frameworkCategory.frameworkCategoryName,
         }));
 
       setApprovedCategories(approved);
@@ -77,7 +78,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         setFormData((prev) => ({
           ...prev,
           frameworkCode: selectedCategory.code,
-          frameworkName: selectedCategory.label, // Auto-populate framework name
+          frameworkName: selectedCategory.name, // Use the category name without code
           [field]: value,
         }));
       }

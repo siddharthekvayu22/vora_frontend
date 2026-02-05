@@ -11,9 +11,9 @@ function Layout({ children }) {
   const pageTitle = breadcrumbs[breadcrumbs.length - 1]?.label || "";
 
   return (
-    <div className="mx-auto max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-5xl xl:max-w-[1500px]">
+    <div className="mx-auto max-w-full px-3">
       <Sidebar />
-      <main className="w-full min-h-screen">
+      <main className="w-full">
         <Header pageTitle={pageTitle} breadcrumbs={breadcrumbs} />
         <div className="">{children}</div>
       </main>

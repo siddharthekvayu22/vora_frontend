@@ -31,7 +31,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        className="bg-background rounded-2xl shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
@@ -53,7 +53,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           </div>
         </div>
 
-        <div className="p-6 space-y-8">
+        <div className="p-3 space-y-8 overflow-y-auto sidebar-scroll max-h-[70vh]">
           {/* Record Information */}
           <section className="bg-muted/50 rounded-xl p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">

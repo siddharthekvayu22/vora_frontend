@@ -374,7 +374,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

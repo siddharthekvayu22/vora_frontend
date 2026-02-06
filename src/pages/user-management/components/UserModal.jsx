@@ -149,10 +149,10 @@ export default function UserModal({
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px] rounded-t-2xl">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">

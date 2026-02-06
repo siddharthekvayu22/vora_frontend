@@ -1,9 +1,9 @@
 import { Route } from "react-router-dom";
-import Layout from "../layout/Layout";
+import Layout from "../../layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Company Pages
-import Dashboard from "../pages/dashboard-management/Dashboard";
+import Dashboard from "../../pages/dashboard-management/Dashboard";
 
 const companyRoutes = [
   // Company Dashboard

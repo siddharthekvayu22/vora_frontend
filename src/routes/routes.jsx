@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
-import ProtectedRoute from "../routes/ProtectedRoute";
+import ProtectedRoute from "../routes/components/ProtectedRoute";
 import { useAuth } from "../context/useAuth";
 import { useEffect } from "react";
 import Profile from "../pages/profile-management/Profile";
 
 // Import role-based routes
-import adminRoutes from "./adminRoutes";
-import expertRoutes from "./expertRoutes";
-import companyRoutes from "./companyRoutes";
-import authRoutes from "./authRoutes";
+import adminRoutes from "./components/adminRoutes";
+import expertRoutes from "./components/expertRoutes";
+import companyRoutes from "./components/companyRoutes";
+import authRoutes from "./components/authRoutes";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();

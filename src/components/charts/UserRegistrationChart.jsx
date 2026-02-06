@@ -48,57 +48,64 @@ const UserRegistrationChart = ({ data }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-4 min-w-[200px]">
-          <p className="font-semibold text-foreground mb-2">{label}</p>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-2.5 min-w-[160px]">
+          <p className="font-semibold text-foreground text-xs mb-1.5">
+            {label}
+          </p>
+          <div className="space-y-0.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: colors.selfReg }}
                 ></div>
-                <span className="text-sm text-muted-foreground">
-                  Self Registration
-                </span>
+                <span className="text-xs text-muted-foreground">Self Reg</span>
               </div>
-              <span className="font-medium" style={{ color: colors.selfReg }}>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.selfReg }}
+              >
                 {data.selfRegistration}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: colors.admin }}
                 ></div>
-                <span className="text-sm text-muted-foreground">
-                  Admin Created
-                </span>
+                <span className="text-xs text-muted-foreground">Admin</span>
               </div>
-              <span className="font-medium" style={{ color: colors.admin }}>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.admin }}
+              >
                 {data.adminCreation}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: colors.company }}
                 ></div>
-                <span className="text-sm text-muted-foreground">
-                  Company Created
-                </span>
+                <span className="text-xs text-muted-foreground">Company</span>
               </div>
-              <span className="font-medium" style={{ color: colors.company }}>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.company }}
+              >
                 {data.companyCreation}
               </span>
             </div>
-            <div className="border-t border-border pt-1 mt-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">
+            <div className="border-t border-border pt-1 mt-1">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-semibold text-foreground">
                   Total
                 </span>
-                <span className="font-bold text-primary">{data.total}</span>
+                <span className="font-bold text-xs text-primary">
+                  {data.total}
+                </span>
               </div>
             </div>
           </div>

@@ -145,7 +145,7 @@ const UserRegistrationChart = ({ data }) => {
   const grandTotal = totalSelfReg + totalAdminCreated + totalCompanyCreated;
 
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border shadow-lg h-full flex flex-col">
+    <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border shadow-lg h-full flex flex-col outline-none focus:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chartData}

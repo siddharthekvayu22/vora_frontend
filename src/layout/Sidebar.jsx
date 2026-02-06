@@ -231,13 +231,12 @@ function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed left-0 top-0 z-50 h-screen w-[340px] bg-background flex flex-col
-                    shadow-2xl transition-transform duration-300
+                    shadow-2xl transition-transform duration-300 border-r border-border
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* ================= HEADER ================= */}
         <div
           className="relative flex items-center justify-between overflow-hidden
-                     border-b-2 border-[var(--line)]
                      bg-gradient-to-br from-primary to-primary-2
                      px-6 py-7"
         >

@@ -1,12 +1,12 @@
 import { Route } from "react-router-dom";
-import Layout from "../layout/Layout";
+import Layout from "../../layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Expert Pages
-import ExpertDashboard from "../pages/dashboard-management/ExpertDashboard";
-import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
-import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
-import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
+import ExpertDashboard from "../../pages/dashboard-management/ExpertDashboard";
+import OfficialFramework from "../../pages/official-framework-management/OfficialFramework";
+import OfficialFrameworkCategory from "../../pages/official-framework-management/OfficialFrameworkCategory";
+import OfficialFrameworkAccess from "../../pages/official-framework-management/OfficialFrameworkAccess";
 
 const expertRoutes = [
   // Expert Dashboard

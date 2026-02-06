@@ -1,15 +1,15 @@
 import { Route } from "react-router-dom";
-import Layout from "../layout/Layout";
+import Layout from "../../layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Admin Pages
-import AdminDashboard from "../pages/dashboard-management/AdminDashboard";
-import Users from "../pages/user-management/Users";
-import Category from "../pages/admin-framework-management/framework-category-manage/Category";
-import AccessApproved from "../pages/admin-framework-management/framework-access-manage/AccessApproved";
-import AccessRequests from "../pages/admin-framework-management/framework-access-manage/AccessRequests";
-import AccessRejected from "../pages/admin-framework-management/framework-access-manage/AccessRejected";
-import AccessRevoked from "../pages/admin-framework-management/framework-access-manage/AccessRevoked";
+import AdminDashboard from "../../pages/dashboard-management/AdminDashboard";
+import Users from "../../pages/user-management/Users";
+import Category from "../../pages/admin-framework-management/framework-category-manage/Category";
+import AccessApproved from "../../pages/admin-framework-management/framework-access-manage/AccessApproved";
+import AccessRequests from "../../pages/admin-framework-management/framework-access-manage/AccessRequests";
+import AccessRejected from "../../pages/admin-framework-management/framework-access-manage/AccessRejected";
+import AccessRevoked from "../../pages/admin-framework-management/framework-access-manage/AccessRevoked";
 
 const adminRoutes = [
   // Admin Dashboard

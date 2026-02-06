@@ -14,7 +14,7 @@ function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  const role = user?.role || "expert";
+  const role = user?.role;
 
   /* ================= NAV CONFIG ================= */
   const navigationConfig = {
@@ -132,7 +132,7 @@ function Sidebar() {
       // },
     ],
 
-    user: [
+    company: [
       {
         id: "dashboard",
         title: "Dashboard",
@@ -141,11 +141,11 @@ function Sidebar() {
         path: "/dashboard",
       },
       {
-        id: "documents",
-        title: "Documents",
-        description: "View & manage documents",
-        icon: "file",
-        path: "/documents",
+        id: "company-users",
+        title: "User Management",
+        description: "Manage users & roles",
+        icon: "user",
+        path: "/users",
       },
       {
         id: "frameworks",
@@ -153,6 +153,13 @@ function Sidebar() {
         description: "View & browse frameworks",
         icon: "framework",
         path: "/frameworks",
+      },
+      {
+        id: "documents",
+        title: "Documents",
+        description: "View & manage documents",
+        icon: "file",
+        path: "/documents",
       },
     ],
   };

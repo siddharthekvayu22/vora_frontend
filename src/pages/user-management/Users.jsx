@@ -210,7 +210,7 @@ function Users() {
     {
       key: "phone",
       label: "Phone",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="phone" size="14px" className="text-muted-foreground" />
@@ -241,7 +241,7 @@ function Users() {
     {
       key: "isActive",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (v) => (
         <CustomBadge
           label={v ? "Active" : "Inactive"}
@@ -252,7 +252,7 @@ function Users() {
     {
       key: "createdBy",
       label: "Created By",
-      sortable: true,
+      sortable: false,
       render: (value, row) => {
         if (row.createdBy === "self") {
           return <UserMiniCard isSelf />;

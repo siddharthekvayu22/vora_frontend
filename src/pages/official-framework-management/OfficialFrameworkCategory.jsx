@@ -126,6 +126,7 @@ function OfficialFrameworkCategory() {
 
   /* ---------------- REQUEST ACCESS HANDLERS ---------------- */
   const handleRequestAccessSuccess = () => {
+    fetchOfficialFrameworkCategory();
     setRequestModalState({ isOpen: false, framework: null });
     // Optionally refresh data or show success message
   };

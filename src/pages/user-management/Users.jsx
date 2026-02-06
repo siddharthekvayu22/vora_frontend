@@ -227,6 +227,7 @@ function Users() {
           admin: "red",
           expert: "blue",
           company: "green",
+          user: "yellow",
         };
 
         return (
@@ -257,11 +258,11 @@ function Users() {
           return <UserMiniCard isSelf />;
         }
 
-        if (value?.name) {
+        if (row.createdBy?.user) {
           return (
             <UserMiniCard
-              name={value.name}
-              email={value.email}
+              name={row.createdBy.user.name}
+              email={row.createdBy.user.email}
             />
           );
         }

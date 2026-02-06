@@ -225,7 +225,8 @@ function OfficialFrameworkAccess() {
   const renderActions = (row) => {
     const isPending = row.status === "pending";
     const isApproved = row.status === "approved";
-    const isRevoked = row.status === "revoked";
+    const isRevokedAndRejected =
+      row.status === "revoked" || row.status === "rejected";
     const isDisabled = isPending || isApproved;
 
     return (
@@ -247,7 +248,7 @@ function OfficialFrameworkAccess() {
             ? "Pending"
             : isApproved
               ? "Approved"
-              : isRevoked
+              : isRevokedAndRejected
                 ? "Re-request"
                 : "Request"}
         </button>

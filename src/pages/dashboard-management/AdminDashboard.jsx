@@ -85,16 +85,20 @@ export default function AdminDashboard() {
       icon: "users",
       subtitle: [
         {
-          text: `${stats.usersByRole.admin || 0} Admin`,
+          text: `${stats.usersByRole?.admin || 0} Admin`,
           color: "text-pink-600 dark:text-pink-400",
         },
         {
-          text: `${stats.usersByRole.expert || 0} Expert`,
+          text: `${stats.usersByRole?.expert || 0} Expert`,
           color: "text-blue-600 dark:text-blue-400",
         },
         {
-          text: `${stats.usersByRole.company || 0} Company`,
+          text: `${stats.usersByRole?.company || 0} Company`,
           color: "text-yellow-600 dark:text-yellow-400",
+        },
+        {
+          text: `${stats.usersByRole?.user || 0} User`,
+          color: "text-green-600 dark:text-green-400",
         },
       ],
     },
@@ -108,15 +112,14 @@ export default function AdminDashboard() {
     {
       label: "TOTAL COMPANY FRAMEWORKS",
       value: stats.totalCompanyFrameworks || 0,
-      trend: "Comapny uploaded frameworks",
+      trend: "Company uploaded frameworks",
       trendColor: "text-green-500",
       icon: "framework",
     },
-
     {
       label: "TOTAL COMPANY DOCUMENTS",
       value: stats.totalCompanyDocuments || 0,
-      trend: "Company uploaded Documents",
+      trend: "Company uploaded documents",
       trendColor: "text-orange-500",
       icon: "document",
     },
@@ -136,7 +139,7 @@ export default function AdminDashboard() {
       desc: "Manage compliance frameworks",
       icon: "framework",
       color: "bg-purple-500/20 text-purple-400",
-      path: "/",
+      path: "/official-frameworks",
     },
     {
       title: "System Settings",
@@ -144,34 +147,6 @@ export default function AdminDashboard() {
       icon: "settings",
       color: "bg-gray-500/20 text-gray-400",
       path: "/settings",
-    },
-  ];
-
-  // Role distribution data
-  const roleDistribution = [
-    {
-      name: "Admin",
-      count: stats.usersByRole.admin,
-      percentage: ((stats.usersByRole.admin / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-red-500",
-    },
-    {
-      name: "Expert",
-      count: stats.usersByRole.expert,
-      percentage: ((stats.usersByRole.expert / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-blue-500",
-    },
-    {
-      name: "User",
-      count: stats.usersByRole.user,
-      percentage: ((stats.usersByRole.user / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-green-500",
     },
   ];
 
@@ -235,7 +210,9 @@ export default function AdminDashboard() {
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                              : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              : user.role === "company"
+                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                         }`}
                       >
                         {user.role}

@@ -15,6 +15,7 @@ import CategoryModal from "./components/CategoryModal";
 import DeleteCategoryModal from "./components/DeleteCategoryModal";
 import { formatDate } from "../../../utils/dateFormatter";
 import CustomBadge from "../../../components/custom/CustomBadge";
+import ActionDropdown from "../../../components/custom/ActionDropdown";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -228,26 +229,28 @@ function Category() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() =>
-          setModalState({ isOpen: true, mode: "edit", category: row })
-        }
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Edit Category"
-      >
-        <Icon name="edit" size="16px" />
-      </button>
-      <button
-        onClick={() => setDeleteModalState({ isOpen: true, category: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Delete Category"
-      >
-        <Icon name="trash" size="16px" />
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const actions = [
+      {
+        label: "Edit Category",
+        icon: "edit",
+        onClick: () =>
+          setModalState({ isOpen: true, mode: "edit", category: row }),
+      },
+      {
+        label: "Delete Category",
+        icon: "trash",
+        className: "text-destructive",
+        onClick: () => setDeleteModalState({ isOpen: true, category: row }),
+      },
+    ];
+
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
+      </div>
+    );
+  };
 
   const renderHeaderButtons = () => (
     <button

@@ -30,6 +30,10 @@ export default function AppToaster() {
           fontWeight: "500",
           padding: "12px 16px",
           zIndex: 99999,
+          maxWidth: "500px",
+          wordBreak: "break-word",
+          whiteSpace: "pre-wrap",
+          overflowWrap: "break-word",
         },
         success: {
           duration: 3000,
@@ -39,6 +43,10 @@ export default function AppToaster() {
             border: "1px solid var(--color-primary)",
             borderLeft: "4px solid var(--color-primary)",
             zIndex: 99999,
+            maxWidth: "500px",
+            wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
+            overflowWrap: "break-word",
           },
           iconTheme: {
             primary: "var(--color-primary)",
@@ -53,6 +61,10 @@ export default function AppToaster() {
             border: "1px solid var(--color-destructive)",
             borderLeft: "4px solid var(--color-destructive)",
             zIndex: 99999,
+            maxWidth: "500px",
+            wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
+            overflowWrap: "break-word",
           },
           iconTheme: {
             primary: "var(--color-destructive)",
@@ -65,6 +77,10 @@ export default function AppToaster() {
             color: "var(--color-foreground)",
             border: "1px solid var(--color-border)",
             zIndex: 99999,
+            maxWidth: "500px",
+            wordBreak: "break-word",
+            whiteSpace: "pre-wrap",
+            overflowWrap: "break-word",
           },
           iconTheme: {
             primary: "var(--color-primary)",

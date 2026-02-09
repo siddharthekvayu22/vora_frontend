@@ -109,6 +109,7 @@ import {
   // Heroicons for additional variety
   HiOutlineDocumentText,
   HiOutlineClipboardList,
+  HiDotsVertical,
 } from "react-icons/hi";
 import { FaAngleDown } from "react-icons/fa";
 
@@ -185,6 +186,7 @@ const iconMap = {
   delete: MdDelete,
   trash: MdDelete,
   edit: MdEdit,
+  "more-vertical": HiDotsVertical,
 
   // Time icons
   clock: FiClock,

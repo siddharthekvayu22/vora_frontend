@@ -11,6 +11,7 @@ import AccessViewModal from "./components/AccessViewModal";
 import UserMiniCard from "../../../components/custom/UserMiniCard";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import CustomBadge from "../../../components/custom/CustomBadge";
+import ActionDropdown from "../../../components/custom/ActionDropdown";
 
 function AccessRejected() {
   const [accessRejected, setAccessRejected] = useState([]);
@@ -130,7 +131,7 @@ function AccessRejected() {
     {
       key: "expert.name",
       label: "Expert Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
       ),
@@ -138,7 +139,7 @@ function AccessRejected() {
     {
       key: "frameworkCategory.frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row.frameworkCategory?.frameworkCode}
@@ -148,7 +149,7 @@ function AccessRejected() {
     {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
@@ -159,7 +160,7 @@ function AccessRejected() {
     {
       key: "status",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
@@ -181,7 +182,7 @@ function AccessRejected() {
     {
       key: "rejection.rejectedAt",
       label: "Rejected At",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="text-sm whitespace-nowrap">
           {formatDate(row.rejection?.rejectedAt)}
@@ -190,18 +191,23 @@ function AccessRejected() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      {/* View button - always shown */}
-      <button
-        onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
-        className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="View Details"
-      >
-        <Icon name="eye" size="16px" />
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const actions = [
+      {
+        id: `view-${row.id}`,
+        label: "View Details",
+        icon: "eye",
+        className: "text-primary",
+        onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
+      },
+    ];
+
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
+      </div>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

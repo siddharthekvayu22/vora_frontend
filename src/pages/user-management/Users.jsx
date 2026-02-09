@@ -15,6 +15,7 @@ import {
 import { formatDate } from "../../utils/dateFormatter";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
+import ActionDropdown from "../../components/custom/ActionDropdown";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -190,6 +191,7 @@ function Users() {
     } catch (e) {
       toast.error(e.message || "Failed to toggle user status");
       console.error("Toggle status error:", e);
+      throw e; // Re-throw to let ActionDropdown handle loading state
     }
   };
 
@@ -283,35 +285,37 @@ function Users() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() => handleToggleStatus(row)}
-        className={`px-3 py-2 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer ${
-          row.isActive
-            ? "hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
-            : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400"
-        }`}
-        title={row.isActive ? "Deactivate User" : "Activate User"}
-      >
-        <Icon name="power" size="16px" />
-      </button>
-      <button
-        onClick={() => setModalState({ isOpen: true, mode: "edit", user: row })}
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Edit User"
-      >
-        <Icon name="edit" size="16px" />
-      </button>
-      <button
-        onClick={() => setDeleteModalState({ isOpen: true, user: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Delete User"
-      >
-        <Icon name="trash" size="16px" />
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const actions = [
+      {
+        id: `toggle-${row._id || row.id}`,
+        label: row.isActive ? "Deactivate User" : "Activate User",
+        icon: "power",
+        className: row.isActive ? "text-destructive" : "text-green-600",
+        onClick: () => handleToggleStatus(row),
+      },
+      {
+        id: `edit-${row._id || row.id}`,
+        label: "Edit User",
+        icon: "edit",
+        className: "text-primary",
+        onClick: () => setModalState({ isOpen: true, mode: "edit", user: row }),
+      },
+      {
+        id: `delete-${row._id || row.id}`,
+        label: "Delete User",
+        icon: "trash",
+        className: "text-destructive",
+        onClick: () => setDeleteModalState({ isOpen: true, user: row }),
+      },
+    ];
+
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
+      </div>
+    );
+  };
 
   const renderHeaderButtons = () => (
     <button

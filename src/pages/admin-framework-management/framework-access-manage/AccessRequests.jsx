@@ -17,6 +17,7 @@ import RejectAccessModal from "./components/RejectAccessModal";
 import UserMiniCard from "../../../components/custom/UserMiniCard";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import CustomBadge from "../../../components/custom/CustomBadge";
+import ActionDropdown from "../../../components/custom/ActionDropdown";
 
 function AccessRequests() {
   const [accessRequests, setAccessRequests] = useState([]);
@@ -193,7 +194,7 @@ function AccessRequests() {
     {
       key: "expert.name",
       label: "Expert Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
       ),
@@ -201,7 +202,7 @@ function AccessRequests() {
     {
       key: "frameworkCategory.frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row.frameworkCategory?.frameworkCode}
@@ -211,7 +212,7 @@ function AccessRequests() {
     {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
@@ -222,7 +223,7 @@ function AccessRequests() {
     {
       key: "status",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
@@ -233,7 +234,7 @@ function AccessRequests() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),
@@ -241,34 +242,34 @@ function AccessRequests() {
   ];
 
   const renderActions = (row) => {
-    return (
-      <div className="flex gap-1 justify-center">
-        <button
-          onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
-          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="View Details"
-        >
-          <Icon name="eye" size="16px" />
-        </button>
+    const actions = [
+      {
+        id: `view-${row.id}`,
+        label: "View Details",
+        icon: "eye",
+        className: "text-primary",
+        onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
+      },
+      {
+        id: `approve-${row.id}`,
+        label: "Approve Request",
+        icon: "check",
+        className: "text-green-600",
+        onClick: () =>
+          setApproveModalState({ isOpen: true, accessRecord: row }),
+      },
+      {
+        id: `reject-${row.id}`,
+        label: "Reject Request",
+        icon: "x",
+        className: "text-destructive",
+        onClick: () => setRejectModalState({ isOpen: true, accessRecord: row }),
+      },
+    ];
 
-        <button
-          onClick={() =>
-            setApproveModalState({ isOpen: true, accessRecord: row })
-          }
-          className="px-3 py-2 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Approve Request"
-        >
-          <Icon name="check" size="16px" />
-        </button>
-        <button
-          onClick={() =>
-            setRejectModalState({ isOpen: true, accessRecord: row })
-          }
-          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Reject Request"
-        >
-          <Icon name="x" size="16px" />
-        </button>
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
       </div>
     );
   };

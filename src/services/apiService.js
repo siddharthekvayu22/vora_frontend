@@ -53,9 +53,10 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
     // ✅ HANDLE BLOB RESPONSE (DOWNLOAD)
     if (options.responseType === "blob") {
       if (!response.ok) {
+        const res = await response.json();
         throw {
-          status: response.status,
-          message: "Failed to download file",
+          status: res.status,
+          message: res.message,
         };
       }
       return response.blob();

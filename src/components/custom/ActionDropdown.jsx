@@ -3,11 +3,18 @@ import Icon from "../Icon";
 
 function ActionDropdown({ actions = [] }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (ref.current && !ref.current.contains(e.target)) {
+      // Check if click is outside both button and dropdown
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target)
+      ) {
         setOpen(false);
       }
     };
@@ -17,7 +24,7 @@ function ActionDropdown({ actions = [] }) {
 
   return (
     <>
-      <div ref={ref} className="relative inline-block">
+      <div ref={buttonRef} className="relative inline-block">
         {/* 3-dot button */}
         <button
           onClick={() => setOpen((p) => !p)}
@@ -30,10 +37,11 @@ function ActionDropdown({ actions = [] }) {
 
       {open && (
         <div
+          ref={dropdownRef}
           className="fixed w-44 z-[9999]"
           style={{
-            top: `${ref.current?.getBoundingClientRect().bottom + 4}px`,
-            left: `${ref.current?.getBoundingClientRect().right - 176}px`,
+            top: `${buttonRef.current?.getBoundingClientRect().bottom + 4}px`,
+            left: `${buttonRef.current?.getBoundingClientRect().right - 176}px`,
           }}
         >
           {/* 🔺 Arrow (OUTSIDE body, visible always) */}

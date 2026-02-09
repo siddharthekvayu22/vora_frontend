@@ -212,7 +212,7 @@ export default function DataTable({
                 </th>
               ))}
               {renderActions && (
-                <th className="w-36 px-4 py-2.5 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted">
+                <th className="w-20 px-2 py-2.5 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted">
                   Actions
                 </th>
               )}
@@ -283,7 +283,7 @@ export default function DataTable({
                     </td>
                   ))}
                   {renderActions && (
-                    <td className="w-36 px-4 py-2.5 text-center align-middle">
+                    <td className="w-20 px-2 py-2.5 text-center align-middle">
                       {renderActions(row)}
                     </td>
                   )}

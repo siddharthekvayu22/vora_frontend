@@ -10,6 +10,7 @@ export function getAllUsers({
   sortBy = "",
   sortOrder = "",
   role = "",
+  status = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -18,6 +19,7 @@ export function getAllUsers({
     ...(sortBy && { sortBy }),
     ...(sortOrder && { sortOrder }),
     ...(role && { role }),
+    ...(status && { status }),
   });
 
   return apiRequest(`/users/all-users?${params.toString()}`, true);

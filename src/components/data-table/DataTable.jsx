@@ -128,7 +128,7 @@ export default function DataTable({
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
       {/* Table Header with Search */}
-      <div className="flex justify-between items-center p-6 border-b border-border bg-gradient-to-r from-card to-muted/30">
+      <div className="flex justify-between items-center p-4 border-b border-border bg-gradient-to-r from-card to-muted/30">
         <div className="relative flex items-center gap-3 bg-input border border-border rounded-lg px-3 py-2.5 flex-1 max-w-md transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm">
           <Icon
             name="search"
@@ -185,7 +185,7 @@ export default function DataTable({
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gradient-to-r from-muted to-muted/50">
-              <th className="w-16 px-6 py-4 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+              <th className="w-16 px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
                     #
@@ -196,7 +196,7 @@ export default function DataTable({
                 <th
                   key={column.key}
                   onClick={() => handleSort(column.key)}
-                  className={`px-6 py-4 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap ${
+                  className={`px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap ${
                     column.sortable
                       ? "cursor-pointer select-none transition-all duration-200 hover:bg-accent/50 hover:text-primary"
                       : ""
@@ -209,7 +209,7 @@ export default function DataTable({
                 </th>
               ))}
               {renderActions && (
-                <th className="w-36 px-6 py-4 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                <th className="w-36 px-4 py-2.5 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
                   Actions
                 </th>
               )}
@@ -220,7 +220,7 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length + 1 + (renderActions ? 1 : 0)}
-                  className="text-center py-20 px-6"
+                  className="text-center py-12 px-4"
                 >
                   <div className="flex flex-col items-center gap-4 text-muted-foreground">
                     <div className="relative">
@@ -240,7 +240,7 @@ export default function DataTable({
               <tr>
                 <td
                   colSpan={columns.length + 1 + (renderActions ? 1 : 0)}
-                  className="text-center py-20 px-6"
+                  className="text-center py-12 px-4"
                 >
                   <div className="flex flex-col items-center gap-4 text-muted-foreground">
                     <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
@@ -264,7 +264,7 @@ export default function DataTable({
                   className="transition-all duration-200 hover:bg-accent/30 group"
                 >
                   {/* SR NO */}
-                  <td className="px-6 py-4 text-sm text-foreground align-middle">
+                  <td className="px-4 py-2.5 text-sm text-foreground align-middle">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs font-medium group-hover:bg-primary/10 group-hover:text-primary transition-all duration-200">
                       {getSerialNumber(index, pagination)}
                     </div>
@@ -272,7 +272,7 @@ export default function DataTable({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className="px-6 py-4 text-sm text-foreground align-middle"
+                      className="px-4 py-2.5 text-sm text-foreground align-middle"
                     >
                       {column.render
                         ? column.render(row[column.key], row)
@@ -280,7 +280,7 @@ export default function DataTable({
                     </td>
                   ))}
                   {renderActions && (
-                    <td className="px-6 py-4 text-center align-middle">
+                    <td className="px-4 py-2.5 text-center align-middle">
                       {renderActions(row)}
                     </td>
                   )}
@@ -293,7 +293,7 @@ export default function DataTable({
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 0 && (
-        <div className="flex justify-between items-center px-6 py-4 border-t border-border bg-muted flex-wrap gap-4">
+        <div className="flex justify-between items-center px-4 py-3 border-t border-border bg-muted flex-wrap gap-4">
           <div className="text-sm text-muted-foreground">
             Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
             {Math.min(

@@ -25,13 +25,18 @@ const UserRegistrationChart = ({ data }) => {
     fullDate: date,
     selfRegistration: data.selfRegistration[index],
     adminCreation: data.adminCreation[index],
-    total: data.selfRegistration[index] + data.adminCreation[index],
+    companyCreation: data.companyCreation[index],
+    total:
+      data.selfRegistration[index] +
+      data.adminCreation[index] +
+      data.companyCreation[index],
   }));
 
   // Theme-aware colors
   const colors = {
     selfReg: isDark ? "#10b981" : "#059669",
     admin: isDark ? "#3b82f6" : "#2563eb",
+    company: isDark ? "#f59e0b" : "#d97706",
     grid: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
     text: isDark ? "#d1d5db" : "#6b7280",
     background: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.02)",
@@ -43,43 +48,64 @@ const UserRegistrationChart = ({ data }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-4 min-w-[200px]">
-          <p className="font-semibold text-foreground mb-2">{label}</p>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+        <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-2.5 min-w-[160px]">
+          <p className="font-semibold text-foreground text-xs mb-1.5">
+            {label}
+          </p>
+          <div className="space-y-0.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: colors.selfReg }}
                 ></div>
-                <span className="text-sm text-muted-foreground">
-                  Self Registration
-                </span>
+                <span className="text-xs text-muted-foreground">Self Reg</span>
               </div>
-              <span className="font-medium" style={{ color: colors.selfReg }}>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.selfReg }}
+              >
                 {data.selfRegistration}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
                 <div
-                  className="w-3 h-3 rounded-full"
+                  className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ backgroundColor: colors.admin }}
                 ></div>
-                <span className="text-sm text-muted-foreground">
-                  Admin Created
-                </span>
+                <span className="text-xs text-muted-foreground">Admin</span>
               </div>
-              <span className="font-medium" style={{ color: colors.admin }}>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.admin }}
+              >
                 {data.adminCreation}
               </span>
             </div>
-            <div className="border-t border-border pt-1 mt-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
+                <div
+                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  style={{ backgroundColor: colors.company }}
+                ></div>
+                <span className="text-xs text-muted-foreground">Company</span>
+              </div>
+              <span
+                className="font-medium text-xs"
+                style={{ color: colors.company }}
+              >
+                {data.companyCreation}
+              </span>
+            </div>
+            <div className="border-t border-border pt-1 mt-1">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-semibold text-foreground">
                   Total
                 </span>
-                <span className="font-bold text-primary">{data.total}</span>
+                <span className="font-bold text-xs text-primary">
+                  {data.total}
+                </span>
               </div>
             </div>
           </div>
@@ -102,7 +128,9 @@ const UserRegistrationChart = ({ data }) => {
             <span className="text-sm font-medium text-foreground">
               {entry.value === "selfRegistration"
                 ? "Self Registration"
-                : "Admin Created"}
+                : entry.value === "adminCreation"
+                  ? "Admin Created"
+                  : "Company Created"}
             </span>
           </div>
         ))}
@@ -113,10 +141,11 @@ const UserRegistrationChart = ({ data }) => {
   // Calculate totals for summary
   const totalSelfReg = data.selfRegistration.reduce((a, b) => a + b, 0);
   const totalAdminCreated = data.adminCreation.reduce((a, b) => a + b, 0);
-  const grandTotal = totalSelfReg + totalAdminCreated;
+  const totalCompanyCreated = data.companyCreation.reduce((a, b) => a + b, 0);
+  const grandTotal = totalSelfReg + totalAdminCreated + totalCompanyCreated;
 
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border shadow-lg h-full flex flex-col">
+    <div className="bg-card/50 backdrop-blur-sm rounded-xl border border-border shadow-lg h-full flex flex-col outline-none focus:outline-none">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chartData}
@@ -149,6 +178,18 @@ const UserRegistrationChart = ({ data }) => {
               <stop
                 offset="95%"
                 stopColor={colors.admin}
+                stopOpacity={isDark ? 0.1 : 0.05}
+              />
+            </linearGradient>
+            <linearGradient id="companyGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop
+                offset="5%"
+                stopColor={colors.company}
+                stopOpacity={isDark ? 0.4 : 0.3}
+              />
+              <stop
+                offset="95%"
+                stopColor={colors.company}
                 stopOpacity={isDark ? 0.1 : 0.05}
               />
             </linearGradient>
@@ -220,6 +261,23 @@ const UserRegistrationChart = ({ data }) => {
             activeDot={{
               r: 6,
               stroke: colors.admin,
+              strokeWidth: 2,
+              fill: isDark ? "#1f2937" : "#ffffff",
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+            }}
+          />
+
+          <Area
+            type="monotone"
+            dataKey="companyCreation"
+            stackId="1"
+            stroke={colors.company}
+            strokeWidth={2}
+            fill="url(#companyGradient)"
+            dot={{ fill: colors.company, strokeWidth: 2, r: 4 }}
+            activeDot={{
+              r: 6,
+              stroke: colors.company,
               strokeWidth: 2,
               fill: isDark ? "#1f2937" : "#ffffff",
               filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",

@@ -352,3 +352,29 @@ select:-webkit-autofill {
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--primary);
 }
+
+/* =====================================
+   📊 RECHARTS - REMOVE FOCUS OUTLINE
+===================================== */
+.recharts-wrapper,
+.recharts-surface,
+.recharts-layer,
+.recharts-cartesian-grid,
+.recharts-area,
+.recharts-line {
+  outline: none !important;
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
+
+/* Remove focus outline from all recharts elements */
+[class*="recharts-"] {
+  outline: none !important;
+}
+
+[class*="recharts-"]:focus {
+  outline: none !important;
+}

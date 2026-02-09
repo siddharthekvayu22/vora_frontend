@@ -138,18 +138,20 @@ const FileTypeCard = ({ fileType, fileSize, fileName }) => {
       </div>
 
       <div className="flex flex-col">
-        <span className={`text-xs font-medium ${config.textColor} uppercase`}>
-          {config.label}
-        </span>
         {fileName && (
           <span
-            className="text-xs text-foreground font-medium truncate max-w-[200px]"
+            className="text-sm text-foreground font-medium truncate max-w-[200px]"
             title={fileName}
           >
             {fileName}
           </span>
         )}
-        <span className="text-xs text-muted-foreground">{formattedSize}</span>
+        <div className="flex items-center gap-1">
+          <span className={`text-xs font-medium ${config.textColor} uppercase`}>
+            {config.label}
+          </span>
+          <span className="text-xs text-muted-foreground">{formattedSize}</span>
+        </div>
       </div>
     </div>
   );

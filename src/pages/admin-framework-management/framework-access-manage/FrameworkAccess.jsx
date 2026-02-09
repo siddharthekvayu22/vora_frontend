@@ -71,7 +71,7 @@ function FrameworkAccess() {
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
+    const sortBy = searchParams.get("sortBy") || "updatedAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
     setPagination((p) => ({ ...p, currentPage: page }));

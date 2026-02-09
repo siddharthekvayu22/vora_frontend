@@ -180,12 +180,15 @@ export default function DataTable({
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto sidebar-scroll">
+      {/* Table Container with Scrollable Body and Sticky Header */}
+      <div
+        className="overflow-auto sidebar-scroll"
+        style={{ maxHeight: "calc(100vh - 250px)" }}
+      >
         <table className="w-full border-collapse">
-          <thead>
+          <thead className="sticky top-0 z-10 bg-muted">
             <tr className="bg-gradient-to-r from-muted to-muted/50">
-              <th className="w-16 px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+              <th className="w-16 px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
                     #
@@ -196,7 +199,7 @@ export default function DataTable({
                 <th
                   key={column.key}
                   onClick={() => handleSort(column.key)}
-                  className={`px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap ${
+                  className={`px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted ${
                     column.sortable
                       ? "cursor-pointer select-none transition-all duration-200 hover:bg-accent/50 hover:text-primary"
                       : ""
@@ -209,7 +212,7 @@ export default function DataTable({
                 </th>
               ))}
               {renderActions && (
-                <th className="w-36 px-4 py-2.5 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                <th className="w-36 px-4 py-2.5 text-center border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted">
                   Actions
                 </th>
               )}
@@ -264,7 +267,7 @@ export default function DataTable({
                   className="transition-all duration-200 hover:bg-accent/30 group"
                 >
                   {/* SR NO */}
-                  <td className="px-4 py-2.5 text-sm text-foreground align-middle">
+                  <td className="w-16 px-4 py-2.5 text-sm text-foreground align-middle">
                     <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs font-medium group-hover:bg-primary/10 group-hover:text-primary transition-all duration-200">
                       {getSerialNumber(index, pagination)}
                     </div>
@@ -280,7 +283,7 @@ export default function DataTable({
                     </td>
                   ))}
                   {renderActions && (
-                    <td className="px-4 py-2.5 text-center align-middle">
+                    <td className="w-36 px-4 py-2.5 text-center align-middle">
                       {renderActions(row)}
                     </td>
                   )}

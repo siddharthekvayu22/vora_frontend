@@ -16,23 +16,31 @@ function ActionDropdown({ actions = [] }) {
   }, []);
 
   return (
-    <div ref={ref} className="relative inline-block">
-      {/* 3-dot button */}
-      <button
-        onClick={() => setOpen((p) => !p)}
-        className="px-3 py-2 rounded-full hover:bg-muted transition cursor-pointer outline-0"
-        title={open ? "" : "Actions"}
-      >
-        <Icon name="more-vertical" size="16px" />
-      </button>
+    <>
+      <div ref={ref} className="relative inline-block">
+        {/* 3-dot button */}
+        <button
+          onClick={() => setOpen((p) => !p)}
+          className="px-3 py-2 rounded-full hover:bg-muted transition cursor-pointer outline-0"
+          title={open ? "" : "Actions"}
+        >
+          <Icon name="more-vertical" size="16px" />
+        </button>
+      </div>
 
       {open && (
-        <div className="absolute -right-1 w-44 z-50">
+        <div
+          className="fixed w-44 z-[9999]"
+          style={{
+            top: `${ref.current?.getBoundingClientRect().bottom + 4}px`,
+            left: `${ref.current?.getBoundingClientRect().right - 176}px`,
+          }}
+        >
           {/* 🔺 Arrow (OUTSIDE body, visible always) */}
-          <div className="pointer-events-none absolute -top-2 right-4 w-4 h-4 bg-popover border-l border-t rotate-45 -z-10" />
+          <div className="pointer-events-none absolute -top-2 right-3 w-4 h-4 bg-popover border-l border-t rotate-45 -z-10" />
 
           {/* Dropdown body (content only) */}
-          <div className="bg-popover border rounded-sm shadow-lg overflow-hidden z-40">
+          <div className="bg-popover border rounded-sm shadow-lg overflow-hidden">
             {actions.map((action, idx) => (
               <button
                 key={idx}
@@ -50,7 +58,7 @@ function ActionDropdown({ actions = [] }) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

@@ -16,6 +16,7 @@ import GiveFrameworkAccessModal from "./components/GiveFrameworkAccessModal";
 import UserMiniCard from "../../../components/custom/UserMiniCard";
 import CustomBadge from "../../../components/custom/CustomBadge";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
+import ActionDropdown from "../../../components/custom/ActionDropdown";
 
 function AccessApproved() {
   const [accessApproved, setAccessApproved] = useState([]);
@@ -235,25 +236,27 @@ function AccessApproved() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() => setViewModalState({ isOpen: true, accessRecord: row })}
-        className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="View Details"
-      >
-        <Icon name="eye" size="16px" />
-      </button>
+  const renderActions = (row) => {
+    const actions = [
+      {
+        label: "View Details",
+        icon: "eye",
+        onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
+      },
+      {
+        label: "Revoke Access",
+        icon: "trash",
+        className: "text-destructive",
+        onClick: () => setRevokeModalState({ isOpen: true, accessRecord: row }),
+      },
+    ];
 
-      <button
-        onClick={() => setRevokeModalState({ isOpen: true, accessRecord: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Revoke Access"
-      >
-        <Icon name="trash" size="16px" />
-      </button>
-    </div>
-  );
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
+      </div>
+    );
+  };
 
   const renderHeaderButtons = () => (
     <button

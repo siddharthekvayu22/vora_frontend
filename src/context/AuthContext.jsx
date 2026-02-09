@@ -9,13 +9,14 @@ import React, {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { logoutApi } from "../services/authService";
+import { resetUnauthorizedFlag } from "../services/apiService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [pendingEmail, setPendingEmail] = useState("");
-  
+
   // Refs to prevent multiple logout calls and track state
   const isLoggingOut = useRef(false);
   const hasShownSessionExpiredToast = useRef(false);
@@ -27,9 +28,9 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [token, setToken] = useState(
-    () => sessionStorage.getItem("token") || null
+    () => sessionStorage.getItem("token") || null,
   );
-  
+
   const [user, setUser] = useState(() => {
     const storedUser = sessionStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   // Refs to track activity
   const lastActivityTime = useRef(Date.now());
   const sessionStartTime = useRef(
-    parseInt(sessionStorage.getItem("sessionStartTime")) || Date.now()
+    parseInt(sessionStorage.getItem("sessionStartTime")) || Date.now(),
   );
 
   // -------------------------
@@ -65,7 +66,10 @@ export const AuthProvider = ({ children }) => {
     // Reset logout flags
     isLoggingOut.current = false;
     hasShownSessionExpiredToast.current = false;
-    
+
+    // Reset apiService unauthorized flag
+    resetUnauthorizedFlag();
+
     setIsAuthenticated(true);
     setToken(authToken);
     setUser(userData);
@@ -89,7 +93,7 @@ export const AuthProvider = ({ children }) => {
       if (isLoggingOut.current) {
         return;
       }
-      
+
       isLoggingOut.current = true;
 
       try {
@@ -99,7 +103,6 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         // Don't show error for logout API failure, just proceed with local logout
-        console.warn("Logout API failed:", error.message);
       } finally {
         // Clear session check interval
         if (sessionCheckInterval.current) {
@@ -122,22 +125,34 @@ export const AuthProvider = ({ children }) => {
         // Show toast only if requested and not already shown
         if (message && showToast && !hasShownSessionExpiredToast.current) {
           hasShownSessionExpiredToast.current = true;
-          toast.error(message, { 
-            position: "top-center", 
-            duration: 4000,
-            id: "session-expired" // Prevent duplicate toasts
-          });
+
+          // Dismiss ALL existing toasts first
+          toast.dismiss();
+
+          // Small delay to ensure all toasts are dismissed
+          setTimeout(() => {
+            toast.error(message, {
+              position: "top-center",
+              duration: 4000,
+              id: "session-expired",
+            });
+          }, 100);
+
+          // Reset flag after 5 seconds
+          setTimeout(() => {
+            hasShownSessionExpiredToast.current = false;
+          }, 5000);
         }
 
         navigate("/auth/login");
-        
+
         // Reset logout flag after navigation
         setTimeout(() => {
           isLoggingOut.current = false;
         }, 1000);
       }
     },
-    [navigate, token]
+    [navigate, token],
   );
 
   // -------------------------
@@ -242,17 +257,28 @@ export const AuthProvider = ({ children }) => {
   // -------------------------
   useEffect(() => {
     const handleUnauthorizedResponse = (event) => {
-      if (event.detail && event.detail.status === 401 && !isLoggingOut.current) {
+      if (
+        event.detail &&
+        event.detail.status === 401 &&
+        !isLoggingOut.current
+      ) {
         logout(
-          event.detail.message || "Your session has expired. Please log in again."
+          event.detail.message ||
+            "Your session has expired. Please log in again.",
         );
       }
     };
 
-    window.addEventListener("unauthorized-response", handleUnauthorizedResponse);
-    
+    window.addEventListener(
+      "unauthorized-response",
+      handleUnauthorizedResponse,
+    );
+
     return () => {
-      window.removeEventListener("unauthorized-response", handleUnauthorizedResponse);
+      window.removeEventListener(
+        "unauthorized-response",
+        handleUnauthorizedResponse,
+      );
     };
   }, [logout]);
 
@@ -261,16 +287,20 @@ export const AuthProvider = ({ children }) => {
   // -------------------------
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && isAuthenticated && !isLoggingOut.current) {
+      if (
+        document.visibilityState === "visible" &&
+        isAuthenticated &&
+        !isLoggingOut.current
+      ) {
         // Check session when user returns to the tab
         checkSessionValidity();
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [isAuthenticated, checkSessionValidity]);
 
@@ -297,7 +327,7 @@ export const AuthProvider = ({ children }) => {
       setEmailForVerification,
       getEmailForVerification,
       clearPendingEmail,
-    ]
+    ],
   );
 
   return (

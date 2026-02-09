@@ -244,11 +244,13 @@ function AccessRequests() {
   const renderActions = (row) => {
     const actions = [
       {
+        id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
         onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
       },
       {
+        id: `approve-${row.id}`,
         label: "Approve Request",
         icon: "check",
         className: "text-primary",
@@ -256,6 +258,7 @@ function AccessRequests() {
           setApproveModalState({ isOpen: true, accessRecord: row }),
       },
       {
+        id: `reject-${row.id}`,
         label: "Reject Request",
         icon: "x",
         className: "text-destructive",

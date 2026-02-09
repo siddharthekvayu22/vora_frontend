@@ -232,12 +232,14 @@ function Category() {
   const renderActions = (row) => {
     const actions = [
       {
+        id: `edit-${row._id || row.id}`,
         label: "Edit Category",
         icon: "edit",
         onClick: () =>
           setModalState({ isOpen: true, mode: "edit", category: row }),
       },
       {
+        id: `delete-${row._id || row.id}`,
         label: "Delete Category",
         icon: "trash",
         className: "text-destructive",

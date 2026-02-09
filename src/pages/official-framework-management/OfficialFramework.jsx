@@ -8,6 +8,7 @@ import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
+import ActionDropdown from "../../components/custom/ActionDropdown";
 import {
   downloadOfficialFrameworkFile,
   getAllOfficialFrameworks,
@@ -43,8 +44,6 @@ function OfficialFramework() {
     sortBy: "createdAt",
     sortOrder: "desc",
   });
-
-  const [downloadingId, setDownloadingId] = useState(null);
 
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
@@ -174,16 +173,13 @@ function OfficialFramework() {
     if (!row.fileInfo?.fileId) return;
 
     try {
-      setDownloadingId(row.fileInfo.fileId);
-
       await downloadOfficialFrameworkFile(
         row.fileInfo.fileId,
         row.fileInfo.originalFileName,
       );
     } catch (err) {
       toast.error(err.message);
-    } finally {
-      setDownloadingId(null);
+      throw err; // Re-throw to let ActionDropdown handle loading state
     }
   };
 
@@ -242,41 +238,32 @@ function OfficialFramework() {
   ];
 
   const renderActions = (row) => {
-    const isDownloading = downloadingId === row.fileInfo?.fileId;
+    const actions = [
+      {
+        id: `download-${row.fileInfo?.fileId}`,
+        label: "Download",
+        icon: "download",
+        className: "text-green-600 dark:text-green-400",
+        onClick: () => handleDownloadFramework(row),
+      },
+      {
+        id: `edit-${row.fileInfo?.fileId}`,
+        label: "Edit Framework",
+        icon: "edit",
+        onClick: () => handleUpdateFramework(row),
+      },
+      {
+        id: `delete-${row.fileInfo?.fileId}`,
+        label: "Delete Framework",
+        icon: "trash",
+        className: "text-red-600 dark:text-red-400",
+        onClick: () => handleDeleteFramework(row),
+      },
+    ];
 
     return (
-      <div className="flex gap-1 justify-center">
-        <button
-          className={`px-3 py-2 rounded-full transition-all duration-200 cursor-pointer
-          ${
-            isDownloading
-              ? "text-green-400 opacity-60 cursor-not-allowed"
-              : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 hover:scale-105"
-          }`}
-          title="Download Framework"
-          disabled={isDownloading}
-          onClick={() => handleDownloadFramework(row)}
-        >
-          {isDownloading ? (
-            <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
-          ) : (
-            <Icon name="download" size="16px" />
-          )}
-        </button>
-        <button
-          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Edit Framework"
-          onClick={() => handleUpdateFramework(row)}
-        >
-          <Icon name="edit" size="16px" />
-        </button>
-        <button
-          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Delete Framework"
-          onClick={() => handleDeleteFramework(row)}
-        >
-          <Icon name="trash" size="16px" />
-        </button>
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
       </div>
     );
   };

@@ -9,6 +9,7 @@ import RequestAccessModal from "./components/RequestAccessModal";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FrameworkMiniCard from "../../components/custom/FrameworkMiniCard";
+import ActionDropdown from "../../components/custom/ActionDropdown";
 
 function OfficialFrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -225,33 +226,46 @@ function OfficialFrameworkAccess() {
   const renderActions = (row) => {
     const isPending = row.status === "pending";
     const isApproved = row.status === "approved";
-    const isRevokedAndRejected =
+    const isRevokedOrRejected =
       row.status === "revoked" || row.status === "rejected";
     const isDisabled = isPending || isApproved;
 
-    return (
-      <div className="flex gap-1 justify-center">
-        <button
-          onClick={() =>
-            !isDisabled &&
-            setRequestModalState({ isOpen: true, framework: row })
+    let actionLabel = "Request Access";
+    let actionIcon = "plus";
+
+    if (isPending) {
+      actionLabel = "Pending";
+      actionIcon = "clock";
+    } else if (isApproved) {
+      actionLabel = "Approved";
+      actionIcon = "check";
+    } else if (isRevokedOrRejected) {
+      actionLabel = "Re-request Access";
+      actionIcon = "refresh";
+    }
+
+    const actions = [
+      {
+        id: `request-${row.id}`,
+        label: actionLabel,
+        icon: actionIcon,
+        className: isDisabled
+          ? "text-muted-foreground"
+          : isRevokedOrRejected
+            ? "text-orange-600 dark:text-orange-400"
+            : "text-primary dark:text-primary",
+        disabled: isDisabled,
+        onClick: () => {
+          if (!isDisabled) {
+            setRequestModalState({ isOpen: true, framework: row });
           }
-          disabled={isDisabled}
-          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 whitespace-nowrap ${
-            isDisabled
-              ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
-              : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
-          }`}
-        >
-          <Icon name="plus" size="12px" />
-          {isPending
-            ? "Pending"
-            : isApproved
-              ? "Approved"
-              : isRevokedAndRejected
-                ? "Re-request"
-                : "Request"}
-        </button>
+        },
+      },
+    ];
+
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
       </div>
     );
   };

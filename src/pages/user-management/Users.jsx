@@ -191,6 +191,7 @@ function Users() {
     } catch (e) {
       toast.error(e.message || "Failed to toggle user status");
       console.error("Toggle status error:", e);
+      throw e; // Re-throw to let ActionDropdown handle loading state
     }
   };
 
@@ -287,18 +288,21 @@ function Users() {
   const renderActions = (row) => {
     const actions = [
       {
+        id: `toggle-${row._id || row.id}`,
         label: row.isActive ? "Deactivate User" : "Activate User",
         icon: "power",
         className: row.isActive ? "text-destructive" : "text-green-600",
         onClick: () => handleToggleStatus(row),
       },
       {
+        id: `edit-${row._id || row.id}`,
         label: "Edit User",
         icon: "edit",
         className: "text-primary",
         onClick: () => setModalState({ isOpen: true, mode: "edit", user: row }),
       },
       {
+        id: `delete-${row._id || row.id}`,
         label: "Delete User",
         icon: "trash",
         className: "text-destructive",

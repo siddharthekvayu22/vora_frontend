@@ -194,6 +194,7 @@ function AccessRejected() {
   const renderActions = (row) => {
     const actions = [
       {
+        id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
         onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),

@@ -250,6 +250,7 @@ function OfficialFramework() {
         id: `edit-${row.fileInfo?.fileId}`,
         label: "Edit Framework",
         icon: "edit",
+        className: "text-primary",
         onClick: () => handleUpdateFramework(row),
       },
       {

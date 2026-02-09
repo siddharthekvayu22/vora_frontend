@@ -247,13 +247,14 @@ function AccessRequests() {
         id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
+        className: "text-primary",
         onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
       },
       {
         id: `approve-${row.id}`,
         label: "Approve Request",
         icon: "check",
-        className: "text-primary",
+        className: "text-green-600",
         onClick: () =>
           setApproveModalState({ isOpen: true, accessRecord: row }),
       },

@@ -235,6 +235,7 @@ function Category() {
         id: `edit-${row._id || row.id}`,
         label: "Edit Category",
         icon: "edit",
+        className: "text-primary",
         onClick: () =>
           setModalState({ isOpen: true, mode: "edit", category: row }),
       },

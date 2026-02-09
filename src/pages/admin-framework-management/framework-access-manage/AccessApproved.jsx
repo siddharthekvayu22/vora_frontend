@@ -242,6 +242,7 @@ function AccessApproved() {
         id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
+        className: "text-primary",
         onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
       },
       {

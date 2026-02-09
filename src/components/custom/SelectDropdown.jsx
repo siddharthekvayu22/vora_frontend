@@ -156,26 +156,30 @@ export default function SelectDropdown({
             </div>
           ) : (
             options.map((option, index) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => handleSelect(option.value)}
-                className={`
+              <div key={option.value}>
+                <button
+                  type="button"
+                  onClick={() => handleSelect(option.value)}
+                  className={`
                   w-full px-3 py-2 text-left text-sm transition-colors duration-150 cursor-pointer
                   hover:bg-accent focus:bg-accent focus:outline-none
                   ${value === option.value ? "bg-primary/10 text-primary font-medium" : "text-foreground"}
                   ${focusedIndex === index ? "bg-accent" : ""}
                 `}
-                role="option"
-                aria-selected={value === option.value}
-              >
-                <div className="flex items-center justify-between">
-                  <span>{option.label}</span>
-                  {value === option.value && (
-                    <Icon name="check" size="14px" className="text-primary" />
-                  )}
-                </div>
-              </button>
+                  role="option"
+                  aria-selected={value === option.value}
+                >
+                  <div className="flex items-center justify-between">
+                    <span>{option.label}</span>
+                    {value === option.value && (
+                      <Icon name="check" size="14px" className="text-primary" />
+                    )}
+                  </div>
+                </button>
+                {index < options.length - 1 && (
+                  <div className="border-b border-border/50" />
+                )}
+              </div>
             ))
           )}
         </div>

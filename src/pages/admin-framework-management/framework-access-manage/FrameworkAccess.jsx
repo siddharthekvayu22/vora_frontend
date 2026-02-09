@@ -19,6 +19,7 @@ import UserMiniCard from "../../../components/custom/UserMiniCard";
 import CustomBadge from "../../../components/custom/CustomBadge";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
+import SelectDropdown from "../../../components/custom/SelectDropdown";
 
 function FrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -38,6 +39,7 @@ function FrameworkAccess() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
@@ -71,11 +73,13 @@ function FrameworkAccess() {
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
+    const status = searchParams.get("status") || "";
     const sortBy = searchParams.get("sortBy") || "updatedAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
     setPagination((p) => ({ ...p, currentPage: page }));
     setSearchTerm(search);
+    setStatusFilter(status);
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
@@ -87,6 +91,7 @@ function FrameworkAccess() {
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
+        status: statusFilter,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
       });
@@ -115,7 +120,13 @@ function FrameworkAccess() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    statusFilter,
+    sortConfig,
+  ]);
 
   useEffect(() => {
     fetchFrameworkAccess();
@@ -148,6 +159,13 @@ function FrameworkAccess() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  const handleStatusFilter = (status) => {
+    const p = new URLSearchParams(searchParams);
+    status ? p.set("status", status) : p.delete("status");
+    p.set("page", "1");
+    setSearchParams(p);
   };
 
   /* ---------------- APPROVE ACCESS ---------------- */
@@ -387,15 +405,34 @@ function FrameworkAccess() {
     );
   };
 
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() => setGiveAccessModalState({ isOpen: true })}
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Give Framework Access
-    </button>
-  );
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "pending", label: "Pending" },
+            { value: "approved", label: "Approved" },
+            { value: "rejected", label: "Rejected" },
+            { value: "revoked", label: "Revoked" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
+        <button
+          onClick={() => setGiveAccessModalState({ isOpen: true })}
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Give Framework Access
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

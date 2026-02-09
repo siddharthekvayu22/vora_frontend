@@ -32,6 +32,7 @@ export function getAdminFrameworkAccess({
   page = 1,
   limit = 10,
   search = "",
+  status = "",
   sortBy = "createdAt",
   sortOrder = "desc",
 } = {}) {
@@ -39,6 +40,7 @@ export function getAdminFrameworkAccess({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(status && { status }),
     ...(sortBy && { sortBy }),
     ...(sortOrder && { sortOrder }),
   });

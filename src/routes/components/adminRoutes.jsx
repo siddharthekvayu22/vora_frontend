@@ -6,10 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminDashboard from "../../pages/dashboard-management/AdminDashboard";
 import Users from "../../pages/user-management/Users";
 import Category from "../../pages/admin-framework-management/framework-category-manage/Category";
-import AccessApproved from "../../pages/admin-framework-management/framework-access-manage/AccessApproved";
-import AccessRequests from "../../pages/admin-framework-management/framework-access-manage/AccessRequests";
-import AccessRejected from "../../pages/admin-framework-management/framework-access-manage/AccessRejected";
-import AccessRevoked from "../../pages/admin-framework-management/framework-access-manage/AccessRevoked";
+import FrameworkAccess from "../../pages/admin-framework-management/framework-access-manage/FrameworkAccess";
 
 const adminRoutes = [
   // Admin Dashboard
@@ -51,50 +48,14 @@ const adminRoutes = [
     }
   />,
 
-  // Framework Access Management
+  // Framework Access Management (Unified)
   <Route
-    key="framework-access-approved"
-    path="/framework-access/approved"
+    key="framework-access"
+    path="/framework-access"
     element={
       <ProtectedRoute>
         <Layout>
-          <AccessApproved />
-        </Layout>
-      </ProtectedRoute>
-    }
-  />,
-
-  <Route
-    key="framework-access-requests"
-    path="/framework-access/requests"
-    element={
-      <ProtectedRoute>
-        <Layout>
-          <AccessRequests />
-        </Layout>
-      </ProtectedRoute>
-    }
-  />,
-
-  <Route
-    key="framework-access-rejected"
-    path="/framework-access/rejected"
-    element={
-      <ProtectedRoute>
-        <Layout>
-          <AccessRejected />
-        </Layout>
-      </ProtectedRoute>
-    }
-  />,
-
-  <Route
-    key="framework-access-revoked"
-    path="/framework-access/revoked"
-    element={
-      <ProtectedRoute>
-        <Layout>
-          <AccessRevoked />
+          <FrameworkAccess />
         </Layout>
       </ProtectedRoute>
     }

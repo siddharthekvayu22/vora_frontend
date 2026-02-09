@@ -4,8 +4,22 @@ import Icon from "../Icon";
 function ActionDropdown({ actions = [] }) {
   const [open, setOpen] = useState(false);
   const [loadingActionId, setLoadingActionId] = useState(null);
+  const [openUpward, setOpenUpward] = useState(false);
   const buttonRef = useRef(null);
   const dropdownRef = useRef(null);
+
+  // Calculate if dropdown should open upward
+  useEffect(() => {
+    if (open && buttonRef.current) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const dropdownHeight = 200; // Approximate max height
+      const spaceBelow = window.innerHeight - buttonRect.bottom;
+      const spaceAbove = buttonRect.top;
+
+      // Open upward if not enough space below but enough space above
+      setOpenUpward(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+    }
+  }, [open]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -67,15 +81,28 @@ function ActionDropdown({ actions = [] }) {
           ref={dropdownRef}
           className="fixed w-44 z-[9999]"
           style={{
-            top: `${buttonRef.current?.getBoundingClientRect().bottom + 4}px`,
-            left: `${buttonRef.current?.getBoundingClientRect().right - 176}px`,
+            ...(openUpward
+              ? {
+                  bottom: `${window.innerHeight - buttonRef.current?.getBoundingClientRect().top + 4}px`,
+                  left: `${buttonRef.current?.getBoundingClientRect().right - 176}px`,
+                }
+              : {
+                  top: `${buttonRef.current?.getBoundingClientRect().bottom + 4}px`,
+                  left: `${buttonRef.current?.getBoundingClientRect().right - 176}px`,
+                }),
           }}
         >
-          {/* 🔺 Arrow (OUTSIDE body, visible always) */}
-          <div className="pointer-events-none absolute -top-2 right-3 w-4 h-4 bg-popover border-l border-t rotate-45 -z-10" />
+          {/* Arrow */}
+          <div
+            className={`pointer-events-none absolute right-3 w-4 h-4 bg-popover border rotate-45 -z-10 ${
+              openUpward
+                ? "-bottom-2 border-r border-b"
+                : "-top-2 border-l border-t"
+            }`}
+          />
 
           {/* Dropdown body (content only) */}
-          <div className="bg-popover border rounded-sm shadow-lg overflow-hidden">
+          <div className="bg-popover border rounded-sm overflow-hidden">
             {actions.map((action, idx) => {
               const actionId = action.id || idx;
               const isLoading = loadingActionId === actionId;

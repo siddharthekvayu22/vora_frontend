@@ -419,7 +419,9 @@ function Sidebar() {
                   ? "Admin"
                   : role === "expert"
                     ? "System Expert"
-                    : "System User"}
+                    : role === "company"
+                      ? "System Company"
+                      : "System User"}
               </div>
             </div>
           </Link>

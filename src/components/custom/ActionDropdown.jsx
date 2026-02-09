@@ -42,18 +42,22 @@ function ActionDropdown({ actions = [] }) {
           {/* Dropdown body (content only) */}
           <div className="bg-popover border rounded-sm shadow-lg overflow-hidden">
             {actions.map((action, idx) => (
-              <button
-                key={idx}
-                onClick={() => {
-                  action.onClick();
-                  setOpen(false);
-                }}
-                className={`flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-muted transition cursor-pointer ${action.className || ""}`}
-                title=""
-              >
-                <Icon name={action.icon} size="16px" />
-                <span>{action.label}</span>
-              </button>
+              <div key={idx}>
+                <button
+                  onClick={() => {
+                    action.onClick();
+                    setOpen(false);
+                  }}
+                  className={`flex items-center gap-3 w-full px-4 py-2 text-sm text-left hover:bg-muted transition cursor-pointer ${action.className || ""}`}
+                  title=""
+                >
+                  <Icon name={action.icon} size="16px" />
+                  <span>{action.label}</span>
+                </button>
+                {idx < actions.length - 1 && (
+                  <div className="border-b border-border/50" />
+                )}
+              </div>
             ))}
           </div>
         </div>

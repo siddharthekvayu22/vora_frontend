@@ -134,7 +134,7 @@ function OfficialFrameworkAccess() {
     {
       key: "frameworkCategory.code",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (_, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row?.frameworkCategory?.code}
@@ -144,7 +144,7 @@ function OfficialFrameworkAccess() {
     {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (_, row) => (
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
@@ -155,7 +155,7 @@ function OfficialFrameworkAccess() {
     {
       key: "status",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
@@ -215,7 +215,7 @@ function OfficialFrameworkAccess() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

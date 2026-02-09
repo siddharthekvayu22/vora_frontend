@@ -175,7 +175,7 @@ function AccessApproved() {
     {
       key: "expert.name",
       label: "Expert Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
       ),
@@ -183,7 +183,7 @@ function AccessApproved() {
     {
       key: "frameworkCategory.frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row.frameworkCategory?.frameworkCode}
@@ -193,7 +193,7 @@ function AccessApproved() {
     {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
@@ -204,7 +204,7 @@ function AccessApproved() {
     {
       key: "status",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
@@ -226,7 +226,7 @@ function AccessApproved() {
     {
       key: "approval.approvedAt",
       label: "Approved At",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="text-sm whitespace-nowrap">
           {formatDate(row.approval?.approvedAt)}

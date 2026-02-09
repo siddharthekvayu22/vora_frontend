@@ -193,7 +193,7 @@ function AccessRequests() {
     {
       key: "expert.name",
       label: "Expert Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <UserMiniCard name={row.expert?.name} email={row.expert?.email} />
       ),
@@ -201,7 +201,7 @@ function AccessRequests() {
     {
       key: "frameworkCategory.frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {row.frameworkCategory?.frameworkCode}
@@ -211,7 +211,7 @@ function AccessRequests() {
     {
       key: "frameworkCategory.frameworkCategoryName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FrameworkMiniCard
           name={row.frameworkCategory?.frameworkCategoryName}
@@ -222,7 +222,7 @@ function AccessRequests() {
     {
       key: "status",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value?.charAt(0).toUpperCase() + value?.slice(1)}
@@ -233,7 +233,7 @@ function AccessRequests() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

@@ -192,7 +192,7 @@ function OfficialFramework() {
     {
       key: "frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {value}
@@ -202,7 +202,7 @@ function OfficialFramework() {
     {
       key: "frameworkName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-medium text-foreground line-clamp-1">
           {value}
@@ -212,7 +212,7 @@ function OfficialFramework() {
     {
       key: "frameworkType",
       label: "File Info",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FileTypeCard
           fileType={value || row.frameworkType}
@@ -224,7 +224,7 @@ function OfficialFramework() {
     {
       key: "uploadedBy",
       label: "Uploaded By",
-      sortable: true,
+      sortable: false,
       render: (value, row) => {
         return (
           <UserMiniCard name={value.name} email={value.email} icon="user" />
@@ -234,7 +234,7 @@ function OfficialFramework() {
     {
       key: "createdAt",
       label: "Uploaded At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

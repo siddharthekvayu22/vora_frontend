@@ -182,7 +182,7 @@ function Category() {
     {
       key: "code",
       label: "Code",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {value}
@@ -192,7 +192,7 @@ function Category() {
     {
       key: "frameworkCategoryName",
       label: "Category Name",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-medium text-foreground">{value}</span>
       ),
@@ -210,7 +210,7 @@ function Category() {
     {
       key: "isActive",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value ? "Active" : "Inactive"}
@@ -221,7 +221,7 @@ function Category() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

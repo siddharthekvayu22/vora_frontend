@@ -6,9 +6,10 @@ import UserRegistrationChart from "../../components/charts/UserRegistrationChart
 import Icon from "../../components/Icon";
 import { getAdminDashboardAnalytics } from "../../services/adminService";
 import { formatDate } from "../../utils/dateFormatter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -135,11 +136,18 @@ export default function AdminDashboard() {
       path: "/users",
     },
     {
-      title: "Framework Management",
-      desc: "Manage compliance frameworks",
-      icon: "framework",
-      color: "bg-purple-500/20 text-purple-400",
-      path: "/official-frameworks",
+      title: "Framework Category",
+      desc: "Manage frameworks category",
+      icon: "list",
+      color: "bg-amber-500/20 text-amber-400",
+      path: "/framework-category",
+    },
+    {
+      title: "Framework Access",
+      desc: "Manage frameworks access",
+      icon: "shield-check",
+      color: "bg-emerald-500/20 text-emerald-400",
+      path: "/framework-access",
     },
     {
       title: "System Settings",
@@ -242,14 +250,13 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <CardWrapper title="Quick Actions">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {quickActions.map((a) => (
             <button
               key={a.title}
-              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
+              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200 cursor-pointer"
               onClick={() => {
-                // Navigate to the respective page
-                window.location.href = a.path;
+                navigate(a.path);
               }}
             >
               <div

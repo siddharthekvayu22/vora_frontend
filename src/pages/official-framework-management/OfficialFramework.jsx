@@ -181,7 +181,7 @@ function OfficialFramework() {
         row.fileInfo.originalFileName,
       );
     } catch (err) {
-      toast.error(err.message || "Failed to download framework");
+      toast.error(err.message);
     } finally {
       setDownloadingId(null);
     }

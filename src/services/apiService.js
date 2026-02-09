@@ -55,7 +55,7 @@ export async function apiRequest(endpoint, optionsOrAuth, maybeAuth) {
       if (!response.ok) {
         throw {
           status: response.status,
-          message: "Failed to download file",
+          message: response.message,
         };
       }
       return response.blob();

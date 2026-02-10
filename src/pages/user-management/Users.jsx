@@ -17,8 +17,10 @@ import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
 import SelectDropdown from "../../components/custom/SelectDropdown";
+import { useAuth } from "../../context/useAuth";
 
 function Users() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -351,20 +353,22 @@ function Users() {
     return (
       <>
         {/* Role Filter */}
-        <SelectDropdown
-          value={roleFilter}
-          onChange={handleRoleFilter}
-          options={[
-            { value: "", label: "All Roles" },
-            { value: "admin", label: "Admin" },
-            { value: "expert", label: "Expert" },
-            { value: "company", label: "Company" },
-            { value: "user", label: "User" },
-          ]}
-          placeholder="All Roles"
-          size="lg"
-          variant="default"
-        />
+        {user.role === "admin" && (
+          <SelectDropdown
+            value={roleFilter}
+            onChange={handleRoleFilter}
+            options={[
+              { value: "", label: "All Roles" },
+              { value: "admin", label: "Admin" },
+              { value: "expert", label: "Expert" },
+              { value: "company", label: "Company" },
+              { value: "user", label: "User" },
+            ]}
+            placeholder="All Roles"
+            size="lg"
+            variant="default"
+          />
+        )}
 
         {/* Status Filter */}
         <SelectDropdown

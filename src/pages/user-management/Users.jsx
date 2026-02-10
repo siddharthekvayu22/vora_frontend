@@ -347,49 +347,51 @@ function Users() {
     );
   };
 
-  const renderHeaderButtons = () => (
-    <>
-      {/* Role Filter */}
-      <SelectDropdown
-        value={roleFilter}
-        onChange={handleRoleFilter}
-        options={[
-          { value: "", label: "All Roles" },
-          { value: "admin", label: "Admin" },
-          { value: "expert", label: "Expert" },
-          { value: "company", label: "Company" },
-          { value: "user", label: "User" },
-        ]}
-        placeholder="All Roles"
-        size="lg"
-        variant="default"
-      />
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Role Filter */}
+        <SelectDropdown
+          value={roleFilter}
+          onChange={handleRoleFilter}
+          options={[
+            { value: "", label: "All Roles" },
+            { value: "admin", label: "Admin" },
+            { value: "expert", label: "Expert" },
+            { value: "company", label: "Company" },
+            { value: "user", label: "User" },
+          ]}
+          placeholder="All Roles"
+          size="lg"
+          variant="default"
+        />
 
-      {/* Status Filter */}
-      <SelectDropdown
-        value={statusFilter}
-        onChange={handleStatusFilter}
-        options={[
-          { value: "", label: "All Status" },
-          { value: "active", label: "Active" },
-          { value: "inactive", label: "Inactive" },
-        ]}
-        placeholder="All Status"
-        size="lg"
-        variant="default"
-      />
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
 
-      <button
-        onClick={() =>
-          setModalState({ isOpen: true, mode: "create", user: null })
-        }
-        className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-      >
-        <Icon name="plus" size="18px" />
-        Add New User
-      </button>
-    </>
-  );
+        <button
+          onClick={() =>
+            setModalState({ isOpen: true, mode: "create", user: null })
+          }
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Add New User
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

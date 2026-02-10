@@ -16,6 +16,7 @@ import { formatDate } from "../../utils/dateFormatter";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
+import SelectDropdown from "../../components/custom/SelectDropdown";
 
 function Users() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +34,8 @@ function Users() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
@@ -53,11 +56,15 @@ function Users() {
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
+    const role = searchParams.get("role") || "";
+    const status = searchParams.get("status") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
     setPagination((p) => ({ ...p, currentPage: page }));
     setSearchTerm(search);
+    setRoleFilter(role);
+    setStatusFilter(status);
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
@@ -69,6 +76,8 @@ function Users() {
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
+        role: roleFilter,
+        isActive: statusFilter,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
       });
@@ -101,7 +110,14 @@ function Users() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    roleFilter,
+    statusFilter,
+    sortConfig,
+  ]);
 
   useEffect(() => {
     fetchUsers();
@@ -134,6 +150,20 @@ function Users() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  const handleRoleFilter = (role) => {
+    const p = new URLSearchParams(searchParams);
+    role ? p.set("role", role) : p.delete("role");
+    p.set("page", "1");
+    setSearchParams(p);
+  };
+
+  const handleStatusFilter = (status) => {
+    const p = new URLSearchParams(searchParams);
+    status ? p.set("status", status) : p.delete("status");
+    p.set("page", "1");
+    setSearchParams(p);
   };
 
   /* ---------------- CRUD ---------------- */
@@ -317,17 +347,51 @@ function Users() {
     );
   };
 
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() =>
-        setModalState({ isOpen: true, mode: "create", user: null })
-      }
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Add New User
-    </button>
-  );
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Role Filter */}
+        <SelectDropdown
+          value={roleFilter}
+          onChange={handleRoleFilter}
+          options={[
+            { value: "", label: "All Roles" },
+            { value: "admin", label: "Admin" },
+            { value: "expert", label: "Expert" },
+            { value: "company", label: "Company" },
+            { value: "user", label: "User" },
+          ]}
+          placeholder="All Roles"
+          size="lg"
+          variant="default"
+        />
+
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "true", label: "Active" },
+            { value: "false", label: "Inactive" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
+
+        <button
+          onClick={() =>
+            setModalState({ isOpen: true, mode: "create", user: null })
+          }
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Add New User
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

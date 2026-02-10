@@ -7,11 +7,13 @@ export function getAllOfficialFrameworks({
   page = 1,
   limit = 10,
   search = "",
+  checkAIStatus = true,
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(checkAIStatus && { checkAIStatus }),
   });
 
   return apiRequest(
@@ -82,6 +84,19 @@ export function uploadOfficialFramework(formData) {
     {
       method: "POST",
       body: formData, // FormData object
+    },
+    true,
+  );
+}
+
+/**
+ * Upload framework file to ai
+ */
+export function uploadOfficialFrameworkToAi(id) {
+  return apiRequest(
+    `/files/${id}/upload-to-ai`,
+    {
+      method: "POST",
     },
     true,
   );

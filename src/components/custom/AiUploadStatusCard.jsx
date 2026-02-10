@@ -16,10 +16,18 @@ const AiUploadStatusCard = ({ aiUpload }) => {
   if (!aiUpload) {
     return (
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center border border-border">
-          <Icon name="minus" size="16px" className="text-muted-foreground" />
+        <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-900/40 flex items-center justify-center border border-gray-200 dark:border-gray-800">
+          <Icon
+            name="minus"
+            size="14px"
+            className="text-gray-400 dark:text-gray-600"
+          />
         </div>
-        <span className="text-sm text-muted-foreground">No AI upload data</span>
+        <div className="flex flex-col">
+          <span className="text-sm text-muted-foreground whitespace-nowrap">
+            Not sent to AI
+          </span>
+        </div>
       </div>
     );
   }

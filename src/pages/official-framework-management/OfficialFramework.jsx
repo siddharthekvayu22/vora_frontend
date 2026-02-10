@@ -13,6 +13,7 @@ import {
   downloadOfficialFrameworkFile,
   getAllOfficialFrameworks,
   deleteOfficialFramework,
+  uploadOfficialFrameworkToAi,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
@@ -170,6 +171,24 @@ function OfficialFramework() {
     setFrameworkToDelete(null);
   };
 
+  /* ---------------- UPLOAD TO AI ---------------- */
+  const handleUploadToAi = async (row) => {
+    if (!row.fileInfo?.fileId) {
+      toast.error("File ID not found");
+      return;
+    }
+
+    try {
+      const result = await uploadOfficialFrameworkToAi(row.fileInfo.fileId);
+      toast.success(result.message || "Framework uploaded to AI successfully");
+      fetchOfficialFramework(); // Refresh to get updated AI status
+    } catch (error) {
+      console.error("Upload to AI error:", error);
+      toast.error(error.message || "Failed to upload framework to AI");
+      throw error; // Re-throw to let ActionDropdown handle loading state
+    }
+  };
+
   const handleDownloadFramework = async (row) => {
     if (!row.fileInfo?.fileId) return;
 
@@ -248,6 +267,8 @@ function OfficialFramework() {
   ];
 
   const renderActions = (row) => {
+    const aiStatus = row.aiUpload?.status;
+
     const actions = [
       {
         id: `download-${row.fileInfo?.fileId}`,
@@ -271,6 +292,48 @@ function OfficialFramework() {
         onClick: () => handleDeleteFramework(row),
       },
     ];
+
+    // Add AI-specific actions based on status
+    if (!aiStatus) {
+      // Not sent to AI - show "Send to AI" action
+      actions.splice(1, 0, {
+        id: `send-ai-${row.fileInfo?.fileId}`,
+        label: "Send to AI",
+        icon: "upload",
+        className: "text-blue-600 dark:text-blue-400",
+        onClick: () => handleUploadToAi(row),
+      });
+    } else if (aiStatus === "failed" || aiStatus === "skipped") {
+      // Failed or Skipped - show "Retry AI Upload" action
+      actions.splice(1, 0, {
+        id: `retry-ai-${row.fileInfo?.fileId}`,
+        label: "Retry AI Upload",
+        icon: "refresh",
+        className: "text-orange-600 dark:text-orange-400",
+        onClick: () => handleUploadToAi(row),
+      });
+    } else if (aiStatus === "processing") {
+      // Processing - show "View AI Status" action (disabled)
+      actions.splice(1, 0, {
+        id: `ai-status-${row.fileInfo?.fileId}`,
+        label: "AI Processing...",
+        icon: "clock",
+        className: "text-blue-600 dark:text-blue-400",
+        disabled: true,
+      });
+    } else if (aiStatus === "completed" || aiStatus === "uploaded") {
+      // Completed/Uploaded - show "View AI Data" action
+      actions.splice(1, 0, {
+        id: `view-ai-${row.fileInfo?.fileId}`,
+        label: "View AI Data",
+        icon: "analytics",
+        className: "text-purple-600 dark:text-purple-400",
+        onClick: () => {
+          toast.success("View AI data functionality coming soon");
+          // TODO: Implement view AI data
+        },
+      });
+    }
 
     return (
       <div className="flex justify-center">

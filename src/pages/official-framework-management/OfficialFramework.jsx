@@ -15,6 +15,7 @@ import {
   deleteOfficialFramework,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
+import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 
 function OfficialFramework() {
   const [officialFramework, setOfficialFramework] = useState([]);
@@ -219,6 +220,12 @@ function OfficialFramework() {
           fileName={row.fileInfo?.originalFileName || row.frameworkName}
         />
       ),
+    },
+    {
+      key: "aiUpload",
+      label: "Ai Status",
+      sortable: false,
+      render: (value, row) => <AiUploadStatusCard aiUpload={row.aiUpload} />,
     },
     {
       key: "uploadedBy",

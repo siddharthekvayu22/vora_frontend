@@ -77,7 +77,7 @@ function Users() {
         limit: pagination.limit,
         search: searchTerm,
         role: roleFilter,
-        status: statusFilter,
+        isActive: statusFilter,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
       });
@@ -372,8 +372,8 @@ function Users() {
           onChange={handleStatusFilter}
           options={[
             { value: "", label: "All Status" },
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "Inactive" },
+            { value: "true", label: "Active" },
+            { value: "false", label: "Inactive" },
           ]}
           placeholder="All Status"
           size="lg"

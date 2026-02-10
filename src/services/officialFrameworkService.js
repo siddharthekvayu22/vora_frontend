@@ -15,7 +15,7 @@ export function getAllOfficialFrameworks({
   });
 
   return apiRequest(
-    `/official-frameworks/frameworks/my-frameworks?${params.toString()}`,
+    `/official-frameworks/frameworks/all-frameworks?${params.toString()}`,
     true,
   );
 }

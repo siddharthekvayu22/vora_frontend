@@ -200,7 +200,10 @@ function OfficialFramework() {
       label: "Framework Name",
       sortable: false,
       render: (value) => (
-        <span className="font-medium text-foreground line-clamp-1">
+        <span
+          className="font-medium text-foreground line-clamp-1"
+          title={value}
+        >
           {value}
         </span>
       ),

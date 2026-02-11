@@ -185,6 +185,7 @@ function OfficialFramework() {
     } catch (error) {
       console.error("Upload to AI error:", error);
       toast.error(error.message || "Failed to upload framework to AI");
+      fetchOfficialFramework(); // Refresh to get updated AI status
       throw error; // Re-throw to let ActionDropdown handle loading state
     }
   };

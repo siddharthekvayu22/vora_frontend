@@ -3,14 +3,11 @@ import { formatDate } from "@/utils/dateFormatter";
 
 /**
  * AiUploadStatusCard Component
- * Displays AI upload status with icon, status, reason, and timestamp
+ * Displays AI upload status with icon, status and timestamp
  *
- * @param {Object} aiUpload - AI upload object with status, reason, attemptedAt/uploadedAt, uuid
+ * @param {Object} aiUpload - AI upload object with status,  timestamp,
  * @param {string} aiUpload.status - Status: "completed", "processing", "uploaded", "failed", "skipped"
- * @param {string} aiUpload.reason - Reason for the status (for skipped/failed)
- * @param {string} aiUpload.attemptedAt - Timestamp of the attempt (for skipped/failed)
- * @param {string} aiUpload.uploadedAt - Timestamp of successful upload
- * @param {string} aiUpload.uuid - UUID of the uploaded file
+ * @param {string} aiUpload.timestamp - Timestamp of successful upload
  */
 const AiUploadStatusCard = ({ aiUpload }) => {
   if (!aiUpload) {
@@ -32,7 +29,7 @@ const AiUploadStatusCard = ({ aiUpload }) => {
     );
   }
 
-  const { status, reason, attemptedAt, uploadedAt, uuid } = aiUpload;
+  const { status, timestamp } = aiUpload;
 
   // Status configuration
   const statusConfig = {
@@ -74,7 +71,6 @@ const AiUploadStatusCard = ({ aiUpload }) => {
   };
 
   const config = statusConfig[status] || statusConfig.skipped;
-  const timestamp = uploadedAt || attemptedAt;
 
   return (
     <div className="flex items-center gap-2">
@@ -90,27 +86,11 @@ const AiUploadStatusCard = ({ aiUpload }) => {
         <span className="font-medium text-foreground" title={config.label}>
           {config.label}
         </span>
-        {reason && (
-          <span
-            className="text-xs text-muted-foreground whitespace-nowrap"
-            title={reason}
-          >
-            {reason}
-          </span>
-        )}
-        {uuid && (
-          <span
-            className="text-xs text-muted-foreground/70 font-mono whitespace-nowrap"
-            title={uuid}
-          >
-            {uuid.substring(0, 15)}...
-          </span>
-        )}
-        {/* {timestamp && (
-          <span className="text-[11px] text-muted-foreground whitespace-nowrap">
+        {timestamp && (
+          <span className="text-xs text-muted-foreground whitespace-nowrap">
             {formatDate(timestamp)}
           </span>
-        )} */}
+        )}
       </div>
     </div>
   );

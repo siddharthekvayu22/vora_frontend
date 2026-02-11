@@ -294,10 +294,10 @@ function OfficialFramework() {
       },
     ];
 
-    // Add AI-specific actions based on status
+    // Add AI-specific actions based on status (at index 0 - first position)
     if (!aiStatus) {
       // Not sent to AI - show "Send to AI" action
-      actions.splice(1, 0, {
+      actions.splice(0, 0, {
         id: `send-ai-${row.fileInfo?.fileId}`,
         label: "Send to AI",
         icon: "upload",
@@ -306,7 +306,7 @@ function OfficialFramework() {
       });
     } else if (aiStatus === "failed" || aiStatus === "skipped") {
       // Failed or Skipped - show "Retry AI Upload" action
-      actions.splice(1, 0, {
+      actions.splice(0, 0, {
         id: `retry-ai-${row.fileInfo?.fileId}`,
         label: "Retry AI Upload",
         icon: "refresh",
@@ -315,7 +315,7 @@ function OfficialFramework() {
       });
     } else if (aiStatus === "processing") {
       // Processing - show "View AI Status" action (disabled)
-      actions.splice(1, 0, {
+      actions.splice(0, 0, {
         id: `ai-status-${row.fileInfo?.fileId}`,
         label: "AI Processing...",
         icon: "clock",
@@ -324,7 +324,7 @@ function OfficialFramework() {
       });
     } else if (aiStatus === "completed" || aiStatus === "uploaded") {
       // Completed/Uploaded - show "View AI Data" action
-      actions.splice(1, 0, {
+      actions.splice(0, 0, {
         id: `view-ai-${row.fileInfo?.fileId}`,
         label: "View AI Data",
         icon: "analytics",

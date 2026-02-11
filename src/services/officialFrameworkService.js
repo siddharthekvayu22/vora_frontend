@@ -7,11 +7,13 @@ export function getAllOfficialFrameworks({
   page = 1,
   limit = 10,
   search = "",
+  status = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(status && { status }),
   });
 
   return apiRequest(

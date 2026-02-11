@@ -17,6 +17,7 @@ import {
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
+import SelectDropdown from "../../components/custom/SelectDropdown";
 
 function OfficialFramework() {
   const [officialFramework, setOfficialFramework] = useState([]);
@@ -29,6 +30,7 @@ function OfficialFramework() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -53,9 +55,11 @@ function OfficialFramework() {
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
+    const status = searchParams.get("status") || "";
 
     setPagination((p) => ({ ...p, currentPage: page }));
     setSearchTerm(search);
+    setStatusFilter(status);
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
@@ -69,6 +73,7 @@ function OfficialFramework() {
         search: searchTerm,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
+        status: statusFilter,
       });
 
       setOfficialFramework(res.data || []);
@@ -95,7 +100,13 @@ function OfficialFramework() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    sortConfig,
+    statusFilter,
+  ]);
 
   useEffect(() => {
     fetchOfficialFramework();
@@ -128,6 +139,13 @@ function OfficialFramework() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  const handleStatusFilter = (status) => {
+    const p = new URLSearchParams(searchParams);
+    status ? p.set("status", status) : p.delete("status");
+    p.set("page", "1");
+    setSearchParams(p);
   };
 
   const handleUploadSuccess = () => {
@@ -343,15 +361,35 @@ function OfficialFramework() {
     );
   };
 
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() => setUploadModalOpen(true)}
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Add New Framework
-    </button>
-  );
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "uploaded", label: "Uploaded" },
+            { value: "failed", label: "Failed" },
+            { value: "skiped", label: "Skiped" },
+            { value: "processing", label: "Processing" },
+            { value: "completed", label: "Completed" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
+        <button
+          onClick={() => setUploadModalOpen(true)}
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Add New Framework
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

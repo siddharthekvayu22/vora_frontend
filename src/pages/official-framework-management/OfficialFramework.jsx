@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
@@ -20,6 +20,7 @@ import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 
 function OfficialFramework() {
+  const navigate = useNavigate();
   const [officialFramework, setOfficialFramework] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState(
@@ -289,6 +290,13 @@ function OfficialFramework() {
     const aiStatus = row.aiUpload?.status;
 
     const actions = [
+      {
+        id: `view-${row.id}`,
+        label: "View Details",
+        icon: "eye",
+        className: "text-blue-600 dark:text-blue-400",
+        onClick: () => navigate(`/official-frameworks/${row.id}`),
+      },
       {
         id: `download-${row.fileInfo?.fileId}`,
         label: "Download",

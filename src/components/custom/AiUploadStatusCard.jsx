@@ -5,11 +5,12 @@ import { formatDate } from "@/utils/dateFormatter";
  * AiUploadStatusCard Component
  * Displays AI upload status with icon, status and timestamp
  *
- * @param {Object} aiUpload - AI upload object with status,  timestamp,
+ * @param {Object} aiUpload - AI upload object with status, timestamp
  * @param {string} aiUpload.status - Status: "completed", "processing", "uploaded", "failed", "skipped"
  * @param {string} aiUpload.timestamp - Timestamp of successful upload
+ * @param {boolean} compact - Show compact version without timestamp
  */
-const AiUploadStatusCard = ({ aiUpload }) => {
+const AiUploadStatusCard = ({ aiUpload, compact = false }) => {
   if (!aiUpload) {
     return (
       <div className="flex items-center gap-2">
@@ -86,7 +87,7 @@ const AiUploadStatusCard = ({ aiUpload }) => {
         <span className="font-medium text-foreground" title={config.label}>
           {config.label}
         </span>
-        {timestamp && (
+        {!compact && timestamp && (
           <span className="text-xs text-muted-foreground whitespace-nowrap">
             {formatDate(timestamp)}
           </span>

@@ -1,6 +1,13 @@
 import { apiRequest } from "./apiService";
 
 /**
+ * Get official framework by ID
+ */
+export function getOfficialFrameworkById(id) {
+  return apiRequest(`/official-frameworks/frameworks/${id}`, true);
+}
+
+/**
  * Get all official frameworks
  */
 export function getAllOfficialFrameworks({
@@ -154,6 +161,7 @@ export function deleteOfficialFramework(fileId) {
 }
 
 export default {
+  getOfficialFrameworkById,
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,

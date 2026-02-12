@@ -150,7 +150,7 @@ const FileTypeCard = ({ fileType, fileSize, fileName }) => {
           <span className={`text-xs font-medium ${config.textColor} uppercase`}>
             {config.label}
           </span>
-          <span className="text-xs text-muted-foreground">{formattedSize}</span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">{formattedSize}</span>
         </div>
       </div>
     </div>

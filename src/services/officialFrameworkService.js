@@ -173,6 +173,36 @@ export function deleteOfficialFrameworkVersion(fileId, versionFileId) {
   );
 }
 
+/**
+ * Approve official framework
+ */
+export function approveOfficialFramework(frameworkId) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/approve`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
+/**
+ * Reject official framework
+ */
+export function rejectOfficialFramework(frameworkId, rejectionReason) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/reject`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rejectionReason }),
+    },
+    true,
+  );
+}
+
 export default {
   getOfficialFrameworkById,
   getAllOfficialFrameworks,
@@ -183,4 +213,7 @@ export default {
   updateOfficialFramework,
   downloadOfficialFrameworkFile,
   deleteOfficialFramework,
+  deleteOfficialFrameworkVersion,
+  approveOfficialFramework,
+  rejectOfficialFramework,
 };

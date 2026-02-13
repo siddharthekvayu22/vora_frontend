@@ -19,14 +19,20 @@ import {
   FiInfo,
   FiActivity,
   FiTrash,
+  FiCheckCircle,
+  FiXCircle,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
+import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
+import RejectFrameworkModal from "./components/RejectFrameworkModal";
 import {
   downloadOfficialFrameworkFile,
   getOfficialFrameworkById,
   uploadOfficialFrameworkToAi,
   deleteOfficialFrameworkVersion,
+  approveOfficialFramework,
+  rejectOfficialFramework,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -122,6 +128,8 @@ function OfficialFrameworkDetail() {
   const [uploadingToAi, setUploadingToAi] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [versionToDelete, setVersionToDelete] = useState(null);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
@@ -195,6 +203,53 @@ function OfficialFrameworkDetail() {
   const handleDeleteCancel = () => {
     setDeleteModalOpen(false);
     setVersionToDelete(null);
+  };
+
+  const handleApprove = () => {
+    setApproveModalOpen(true);
+  };
+
+  const handleApproveConfirm = async () => {
+    try {
+      const response = await approveOfficialFramework(framework.id);
+      if (response.success) {
+        toast.success(response.message || "Framework approved successfully");
+        fetchFrameworkDetails();
+        setApproveModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to approve framework");
+      throw error;
+    }
+  };
+
+  const handleApproveCancel = () => {
+    setApproveModalOpen(false);
+  };
+
+  const handleReject = () => {
+    setRejectModalOpen(true);
+  };
+
+  const handleRejectConfirm = async (rejectionReason) => {
+    try {
+      const response = await rejectOfficialFramework(
+        framework.id,
+        rejectionReason,
+      );
+      if (response.success) {
+        toast.success(response.message || "Framework rejected successfully");
+        fetchFrameworkDetails();
+        setRejectModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to reject framework");
+      throw error;
+    }
+  };
+
+  const handleRejectCancel = () => {
+    setRejectModalOpen(false);
   };
 
   const toggleVersion = (version) => {
@@ -283,6 +338,27 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
+                icon={<FiShield size={15} />}
+                label="Approval Status"
+                value={
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      framework.approval.status === "approved"
+                        ? "bg-primary/15 text-primary"
+                        : framework.approval.status === "rejected"
+                          ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                          : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    }`}
+                  >
+                    {framework.approval.status === "approved"
+                      ? "Approved"
+                      : framework.approval.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
+                  </span>
+                }
+              />
+              <InfoItem
                 icon={<FiCalendar size={15} />}
                 label="Created"
                 value={
@@ -328,6 +404,55 @@ function OfficialFrameworkDetail() {
                 }
               />
             </div>
+
+            {/* Show rejection reason if framework is rejected */}
+            {framework.approval.status === "rejected" &&
+              framework.approval.rejectionReason && (
+                <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <FiXCircle
+                      size={20}
+                      className="text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                        Rejection Reason
+                      </h4>
+                      <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
+                        {framework.approval.rejectionReason}
+                      </p>
+                      {framework.approval.approvedBy && (
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                          Rejected by: {framework.approval.approvedBy.name} on{" "}
+                          {formatDate(framework.approval.approvedAt)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            {/* Show approval info if framework is approved */}
+            {framework.approval.status === "approved" &&
+              framework.approval.approvedBy && (
+                <div className="mt-4 bg-primary/10 border border-primary/30 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <FiCheckCircle
+                      size={20}
+                      className="text-primary mt-0.5 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
+                        Framework Approved
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Approved by: {framework.approval.approvedBy.name} on{" "}
+                        {formatDate(framework.approval.approvedAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
@@ -374,6 +499,26 @@ function OfficialFrameworkDetail() {
                         ? "Retry Upload Current Version to AI"
                         : "Upload Current Version to AI"}
                     </button>
+                  )}
+                {/* Show Approve/Reject buttons only if AI upload is completed and not already approved/rejected */}
+                {currentVersionData.aiUpload?.status === "completed" &&
+                  framework.approval.status === "pending" && (
+                    <>
+                      <button
+                        onClick={handleApprove}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                      >
+                        <FiCheckCircle size={16} />
+                        Approve Framework
+                      </button>
+                      <button
+                        onClick={handleReject}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                      >
+                        <FiXCircle size={16} />
+                        Reject Framework
+                      </button>
+                    </>
                   )}
               </div>
             )}
@@ -870,6 +1015,24 @@ function OfficialFrameworkDetail() {
           version={versionToDelete}
           onConfirm={handleDeleteConfirm}
           onCancel={handleDeleteCancel}
+        />
+      )}
+
+      {/* Approve Framework Modal */}
+      {approveModalOpen && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApproveConfirm}
+          onCancel={handleApproveCancel}
+        />
+      )}
+
+      {/* Reject Framework Modal */}
+      {rejectModalOpen && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleRejectConfirm}
+          onCancel={handleRejectCancel}
         />
       )}
     </div>

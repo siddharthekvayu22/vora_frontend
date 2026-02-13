@@ -459,69 +459,10 @@ function OfficialFrameworkDetail() {
         {/* ===== FILE VERSIONS ===== */}
         <div>
           <div className="flex items-center justify-between gap-3 mb-4">
-            <div className=" flex items-center gap-3">
-              <h2 className="text-xl font-bold">File Versions</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
-                {framework.fileVersions?.length || 0}
-              </span>
-            </div>
-            {currentVersionData && (
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() =>
-                    handleDownload(
-                      currentVersionData.fileId,
-                      currentVersionData.originalFileName,
-                    )
-                  }
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                >
-                  <FiDownload size={16} />
-                  Download Current Version
-                </button>
-                {currentVersionData.aiUpload?.status !== "completed" &&
-                  currentVersionData.aiUpload?.status !== "processing" &&
-                  currentVersionData.aiUpload?.status !== "uploaded" && (
-                    <button
-                      onClick={() =>
-                        handleUploadToAi(currentVersionData.fileId)
-                      }
-                      disabled={uploadingToAi}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
-                    >
-                      {uploadingToAi ? (
-                        <FiLoader size={16} className="animate-spin" />
-                      ) : (
-                        <FiUploadCloud size={16} />
-                      )}
-                      {currentVersionData.aiUpload?.status === "failed" ||
-                      currentVersionData.aiUpload?.status === "skipped"
-                        ? "Retry Upload Current Version to AI"
-                        : "Upload Current Version to AI"}
-                    </button>
-                  )}
-                {/* Show Approve/Reject buttons only if AI upload is completed and not already approved/rejected */}
-                {currentVersionData.aiUpload?.status === "completed" &&
-                  framework.approval.status === "pending" && (
-                    <>
-                      <button
-                        onClick={handleApprove}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                      >
-                        <FiCheckCircle size={16} />
-                        Approve Framework
-                      </button>
-                      <button
-                        onClick={handleReject}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
-                      >
-                        <FiXCircle size={16} />
-                        Reject Framework
-                      </button>
-                    </>
-                  )}
-              </div>
-            )}
+            <h2 className="text-xl font-bold">File Versions</h2>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
+              {framework.fileVersions?.length || 0} files
+            </span>
           </div>
 
           <div className="space-y-3">
@@ -537,10 +478,10 @@ function OfficialFrameworkDetail() {
                     isCurrent ? "border border-primary" : "border border-border"
                   }`}
                 >
-                  <div className="w-full flex items-center justify-between p-4 transition-colors duration-200 text-foreground">
+                  <div className="w-full flex items-center justify-between p-2 transition-colors duration-200 text-foreground ">
                     <div
                       onClick={() => toggleVersion(ver.version)}
-                      className="flex-1 flex items-center gap-3 flex-wrap cursor-pointer"
+                      className="flex-1 flex items-center gap-3 flex-wrap cursor-pointer "
                     >
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold ${
@@ -561,17 +502,77 @@ function OfficialFrameworkDetail() {
                         <span>{ver.fileSize}</span>
                       </div>
                     </div>
-                    <button
-                      onClick={() => toggleVersion(ver.version)}
-                      className="ml-2 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
-                      aria-label={isExpanded ? "Collapse" : "Expand"}
-                    >
-                      {isExpanded ? (
-                        <FiChevronUp size={18} />
-                      ) : (
-                        <FiChevronDown size={18} />
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          handleDownload(ver.fileId, ver.originalFileName)
+                        }
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                      >
+                        <FiDownload size={15} />
+                        Download
+                      </button>
+
+                      {/* {!isCurrent && framework.fileVersions.length > 1 && ( */}
+                      <button
+                        onClick={() => handleDeleteVersion(ver)}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                      >
+                        <FiTrash size={15} />
+                        Delete
+                      </button>
+                      {/* )} */}
+                      {currentVersionData.aiUpload?.status === "completed" &&
+                        framework.approval.status === "pending" && (
+                          <>
+                            <button
+                              onClick={handleApprove}
+                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                            >
+                              <FiCheckCircle size={16} />
+                              Approve
+                            </button>
+                            <button
+                              onClick={handleReject}
+                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                            >
+                              <FiXCircle size={16} />
+                              Reject
+                            </button>
+                          </>
+                        )}
+                      {(!ver.aiUpload ||
+                        (ver.aiUpload.status !== "completed" &&
+                          ver.aiUpload.status !== "uploaded" &&
+                          ver.aiUpload.status !== "processing")) && (
+                        <button
+                          onClick={() => handleUploadToAi(ver.fileId)}
+                          disabled={uploadingToAi}
+                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                        >
+                          {uploadingToAi ? (
+                            <FiLoader size={13} className="animate-spin" />
+                          ) : (
+                            <FiUploadCloud size={13} />
+                          )}
+                          {ver.aiUpload?.status === "failed" ||
+                          ver.aiUpload?.status === "skipped"
+                            ? "Retry AI Upload"
+                            : "Upload to AI"}
+                        </button>
                       )}
-                    </button>
+                      <button
+                        onClick={() => toggleVersion(ver.version)}
+                        className="ml-2 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                        aria-label={isExpanded ? "Collapse" : "Expand"}
+                      >
+                        {isExpanded ? (
+                          <FiChevronUp size={18} />
+                        ) : (
+                          <FiChevronDown size={18} />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {isExpanded && (
@@ -606,67 +607,7 @@ function OfficialFrameworkDetail() {
                         </span>
                       </div>
 
-                      {(!ver.aiUpload ||
-                        (ver.aiUpload.status !== "completed" &&
-                          ver.aiUpload.status !== "uploaded" &&
-                          ver.aiUpload.status !== "processing")) && (
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
-                          <div className="flex items-center gap-2 text-sm">
-                            <>
-                              <FiAlertCircle
-                                size={16}
-                                className="text-secondary"
-                              />
-                              <span className="font-medium text-secondary">
-                                {ver.aiUpload?.status === "failed"
-                                  ? "AI upload failed"
-                                  : ver.aiUpload?.status === "skipped"
-                                    ? "AI upload skipped"
-                                    : "Not uploaded to AI"}
-                              </span>
-                            </>
-                          </div>
-                          <button
-                            onClick={() => handleUploadToAi(ver.fileId)}
-                            disabled={uploadingToAi}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300 hover:bg-secondary/80 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
-                          >
-                            {uploadingToAi ? (
-                              <FiLoader size={13} className="animate-spin" />
-                            ) : (
-                              <FiUploadCloud size={13} />
-                            )}
-                            {ver.aiUpload?.status === "failed" ||
-                            ver.aiUpload?.status === "skipped"
-                              ? "Retry Upload"
-                              : "Upload to AI"}
-                          </button>
-                        </div>
-                      )}
-
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() =>
-                              handleDownload(ver.fileId, ver.originalFileName)
-                            }
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                          >
-                            <FiDownload size={15} />
-                            Download
-                          </button>
-
-                          {/* {!isCurrent && framework.fileVersions.length > 1 && ( */}
-                          <button
-                            onClick={() => handleDeleteVersion(ver)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
-                          >
-                            <FiTrash size={15} />
-                            Delete Version
-                          </button>
-                          {/* )} */}
-                        </div>
-
                         <button
                           onClick={() => toggleHash(ver.version)}
                           className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 text-muted-foreground cursor-pointer"

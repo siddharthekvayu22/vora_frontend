@@ -281,6 +281,24 @@ function OfficialFrameworkDetail() {
                   </span>
                 }
               />
+              <InfoItem
+                icon={<FiHash size={15} />}
+                label="Framework Category ID"
+                value={
+                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                    {framework.frameworkCategoryId}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiHash size={15} />}
+                label="File Object Id"
+                value={
+                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                    {framework.mainFileId}
+                  </span>
+                }
+              />
             </div>
           </div>
         </div>
@@ -308,7 +326,7 @@ function OfficialFrameworkDetail() {
                   <FiDownload size={16} />
                   Download Current Version
                 </button>
-                {!currentVersionData.aiUpload && (
+                {currentVersionData.aiUpload?.status !== "completed" && (
                   <button
                     onClick={() => handleUploadToAi(currentVersionData.fileId)}
                     disabled={uploadingToAi}
@@ -402,19 +420,9 @@ function OfficialFrameworkDetail() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
-                        <div className="flex items-center gap-2 text-sm">
-                          {ver.aiUpload ? (
-                            <>
-                              <FiCheckCircle
-                                size={16}
-                                className="text-primary"
-                              />
-                              <span className="font-medium text-primary">
-                                Uploaded to AI
-                              </span>
-                            </>
-                          ) : (
+                      {ver.aiUpload?.status !== "completed" && (
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
+                          <div className="flex items-center gap-2 text-sm">
                             <>
                               <FiAlertCircle
                                 size={16}
@@ -424,9 +432,7 @@ function OfficialFrameworkDetail() {
                                 Not uploaded to AI
                               </span>
                             </>
-                          )}
-                        </div>
-                        {!ver.aiUpload && (
+                          </div>
                           <button
                             onClick={() => handleUploadToAi(ver.fileId)}
                             disabled={uploadingToAi}
@@ -439,8 +445,8 @@ function OfficialFrameworkDetail() {
                             )}
                             Upload to AI
                           </button>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       <div className="flex items-center justify-between flex-wrap gap-2">
                         <button
@@ -465,6 +471,76 @@ function OfficialFrameworkDetail() {
                       {hashVisible && (
                         <div className="p-3 rounded-lg text-xs font-mono break-all bg-muted text-muted-foreground">
                           {ver.fileHash}
+                        </div>
+                      )}
+
+                      {ver.aiUpload && ver.aiUpload.controls && (
+                        <div className="rounded-xl border border-border bg-card overflow-hidden">
+                          <div className="px-4 py-3 bg-primary/5 border-b border-border">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <FiShield size={16} className="text-primary" />
+                                <h3 className="text-sm font-bold text-foreground">
+                                  AI Extracted Controls
+                                </h3>
+                              </div>
+                              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                                <span className="text-primary">UUID:</span>
+                                {ver.aiUpload.uuid}
+                              </p>
+                              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
+                                {ver.aiUpload.controls.total_controls} Controls
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="p-4 max-h-96 overflow-y-auto sidebar-scroll">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                              {ver.aiUpload.controls.controls_data?.map(
+                                (control, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="p-4 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors"
+                                  >
+                                    <div className="flex items-center gap-3 mb-2">
+                                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold">
+                                        {control.Control_id}
+                                      </span>
+                                      {/* <div className="flex-1 flex-row min-w-0"> */}
+                                      <h4 className="text-sm font-bold text-foreground mb-1">
+                                        {control.Control_name}
+                                      </h4>
+                                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                        {control.Control_type}
+                                      </span>
+                                      {/* </div> */}
+                                    </div>
+
+                                    <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                                      {control.Control_description}
+                                    </p>
+
+                                    <div className="mt-2 pt-2 border-t border-border">
+                                      <p className="text-[11px] font-semibold text-foreground mb-1.5">
+                                        Deployment Points:
+                                      </p>
+                                      <ol className="text-xs text-muted-foreground leading-relaxed space-y-1 list-decimal list-inside">
+                                        {control.Deployment_points.split(
+                                          /\d+\.\s+/,
+                                        )
+                                          .filter((point) => point.trim())
+                                          .map((point, i) => (
+                                            <li key={i} className="pl-1">
+                                              {point.trim()}
+                                            </li>
+                                          ))}
+                                      </ol>
+                                    </div>
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>

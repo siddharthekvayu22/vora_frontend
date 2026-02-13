@@ -154,12 +154,10 @@ function OfficialFrameworkDetail() {
     }
   };
 
-  const handleUploadToAi = async () => {
+  const handleUploadToAi = async (versionFileId) => {
     try {
       setUploadingToAi(true);
-      const response = await uploadOfficialFrameworkToAi(
-        framework.fileVersions.fileId,
-      );
+      const response = await uploadOfficialFrameworkToAi(versionFileId);
       if (response.success) {
         toast.success(response.message || "File uploaded to AI successfully");
         fetchFrameworkDetails();
@@ -312,7 +310,7 @@ function OfficialFrameworkDetail() {
                 </button>
                 {!currentVersionData.aiUpload && (
                   <button
-                    onClick={handleUploadToAi}
+                    onClick={() => handleUploadToAi(currentVersionData.fileId)}
                     disabled={uploadingToAi}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                   >
@@ -430,7 +428,7 @@ function OfficialFrameworkDetail() {
                         </div>
                         {!ver.aiUpload && (
                           <button
-                            onClick={handleUploadToAi}
+                            onClick={() => handleUploadToAi(ver.fileId)}
                             disabled={uploadingToAi}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300 hover:bg-secondary/80 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                           >

@@ -489,7 +489,7 @@ function OfficialFrameworkDetail() {
                             Download
                           </button>
 
-                          {!isCurrent && framework.fileVersions.length > 1 && (
+                          {/* {!isCurrent && framework.fileVersions.length > 1 && ( */}
                             <button
                               onClick={() => handleDeleteVersion(ver)}
                               className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
@@ -497,7 +497,7 @@ function OfficialFrameworkDetail() {
                               <FiTrash size={15} />
                               Delete Version
                             </button>
-                          )}
+                          {/* )} */}
                         </div>
 
                         <button

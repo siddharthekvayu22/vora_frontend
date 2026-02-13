@@ -18,12 +18,15 @@ import {
   FiMail,
   FiInfo,
   FiActivity,
+  FiTrash,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
+import DeleteVersionModal from "./components/DeleteVersionModal";
 import {
   downloadOfficialFrameworkFile,
   getOfficialFrameworkById,
   uploadOfficialFrameworkToAi,
+  deleteOfficialFrameworkVersion,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -117,6 +120,8 @@ function OfficialFrameworkDetail() {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploadingToAi, setUploadingToAi] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [versionToDelete, setVersionToDelete] = useState(null);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
@@ -161,6 +166,36 @@ function OfficialFrameworkDetail() {
     } finally {
       setUploadingToAi(false);
     }
+  };
+
+  const handleDeleteVersion = (version) => {
+    setVersionToDelete(version);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!versionToDelete) return;
+
+    try {
+      const response = await deleteOfficialFrameworkVersion(
+        framework.mainFileId,
+        versionToDelete.fileId,
+      );
+      if (response.success) {
+        toast.success(response.message || "Version deleted successfully");
+        fetchFrameworkDetails();
+        setDeleteModalOpen(false);
+        setVersionToDelete(null);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to delete version");
+      throw error; // Re-throw to let modal handle loading state
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setVersionToDelete(null);
   };
 
   const toggleVersion = (version) => {
@@ -443,15 +478,27 @@ function OfficialFrameworkDetail() {
                       )}
 
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <button
-                          onClick={() =>
-                            handleDownload(ver.fileId, ver.originalFileName)
-                          }
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                        >
-                          <FiDownload size={15} />
-                          Download
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() =>
+                              handleDownload(ver.fileId, ver.originalFileName)
+                            }
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                          >
+                            <FiDownload size={15} />
+                            Download
+                          </button>
+
+                          {!isCurrent && framework.fileVersions.length > 1 && (
+                            <button
+                              onClick={() => handleDeleteVersion(ver)}
+                              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                            >
+                              <FiTrash size={15} />
+                              Delete Version
+                            </button>
+                          )}
+                        </div>
 
                         <button
                           onClick={() => toggleHash(ver.version)}
@@ -757,6 +804,15 @@ function OfficialFrameworkDetail() {
           </div>
         </div>
       </div>
+
+      {/* Delete Version Modal */}
+      {deleteModalOpen && versionToDelete && (
+        <DeleteVersionModal
+          version={versionToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 }

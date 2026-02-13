@@ -160,6 +160,19 @@ export function deleteOfficialFramework(fileId) {
   );
 }
 
+/**
+ * Delete a specific file version
+ */
+export function deleteOfficialFrameworkVersion(fileId, versionFileId) {
+  return apiRequest(
+    `/files/${fileId}/versions/${versionFileId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
 export default {
   getOfficialFrameworkById,
   getAllOfficialFrameworks,

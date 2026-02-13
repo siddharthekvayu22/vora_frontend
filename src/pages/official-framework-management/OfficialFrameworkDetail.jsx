@@ -1,16 +1,69 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import Icon from "../../components/Icon";
 import {
-  getOfficialFrameworkById,
+  FiArrowLeft,
+  FiDownload,
+  FiUploadCloud,
+  FiFile,
+  FiUser,
+  FiCalendar,
+  FiHash,
+  FiShield,
+  FiChevronDown,
+  FiChevronUp,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiLoader,
+  FiTag,
+  FiClock,
+  FiMail,
+} from "react-icons/fi";
+import {
   downloadOfficialFrameworkFile,
+  getOfficialFrameworkById,
   uploadOfficialFrameworkToAi,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
-import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
-import UserMiniCard from "../../components/custom/UserMiniCard";
-import FileTypeCard from "../../components/custom/FileTypeCard";
+
+function InfoItem({ icon, label, value }) {
+  return (
+    <div
+      className="flex items-start gap-3 p-3 rounded-xl"
+      style={{ background: "var(--muted)" }}
+    >
+      <div className="mt-0.5" style={{ color: "var(--primary)" }}>
+        {icon}
+      </div>
+      <div>
+        <p
+          className="text-[11px] font-medium uppercase tracking-wider mb-1"
+          style={{ color: "var(--muted-foreground)" }}
+        >
+          {label}
+        </p>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function FileIcon({ type }) {
+  const isPdf = type?.toLowerCase() === "pdf";
+  return (
+    <span
+      className="inline-flex items-center justify-center w-6 h-6 rounded"
+      style={{
+        background: isPdf
+          ? "color-mix(in oklch, oklch(0.6 0.25 27) 15%, transparent)"
+          : "color-mix(in oklch, var(--primary) 15%, transparent)",
+        color: isPdf ? "oklch(0.6 0.25 27)" : "var(--primary)",
+      }}
+    >
+      <FiFile size={13} />
+    </span>
+  );
+}
 
 function OfficialFrameworkDetail() {
   const { id } = useParams();
@@ -19,7 +72,8 @@ function OfficialFrameworkDetail() {
   const [loading, setLoading] = useState(true);
   const [selectedVersion, setSelectedVersion] = useState(null);
   const [uploadingToAi, setUploadingToAi] = useState(false);
-  const [expandedControl, setExpandedControl] = useState(null);
+  const [expandedVersions, setExpandedVersions] = useState(new Set());
+  const [showHash, setShowHash] = useState(new Set());
 
   useEffect(() => {
     fetchFrameworkDetails();
@@ -58,7 +112,7 @@ function OfficialFrameworkDetail() {
   const handleUploadToAi = async () => {
     try {
       setUploadingToAi(true);
-      const response = await uploadOfficialFrameworkToAi(framework.fileId);
+      const response = await uploadOfficialFrameworkToAi(framework.mainFileId);
       if (response.success) {
         toast.success(response.message || "File uploaded to AI successfully");
         fetchFrameworkDetails();
@@ -70,65 +124,491 @@ function OfficialFrameworkDetail() {
     }
   };
 
+  const toggleVersion = (version) => {
+    setExpandedVersions((prev) => {
+      const next = new Set(prev);
+      next.has(version) ? next.delete(version) : next.add(version);
+      return next;
+    });
+  };
+
+  const toggleHash = (version) => {
+    setShowHash((prev) => {
+      const next = new Set(prev);
+      next.has(version) ? next.delete(version) : next.add(version);
+      return next;
+    });
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div
+        className="flex items-center justify-center min-h-screen"
+        style={{ background: "var(--background)" }}
+      >
+        <div className="flex flex-col items-center gap-4">
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-4 border-transparent"
+            style={{
+              borderTopColor: "var(--primary)",
+              borderRightColor: "var(--secondary)",
+            }}
+          />
+          <p
+            style={{ color: "var(--muted-foreground)" }}
+            className="text-sm font-medium"
+          >
+            Loading framework details...
+          </p>
+        </div>
       </div>
     );
   }
 
-  if (!framework) {
-    return null;
-  }
+  if (!framework) return null;
 
   const currentVersionData = framework.fileVersions?.find(
     (v) => v.version === framework.currentVersion,
   );
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate("/official-frameworks")}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-          >
-            <Icon name="ArrowLeft" className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              {framework.frameworkName}
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {framework.frameworkCode}
-            </p>
+    <div
+      className="min-h-screen"
+      style={{ background: "var(--background)", color: "var(--foreground)" }}
+    >
+      {/* Gradient accent line */}
+      <div
+        className="h-1 w-full"
+        style={{
+          background:
+            "linear-gradient(to right, var(--primary), var(--secondary))",
+        }}
+      />
+
+      <div className="space-y-6">
+        {/* ===== HEADER BAR ===== */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/official-frameworks")}
+              className="p-2.5 rounded-xl transition-all duration-200 hover:scale-105"
+              style={{ background: "var(--muted)", color: "var(--foreground)" }}
+            >
+              <FiArrowLeft size={20} />
+            </button>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                {framework.frameworkName}
+              </h1>
+              <span
+                className="inline-flex items-center gap-1.5 mt-1 px-3 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                style={{
+                  background:
+                    "color-mix(in oklch, var(--secondary) 15%, transparent)",
+                  color: "var(--secondary)",
+                }}
+              >
+                <FiTag size={11} />
+                {framework.frameworkCode}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="">
           <button
             onClick={() => navigate(-1)}
-            className="px-6 py-2 bg-primary rounded-md cursor-pointer text-white hover:scale-105 duration-300"
+            className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
+            style={{
+              background: "var(--primary)",
+              color: "var(--primary-foreground)",
+            }}
           >
             Back
           </button>
         </div>
-      </div>
-      <div className="mt-10 border border-primary p-10 flex items-center gap-2 text-xl">
-        <p>Need to update GUI according to api response</p>
-        <picture>
-          <source
-            srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp"
-            type="image/webp"
+
+        {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
+        <div
+          className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl"
+          style={{
+            background: "var(--card)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <div
+            className="h-1"
+            style={{
+              background:
+                "linear-gradient(to right, var(--primary), var(--secondary))",
+            }}
           />
-          <img
-            src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.gif"
-            alt="🥳"
-            width="100"
-            height="100"
-          />
-        </picture>
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-5">
+              <div
+                className="p-2.5 rounded-xl"
+                style={{
+                  background:
+                    "color-mix(in oklch, var(--primary) 12%, transparent)",
+                  color: "var(--primary)",
+                }}
+              >
+                <FiShield size={22} />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">{framework.frameworkName}</h2>
+                <p
+                  className="text-xs"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  Framework Overview
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <InfoItem
+                icon={<FiTag size={15} />}
+                label="Framework Code"
+                value={
+                  <span
+                    className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase"
+                    style={{
+                      background:
+                        "color-mix(in oklch, var(--secondary) 15%, transparent)",
+                      color: "var(--secondary)",
+                    }}
+                  >
+                    {framework.frameworkCode}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiTag size={15} />}
+                label="Current Version"
+                value={
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-bold"
+                    style={{
+                      background:
+                        "color-mix(in oklch, var(--primary) 15%, transparent)",
+                      color: "var(--primary)",
+                    }}
+                  >
+                    v{framework.currentVersion}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiCalendar size={15} />}
+                label="Created"
+                value={
+                  <span className="text-sm font-medium whitespace-nowrap">
+                    {formatDate(framework.createdAt)}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiClock size={15} />}
+                label="Updated"
+                value={
+                  <span className="text-sm font-medium whitespace-nowrap">
+                    {formatDate(framework.updatedAt)}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiHash size={15} />}
+                label="Framework ID"
+                value={
+                  <span
+                    className="text-xs font-mono px-2 py-1 rounded-md"
+                    style={{
+                      background: "var(--muted)",
+                      color: "var(--muted-foreground)",
+                    }}
+                  >
+                    {framework.id}
+                  </span>
+                }
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* ===== FILE VERSIONS ===== */}
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-xl font-bold">File Versions</h2>
+            <span
+              className="px-2.5 py-0.5 rounded-full text-xs font-bold"
+              style={{
+                background:
+                  "color-mix(in oklch, var(--primary) 15%, transparent)",
+                color: "var(--primary)",
+              }}
+            >
+              {framework.fileVersions?.length || 0}
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {framework.fileVersions?.map((ver) => {
+              const isCurrent = ver.version === framework.currentVersion;
+              const isExpanded = expandedVersions.has(ver.version);
+              const hashVisible = showHash.has(ver.version);
+
+              return (
+                <div
+                  key={ver.version}
+                  className="rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg"
+                  style={{
+                    background: "var(--card)",
+                    border: `1px solid ${isCurrent ? "var(--primary)" : "var(--border)"}`,
+                  }}
+                >
+                  <button
+                    onClick={() => toggleVersion(ver.version)}
+                    className="w-full flex items-center justify-between p-4 text-left transition-colors duration-200"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span
+                        className="px-3 py-1 rounded-full text-xs font-bold"
+                        style={
+                          isCurrent
+                            ? {
+                                background: "var(--primary)",
+                                color: "var(--primary-foreground)",
+                              }
+                            : {
+                                background: "var(--muted)",
+                                color: "var(--muted-foreground)",
+                              }
+                        }
+                      >
+                        v{ver.version}
+                        {isCurrent && " • Current"}
+                      </span>
+                      <div
+                        className="flex items-center gap-2 text-sm"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
+                        <FileIcon type={ver.frameworkType} />
+                        <span
+                          className="font-medium"
+                          style={{ color: "var(--foreground)" }}
+                        >
+                          {ver.originalFileName}
+                        </span>
+                        <span>•</span>
+                        <span>{ver.fileSize}</span>
+                      </div>
+                    </div>
+                    {isExpanded ? (
+                      <FiChevronUp size={18} />
+                    ) : (
+                      <FiChevronDown size={18} />
+                    )}
+                  </button>
+
+                  {isExpanded && (
+                    <div
+                      className="px-4 pb-5 pt-1 space-y-4"
+                      style={{ borderTop: "1px solid var(--border)" }}
+                    >
+                      <div
+                        className="flex items-center gap-2 text-sm"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
+                        <FiCalendar size={14} />
+                        <span>Uploaded on {formatDate(ver.uploadedAt)}</span>
+                      </div>
+
+                      <div
+                        className="flex items-center gap-3 p-3 rounded-xl"
+                        style={{ background: "var(--muted)" }}
+                      >
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+                          style={{
+                            background:
+                              "color-mix(in oklch, var(--primary) 20%, transparent)",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {ver.uploadedBy?.name
+                            ?.split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase() || <FiUser size={16} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold truncate">
+                            {ver.uploadedBy?.name}
+                          </p>
+                          <div
+                            className="flex items-center gap-1.5 text-xs"
+                            style={{ color: "var(--muted-foreground)" }}
+                          >
+                            <FiMail size={11} />
+                            <span className="truncate">
+                              {ver.uploadedBy?.email}
+                            </span>
+                          </div>
+                        </div>
+                        <span
+                          className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                          style={{
+                            background:
+                              "color-mix(in oklch, var(--secondary) 15%, transparent)",
+                            color: "var(--secondary)",
+                          }}
+                        >
+                          {ver.uploadedBy?.role}
+                        </span>
+                      </div>
+
+                      <div
+                        className="flex items-center justify-between p-3 rounded-xl"
+                        style={{ background: "var(--muted)" }}
+                      >
+                        <div className="flex items-center gap-2 text-sm">
+                          {ver.aiUpload ? (
+                            <>
+                              <FiCheckCircle
+                                size={16}
+                                style={{ color: "var(--primary)" }}
+                              />
+                              <span
+                                className="font-medium"
+                                style={{ color: "var(--primary)" }}
+                              >
+                                Uploaded to AI
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <FiAlertCircle
+                                size={16}
+                                style={{ color: "var(--secondary)" }}
+                              />
+                              <span
+                                className="font-medium"
+                                style={{ color: "var(--secondary)" }}
+                              >
+                                Not uploaded to AI
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        {!ver.aiUpload && (
+                          <button
+                            onClick={handleUploadToAi}
+                            disabled={uploadingToAi}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50"
+                            style={{
+                              background: "var(--secondary)",
+                              color: "var(--secondary-foreground)",
+                            }}
+                          >
+                            {uploadingToAi ? (
+                              <FiLoader size={13} className="animate-spin" />
+                            ) : (
+                              <FiUploadCloud size={13} />
+                            )}
+                            Upload to AI
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <button
+                          onClick={() =>
+                            handleDownload(ver.fileId, ver.originalFileName)
+                          }
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105"
+                          style={{
+                            background: "var(--primary)",
+                            color: "var(--primary-foreground)",
+                          }}
+                        >
+                          <FiDownload size={15} />
+                          Download
+                        </button>
+
+                        <button
+                          onClick={() => toggleHash(ver.version)}
+                          className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200"
+                          style={{ color: "var(--muted-foreground)" }}
+                        >
+                          <FiHash size={13} />
+                          {hashVisible ? "Hide" : "Show"} file hash
+                        </button>
+                      </div>
+
+                      {hashVisible && (
+                        <div
+                          className="p-3 rounded-lg text-xs font-mono break-all"
+                          style={{
+                            background: "var(--muted)",
+                            color: "var(--muted-foreground)",
+                          }}
+                        >
+                          {ver.fileHash}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ===== ACTIONS BAR ===== */}
+        {currentVersionData && (
+          <div
+            className="flex flex-wrap gap-3 p-5 rounded-2xl"
+            style={{
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+            }}
+          >
+            <button
+              onClick={() =>
+                handleDownload(
+                  currentVersionData.fileId,
+                  currentVersionData.originalFileName,
+                )
+              }
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              style={{
+                background: "var(--primary)",
+                color: "var(--primary-foreground)",
+              }}
+            >
+              <FiDownload size={16} />
+              Download Current Version
+            </button>
+            {!currentVersionData.aiUpload && (
+              <button
+                onClick={handleUploadToAi}
+                disabled={uploadingToAi}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50"
+                style={{
+                  background: "var(--secondary)",
+                  color: "var(--secondary-foreground)",
+                }}
+              >
+                {uploadingToAi ? (
+                  <FiLoader size={16} className="animate-spin" />
+                ) : (
+                  <FiUploadCloud size={16} />
+                )}
+                Upload to AI
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

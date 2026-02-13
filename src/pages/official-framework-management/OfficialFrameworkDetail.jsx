@@ -153,50 +153,32 @@ function OfficialFrameworkDetail() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Gradient accent line */}
-      <div className="h-1 w-full bg-gradient-to-r from-primary to-secondary" />
-
       <div className="space-y-6">
-        {/* ===== HEADER BAR ===== */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate("/official-frameworks")}
-              className="p-2.5 rounded-xl transition-all duration-200 hover:scale-105 bg-muted text-foreground cursor-pointer"
-            >
-              <FiArrowLeft size={20} />
-            </button>
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                {framework.frameworkName}
-              </h1>
-              <span className="inline-flex items-center gap-1.5 mt-1 px-3 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                <FiTag size={11} />
-                {framework.frameworkCode}
-              </span>
-            </div>
-          </div>
-          <button
-            onClick={() => navigate(-1)}
-            className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg bg-primary text-primary-foreground cursor-pointer"
-          >
-            Back
-          </button>
-        </div>
-
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
         <div className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl bg-card border border-border">
           <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
           <div className="p-6">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="p-2.5 rounded-xl bg-primary/12 text-primary">
-                <FiShield size={22} />
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-primary/12 text-primary">
+                  <FiShield size={22} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">
+                    {framework.frameworkName}
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    Framework Overview
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-lg font-bold">{framework.frameworkName}</h2>
-                <p className="text-xs text-muted-foreground">
-                  Framework Overview
-                </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => navigate("/official-frameworks")}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                >
+                  <FiArrowLeft size={20} /> Back
+                </button>
               </div>
             </div>
 
@@ -268,7 +250,7 @@ function OfficialFrameworkDetail() {
                       currentVersionData.originalFileName,
                     )
                   }
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl bg-primary text-primary-foreground cursor-pointer"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
                 >
                   <FiDownload size={16} />
                   Download Current Version
@@ -277,7 +259,7 @@ function OfficialFrameworkDetail() {
                   <button
                     onClick={handleUploadToAi}
                     disabled={uploadingToAi}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                   >
                     {uploadingToAi ? (
                       <FiLoader size={16} className="animate-spin" />
@@ -395,7 +377,7 @@ function OfficialFrameworkDetail() {
                           <button
                             onClick={handleUploadToAi}
                             disabled={uploadingToAi}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300 hover:bg-secondary/80 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                           >
                             {uploadingToAi ? (
                               <FiLoader size={13} className="animate-spin" />
@@ -412,7 +394,7 @@ function OfficialFrameworkDetail() {
                           onClick={() =>
                             handleDownload(ver.fileId, ver.originalFileName)
                           }
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 bg-primary text-primary-foreground cursor-pointer"
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
                         >
                           <FiDownload size={15} />
                           Download

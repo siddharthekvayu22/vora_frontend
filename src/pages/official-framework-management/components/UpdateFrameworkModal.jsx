@@ -27,6 +27,7 @@ export default function UpdateFrameworkModal({
     frameworkCategoryId: "",
     frameworkName: "",
     frameworkCode: "",
+    currentVersion: "",
     file: null,
   });
 
@@ -91,22 +92,12 @@ export default function UpdateFrameworkModal({
         (cat) => cat.code === framework.frameworkCode,
       );
 
-      console.log("Framework code:", framework.frameworkCode);
-      console.log(
-        "Available categories:",
-        approvedCategories.map((cat) => ({
-          code: cat.code,
-          label: cat.label,
-          name: cat.name,
-        })),
-      );
-      console.log("Matching category:", matchingCategory);
-
       setFormData({
         frameworkCategoryId:
           matchingCategory?.value || framework.frameworkCategory?.id || "",
         frameworkName: framework.frameworkName || "",
         frameworkCode: framework.frameworkCode || "",
+        currentVersion: framework.currentVersion || "1.0.0",
         file: null, // File will be optional for updates
       });
     }
@@ -163,7 +154,17 @@ export default function UpdateFrameworkModal({
         return;
       }
 
-      setFormData((prev) => ({ ...prev, file }));
+      // Auto-increment version based on current version
+      const currentVersion = framework?.currentVersion || "1.0.0";
+      const versionParts = currentVersion.split(".");
+      const newPatchVersion = parseInt(versionParts[2] || 0) + 1;
+      const suggestedVersion = `${versionParts[0]}.${versionParts[1]}.${newPatchVersion}`;
+
+      setFormData((prev) => ({
+        ...prev,
+        file,
+        currentVersion: suggestedVersion,
+      }));
       if (errors.file) {
         setErrors((prev) => ({ ...prev, file: "" }));
       }
@@ -172,7 +173,7 @@ export default function UpdateFrameworkModal({
 
   // Handle file removal
   const handleFileRemove = () => {
-    setFormData((prev) => ({ ...prev, file: null }));
+    setFormData((prev) => ({ ...prev, file: null, currentVersion: "" }));
     // Reset the file input
     const fileInput = document.getElementById("update-framework-file");
     if (fileInput) {
@@ -189,6 +190,20 @@ export default function UpdateFrameworkModal({
     }
     if (!formData.frameworkName.trim()) {
       newErrors.frameworkName = "Framework name is required";
+    }
+    // Only validate version if a new file is being uploaded
+    if (formData.file) {
+      if (!formData.currentVersion) {
+        newErrors.currentVersion =
+          "Version is required when uploading a new file";
+      } else {
+        // Validate semantic versioning format
+        const versionRegex = /^\d+\.\d+\.\d+$/;
+        if (!versionRegex.test(formData.currentVersion)) {
+          newErrors.currentVersion =
+            "Version must be in format X.Y.Z (e.g., 1.0.0)";
+        }
+      }
     }
 
     // Show errors in toast instead of inline
@@ -227,11 +242,17 @@ export default function UpdateFrameworkModal({
         frameworkCategoryId: formData.frameworkCategoryId,
         frameworkName: formData.frameworkName,
       };
+
+      // Only add currentVersion if a new file is being uploaded
+      if (formData.file && formData.currentVersion) {
+        metadata.currentVersion = formData.currentVersion; // Already a string
+      }
+
       updateFormData.append("metadata", JSON.stringify(metadata));
 
       // Update framework using the service
       const result = await updateOfficialFramework(
-        framework.fileInfo?.fileId,
+        framework.mainFileId,
         updateFormData,
       );
 
@@ -252,6 +273,7 @@ export default function UpdateFrameworkModal({
       frameworkCategoryId: "",
       frameworkName: "",
       frameworkCode: "",
+      currentVersion: "",
       file: null,
     });
     setErrors({});
@@ -357,99 +379,127 @@ export default function UpdateFrameworkModal({
                 />
               </div>
 
-              {/* Current File Info */}
-              {framework?.fileInfo && (
-                <div className="form-group">
-                  <label className="form-label">Current File</label>
-                  <div className="flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg border-blue-200 bg-blue-50 dark:bg-blue-900/20">
-                    <div className="flex items-center gap-3">
-                      <FileTypeCard
-                        fileName={framework.fileInfo.originalFileName}
-                        fileSize={framework.fileInfo.fileSize}
-                      />
-                    </div>
-                    <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                      Current File
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* File Upload */}
+              {/* File Management Section - 2 Column Layout */}
               <div className="form-group">
-                <label className="form-label">
-                  New Framework File{" "}
-                  <span className="text-muted-foreground">(Optional)</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx,.xls,.xlsx"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    id="update-framework-file"
-                  />
-
-                  {!formData.file ? (
-                    <label
-                      htmlFor="update-framework-file"
-                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                        errors.file ? "border-red-500" : "border-border"
-                      }`}
-                    >
-                      <div className="text-center">
-                        <Icon
-                          name="upload"
-                          size="32px"
-                          className="text-muted-foreground mb-2 mx-auto"
-                        />
-                        <p className="text-sm font-medium text-foreground">
-                          Click to upload new framework file
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Supports: PDF, DOC, DOCX, XLS, XLSX
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Maximum file size: 50MB
-                        </p>
-                        <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                          Leave empty to keep current file
-                        </p>
-                      </div>
-                    </label>
-                  ) : (
-                    <div
-                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
-                        errors.file
-                          ? "border-red-500"
-                          : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
+                <label className="form-label mb-2">File Management</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* Current File Column */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-foreground">
+                        Current File
+                      </span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
+                        v{framework?.currentVersion || "1.0.0"}
+                      </span>
+                    </div>
+                    {framework?.fileInfo && (
+                      <div className="flex items-center w-full px-3 py-2.5 border-2 rounded-lg border-blue-200 bg-blue-50 dark:bg-blue-900/20 min-h-[70px]">
                         <FileTypeCard
-                          fileName={formData.file.name}
-                          fileSize={formData.file.size}
+                          fileName={framework.fileInfo.originalFileName}
+                          fileSize={framework.fileInfo.fileSize}
                         />
                       </div>
-                      <div className="flex items-center gap-2">
+                    )}
+                  </div>
+
+                  {/* New File Column */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-foreground">
+                        New File
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        (Optional)
+                      </span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx,.xls,.xlsx"
+                        onChange={handleFileChange}
+                        className="hidden"
+                        id="update-framework-file"
+                      />
+
+                      {!formData.file ? (
                         <label
                           htmlFor="update-framework-file"
-                          className="px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
+                          className={`flex items-center justify-center w-full px-3 py-1 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 min-h-[70px] ${
+                            errors.file ? "border-red-500" : "border-border"
+                          }`}
                         >
-                          Change
+                          <div className="text-center">
+                            <Icon
+                              name="upload"
+                              size="20px"
+                              className="text-muted-foreground mb-1 mx-auto"
+                            />
+                            <p className="text-xs font-medium text-foreground">
+                              Upload new file
+                            </p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                              PDF, DOC, XLS (Max 50MB)
+                            </p>
+                          </div>
                         </label>
-                        <button
-                          type="button"
-                          onClick={handleFileRemove}
-                          className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      ) : (
+                        <div
+                          className={`flex items-center justify-between w-full px-3 py-2.5 border-2 rounded-lg min-h-[70px] ${
+                            errors.file
+                              ? "border-red-500"
+                              : "border-green-200 bg-green-50 dark:bg-green-900/20"
+                          }`}
                         >
-                          Remove
-                        </button>
-                      </div>
+                          <FileTypeCard
+                            fileName={formData.file.name}
+                            fileSize={formData.file.size}
+                          />
+                          <div className="flex items-center gap-2 ml-2">
+                            <label
+                              htmlFor="update-framework-file"
+                              className="flex items-center justify-center w-8 h-8 text-primary bg-primary/10 border border-primary/20 rounded hover:bg-primary/20 transition-colors cursor-pointer"
+                              title="Change file"
+                            >
+                              <Icon name="refresh" size="18px" />
+                            </label>
+                            <button
+                              type="button"
+                              onClick={handleFileRemove}
+                              className="flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                              title="Remove file"
+                            >
+                              <Icon name="close" size="18px" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
+
+              {/* Version - Show when uploading new file */}
+              {formData.file && (
+                <div className="form-group">
+                  <label className="form-label">
+                    New Version <span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-input ${errors.currentVersion ? "error" : ""}`}
+                    value={formData.currentVersion}
+                    onChange={(e) =>
+                      handleChange("currentVersion", e.target.value)
+                    }
+                    placeholder="e.g., 1.1.0, 2.0.0"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Semantic version format: X.Y.Z (current:{" "}
+                    {framework?.currentVersion || "1.0.0"})
+                  </p>
+                </div>
+              )}
             </form>
           )}
         </div>

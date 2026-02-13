@@ -181,7 +181,7 @@ function OfficialFrameworkAccess() {
             <UserMiniCard
               name={row.approval.approvedBy.name}
               email={row.approval.approvedBy.email}
-              date={row.approval.approvedAt}
+              // date={row.approval.approvedAt}
             />
           );
         } else if (row.status === "rejected" && row.rejection?.rejectedBy) {
@@ -189,7 +189,7 @@ function OfficialFrameworkAccess() {
             <UserMiniCard
               name={row.rejection.rejectedBy.name}
               email={row.rejection.rejectedBy.email}
-              date={row.rejection.rejectedAt}
+              // date={row.rejection.rejectedAt}
             />
           );
         } else if (row.status === "revoked" && row.revocation?.revokedBy) {
@@ -197,7 +197,7 @@ function OfficialFrameworkAccess() {
             <UserMiniCard
               name={row.revocation.revokedBy.name}
               email={row.revocation.revokedBy.email}
-              date={row.revocation.revokedAt}
+              // date={row.revocation.revokedAt}
             />
           );
         } else if (row.status === "pending") {

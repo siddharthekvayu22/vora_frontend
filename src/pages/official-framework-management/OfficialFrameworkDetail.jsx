@@ -112,7 +112,9 @@ function OfficialFrameworkDetail() {
   const handleUploadToAi = async () => {
     try {
       setUploadingToAi(true);
-      const response = await uploadOfficialFrameworkToAi(framework.mainFileId);
+      const response = await uploadOfficialFrameworkToAi(
+        framework.fileVersions.fileId,
+      );
       if (response.success) {
         toast.success(response.message || "File uploaded to AI successfully");
         fetchFrameworkDetails();
@@ -335,18 +337,50 @@ function OfficialFrameworkDetail() {
 
         {/* ===== FILE VERSIONS ===== */}
         <div>
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-xl font-bold">File Versions</h2>
-            <span
-              className="px-2.5 py-0.5 rounded-full text-xs font-bold"
-              style={{
-                background:
-                  "color-mix(in oklch, var(--primary) 15%, transparent)",
-                color: "var(--primary)",
-              }}
-            >
-              {framework.fileVersions?.length || 0}
-            </span>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className=" flex items-center gap-3">
+              <h2 className="text-xl font-bold">File Versions</h2>
+              <span
+                className="px-2.5 py-0.5 rounded-full text-xs font-bold"
+                style={{
+                  background:
+                    "color-mix(in oklch, var(--primary) 15%, transparent)",
+                  color: "var(--primary)",
+                }}
+              >
+                {framework.fileVersions?.length || 0}
+              </span>
+            </div>
+            {currentVersionData && (
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() =>
+                    handleDownload(
+                      currentVersionData.fileId,
+                      currentVersionData.originalFileName,
+                    )
+                  }
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl cursor-pointer bg-primary text-primary-foreground"
+                >
+                  <FiDownload size={16} />
+                  Download Current Version
+                </button>
+                {!currentVersionData.aiUpload && (
+                  <button
+                    onClick={handleUploadToAi}
+                    disabled={uploadingToAi}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl cursor-pointer bg-secondary text-secondary-foreground"
+                  >
+                    {uploadingToAi ? (
+                      <FiLoader size={16} className="animate-spin" />
+                    ) : (
+                      <FiUploadCloud size={16} />
+                    )}
+                    Upload Current Version to AI
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -563,52 +597,6 @@ function OfficialFrameworkDetail() {
             })}
           </div>
         </div>
-
-        {/* ===== ACTIONS BAR ===== */}
-        {currentVersionData && (
-          <div
-            className="flex flex-wrap gap-3 p-5 rounded-2xl"
-            style={{
-              background: "var(--card)",
-              border: "1px solid var(--border)",
-            }}
-          >
-            <button
-              onClick={() =>
-                handleDownload(
-                  currentVersionData.fileId,
-                  currentVersionData.originalFileName,
-                )
-              }
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
-              style={{
-                background: "var(--primary)",
-                color: "var(--primary-foreground)",
-              }}
-            >
-              <FiDownload size={16} />
-              Download Current Version
-            </button>
-            {!currentVersionData.aiUpload && (
-              <button
-                onClick={handleUploadToAi}
-                disabled={uploadingToAi}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50"
-                style={{
-                  background: "var(--secondary)",
-                  color: "var(--secondary-foreground)",
-                }}
-              >
-                {uploadingToAi ? (
-                  <FiLoader size={16} className="animate-spin" />
-                ) : (
-                  <FiUploadCloud size={16} />
-                )}
-                Upload to AI
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

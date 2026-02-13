@@ -202,7 +202,7 @@ function OfficialFrameworkDetail() {
     <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
-        <div className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl bg-card border border-border">
+        <div className="rounded-2xl overflow-hidden bg-card border border-border">
           <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
           <div className="p-6">
             <div className="flex items-center justify-between gap-3 mb-5">
@@ -481,132 +481,196 @@ function OfficialFrameworkDetail() {
                               </div>
                             </div>
 
-                            <div className="p-2 space-y-3 flex justify-between gap-5">
-                              {/* UUID and Job ID */}
-                              <div className="flex-1">
-                                <div className="rounded-xl border border-border bg-muted p-4 space-y-3">
-                                  {/* Status + badge */}
-                                  <div className="flex items-center justify-between">
-                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                      Status
-                                    </p>
-                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500/15 text-green-600 dark:text-green-400">
-                                      {ver.aiUpload.status}
-                                    </span>
+                            <div className="p-2 h-[300px] overflow-y-auto">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                {/* Status & Message Card */}
+                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
+                                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                    <div className="flex items-center justify-between">
+                                      <h4 className="text-sm font-bold text-foreground">
+                                        Status
+                                      </h4>
+                                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/15 text-green-600 dark:text-green-400">
+                                        {ver.aiUpload.status}
+                                      </span>
+                                    </div>
                                   </div>
-
-                                  {/* Message */}
-                                  <p className="text-xs text-foreground">
-                                    {ver.aiUpload.message}
-                                  </p>
-
-                                  {/* IDs */}
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                  <div className="p-4 space-y-3">
                                     <div>
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Message
+                                      </p>
+                                      <p className="text-xs text-foreground leading-relaxed">
+                                        {ver.aiUpload.message}
+                                      </p>
+                                    </div>
+                                    <div className="pt-3 border-t border-border">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Timestamp
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {new Date(
+                                          ver.aiUpload.timestamp,
+                                        ).toLocaleString()}
+                                      </p>
+                                    </div>
+                                    {ver.aiUpload.extraction_reused !==
+                                      undefined && (
+                                      <div className="pt-3 border-t border-border">
+                                        <div className="flex items-center justify-between">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                            Extraction Reused
+                                          </p>
+                                          <span
+                                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                              ver.aiUpload.extraction_reused
+                                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                                : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                            }`}
+                                          >
+                                            {ver.aiUpload.extraction_reused
+                                              ? "Yes"
+                                              : "No"}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* IDs Card */}
+                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
+                                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                    <h4 className="text-sm font-bold text-foreground">
+                                      Identifiers
+                                    </h4>
+                                  </div>
+                                  <div className="p-4 space-y-3">
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                         UUID
                                       </p>
-                                      <p className="text-xs font-mono text-foreground break-all">
+                                      <p className="text-xs font-mono text-foreground break-all leading-relaxed">
                                         {ver.aiUpload.uuid}
                                       </p>
                                     </div>
-
-                                    <div>
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                    <div className="pt-3 border-t border-border">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                         Job ID
                                       </p>
-                                      <p className="text-xs font-mono text-foreground break-all">
+                                      <p className="text-xs font-mono text-foreground break-all leading-relaxed">
                                         {ver.aiUpload.job_id}
                                       </p>
                                     </div>
-
                                     {ver.aiUpload.original_uuid && (
-                                      <div className="sm:col-span-2">
-                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                      <div className="pt-3 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                           Original UUID
                                         </p>
-                                        <p className="text-xs font-mono text-foreground break-all">
+                                        <p className="text-xs font-mono text-foreground break-all leading-relaxed">
                                           {ver.aiUpload.original_uuid}
                                         </p>
                                       </div>
                                     )}
                                   </div>
                                 </div>
-                              </div>
 
-                              {/* Status History */}
-                              {ver.aiUpload.status_history && (
-                                <div className="p-3 rounded-lg bg-muted flex-1">
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <FiActivity
-                                      size={14}
-                                      className="text-primary"
-                                    />
-                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                      Status History
-                                    </p>
-                                  </div>
-
-                                  {/* Processing Time */}
-                                  {ver.aiUpload.status_history
-                                    .processing_time_seconds !== undefined && (
-                                    <div className="mb-2 pb-2 border-b border-border">
-                                      <p className="text-xs text-muted-foreground">
-                                        Processing Time:{" "}
-                                        <span className="font-semibold text-foreground">
-                                          {
-                                            ver.aiUpload.status_history
-                                              .processing_time_seconds
-                                          }{" "}
-                                          seconds
-                                        </span>
-                                      </p>
-                                    </div>
-                                  )}
-
-                                  {/* History Timeline */}
-                                  {ver.aiUpload.status_history.history &&
-                                    ver.aiUpload.status_history.history.length >
-                                      0 && (
-                                      <div className="space-y-2">
-                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                          Timeline
-                                        </p>
-                                        <div className="space-y-2">
-                                          {ver.aiUpload.status_history.history.map(
-                                            (item, idx) => (
-                                              <div
-                                                key={idx}
-                                                className="flex items-start gap-2 text-xs"
-                                              >
-                                                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold mt-0.5">
-                                                  {idx + 1}
-                                                </span>
-                                                <div className="flex-1">
-                                                  <div className="flex items-center gap-2 mb-0.5">
-                                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                                      {item.status}
-                                                    </span>
-                                                    <span className="text-muted-foreground">
-                                                      {new Date(
-                                                        item.timestamp,
-                                                      ).toLocaleString()}
-                                                    </span>
-                                                  </div>
-                                                  {item.message && (
-                                                    <p className="text-muted-foreground">
-                                                      {item.message}
-                                                    </p>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            ),
-                                          )}
-                                        </div>
+                                {/* Status History Card */}
+                                {ver.aiUpload.status_history && (
+                                  <div className="rounded-xl border border-border bg-muted/30 overflow-hidden lg:col-span-2 h-fit">
+                                    <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                      <div className="flex items-center gap-2">
+                                        <FiActivity
+                                          size={14}
+                                          className="text-primary"
+                                        />
+                                        <h4 className="text-sm font-bold text-foreground">
+                                          Status History
+                                        </h4>
                                       </div>
-                                    )}
-                                </div>
-                              )}
+                                    </div>
+                                    <div className="p-4 space-y-3">
+                                      {/* Processing Time */}
+                                      {ver.aiUpload.status_history
+                                        .processing_time_seconds !==
+                                        undefined && (
+                                        <div>
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Processing Time
+                                          </p>
+                                          <p className="text-xs text-foreground">
+                                            <span className="font-semibold">
+                                              {
+                                                ver.aiUpload.status_history
+                                                  .processing_time_seconds
+                                              }{" "}
+                                              seconds
+                                            </span>
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {/* Completed At */}
+                                      {ver.aiUpload.status_history
+                                        .completed_at && (
+                                        <div className="pt-3 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Completed At
+                                          </p>
+                                          <p className="text-xs text-foreground">
+                                            {new Date(
+                                              ver.aiUpload.status_history
+                                                .completed_at,
+                                            ).toLocaleString()}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {/* History Timeline */}
+                                      {ver.aiUpload.status_history.history &&
+                                        ver.aiUpload.status_history.history
+                                          .length > 0 && (
+                                          <div className="pt-3 border-t border-border">
+                                            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
+                                              Timeline
+                                            </p>
+                                            <div className="space-y-2">
+                                              {ver.aiUpload.status_history.history.map(
+                                                (item, idx) => (
+                                                  <div
+                                                    key={idx}
+                                                    className="flex items-start gap-2 text-xs"
+                                                  >
+                                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold mt-0.5">
+                                                      {idx + 1}
+                                                    </span>
+                                                    <div className="flex-1">
+                                                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                                          {item.status}
+                                                        </span>
+                                                        <span className="text-muted-foreground">
+                                                          {new Date(
+                                                            item.timestamp,
+                                                          ).toLocaleString()}
+                                                        </span>
+                                                      </div>
+                                                      {item.message && (
+                                                        <p className="text-foreground leading-relaxed">
+                                                          {item.message}
+                                                        </p>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                ),
+                                              )}
+                                            </div>
+                                          </div>
+                                        )}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
 

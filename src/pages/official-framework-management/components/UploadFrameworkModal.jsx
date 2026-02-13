@@ -22,6 +22,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     frameworkCategoryId: "",
     frameworkName: "",
     frameworkCode: "",
+    currentVersion: "1.0.0",
     file: null,
   });
 
@@ -139,6 +140,16 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     if (!formData.frameworkName.trim()) {
       newErrors.frameworkName = "Framework name is required";
     }
+    if (!formData.currentVersion) {
+      newErrors.currentVersion = "Version is required";
+    } else {
+      // Validate semantic versioning format
+      const versionRegex = /^\d+\.\d+\.\d+$/;
+      if (!versionRegex.test(formData.currentVersion)) {
+        newErrors.currentVersion =
+          "Version must be in format X.Y.Z (e.g., 1.0.0)";
+      }
+    }
     if (!formData.file) {
       newErrors.file = "Framework file is required";
     }
@@ -173,6 +184,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         frameworkCode: formData.frameworkCode,
         frameworkCategoryId: formData.frameworkCategoryId,
         frameworkName: formData.frameworkName,
+        currentVersion: formData.currentVersion, // Already a string
       };
       uploadFormData.append("metadata", JSON.stringify(metadata));
 
@@ -196,6 +208,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       frameworkCategoryId: "",
       frameworkName: "",
       frameworkCode: "",
+      currentVersion: "1.0.0",
       file: null,
     });
     setErrors({});
@@ -299,6 +312,25 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   }
                   placeholder="e.g., ISO 27001 Security Framework"
                 />
+              </div>
+
+              {/* Version */}
+              <div className="form-group">
+                <label className="form-label">
+                  Version <span className="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-input ${errors.currentVersion ? "error" : ""}`}
+                  value={formData.currentVersion}
+                  onChange={(e) =>
+                    handleChange("currentVersion", e.target.value)
+                  }
+                  placeholder="e.g., 1.0.0"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Semantic version format: X.Y.Z (e.g., 1.0.0, 2.1.3)
+                </p>
               </div>
 
               {/* File Upload */}

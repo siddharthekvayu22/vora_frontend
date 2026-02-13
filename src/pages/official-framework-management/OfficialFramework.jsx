@@ -171,7 +171,7 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-    const fileId = frameworkToDelete.fileInfo.fileId;
+    const fileId = frameworkToDelete.mainFileId; // Use mainFileId for delete
     try {
       const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
@@ -192,13 +192,16 @@ function OfficialFramework() {
 
   /* ---------------- UPLOAD TO AI ---------------- */
   const handleUploadToAi = async (row) => {
-    if (!row.fileInfo?.fileId) {
-      toast.error("File ID not found");
+    // Use versionFileId for AI upload (specific version)
+    if (!row.fileInfo?.versionFileId) {
+      toast.error("File version ID not found");
       return;
     }
 
     try {
-      const result = await uploadOfficialFrameworkToAi(row.fileInfo.fileId);
+      const result = await uploadOfficialFrameworkToAi(
+        row.fileInfo.versionFileId,
+      ); // Use versionFileId
       toast.success(result.message || "Framework uploaded to AI successfully");
       fetchOfficialFramework(); // Refresh to get updated AI status
     } catch (error) {
@@ -210,11 +213,11 @@ function OfficialFramework() {
   };
 
   const handleDownloadFramework = async (row) => {
-    if (!row.fileInfo?.fileId) return;
+    if (!row.fileInfo?.versionFileId) return;
 
     try {
       await downloadOfficialFrameworkFile(
-        row.fileInfo.fileId,
+        row.fileInfo.versionFileId, // Use versionFileId for download
         row.fileInfo.originalFileName,
       );
     } catch (err) {
@@ -305,14 +308,14 @@ function OfficialFramework() {
         onClick: () => handleDownloadFramework(row),
       },
       {
-        id: `edit-${row.fileInfo?.fileId}`,
+        id: `edit-${row.mainFileId}`,
         label: "Edit Framework",
         icon: "edit",
         className: "text-primary",
         onClick: () => handleUpdateFramework(row),
       },
       {
-        id: `delete-${row.fileInfo?.fileId}`,
+        id: `delete-${row.mainFileId}`,
         label: "Delete Framework",
         icon: "trash",
         className: "text-red-600 dark:text-red-400",
@@ -324,7 +327,7 @@ function OfficialFramework() {
     if (!aiStatus) {
       // Not sent to AI - show "Send to AI" action
       actions.splice(0, 0, {
-        id: `send-ai-${row.fileInfo?.fileId}`,
+        id: `send-ai-${row.fileInfo?.versionFileId}`,
         label: "Send to AI",
         icon: "upload",
         className: "text-blue-600 dark:text-blue-400",
@@ -333,7 +336,7 @@ function OfficialFramework() {
     } else if (aiStatus === "failed" || aiStatus === "skipped") {
       // Failed or Skipped - show "Retry AI Upload" action
       actions.splice(0, 0, {
-        id: `retry-ai-${row.fileInfo?.fileId}`,
+        id: `retry-ai-${row.fileInfo?.versionFileId}`,
         label: "Retry AI Upload",
         icon: "refresh",
         className: "text-orange-600 dark:text-orange-400",
@@ -342,23 +345,11 @@ function OfficialFramework() {
     } else if (aiStatus === "processing") {
       // Processing - show "View AI Status" action (disabled)
       actions.splice(0, 0, {
-        id: `ai-status-${row.fileInfo?.fileId}`,
+        id: `ai-status-${row.fileInfo?.versionFileId}`,
         label: "AI Processing...",
         icon: "clock",
         className: "text-blue-600 dark:text-blue-400",
         disabled: true,
-      });
-    } else if (aiStatus === "completed" || aiStatus === "uploaded") {
-      // Completed/Uploaded - show "View AI Data" action
-      actions.splice(0, 0, {
-        id: `view-ai-${row.fileInfo?.fileId}`,
-        label: "View AI Data",
-        icon: "analytics",
-        className: "text-purple-600 dark:text-purple-400",
-        onClick: () => {
-          toast.success("View AI data functionality coming soon");
-          // TODO: Implement view AI data
-        },
       });
     }
 

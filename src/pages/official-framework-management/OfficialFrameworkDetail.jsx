@@ -544,7 +544,7 @@ function OfficialFrameworkDetail() {
                               </div>
                             </div>
 
-                            <div className="p-2 h-[400px] overflow-y-auto">
+                            <div className="p-4 max-h-[400px] overflow-y-auto">
                               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Status & Message Card */}
                                 <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
@@ -792,7 +792,7 @@ function OfficialFrameworkDetail() {
                                 </span>
                               </div>
 
-                              <div className="p-4 h-[500px] overflow-y-auto">
+                              <div className="p-4 max-h-[500px] overflow-y-auto">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                   {/* Individual Control Cards */}
                                   {ver.aiUpload.controls.controls_data?.map(

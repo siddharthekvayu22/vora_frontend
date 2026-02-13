@@ -94,10 +94,13 @@ function OfficialFramework() {
         hasPrevPage: pagination.currentPage > 1,
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
+
+      return res.data || []; // Return data for retry logic
     } catch (err) {
       toast.error(err.message || "Failed to load official framework");
       setOfficialFramework([]);
       setEmptyMessage("Failed to load official framework");
+      return [];
     } finally {
       setLoading(false);
     }
@@ -149,9 +152,30 @@ function OfficialFramework() {
     setSearchParams(p);
   };
 
-  const handleUploadSuccess = () => {
-    // Refresh the framework list after successful upload
-    fetchOfficialFramework();
+  const handleUploadSuccess = async () => {
+    // Retry logic to handle async event processing
+    const maxRetries = 5;
+    const retryDelay = 500; // 500ms between retries
+
+    const previousCount = officialFramework.length;
+
+    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
+      const data = await fetchOfficialFramework();
+
+      // Check if new framework was added
+      if (data.length > previousCount) {
+        // Success - new framework found
+        return;
+      }
+
+      // Wait before next retry (except on last iteration)
+      if (retryCount < maxRetries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
+    }
+
+    // Final refresh if still not found
+    await fetchOfficialFramework();
   };
 
   const handleUpdateFramework = (framework) => {

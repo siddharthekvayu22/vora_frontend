@@ -28,18 +28,10 @@ import { formatDate } from "../../utils/dateFormatter";
 
 function InfoItem({ icon, label, value }) {
   return (
-    <div
-      className="flex items-start gap-3 p-3 rounded-xl"
-      style={{ background: "var(--muted)" }}
-    >
-      <div className="mt-0.5" style={{ color: "var(--primary)" }}>
-        {icon}
-      </div>
+    <div className="flex items-start gap-3 p-3 rounded-xl bg-muted">
+      <div className="mt-0.5 text-primary">{icon}</div>
       <div>
-        <p
-          className="text-[11px] font-medium uppercase tracking-wider mb-1"
-          style={{ color: "var(--muted-foreground)" }}
-        >
+        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
           {label}
         </p>
         {value}
@@ -52,13 +44,11 @@ function FileIcon({ type }) {
   const isPdf = type?.toLowerCase() === "pdf";
   return (
     <span
-      className="inline-flex items-center justify-center w-6 h-6 rounded"
-      style={{
-        background: isPdf
-          ? "color-mix(in oklch, oklch(0.6 0.25 27) 15%, transparent)"
-          : "color-mix(in oklch, var(--primary) 15%, transparent)",
-        color: isPdf ? "oklch(0.6 0.25 27)" : "var(--primary)",
-      }}
+      className={`inline-flex items-center justify-center w-6 h-6 rounded ${
+        isPdf
+          ? "bg-red-500/15 text-red-600 dark:text-red-400"
+          : "bg-primary/15 text-primary"
+      }`}
     >
       <FiFile size={13} />
     </span>
@@ -144,22 +134,10 @@ function OfficialFrameworkDetail() {
 
   if (loading) {
     return (
-      <div
-        className="flex items-center justify-center min-h-screen"
-        style={{ background: "var(--background)" }}
-      >
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center gap-4">
-          <div
-            className="animate-spin rounded-full h-12 w-12 border-4 border-transparent"
-            style={{
-              borderTopColor: "var(--primary)",
-              borderRightColor: "var(--secondary)",
-            }}
-          />
-          <p
-            style={{ color: "var(--muted-foreground)" }}
-            className="text-sm font-medium"
-          >
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-transparent border-t-primary border-r-secondary" />
+          <p className="text-sm font-medium text-muted-foreground">
             Loading framework details...
           </p>
         </div>
@@ -174,18 +152,9 @@ function OfficialFrameworkDetail() {
   );
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: "var(--background)", color: "var(--foreground)" }}
-    >
+    <div className="min-h-screen bg-background text-foreground">
       {/* Gradient accent line */}
-      <div
-        className="h-1 w-full"
-        style={{
-          background:
-            "linear-gradient(to right, var(--primary), var(--secondary))",
-        }}
-      />
+      <div className="h-1 w-full bg-gradient-to-r from-primary to-secondary" />
 
       <div className="space-y-6">
         {/* ===== HEADER BAR ===== */}
@@ -193,8 +162,7 @@ function OfficialFrameworkDetail() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => navigate("/official-frameworks")}
-              className="p-2.5 rounded-xl transition-all duration-200 hover:scale-105"
-              style={{ background: "var(--muted)", color: "var(--foreground)" }}
+              className="p-2.5 rounded-xl transition-all duration-200 hover:scale-105 bg-muted text-foreground cursor-pointer"
             >
               <FiArrowLeft size={20} />
             </button>
@@ -202,14 +170,7 @@ function OfficialFrameworkDetail() {
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
                 {framework.frameworkName}
               </h1>
-              <span
-                className="inline-flex items-center gap-1.5 mt-1 px-3 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
-                style={{
-                  background:
-                    "color-mix(in oklch, var(--secondary) 15%, transparent)",
-                  color: "var(--secondary)",
-                }}
-              >
+              <span className="inline-flex items-center gap-1.5 mt-1 px-3 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
                 <FiTag size={11} />
                 {framework.frameworkCode}
               </span>
@@ -217,49 +178,23 @@ function OfficialFrameworkDetail() {
           </div>
           <button
             onClick={() => navigate(-1)}
-            className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
-            style={{
-              background: "var(--primary)",
-              color: "var(--primary-foreground)",
-            }}
+            className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg bg-primary text-primary-foreground cursor-pointer"
           >
             Back
           </button>
         </div>
 
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
-        <div
-          className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl"
-          style={{
-            background: "var(--card)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          <div
-            className="h-1"
-            style={{
-              background:
-                "linear-gradient(to right, var(--primary), var(--secondary))",
-            }}
-          />
+        <div className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl bg-card border border-border">
+          <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
           <div className="p-6">
             <div className="flex items-center gap-3 mb-5">
-              <div
-                className="p-2.5 rounded-xl"
-                style={{
-                  background:
-                    "color-mix(in oklch, var(--primary) 12%, transparent)",
-                  color: "var(--primary)",
-                }}
-              >
+              <div className="p-2.5 rounded-xl bg-primary/12 text-primary">
                 <FiShield size={22} />
               </div>
               <div>
                 <h2 className="text-lg font-bold">{framework.frameworkName}</h2>
-                <p
-                  className="text-xs"
-                  style={{ color: "var(--muted-foreground)" }}
-                >
+                <p className="text-xs text-muted-foreground">
                   Framework Overview
                 </p>
               </div>
@@ -270,14 +205,7 @@ function OfficialFrameworkDetail() {
                 icon={<FiTag size={15} />}
                 label="Framework Code"
                 value={
-                  <span
-                    className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase"
-                    style={{
-                      background:
-                        "color-mix(in oklch, var(--secondary) 15%, transparent)",
-                      color: "var(--secondary)",
-                    }}
-                  >
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase bg-secondary/15 text-secondary">
                     {framework.frameworkCode}
                   </span>
                 }
@@ -286,14 +214,7 @@ function OfficialFrameworkDetail() {
                 icon={<FiTag size={15} />}
                 label="Current Version"
                 value={
-                  <span
-                    className="px-3 py-1 rounded-full text-xs font-bold"
-                    style={{
-                      background:
-                        "color-mix(in oklch, var(--primary) 15%, transparent)",
-                      color: "var(--primary)",
-                    }}
-                  >
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary">
                     v{framework.currentVersion}
                   </span>
                 }
@@ -320,13 +241,7 @@ function OfficialFrameworkDetail() {
                 icon={<FiHash size={15} />}
                 label="Framework ID"
                 value={
-                  <span
-                    className="text-xs font-mono px-2 py-1 rounded-md"
-                    style={{
-                      background: "var(--muted)",
-                      color: "var(--muted-foreground)",
-                    }}
-                  >
+                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
                     {framework.id}
                   </span>
                 }
@@ -340,14 +255,7 @@ function OfficialFrameworkDetail() {
           <div className="flex items-center justify-between gap-3 mb-4">
             <div className=" flex items-center gap-3">
               <h2 className="text-xl font-bold">File Versions</h2>
-              <span
-                className="px-2.5 py-0.5 rounded-full text-xs font-bold"
-                style={{
-                  background:
-                    "color-mix(in oklch, var(--primary) 15%, transparent)",
-                  color: "var(--primary)",
-                }}
-              >
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
                 {framework.fileVersions?.length || 0}
               </span>
             </div>
@@ -360,7 +268,7 @@ function OfficialFrameworkDetail() {
                       currentVersionData.originalFileName,
                     )
                   }
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl cursor-pointer bg-primary text-primary-foreground"
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl bg-primary text-primary-foreground cursor-pointer"
                 >
                   <FiDownload size={16} />
                   Download Current Version
@@ -369,7 +277,7 @@ function OfficialFrameworkDetail() {
                   <button
                     onClick={handleUploadToAi}
                     disabled={uploadingToAi}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl cursor-pointer bg-secondary text-secondary-foreground"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:shadow-2xl bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                   >
                     {uploadingToAi ? (
                       <FiLoader size={16} className="animate-spin" />
@@ -392,44 +300,28 @@ function OfficialFrameworkDetail() {
               return (
                 <div
                   key={ver.version}
-                  className="rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg"
-                  style={{
-                    background: "var(--card)",
-                    border: `1px solid ${isCurrent ? "var(--primary)" : "var(--border)"}`,
-                  }}
+                  className={`rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-card ${
+                    isCurrent ? "border border-primary" : "border border-border"
+                  }`}
                 >
                   <button
                     onClick={() => toggleVersion(ver.version)}
-                    className="w-full flex items-center justify-between p-4 text-left transition-colors duration-200"
-                    style={{ color: "var(--foreground)" }}
+                    className="w-full flex items-center justify-between p-4 text-left transition-colors duration-200 text-foreground cursor-pointer"
                   >
                     <div className="flex items-center gap-3 flex-wrap">
                       <span
-                        className="px-3 py-1 rounded-full text-xs font-bold"
-                        style={
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${
                           isCurrent
-                            ? {
-                                background: "var(--primary)",
-                                color: "var(--primary-foreground)",
-                              }
-                            : {
-                                background: "var(--muted)",
-                                color: "var(--muted-foreground)",
-                              }
-                        }
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
+                        }`}
                       >
                         v{ver.version}
                         {isCurrent && " • Current"}
                       </span>
-                      <div
-                        className="flex items-center gap-2 text-sm"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <FileIcon type={ver.frameworkType} />
-                        <span
-                          className="font-medium"
-                          style={{ color: "var(--foreground)" }}
-                        >
+                        <span className="font-medium text-foreground">
                           {ver.originalFileName}
                         </span>
                         <span>•</span>
@@ -444,30 +336,14 @@ function OfficialFrameworkDetail() {
                   </button>
 
                   {isExpanded && (
-                    <div
-                      className="px-4 pb-5 pt-1 space-y-4"
-                      style={{ borderTop: "1px solid var(--border)" }}
-                    >
-                      <div
-                        className="flex items-center gap-2 text-sm"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
+                    <div className="px-4 pb-5 pt-1 space-y-4 border-t border-border">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <FiCalendar size={14} />
                         <span>Uploaded on {formatDate(ver.uploadedAt)}</span>
                       </div>
 
-                      <div
-                        className="flex items-center gap-3 p-3 rounded-xl"
-                        style={{ background: "var(--muted)" }}
-                      >
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
-                          style={{
-                            background:
-                              "color-mix(in oklch, var(--primary) 20%, transparent)",
-                            color: "var(--primary)",
-                          }}
-                        >
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold bg-primary/20 text-primary">
                           {ver.uploadedBy?.name
                             ?.split(" ")
                             .map((n) => n[0])
@@ -479,43 +355,27 @@ function OfficialFrameworkDetail() {
                           <p className="text-sm font-semibold truncate">
                             {ver.uploadedBy?.name}
                           </p>
-                          <div
-                            className="flex items-center gap-1.5 text-xs"
-                            style={{ color: "var(--muted-foreground)" }}
-                          >
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                             <FiMail size={11} />
                             <span className="truncate">
                               {ver.uploadedBy?.email}
                             </span>
                           </div>
                         </div>
-                        <span
-                          className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-                          style={{
-                            background:
-                              "color-mix(in oklch, var(--secondary) 15%, transparent)",
-                            color: "var(--secondary)",
-                          }}
-                        >
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary/15 text-secondary">
                           {ver.uploadedBy?.role}
                         </span>
                       </div>
 
-                      <div
-                        className="flex items-center justify-between p-3 rounded-xl"
-                        style={{ background: "var(--muted)" }}
-                      >
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
                         <div className="flex items-center gap-2 text-sm">
                           {ver.aiUpload ? (
                             <>
                               <FiCheckCircle
                                 size={16}
-                                style={{ color: "var(--primary)" }}
+                                className="text-primary"
                               />
-                              <span
-                                className="font-medium"
-                                style={{ color: "var(--primary)" }}
-                              >
+                              <span className="font-medium text-primary">
                                 Uploaded to AI
                               </span>
                             </>
@@ -523,12 +383,9 @@ function OfficialFrameworkDetail() {
                             <>
                               <FiAlertCircle
                                 size={16}
-                                style={{ color: "var(--secondary)" }}
+                                className="text-secondary"
                               />
-                              <span
-                                className="font-medium"
-                                style={{ color: "var(--secondary)" }}
-                              >
+                              <span className="font-medium text-secondary">
                                 Not uploaded to AI
                               </span>
                             </>
@@ -538,11 +395,7 @@ function OfficialFrameworkDetail() {
                           <button
                             onClick={handleUploadToAi}
                             disabled={uploadingToAi}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50"
-                            style={{
-                              background: "var(--secondary)",
-                              color: "var(--secondary-foreground)",
-                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 hover:scale-105 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
                           >
                             {uploadingToAi ? (
                               <FiLoader size={13} className="animate-spin" />
@@ -559,11 +412,7 @@ function OfficialFrameworkDetail() {
                           onClick={() =>
                             handleDownload(ver.fileId, ver.originalFileName)
                           }
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105"
-                          style={{
-                            background: "var(--primary)",
-                            color: "var(--primary-foreground)",
-                          }}
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:scale-105 bg-primary text-primary-foreground cursor-pointer"
                         >
                           <FiDownload size={15} />
                           Download
@@ -571,8 +420,7 @@ function OfficialFrameworkDetail() {
 
                         <button
                           onClick={() => toggleHash(ver.version)}
-                          className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200"
-                          style={{ color: "var(--muted-foreground)" }}
+                          className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 text-muted-foreground cursor-pointer"
                         >
                           <FiHash size={13} />
                           {hashVisible ? "Hide" : "Show"} file hash
@@ -580,13 +428,7 @@ function OfficialFrameworkDetail() {
                       </div>
 
                       {hashVisible && (
-                        <div
-                          className="p-3 rounded-lg text-xs font-mono break-all"
-                          style={{
-                            background: "var(--muted)",
-                            color: "var(--muted-foreground)",
-                          }}
-                        >
+                        <div className="p-3 rounded-lg text-xs font-mono break-all bg-muted text-muted-foreground">
                           {ver.fileHash}
                         </div>
                       )}

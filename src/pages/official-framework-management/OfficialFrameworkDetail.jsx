@@ -11,12 +11,13 @@ import {
   FiShield,
   FiChevronDown,
   FiChevronUp,
-  FiCheckCircle,
   FiAlertCircle,
   FiLoader,
   FiTag,
   FiClock,
   FiMail,
+  FiInfo,
+  FiActivity,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import {
@@ -115,7 +116,6 @@ function OfficialFrameworkDetail() {
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedVersion, setSelectedVersion] = useState(null);
   const [uploadingToAi, setUploadingToAi] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
@@ -130,12 +130,6 @@ function OfficialFrameworkDetail() {
       const response = await getOfficialFrameworkById(id);
       if (response.success) {
         setFramework(response.data.framework);
-        const currentVer = response.data.framework.fileVersions?.find(
-          (v) => v.version === response.data.framework.currentVersion,
-        );
-        setSelectedVersion(
-          currentVer || response.data.framework.fileVersions?.[0],
-        );
       }
     } catch (error) {
       toast.error(error.message || "Failed to fetch framework details");
@@ -205,7 +199,7 @@ function OfficialFrameworkDetail() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
         <div className="rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-xl bg-card border border-border">
@@ -475,73 +469,221 @@ function OfficialFrameworkDetail() {
                       )}
 
                       {ver.aiUpload && ver.aiUpload.controls && (
-                        <div className="rounded-xl border border-border bg-card overflow-hidden">
-                          <div className="px-4 py-3 bg-primary/5 border-b border-border">
-                            <div className="flex items-center justify-between">
+                        <>
+                          {/* AI Processing Information Card */}
+                          <div className="rounded-xl border border-border bg-card overflow-hidden">
+                            <div className="px-4 py-3 bg-secondary/5 border-b border-border">
+                              <div className="flex items-center gap-2">
+                                <FiInfo size={16} className="text-secondary" />
+                                <h3 className="text-sm font-bold text-foreground">
+                                  AI Processing Information
+                                </h3>
+                              </div>
+                            </div>
+
+                            <div className="p-2 space-y-3 flex justify-between gap-5">
+                              {/* UUID and Job ID */}
+                              <div className="flex-1">
+                                <div className="rounded-xl border border-border bg-muted p-4 space-y-3">
+                                  {/* Status + badge */}
+                                  <div className="flex items-center justify-between">
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                      Status
+                                    </p>
+                                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-500/15 text-green-600 dark:text-green-400">
+                                      {ver.aiUpload.status}
+                                    </span>
+                                  </div>
+
+                                  {/* Message */}
+                                  <p className="text-xs text-foreground">
+                                    {ver.aiUpload.message}
+                                  </p>
+
+                                  {/* IDs */}
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                        UUID
+                                      </p>
+                                      <p className="text-xs font-mono text-foreground break-all">
+                                        {ver.aiUpload.uuid}
+                                      </p>
+                                    </div>
+
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                        Job ID
+                                      </p>
+                                      <p className="text-xs font-mono text-foreground break-all">
+                                        {ver.aiUpload.job_id}
+                                      </p>
+                                    </div>
+
+                                    {ver.aiUpload.original_uuid && (
+                                      <div className="sm:col-span-2">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Original UUID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {ver.aiUpload.original_uuid}
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Status History */}
+                              {ver.aiUpload.status_history && (
+                                <div className="p-3 rounded-lg bg-muted flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <FiActivity
+                                      size={14}
+                                      className="text-primary"
+                                    />
+                                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                      Status History
+                                    </p>
+                                  </div>
+
+                                  {/* Processing Time */}
+                                  {ver.aiUpload.status_history
+                                    .processing_time_seconds !== undefined && (
+                                    <div className="mb-2 pb-2 border-b border-border">
+                                      <p className="text-xs text-muted-foreground">
+                                        Processing Time:{" "}
+                                        <span className="font-semibold text-foreground">
+                                          {
+                                            ver.aiUpload.status_history
+                                              .processing_time_seconds
+                                          }{" "}
+                                          seconds
+                                        </span>
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* History Timeline */}
+                                  {ver.aiUpload.status_history.history &&
+                                    ver.aiUpload.status_history.history.length >
+                                      0 && (
+                                      <div className="space-y-2">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                          Timeline
+                                        </p>
+                                        <div className="space-y-2">
+                                          {ver.aiUpload.status_history.history.map(
+                                            (item, idx) => (
+                                              <div
+                                                key={idx}
+                                                className="flex items-start gap-2 text-xs"
+                                              >
+                                                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold mt-0.5">
+                                                  {idx + 1}
+                                                </span>
+                                                <div className="flex-1">
+                                                  <div className="flex items-center gap-2 mb-0.5">
+                                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                                      {item.status}
+                                                    </span>
+                                                    <span className="text-muted-foreground">
+                                                      {new Date(
+                                                        item.timestamp,
+                                                      ).toLocaleString()}
+                                                    </span>
+                                                  </div>
+                                                  {item.message && (
+                                                    <p className="text-muted-foreground">
+                                                      {item.message}
+                                                    </p>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            ),
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="mt-4 rounded-xl border border-border bg-card overflow-hidden">
+                            <div className="px-4 py-3 bg-primary/5 border-b border-border flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <FiShield size={16} className="text-primary" />
                                 <h3 className="text-sm font-bold text-foreground">
                                   AI Extracted Controls
                                 </h3>
                               </div>
-                              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                                <span className="text-primary">UUID:</span>
-                                {ver.aiUpload.uuid}
-                              </p>
                               <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
                                 {ver.aiUpload.controls.total_controls} Controls
                               </span>
                             </div>
-                          </div>
 
-                          <div className="p-4 max-h-96 overflow-y-auto sidebar-scroll">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                              {ver.aiUpload.controls.controls_data?.map(
-                                (control, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="p-4 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors"
-                                  >
-                                    <div className="flex items-center gap-3 mb-2">
-                                      <span className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/15 text-primary flex items-center justify-center text-xs font-bold">
-                                        {control.Control_id}
-                                      </span>
-                                      {/* <div className="flex-1 flex-row min-w-0"> */}
-                                      <h4 className="text-sm font-bold text-foreground mb-1">
-                                        {control.Control_name}
-                                      </h4>
-                                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                        {control.Control_type}
-                                      </span>
-                                      {/* </div> */}
+                            <div className="p-2 h-[500px] overflow-y-auto">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                {/* Individual Control Cards */}
+                                {ver.aiUpload.controls.controls_data?.map(
+                                  (control, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="rounded-xl border border-border bg-muted/30 overflow-hidden hover:shadow-md transition-shadow h-fit"
+                                    >
+                                      <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                        <div className="flex items-center gap-3">
+                                          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
+                                            {control.Control_id}
+                                          </span>
+                                          <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm font-bold text-foreground">
+                                              {control.Control_name}
+                                            </h4>
+                                          </div>
+                                          <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                            {control.Control_type}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div className="p-4 space-y-3">
+                                        {/* Description */}
+                                        <div>
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Description
+                                          </p>
+                                          <p className="text-xs text-foreground leading-relaxed">
+                                            {control.Control_description}
+                                          </p>
+                                        </div>
+
+                                        {/* Deployment Points */}
+                                        <div className="pt-3 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
+                                            Deployment Points
+                                          </p>
+                                          <ol className="text-xs text-foreground leading-relaxed space-y-1.5 list-decimal list-inside">
+                                            {control.Deployment_points.split(
+                                              /\d+\.\s+/,
+                                            )
+                                              .filter((point) => point.trim())
+                                              .map((point, i) => (
+                                                <li key={i} className="pl-1">
+                                                  {point.trim()}
+                                                </li>
+                                              ))}
+                                          </ol>
+                                        </div>
+                                      </div>
                                     </div>
-
-                                    <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
-                                      {control.Control_description}
-                                    </p>
-
-                                    <div className="mt-2 pt-2 border-t border-border">
-                                      <p className="text-[11px] font-semibold text-foreground mb-1.5">
-                                        Deployment Points:
-                                      </p>
-                                      <ol className="text-xs text-muted-foreground leading-relaxed space-y-1 list-decimal list-inside">
-                                        {control.Deployment_points.split(
-                                          /\d+\.\s+/,
-                                        )
-                                          .filter((point) => point.trim())
-                                          .map((point, i) => (
-                                            <li key={i} className="pl-1">
-                                              {point.trim()}
-                                            </li>
-                                          ))}
-                                      </ol>
-                                    </div>
-                                  </div>
-                                ),
-                              )}
+                                  ),
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </>
                       )}
                     </div>
                   )}

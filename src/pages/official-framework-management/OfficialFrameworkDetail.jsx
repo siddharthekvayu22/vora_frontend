@@ -537,11 +537,11 @@ function OfficialFrameworkDetail() {
                     isCurrent ? "border border-primary" : "border border-border"
                   }`}
                 >
-                  <button
-                    onClick={() => toggleVersion(ver.version)}
-                    className="w-full flex items-center justify-between p-4 text-left transition-colors duration-200 text-foreground cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 flex-wrap">
+                  <div className="w-full flex items-center justify-between p-4 transition-colors duration-200 text-foreground">
+                    <div
+                      onClick={() => toggleVersion(ver.version)}
+                      className="flex-1 flex items-center gap-3 flex-wrap cursor-pointer"
+                    >
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold ${
                           isCurrent
@@ -561,12 +561,18 @@ function OfficialFrameworkDetail() {
                         <span>{ver.fileSize}</span>
                       </div>
                     </div>
-                    {isExpanded ? (
-                      <FiChevronUp size={18} />
-                    ) : (
-                      <FiChevronDown size={18} />
-                    )}
-                  </button>
+                    <button
+                      onClick={() => toggleVersion(ver.version)}
+                      className="ml-2 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                      aria-label={isExpanded ? "Collapse" : "Expand"}
+                    >
+                      {isExpanded ? (
+                        <FiChevronUp size={18} />
+                      ) : (
+                        <FiChevronDown size={18} />
+                      )}
+                    </button>
+                  </div>
 
                   {isExpanded && (
                     <div className="px-4 pb-5 pt-1 space-y-4 border-t border-border">

@@ -21,11 +21,13 @@ import {
   FiTrash,
   FiCheckCircle,
   FiXCircle,
+  FiEdit,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
 import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
 import RejectFrameworkModal from "./components/RejectFrameworkModal";
+import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import {
   downloadOfficialFrameworkFile,
   getOfficialFrameworkById,
@@ -130,6 +132,7 @@ function OfficialFrameworkDetail() {
   const [versionToDelete, setVersionToDelete] = useState(null);
   const [approveModalOpen, setApproveModalOpen] = useState(false);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
@@ -252,6 +255,19 @@ function OfficialFrameworkDetail() {
     setRejectModalOpen(false);
   };
 
+  const handleUpdate = () => {
+    setUpdateModalOpen(true);
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchFrameworkDetails();
+    setUpdateModalOpen(false);
+  };
+
+  const handleUpdateCancel = () => {
+    setUpdateModalOpen(false);
+  };
+
   const toggleVersion = (version) => {
     setExpandedVersions((prev) => {
       const next = new Set(prev);
@@ -309,6 +325,13 @@ function OfficialFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
+                <button
+                  onClick={handleUpdate}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer"
+                >
+                  <FiEdit size={16} />
+                  Update Framework
+                </button>
                 <button
                   onClick={() => navigate("/official-frameworks")}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
@@ -552,7 +575,7 @@ function OfficialFrameworkDetail() {
                         <button
                           onClick={() => handleUploadToAi(ver.fileId)}
                           disabled={uploadingToAi}
-                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer"
                         >
                           {uploadingToAi ? (
                             <FiLoader size={13} className="animate-spin" />
@@ -1037,6 +1060,16 @@ function OfficialFrameworkDetail() {
           framework={framework}
           onConfirm={handleRejectConfirm}
           onCancel={handleRejectCancel}
+        />
+      )}
+
+      {/* Update Framework Modal */}
+      {updateModalOpen && (
+        <UpdateFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={handleUpdateCancel}
+          onSuccess={handleUpdateSuccess}
+          framework={framework}
         />
       )}
     </div>

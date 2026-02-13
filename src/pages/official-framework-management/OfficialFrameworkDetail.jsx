@@ -521,8 +521,9 @@ function OfficialFrameworkDetail() {
                         <FiTrash size={15} />
                         Delete
                       </button>
-                      {/* )} */}
-                      {currentVersionData.aiUpload?.status === "completed" &&
+                      {/* Show Approve/Reject buttons only for current version when AI is completed and status is pending */}
+                      {isCurrent &&
+                        ver.aiUpload?.status === "completed" &&
                         framework.approval.status === "pending" && (
                           <>
                             <button
@@ -541,6 +542,7 @@ function OfficialFrameworkDetail() {
                             </button>
                           </>
                         )}
+                      {/* Show Upload to AI button when not uploaded, not processing, and not completed */}
                       {(!ver.aiUpload ||
                         (ver.aiUpload.status !== "completed" &&
                           ver.aiUpload.status !== "uploaded" &&
@@ -649,15 +651,18 @@ function OfficialFrameworkDetail() {
                                         className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                                           ver.aiUpload.status === "completed"
                                             ? "bg-green-500/15 text-green-600 dark:text-green-400"
-                                            : ver.aiUpload.status ===
-                                                "processing"
+                                            : ver.aiUpload.status === "uploaded"
                                               ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                                              : ver.aiUpload.status === "failed"
-                                                ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                                              : ver.aiUpload.status ===
+                                                  "processing"
+                                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
                                                 : ver.aiUpload.status ===
-                                                    "skipped"
-                                                  ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
-                                                  : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                                    "failed"
+                                                  ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                                                  : ver.aiUpload.status ===
+                                                      "skipped"
+                                                    ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                                                    : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
                                         }`}
                                       >
                                         {ver.aiUpload.status}
@@ -665,16 +670,27 @@ function OfficialFrameworkDetail() {
                                     </div>
                                   </div>
                                   <div className="p-4 space-y-3">
-                                    <div>
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        Message
-                                      </p>
-                                      <p className="text-xs text-foreground leading-relaxed">
-                                        {ver.aiUpload.message}
-                                      </p>
-                                    </div>
+                                    {/* Show message only if it exists */}
+                                    {ver.aiUpload.message && (
+                                      <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Message
+                                        </p>
+                                        <p className="text-xs text-foreground leading-relaxed">
+                                          {ver.aiUpload.message}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Show reason for failed/skipped */}
                                     {ver.aiUpload.reason && (
-                                      <div className="pt-3 border-t border-border">
+                                      <div
+                                        className={
+                                          ver.aiUpload.message
+                                            ? "pt-3 border-t border-border"
+                                            : ""
+                                        }
+                                      >
                                         <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                           Reason
                                         </p>
@@ -683,37 +699,76 @@ function OfficialFrameworkDetail() {
                                         </p>
                                       </div>
                                     )}
-                                    <div className="pt-3 border-t border-border">
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        Timestamp
-                                      </p>
-                                      <p className="text-xs text-foreground">
-                                        {new Date(
-                                          ver.aiUpload.timestamp,
-                                        ).toLocaleString()}
-                                      </p>
-                                    </div>
-                                    {ver.aiUpload.extraction_reused !==
-                                      undefined && (
-                                      <div className="pt-3 border-t border-border">
-                                        <div className="flex items-center justify-between">
-                                          <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                            Extraction Reused
+
+                                    {/* Show filename for uploaded status */}
+                                    {ver.aiUpload.status === "uploaded" &&
+                                      ver.aiUpload.filename && (
+                                        <div
+                                          className={
+                                            ver.aiUpload.message
+                                              ? "pt-3 border-t border-border"
+                                              : ""
+                                          }
+                                        >
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Filename
                                           </p>
-                                          <span
-                                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                                              ver.aiUpload.extraction_reused
-                                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                                                : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
-                                            }`}
-                                          >
-                                            {ver.aiUpload.extraction_reused
-                                              ? "Yes"
-                                              : "No"}
-                                          </span>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.filename}
+                                          </p>
                                         </div>
+                                      )}
+
+                                    {/* Show resourceType for uploaded status */}
+                                    {ver.aiUpload.status === "uploaded" &&
+                                      ver.aiUpload.resourceType && (
+                                        <div className="pt-3 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Resource Type
+                                          </p>
+                                          <p className="text-xs text-foreground">
+                                            {ver.aiUpload.resourceType}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                    {/* Always show timestamp */}
+                                    {ver.aiUpload.timestamp && (
+                                      <div className="pt-3 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Timestamp
+                                        </p>
+                                        <p className="text-xs text-foreground">
+                                          {new Date(
+                                            ver.aiUpload.timestamp,
+                                          ).toLocaleString()}
+                                        </p>
                                       </div>
                                     )}
+
+                                    {/* Show extraction_reused only for completed status */}
+                                    {ver.aiUpload.status === "completed" &&
+                                      ver.aiUpload.extraction_reused !==
+                                        undefined && (
+                                        <div className="pt-3 border-t border-border">
+                                          <div className="flex items-center justify-between">
+                                            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                              Extraction Reused
+                                            </p>
+                                            <span
+                                              className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                ver.aiUpload.extraction_reused
+                                                  ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                                  : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                              }`}
+                                            >
+                                              {ver.aiUpload.extraction_reused
+                                                ? "Yes"
+                                                : "No"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )}
                                   </div>
                                 </div>
 

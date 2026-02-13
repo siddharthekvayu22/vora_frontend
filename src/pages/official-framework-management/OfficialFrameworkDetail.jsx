@@ -157,12 +157,11 @@ function OfficialFrameworkDetail() {
     try {
       setUploadingToAi(true);
       const response = await uploadOfficialFrameworkToAi(versionFileId);
-      if (response.success) {
-        toast.success(response.message || "File uploaded to AI successfully");
-        fetchFrameworkDetails();
-      }
+      toast.success(response.message || "File uploaded to AI successfully");
+      fetchFrameworkDetails();
     } catch (error) {
       toast.error(error.message || "Failed to upload to AI");
+      fetchFrameworkDetails();
     } finally {
       setUploadingToAi(false);
     }
@@ -355,20 +354,27 @@ function OfficialFrameworkDetail() {
                   <FiDownload size={16} />
                   Download Current Version
                 </button>
-                {currentVersionData.aiUpload?.status !== "completed" && (
-                  <button
-                    onClick={() => handleUploadToAi(currentVersionData.fileId)}
-                    disabled={uploadingToAi}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    {uploadingToAi ? (
-                      <FiLoader size={16} className="animate-spin" />
-                    ) : (
-                      <FiUploadCloud size={16} />
-                    )}
-                    Upload Current Version to AI
-                  </button>
-                )}
+                {currentVersionData.aiUpload?.status !== "completed" &&
+                  currentVersionData.aiUpload?.status !== "processing" &&
+                  currentVersionData.aiUpload?.status !== "uploaded" && (
+                    <button
+                      onClick={() =>
+                        handleUploadToAi(currentVersionData.fileId)
+                      }
+                      disabled={uploadingToAi}
+                      className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
+                    >
+                      {uploadingToAi ? (
+                        <FiLoader size={16} className="animate-spin" />
+                      ) : (
+                        <FiUploadCloud size={16} />
+                      )}
+                      {currentVersionData.aiUpload?.status === "failed" ||
+                      currentVersionData.aiUpload?.status === "skipped"
+                        ? "Retry Upload Current Version to AI"
+                        : "Upload Current Version to AI"}
+                    </button>
+                  )}
               </div>
             )}
           </div>
@@ -449,7 +455,10 @@ function OfficialFrameworkDetail() {
                         </span>
                       </div>
 
-                      {ver.aiUpload?.status !== "completed" && (
+                      {(!ver.aiUpload ||
+                        (ver.aiUpload.status !== "completed" &&
+                          ver.aiUpload.status !== "uploaded" &&
+                          ver.aiUpload.status !== "processing")) && (
                         <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
                           <div className="flex items-center gap-2 text-sm">
                             <>
@@ -458,7 +467,11 @@ function OfficialFrameworkDetail() {
                                 className="text-secondary"
                               />
                               <span className="font-medium text-secondary">
-                                Not uploaded to AI
+                                {ver.aiUpload?.status === "failed"
+                                  ? "AI upload failed"
+                                  : ver.aiUpload?.status === "skipped"
+                                    ? "AI upload skipped"
+                                    : "Not uploaded to AI"}
                               </span>
                             </>
                           </div>
@@ -472,7 +485,10 @@ function OfficialFrameworkDetail() {
                             ) : (
                               <FiUploadCloud size={13} />
                             )}
-                            Upload to AI
+                            {ver.aiUpload?.status === "failed" ||
+                            ver.aiUpload?.status === "skipped"
+                              ? "Retry Upload"
+                              : "Upload to AI"}
                           </button>
                         </div>
                       )}
@@ -490,13 +506,13 @@ function OfficialFrameworkDetail() {
                           </button>
 
                           {/* {!isCurrent && framework.fileVersions.length > 1 && ( */}
-                            <button
-                              onClick={() => handleDeleteVersion(ver)}
-                              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
-                            >
-                              <FiTrash size={15} />
-                              Delete Version
-                            </button>
+                          <button
+                            onClick={() => handleDeleteVersion(ver)}
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                          >
+                            <FiTrash size={15} />
+                            Delete Version
+                          </button>
                           {/* )} */}
                         </div>
 
@@ -515,7 +531,7 @@ function OfficialFrameworkDetail() {
                         </div>
                       )}
 
-                      {ver.aiUpload && ver.aiUpload.controls && (
+                      {ver.aiUpload && (
                         <>
                           {/* AI Processing Information Card */}
                           <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -528,7 +544,7 @@ function OfficialFrameworkDetail() {
                               </div>
                             </div>
 
-                            <div className="p-2 h-[300px] overflow-y-auto">
+                            <div className="p-2 h-[400px] overflow-y-auto">
                               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Status & Message Card */}
                                 <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
@@ -537,7 +553,21 @@ function OfficialFrameworkDetail() {
                                       <h4 className="text-sm font-bold text-foreground">
                                         Status
                                       </h4>
-                                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-green-500/15 text-green-600 dark:text-green-400">
+                                      <span
+                                        className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                          ver.aiUpload.status === "completed"
+                                            ? "bg-green-500/15 text-green-600 dark:text-green-400"
+                                            : ver.aiUpload.status ===
+                                                "processing"
+                                              ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                              : ver.aiUpload.status === "failed"
+                                                ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                                                : ver.aiUpload.status ===
+                                                    "skipped"
+                                                  ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                                                  : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                        }`}
+                                      >
                                         {ver.aiUpload.status}
                                       </span>
                                     </div>
@@ -551,6 +581,16 @@ function OfficialFrameworkDetail() {
                                         {ver.aiUpload.message}
                                       </p>
                                     </div>
+                                    {ver.aiUpload.reason && (
+                                      <div className="pt-3 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Reason
+                                        </p>
+                                        <p className="text-xs text-foreground leading-relaxed">
+                                          {ver.aiUpload.reason}
+                                        </p>
+                                      </div>
+                                    )}
                                     <div className="pt-3 border-t border-border">
                                       <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                         Timestamp
@@ -585,42 +625,54 @@ function OfficialFrameworkDetail() {
                                   </div>
                                 </div>
 
-                                {/* IDs Card */}
-                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
-                                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
-                                    <h4 className="text-sm font-bold text-foreground">
-                                      Identifiers
-                                    </h4>
-                                  </div>
-                                  <div className="p-4 space-y-3">
-                                    <div>
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        UUID
-                                      </p>
-                                      <p className="text-xs font-mono text-foreground break-all leading-relaxed">
-                                        {ver.aiUpload.uuid}
-                                      </p>
+                                {/* IDs Card - Only show if uuid or job_id exists */}
+                                {(ver.aiUpload.uuid || ver.aiUpload.job_id) && (
+                                  <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
+                                    <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                      <h4 className="text-sm font-bold text-foreground">
+                                        Identifiers
+                                      </h4>
                                     </div>
-                                    <div className="pt-3 border-t border-border">
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        Job ID
-                                      </p>
-                                      <p className="text-xs font-mono text-foreground break-all leading-relaxed">
-                                        {ver.aiUpload.job_id}
-                                      </p>
+                                    <div className="p-4 space-y-3">
+                                      {ver.aiUpload.uuid && (
+                                        <div>
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            UUID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.uuid}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {ver.aiUpload.job_id && (
+                                        <div
+                                          className={
+                                            ver.aiUpload.uuid
+                                              ? "pt-3 border-t border-border"
+                                              : ""
+                                          }
+                                        >
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Job ID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.job_id}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {ver.aiUpload.original_uuid && (
+                                        <div className="pt-3 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Original UUID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.original_uuid}
+                                          </p>
+                                        </div>
+                                      )}
                                     </div>
-                                    {ver.aiUpload.original_uuid && (
-                                      <div className="pt-3 border-t border-border">
-                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                          Original UUID
-                                        </p>
-                                        <p className="text-xs font-mono text-foreground break-all leading-relaxed">
-                                          {ver.aiUpload.original_uuid}
-                                        </p>
-                                      </div>
-                                    )}
                                   </div>
-                                </div>
+                                )}
 
                                 {/* Status History Card */}
                                 {ver.aiUpload.status_history && (
@@ -721,79 +773,86 @@ function OfficialFrameworkDetail() {
                             </div>
                           </div>
 
-                          <div className="mt-4 rounded-xl border border-border bg-card overflow-hidden">
-                            <div className="px-4 py-3 bg-primary/5 border-b border-border flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <FiShield size={16} className="text-primary" />
-                                <h3 className="text-sm font-bold text-foreground">
-                                  AI Extracted Controls
-                                </h3>
+                          {/* AI Extracted Controls - Only show if controls exist */}
+                          {ver.aiUpload.controls && (
+                            <div className="mt-4 rounded-xl border border-border bg-card overflow-hidden">
+                              <div className="px-4 py-3 bg-primary/5 border-b border-border flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <FiShield
+                                    size={16}
+                                    className="text-primary"
+                                  />
+                                  <h3 className="text-sm font-bold text-foreground">
+                                    AI Extracted Controls
+                                  </h3>
+                                </div>
+                                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
+                                  {ver.aiUpload.controls.total_controls}{" "}
+                                  Controls
+                                </span>
                               </div>
-                              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
-                                {ver.aiUpload.controls.total_controls} Controls
-                              </span>
-                            </div>
 
-                            <div className="p-2 h-[500px] overflow-y-auto">
-                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                {/* Individual Control Cards */}
-                                {ver.aiUpload.controls.controls_data?.map(
-                                  (control, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="rounded-xl border border-border bg-muted/30 overflow-hidden hover:shadow-md transition-shadow h-fit"
-                                    >
-                                      <div className="px-4 py-3 bg-muted/50 border-b border-border">
-                                        <div className="flex items-center gap-3">
-                                          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
-                                            {control.Control_id}
-                                          </span>
-                                          <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm font-bold text-foreground">
-                                              {control.Control_name}
-                                            </h4>
+                              <div className="p-4 h-[500px] overflow-y-auto">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                  {/* Individual Control Cards */}
+                                  {ver.aiUpload.controls.controls_data?.map(
+                                    (control, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="rounded-xl border border-border bg-muted/30 overflow-hidden hover:shadow-md transition-shadow h-fit"
+                                      >
+                                        <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                          <div className="flex items-center gap-3">
+                                            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
+                                              {control.Control_id}
+                                            </span>
+                                            <div className="flex-1 min-w-0">
+                                              <h4 className="text-sm font-bold text-foreground">
+                                                {control.Control_name}
+                                              </h4>
+                                            </div>
+                                            <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                              {control.Control_type}
+                                            </span>
                                           </div>
-                                          <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                            {control.Control_type}
-                                          </span>
-                                        </div>
-                                      </div>
-
-                                      <div className="p-4 space-y-3">
-                                        {/* Description */}
-                                        <div>
-                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                            Description
-                                          </p>
-                                          <p className="text-xs text-foreground leading-relaxed">
-                                            {control.Control_description}
-                                          </p>
                                         </div>
 
-                                        {/* Deployment Points */}
-                                        <div className="pt-3 border-t border-border">
-                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
-                                            Deployment Points
-                                          </p>
-                                          <ol className="text-xs text-foreground leading-relaxed space-y-1.5 list-decimal list-inside">
-                                            {control.Deployment_points.split(
-                                              /\d+\.\s+/,
-                                            )
-                                              .filter((point) => point.trim())
-                                              .map((point, i) => (
-                                                <li key={i} className="pl-1">
-                                                  {point.trim()}
-                                                </li>
-                                              ))}
-                                          </ol>
+                                        <div className="p-4 space-y-3">
+                                          {/* Description */}
+                                          <div>
+                                            <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                              Description
+                                            </p>
+                                            <p className="text-xs text-foreground leading-relaxed">
+                                              {control.Control_description}
+                                            </p>
+                                          </div>
+
+                                          {/* Deployment Points */}
+                                          <div className="pt-3 border-t border-border">
+                                            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
+                                              Deployment Points
+                                            </p>
+                                            <ol className="text-xs text-foreground leading-relaxed space-y-1.5 list-decimal list-inside">
+                                              {control.Deployment_points.split(
+                                                /\d+\.\s+/,
+                                              )
+                                                .filter((point) => point.trim())
+                                                .map((point, i) => (
+                                                  <li key={i} className="pl-1">
+                                                    {point.trim()}
+                                                  </li>
+                                                ))}
+                                            </ol>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  ),
-                                )}
+                                    ),
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </>
                       )}
                     </div>

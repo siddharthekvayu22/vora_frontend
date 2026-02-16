@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import Icon from "../Icon";
+import { Button } from "../ui/button";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -148,8 +149,9 @@ export default function DataTable({
             </div>
           )}
           {searchTerm && !isSearching && (
-            <button
-              className="flex items-center justify-center flex-shrink-0 w-5 h-5 bg-transparent border-none text-muted-foreground cursor-pointer rounded-md hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+            <Button
+              className="flex items-center justify-center flex-shrink-0 w-5 h-5 transition-all duration-200"
+              variant="ghost"
               onClick={() => {
                 setSearchTerm("");
                 // Clear search should be immediate, not debounced
@@ -159,23 +161,25 @@ export default function DataTable({
                   onSearch("");
                 }
               }}
+              size="icon"
               title="Clear search"
             >
               <Icon name="x" size="12px" />
-            </button>
+            </Button>
           )}
         </div>
         <div className="flex items-center gap-4">
           {renderHeaderActions && renderHeaderActions()}
           {onRefresh && (
-            <button
-              className="flex items-center gap-2 px-4 py-3 bg-accent border border-border rounded-lg text-accent-foreground text-sm cursor-pointer transition-all duration-200 hover:bg-primary hover:border-primary hover:text-primary-foreground hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            <Button
+              size="lg"
+              className="flex items-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={onRefresh}
               disabled={loading}
             >
               <Icon name="refresh" size="16px" />
               Refresh
-            </button>
+            </Button>
           )}
         </div>
       </div>

@@ -11,7 +11,6 @@ import {
   FiShield,
   FiChevronDown,
   FiChevronUp,
-  FiAlertCircle,
   FiLoader,
   FiTag,
   FiClock,
@@ -19,14 +18,22 @@ import {
   FiInfo,
   FiActivity,
   FiTrash,
+  FiCheckCircle,
+  FiXCircle,
+  FiEdit,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
+import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
+import RejectFrameworkModal from "./components/RejectFrameworkModal";
+import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import {
   downloadOfficialFrameworkFile,
   getOfficialFrameworkById,
   uploadOfficialFrameworkToAi,
   deleteOfficialFrameworkVersion,
+  approveOfficialFramework,
+  rejectOfficialFramework,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 
@@ -119,9 +126,12 @@ function OfficialFrameworkDetail() {
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [uploadingToAi, setUploadingToAi] = useState(false);
+  const [uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [versionToDelete, setVersionToDelete] = useState(null);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
@@ -147,7 +157,7 @@ function OfficialFrameworkDetail() {
   const handleDownload = async (fileId, fileName) => {
     try {
       await downloadOfficialFrameworkFile(fileId, fileName);
-      toast.success("Download started");
+      toast.success("Download completed successfully");
     } catch (error) {
       toast.error(error.message || "Failed to download file");
     }
@@ -155,7 +165,9 @@ function OfficialFrameworkDetail() {
 
   const handleUploadToAi = async (versionFileId) => {
     try {
-      setUploadingToAi(true);
+      // Add this versionFileId to the uploading set
+      setUploadingToAi((prev) => new Set(prev).add(versionFileId));
+
       const response = await uploadOfficialFrameworkToAi(versionFileId);
       toast.success(response.message || "File uploaded to AI successfully");
       fetchFrameworkDetails();
@@ -163,7 +175,12 @@ function OfficialFrameworkDetail() {
       toast.error(error.message || "Failed to upload to AI");
       fetchFrameworkDetails();
     } finally {
-      setUploadingToAi(false);
+      // Remove this versionFileId from the uploading set
+      setUploadingToAi((prev) => {
+        const next = new Set(prev);
+        next.delete(versionFileId);
+        return next;
+      });
     }
   };
 
@@ -195,6 +212,66 @@ function OfficialFrameworkDetail() {
   const handleDeleteCancel = () => {
     setDeleteModalOpen(false);
     setVersionToDelete(null);
+  };
+
+  const handleApprove = () => {
+    setApproveModalOpen(true);
+  };
+
+  const handleApproveConfirm = async () => {
+    try {
+      const response = await approveOfficialFramework(framework.id);
+      if (response.success) {
+        toast.success(response.message || "Framework approved successfully");
+        fetchFrameworkDetails();
+        setApproveModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to approve framework");
+      throw error;
+    }
+  };
+
+  const handleApproveCancel = () => {
+    setApproveModalOpen(false);
+  };
+
+  const handleReject = () => {
+    setRejectModalOpen(true);
+  };
+
+  const handleRejectConfirm = async (rejectionReason) => {
+    try {
+      const response = await rejectOfficialFramework(
+        framework.id,
+        rejectionReason,
+      );
+      if (response.success) {
+        toast.success(response.message || "Framework rejected successfully");
+        fetchFrameworkDetails();
+        setRejectModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to reject framework");
+      throw error;
+    }
+  };
+
+  const handleRejectCancel = () => {
+    setRejectModalOpen(false);
+  };
+
+  const handleUpdate = () => {
+    setUpdateModalOpen(true);
+  };
+
+  const handleUpdateSuccess = () => {
+    fetchFrameworkDetails();
+    setUpdateModalOpen(false);
+  };
+
+  const handleUpdateCancel = () => {
+    setUpdateModalOpen(false);
   };
 
   const toggleVersion = (version) => {
@@ -255,6 +332,13 @@ function OfficialFrameworkDetail() {
               </div>
               <div className="flex items-center gap-3">
                 <button
+                  onClick={handleUpdate}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer"
+                >
+                  <FiEdit size={16} />
+                  Update Framework
+                </button>
+                <button
                   onClick={() => navigate("/official-frameworks")}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
                 >
@@ -279,6 +363,27 @@ function OfficialFrameworkDetail() {
                 value={
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary">
                     v{framework.currentVersion}
+                  </span>
+                }
+              />
+              <InfoItem
+                icon={<FiShield size={15} />}
+                label="Approval Status"
+                value={
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      framework.approval.status === "approved"
+                        ? "bg-primary/15 text-primary"
+                        : framework.approval.status === "rejected"
+                          ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                          : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    }`}
+                  >
+                    {framework.approval.status === "approved"
+                      ? "Approved"
+                      : framework.approval.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
                   </span>
                 }
               />
@@ -328,55 +433,65 @@ function OfficialFrameworkDetail() {
                 }
               />
             </div>
+
+            {/* Show rejection reason if framework is rejected */}
+            {framework.approval.status === "rejected" &&
+              framework.approval.rejectionReason && (
+                <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <FiXCircle
+                      size={20}
+                      className="text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                        Rejection Reason
+                      </h4>
+                      <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
+                        {framework.approval.rejectionReason}
+                      </p>
+                      {framework.approval.approvedBy && (
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                          Rejected by: {framework.approval.approvedBy.name} on{" "}
+                          {formatDate(framework.approval.approvedAt)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            {/* Show approval info if framework is approved */}
+            {framework.approval.status === "approved" &&
+              framework.approval.approvedBy && (
+                <div className="mt-4 bg-primary/10 border border-primary/30 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <FiCheckCircle
+                      size={20}
+                      className="text-primary mt-0.5 flex-shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
+                        Framework Approved
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Approved by: {framework.approval.approvedBy.name} on{" "}
+                        {formatDate(framework.approval.approvedAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
         {/* ===== FILE VERSIONS ===== */}
         <div>
           <div className="flex items-center justify-between gap-3 mb-4">
-            <div className=" flex items-center gap-3">
-              <h2 className="text-xl font-bold">File Versions</h2>
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
-                {framework.fileVersions?.length || 0}
-              </span>
-            </div>
-            {currentVersionData && (
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() =>
-                    handleDownload(
-                      currentVersionData.fileId,
-                      currentVersionData.originalFileName,
-                    )
-                  }
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                >
-                  <FiDownload size={16} />
-                  Download Current Version
-                </button>
-                {currentVersionData.aiUpload?.status !== "completed" &&
-                  currentVersionData.aiUpload?.status !== "processing" &&
-                  currentVersionData.aiUpload?.status !== "uploaded" && (
-                    <button
-                      onClick={() =>
-                        handleUploadToAi(currentVersionData.fileId)
-                      }
-                      disabled={uploadingToAi}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
-                    >
-                      {uploadingToAi ? (
-                        <FiLoader size={16} className="animate-spin" />
-                      ) : (
-                        <FiUploadCloud size={16} />
-                      )}
-                      {currentVersionData.aiUpload?.status === "failed" ||
-                      currentVersionData.aiUpload?.status === "skipped"
-                        ? "Retry Upload Current Version to AI"
-                        : "Upload Current Version to AI"}
-                    </button>
-                  )}
-              </div>
-            )}
+            <h2 className="text-xl font-bold">File Versions</h2>
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/15 text-primary">
+              {framework.fileVersions?.length || 0} files
+            </span>
           </div>
 
           <div className="space-y-3">
@@ -392,11 +507,11 @@ function OfficialFrameworkDetail() {
                     isCurrent ? "border border-primary" : "border border-border"
                   }`}
                 >
-                  <button
-                    onClick={() => toggleVersion(ver.version)}
-                    className="w-full flex items-center justify-between p-4 text-left transition-colors duration-200 text-foreground cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3 flex-wrap">
+                  <div className="w-full flex items-center justify-between p-2 transition-colors duration-200 text-foreground ">
+                    <div
+                      onClick={() => toggleVersion(ver.version)}
+                      className="flex-1 flex items-center gap-3 flex-wrap cursor-pointer "
+                    >
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold ${
                           isCurrent
@@ -416,12 +531,82 @@ function OfficialFrameworkDetail() {
                         <span>{ver.fileSize}</span>
                       </div>
                     </div>
-                    {isExpanded ? (
-                      <FiChevronUp size={18} />
-                    ) : (
-                      <FiChevronDown size={18} />
-                    )}
-                  </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() =>
+                          handleDownload(ver.fileId, ver.originalFileName)
+                        }
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                      >
+                        <FiDownload size={15} />
+                        Download
+                      </button>
+
+                      {!isCurrent && framework.fileVersions.length > 1 && (
+                        <button
+                          onClick={() => handleDeleteVersion(ver)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                        >
+                          <FiTrash size={15} />
+                          Delete
+                        </button>
+                      )}
+
+                      {/* Show Approve/Reject buttons only for current version when AI is completed and status is pending */}
+                      {isCurrent &&
+                        ver.aiUpload?.status === "completed" &&
+                        framework.approval.status === "pending" && (
+                          <>
+                            <button
+                              onClick={handleApprove}
+                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                            >
+                              <FiCheckCircle size={16} />
+                              Approve
+                            </button>
+                            <button
+                              onClick={handleReject}
+                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                            >
+                              <FiXCircle size={16} />
+                              Reject
+                            </button>
+                          </>
+                        )}
+                      {/* Show Upload to AI button when not uploaded, not processing, and not completed */}
+                      {(!ver.aiUpload ||
+                        (ver.aiUpload.status !== "completed" &&
+                          ver.aiUpload.status !== "uploaded" &&
+                          ver.aiUpload.status !== "processing")) && (
+                        <button
+                          onClick={() => handleUploadToAi(ver.fileId)}
+                          disabled={uploadingToAi.has(ver.fileId)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {uploadingToAi.has(ver.fileId) ? (
+                            <FiLoader size={13} className="animate-spin" />
+                          ) : (
+                            <FiUploadCloud size={13} />
+                          )}
+                          {ver.aiUpload?.status === "failed" ||
+                          ver.aiUpload?.status === "skipped"
+                            ? "Retry AI Upload"
+                            : "Upload to AI"}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => toggleVersion(ver.version)}
+                        className="ml-2 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                        aria-label={isExpanded ? "Collapse" : "Expand"}
+                      >
+                        {isExpanded ? (
+                          <FiChevronUp size={18} />
+                        ) : (
+                          <FiChevronDown size={18} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
 
                   {isExpanded && (
                     <div className="px-4 pb-5 pt-1 space-y-4 border-t border-border">
@@ -455,67 +640,7 @@ function OfficialFrameworkDetail() {
                         </span>
                       </div>
 
-                      {(!ver.aiUpload ||
-                        (ver.aiUpload.status !== "completed" &&
-                          ver.aiUpload.status !== "uploaded" &&
-                          ver.aiUpload.status !== "processing")) && (
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-muted">
-                          <div className="flex items-center gap-2 text-sm">
-                            <>
-                              <FiAlertCircle
-                                size={16}
-                                className="text-secondary"
-                              />
-                              <span className="font-medium text-secondary">
-                                {ver.aiUpload?.status === "failed"
-                                  ? "AI upload failed"
-                                  : ver.aiUpload?.status === "skipped"
-                                    ? "AI upload skipped"
-                                    : "Not uploaded to AI"}
-                              </span>
-                            </>
-                          </div>
-                          <button
-                            onClick={() => handleUploadToAi(ver.fileId)}
-                            disabled={uploadingToAi}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all duration-300 hover:bg-secondary/80 disabled:opacity-50 bg-secondary text-secondary-foreground cursor-pointer disabled:cursor-not-allowed"
-                          >
-                            {uploadingToAi ? (
-                              <FiLoader size={13} className="animate-spin" />
-                            ) : (
-                              <FiUploadCloud size={13} />
-                            )}
-                            {ver.aiUpload?.status === "failed" ||
-                            ver.aiUpload?.status === "skipped"
-                              ? "Retry Upload"
-                              : "Upload to AI"}
-                          </button>
-                        </div>
-                      )}
-
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() =>
-                              handleDownload(ver.fileId, ver.originalFileName)
-                            }
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
-                          >
-                            <FiDownload size={15} />
-                            Download
-                          </button>
-
-                          {/* {!isCurrent && framework.fileVersions.length > 1 && ( */}
-                          <button
-                            onClick={() => handleDeleteVersion(ver)}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
-                          >
-                            <FiTrash size={15} />
-                            Delete Version
-                          </button>
-                          {/* )} */}
-                        </div>
-
                         <button
                           onClick={() => toggleHash(ver.version)}
                           className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 text-muted-foreground cursor-pointer"
@@ -544,7 +669,7 @@ function OfficialFrameworkDetail() {
                               </div>
                             </div>
 
-                            <div className="p-2 h-[400px] overflow-y-auto">
+                            <div className="p-4 max-h-[400px] overflow-y-auto">
                               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Status & Message Card */}
                                 <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
@@ -557,15 +682,18 @@ function OfficialFrameworkDetail() {
                                         className={`px-2.5 py-1 rounded-full text-xs font-bold ${
                                           ver.aiUpload.status === "completed"
                                             ? "bg-green-500/15 text-green-600 dark:text-green-400"
-                                            : ver.aiUpload.status ===
-                                                "processing"
+                                            : ver.aiUpload.status === "uploaded"
                                               ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                                              : ver.aiUpload.status === "failed"
-                                                ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                                              : ver.aiUpload.status ===
+                                                  "processing"
+                                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
                                                 : ver.aiUpload.status ===
-                                                    "skipped"
-                                                  ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
-                                                  : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                                    "failed"
+                                                  ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                                                  : ver.aiUpload.status ===
+                                                      "skipped"
+                                                    ? "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                                                    : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
                                         }`}
                                       >
                                         {ver.aiUpload.status}
@@ -573,16 +701,27 @@ function OfficialFrameworkDetail() {
                                     </div>
                                   </div>
                                   <div className="p-4 space-y-3">
-                                    <div>
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        Message
-                                      </p>
-                                      <p className="text-xs text-foreground leading-relaxed">
-                                        {ver.aiUpload.message}
-                                      </p>
-                                    </div>
+                                    {/* Show message only if it exists */}
+                                    {ver.aiUpload.message && (
+                                      <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Message
+                                        </p>
+                                        <p className="text-xs text-foreground leading-relaxed">
+                                          {ver.aiUpload.message}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Show reason for failed/skipped */}
                                     {ver.aiUpload.reason && (
-                                      <div className="pt-3 border-t border-border">
+                                      <div
+                                        className={
+                                          ver.aiUpload.message
+                                            ? "pt-3 border-t border-border"
+                                            : ""
+                                        }
+                                      >
                                         <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                           Reason
                                         </p>
@@ -591,37 +730,76 @@ function OfficialFrameworkDetail() {
                                         </p>
                                       </div>
                                     )}
-                                    <div className="pt-3 border-t border-border">
-                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                        Timestamp
-                                      </p>
-                                      <p className="text-xs text-foreground">
-                                        {new Date(
-                                          ver.aiUpload.timestamp,
-                                        ).toLocaleString()}
-                                      </p>
-                                    </div>
-                                    {ver.aiUpload.extraction_reused !==
-                                      undefined && (
-                                      <div className="pt-3 border-t border-border">
-                                        <div className="flex items-center justify-between">
-                                          <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                                            Extraction Reused
+
+                                    {/* Show filename for uploaded status */}
+                                    {ver.aiUpload.status === "uploaded" &&
+                                      ver.aiUpload.filename && (
+                                        <div
+                                          className={
+                                            ver.aiUpload.message
+                                              ? "pt-3 border-t border-border"
+                                              : ""
+                                          }
+                                        >
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Filename
                                           </p>
-                                          <span
-                                            className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                                              ver.aiUpload.extraction_reused
-                                                ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                                                : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
-                                            }`}
-                                          >
-                                            {ver.aiUpload.extraction_reused
-                                              ? "Yes"
-                                              : "No"}
-                                          </span>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.filename}
+                                          </p>
                                         </div>
+                                      )}
+
+                                    {/* Show resourceType for uploaded status */}
+                                    {ver.aiUpload.status === "uploaded" &&
+                                      ver.aiUpload.resourceType && (
+                                        <div className="pt-3 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                            Resource Type
+                                          </p>
+                                          <p className="text-xs text-foreground">
+                                            {ver.aiUpload.resourceType}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                    {/* Always show timestamp */}
+                                    {ver.aiUpload.timestamp && (
+                                      <div className="pt-3 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Timestamp
+                                        </p>
+                                        <p className="text-xs text-foreground">
+                                          {new Date(
+                                            ver.aiUpload.timestamp,
+                                          ).toLocaleString()}
+                                        </p>
                                       </div>
                                     )}
+
+                                    {/* Show extraction_reused only for completed status */}
+                                    {ver.aiUpload.status === "completed" &&
+                                      ver.aiUpload.extraction_reused !==
+                                        undefined && (
+                                        <div className="pt-3 border-t border-border">
+                                          <div className="flex items-center justify-between">
+                                            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                              Extraction Reused
+                                            </p>
+                                            <span
+                                              className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                ver.aiUpload.extraction_reused
+                                                  ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                                  : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
+                                              }`}
+                                            >
+                                              {ver.aiUpload.extraction_reused
+                                                ? "Yes"
+                                                : "No"}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )}
                                   </div>
                                 </div>
 
@@ -792,7 +970,7 @@ function OfficialFrameworkDetail() {
                                 </span>
                               </div>
 
-                              <div className="p-4 h-[500px] overflow-y-auto">
+                              <div className="p-4 max-h-[500px] overflow-y-auto">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                   {/* Individual Control Cards */}
                                   {ver.aiUpload.controls.controls_data?.map(
@@ -870,6 +1048,34 @@ function OfficialFrameworkDetail() {
           version={versionToDelete}
           onConfirm={handleDeleteConfirm}
           onCancel={handleDeleteCancel}
+        />
+      )}
+
+      {/* Approve Framework Modal */}
+      {approveModalOpen && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApproveConfirm}
+          onCancel={handleApproveCancel}
+        />
+      )}
+
+      {/* Reject Framework Modal */}
+      {rejectModalOpen && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleRejectConfirm}
+          onCancel={handleRejectCancel}
+        />
+      )}
+
+      {/* Update Framework Modal */}
+      {updateModalOpen && (
+        <UpdateFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={handleUpdateCancel}
+          onSuccess={handleUpdateSuccess}
+          framework={framework}
         />
       )}
     </div>

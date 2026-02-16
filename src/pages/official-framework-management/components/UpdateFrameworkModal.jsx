@@ -393,14 +393,31 @@ export default function UpdateFrameworkModal({
                         v{framework?.currentVersion || "1.0.0"}
                       </span>
                     </div>
-                    {framework?.fileInfo && (
-                      <div className="flex items-center w-full px-3 py-2.5 border-2 rounded-lg border-blue-200 bg-blue-50 dark:bg-blue-900/20 min-h-[70px]">
-                        <FileTypeCard
-                          fileName={framework.fileInfo.originalFileName}
-                          fileSize={framework.fileInfo.fileSize}
-                        />
-                      </div>
-                    )}
+                    {(() => {
+                      // Get current version file info from fileVersions array
+                      const currentVersionData = framework?.fileVersions?.find(
+                        (v) => v.version === framework?.currentVersion,
+                      );
+
+                      // Use fileInfo if available (from list page), otherwise use currentVersionData (from detail page)
+                      const fileInfo =
+                        framework?.fileInfo || currentVersionData;
+
+                      return fileInfo ? (
+                        <div className="flex items-center w-full px-3 py-2.5 border-2 rounded-lg border-blue-200 bg-blue-50 dark:bg-blue-900/20 min-h-[70px]">
+                          <FileTypeCard
+                            fileName={fileInfo.originalFileName}
+                            fileSize={fileInfo.fileSize}
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center w-full px-3 py-2.5 border-2 border-dashed rounded-lg border-border min-h-[70px]">
+                          <p className="text-xs text-muted-foreground">
+                            No file information available
+                          </p>
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* New File Column */}

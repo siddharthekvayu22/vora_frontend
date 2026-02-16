@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Icon from "../Icon";
+import { Button } from "../ui/button";
 
 function ActionDropdown({ actions = [] }) {
   const [open, setOpen] = useState(false);
@@ -67,13 +68,14 @@ function ActionDropdown({ actions = [] }) {
     <>
       <div ref={buttonRef} className="relative inline-block">
         {/* 3-dot button */}
-        <button
+        <Button
           onClick={() => setOpen((p) => !p)}
-          className="px-3 py-2 rounded-full hover:bg-muted transition cursor-pointer outline-0"
+          variant="ghost"
+          size="icon"
           title={open ? "" : "Actions"}
         >
           <Icon name="more-vertical" size="16px" />
-        </button>
+        </Button>
       </div>
 
       {open && (
@@ -111,13 +113,14 @@ function ActionDropdown({ actions = [] }) {
 
               return (
                 <div key={actionId}>
-                  <button
+                  <Button
                     onClick={() => handleActionClick(action, actionId)}
-                    disabled={isDisabled}
-                    className={`flex items-center gap-3 w-full px-4 py-2 text-sm text-left transition cursor-pointer ${
+                    variant="ghost"
+                    disabled={isDisabled || isLoading}
+                    className={`flex items-center justify-start gap-3 w-full px-4 py-2 transition  ${
                       isDisabled
                         ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-muted"
+                        : ""
                     } ${action.className || ""}`}
                   >
                     {isLoading ? (
@@ -126,7 +129,7 @@ function ActionDropdown({ actions = [] }) {
                       <Icon name={action.icon} size="16px" />
                     )}
                     <span>{action.label}</span>
-                  </button>
+                  </Button>
                   {idx < actions.length - 1 && (
                     <div className="border-b border-border/50" />
                   )}

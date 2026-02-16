@@ -11,7 +11,6 @@ import {
   FiShield,
   FiChevronDown,
   FiChevronUp,
-  FiAlertCircle,
   FiLoader,
   FiTag,
   FiClock,
@@ -127,7 +126,7 @@ function OfficialFrameworkDetail() {
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [uploadingToAi, setUploadingToAi] = useState(false);
+  const [uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [versionToDelete, setVersionToDelete] = useState(null);
   const [approveModalOpen, setApproveModalOpen] = useState(false);
@@ -166,7 +165,9 @@ function OfficialFrameworkDetail() {
 
   const handleUploadToAi = async (versionFileId) => {
     try {
-      setUploadingToAi(true);
+      // Add this versionFileId to the uploading set
+      setUploadingToAi((prev) => new Set(prev).add(versionFileId));
+
       const response = await uploadOfficialFrameworkToAi(versionFileId);
       toast.success(response.message || "File uploaded to AI successfully");
       fetchFrameworkDetails();
@@ -174,7 +175,12 @@ function OfficialFrameworkDetail() {
       toast.error(error.message || "Failed to upload to AI");
       fetchFrameworkDetails();
     } finally {
-      setUploadingToAi(false);
+      // Remove this versionFileId from the uploading set
+      setUploadingToAi((prev) => {
+        const next = new Set(prev);
+        next.delete(versionFileId);
+        return next;
+      });
     }
   };
 
@@ -574,10 +580,10 @@ function OfficialFrameworkDetail() {
                           ver.aiUpload.status !== "processing")) && (
                         <button
                           onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={uploadingToAi}
-                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer"
+                          disabled={uploadingToAi.has(ver.fileId)}
+                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {uploadingToAi ? (
+                          {uploadingToAi.has(ver.fileId) ? (
                             <FiLoader size={13} className="animate-spin" />
                           ) : (
                             <FiUploadCloud size={13} />

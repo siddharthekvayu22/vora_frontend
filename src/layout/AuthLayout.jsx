@@ -70,20 +70,18 @@ function AuthLayout() {
         <div className="relative z-10 max-w-md text-center text-white animate-in fade-in slide-in-from-left duration-700">
           {/* Logo */}
           <div className="mx-auto mb-10 flex h-28 w-28 items-center justify-center rounded-3xl shadow-xl overflow-hidden">
-            <img 
-              src={logoImage} 
-              alt="VORA Logo" 
+            <img
+              src={logoImage}
+              alt="VORA Logo"
               className="h-full w-full object-contain rounded-3xl mix-blend-screen"
-              style={{ 
-                filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.3))',
-                background: 'transparent'
+              style={{
+                filter: "drop-shadow(0 0 10px rgba(255,255,255,0.3))",
+                background: "transparent",
               }}
             />
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight mb-3">
-           VORA
-          </h1>
+          <h1 className="text-4xl font-extrabold tracking-tight mb-3">VORA</h1>
 
           <p className="text-lg text-white/90 mb-12">
             AI-Powered Compliance Auditing Platform

@@ -1,21 +1,30 @@
 import { apiRequest } from "./apiService";
 
 /**
+ * Get official framework by ID
+ */
+export function getOfficialFrameworkById(id) {
+  return apiRequest(`/official-frameworks/frameworks/${id}`, true);
+}
+
+/**
  * Get all official frameworks
  */
 export function getAllOfficialFrameworks({
   page = 1,
   limit = 10,
   search = "",
+  status = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(status && { status }),
   });
 
   return apiRequest(
-    `/official-frameworks/frameworks/my-frameworks?${params.toString()}`,
+    `/official-frameworks/frameworks/all-frameworks?${params.toString()}`,
     true,
   );
 }
@@ -88,6 +97,19 @@ export function uploadOfficialFramework(formData) {
 }
 
 /**
+ * Upload framework file to ai
+ */
+export function uploadOfficialFrameworkToAi(id) {
+  return apiRequest(
+    `/files/${id}/upload-to-ai`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
+/**
  * Download framework file
  */
 export async function downloadOfficialFrameworkFile(fileId, fileName) {
@@ -138,7 +160,51 @@ export function deleteOfficialFramework(fileId) {
   );
 }
 
+/**
+ * Delete a specific file version
+ */
+export function deleteOfficialFrameworkVersion(fileId, versionFileId) {
+  return apiRequest(
+    `/files/${fileId}/versions/${versionFileId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
+/**
+ * Approve official framework
+ */
+export function approveOfficialFramework(frameworkId) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/approve`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
+/**
+ * Reject official framework
+ */
+export function rejectOfficialFramework(frameworkId, rejectionReason) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/reject`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ rejectionReason }),
+    },
+    true,
+  );
+}
+
 export default {
+  getOfficialFrameworkById,
   getAllOfficialFrameworks,
   getOfficialFrameworkCategory,
   getOfficialFrameworkCategoryAccess,
@@ -147,4 +213,7 @@ export default {
   updateOfficialFramework,
   downloadOfficialFrameworkFile,
   deleteOfficialFramework,
+  deleteOfficialFrameworkVersion,
+  approveOfficialFramework,
+  rejectOfficialFramework,
 };

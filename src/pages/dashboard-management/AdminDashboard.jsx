@@ -6,9 +6,10 @@ import UserRegistrationChart from "../../components/charts/UserRegistrationChart
 import Icon from "../../components/Icon";
 import { getAdminDashboardAnalytics } from "../../services/adminService";
 import { formatDate } from "../../utils/dateFormatter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -85,16 +86,20 @@ export default function AdminDashboard() {
       icon: "users",
       subtitle: [
         {
-          text: `${stats.usersByRole.admin || 0} Admin`,
+          text: `${stats.usersByRole?.admin || 0} Admin`,
           color: "text-pink-600 dark:text-pink-400",
         },
         {
-          text: `${stats.usersByRole.expert || 0} Expert`,
+          text: `${stats.usersByRole?.expert || 0} Expert`,
           color: "text-blue-600 dark:text-blue-400",
         },
         {
-          text: `${stats.usersByRole.company || 0} Company`,
+          text: `${stats.usersByRole?.company || 0} Company`,
           color: "text-yellow-600 dark:text-yellow-400",
+        },
+        {
+          text: `${stats.usersByRole?.user || 0} User`,
+          color: "text-green-600 dark:text-green-400",
         },
       ],
     },
@@ -108,15 +113,14 @@ export default function AdminDashboard() {
     {
       label: "TOTAL COMPANY FRAMEWORKS",
       value: stats.totalCompanyFrameworks || 0,
-      trend: "Comapny uploaded frameworks",
+      trend: "Company uploaded frameworks",
       trendColor: "text-green-500",
       icon: "framework",
     },
-
     {
       label: "TOTAL COMPANY DOCUMENTS",
       value: stats.totalCompanyDocuments || 0,
-      trend: "Company uploaded Documents",
+      trend: "Company uploaded documents",
       trendColor: "text-orange-500",
       icon: "document",
     },
@@ -132,11 +136,18 @@ export default function AdminDashboard() {
       path: "/users",
     },
     {
-      title: "Framework Management",
-      desc: "Manage compliance frameworks",
-      icon: "framework",
-      color: "bg-purple-500/20 text-purple-400",
-      path: "/",
+      title: "Framework Category",
+      desc: "Manage frameworks category",
+      icon: "list",
+      color: "bg-amber-500/20 text-amber-400",
+      path: "/framework-category",
+    },
+    {
+      title: "Framework Access",
+      desc: "Manage frameworks access",
+      icon: "shield-check",
+      color: "bg-emerald-500/20 text-emerald-400",
+      path: "/framework-access",
     },
     {
       title: "System Settings",
@@ -144,34 +155,6 @@ export default function AdminDashboard() {
       icon: "settings",
       color: "bg-gray-500/20 text-gray-400",
       path: "/settings",
-    },
-  ];
-
-  // Role distribution data
-  const roleDistribution = [
-    {
-      name: "Admin",
-      count: stats.usersByRole.admin,
-      percentage: ((stats.usersByRole.admin / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-red-500",
-    },
-    {
-      name: "Expert",
-      count: stats.usersByRole.expert,
-      percentage: ((stats.usersByRole.expert / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-blue-500",
-    },
-    {
-      name: "User",
-      count: stats.usersByRole.user,
-      percentage: ((stats.usersByRole.user / stats.totalUsers) * 100).toFixed(
-        1,
-      ),
-      color: "bg-green-500",
     },
   ];
 
@@ -235,7 +218,9 @@ export default function AdminDashboard() {
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                              : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              : user.role === "company"
+                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                         }`}
                       >
                         {user.role}
@@ -265,14 +250,13 @@ export default function AdminDashboard() {
 
       {/* Quick Actions */}
       <CardWrapper title="Quick Actions">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {quickActions.map((a) => (
             <button
               key={a.title}
-              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
+              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200 cursor-pointer"
               onClick={() => {
-                // Navigate to the respective page
-                window.location.href = a.path;
+                navigate(a.path);
               }}
             >
               <div

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
@@ -8,14 +8,19 @@ import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
+import ActionDropdown from "../../components/custom/ActionDropdown";
 import {
   downloadOfficialFrameworkFile,
   getAllOfficialFrameworks,
   deleteOfficialFramework,
+  uploadOfficialFrameworkToAi,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
+import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
+import SelectDropdown from "../../components/custom/SelectDropdown";
 
 function OfficialFramework() {
+  const navigate = useNavigate();
   const [officialFramework, setOfficialFramework] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState(
@@ -26,6 +31,7 @@ function OfficialFramework() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("");
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -44,17 +50,17 @@ function OfficialFramework() {
     sortOrder: "desc",
   });
 
-  const [downloadingId, setDownloadingId] = useState(null);
-
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
+    const status = searchParams.get("status") || "";
 
     setPagination((p) => ({ ...p, currentPage: page }));
     setSearchTerm(search);
+    setStatusFilter(status);
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
@@ -68,6 +74,7 @@ function OfficialFramework() {
         search: searchTerm,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
+        status: statusFilter,
       });
 
       setOfficialFramework(res.data || []);
@@ -87,14 +94,23 @@ function OfficialFramework() {
         hasPrevPage: pagination.currentPage > 1,
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
+
+      return res.data || []; // Return data for retry logic
     } catch (err) {
       toast.error(err.message || "Failed to load official framework");
       setOfficialFramework([]);
       setEmptyMessage("Failed to load official framework");
+      return [];
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    sortConfig,
+    statusFilter,
+  ]);
 
   useEffect(() => {
     fetchOfficialFramework();
@@ -129,9 +145,37 @@ function OfficialFramework() {
     setSortConfig({ sortBy: key, sortOrder: order });
   };
 
-  const handleUploadSuccess = () => {
-    // Refresh the framework list after successful upload
-    fetchOfficialFramework();
+  const handleStatusFilter = (status) => {
+    const p = new URLSearchParams(searchParams);
+    status ? p.set("status", status) : p.delete("status");
+    p.set("page", "1");
+    setSearchParams(p);
+  };
+
+  const handleUploadSuccess = async () => {
+    // Retry logic to handle async event processing
+    const maxRetries = 5;
+    const retryDelay = 500; // 500ms between retries
+
+    const previousCount = officialFramework.length;
+
+    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
+      const data = await fetchOfficialFramework();
+
+      // Check if new framework was added
+      if (data.length > previousCount) {
+        // Success - new framework found
+        return;
+      }
+
+      // Wait before next retry (except on last iteration)
+      if (retryCount < maxRetries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
+    }
+
+    // Final refresh if still not found
+    await fetchOfficialFramework();
   };
 
   const handleUpdateFramework = (framework) => {
@@ -151,7 +195,7 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-    const fileId = frameworkToDelete.fileInfo.fileId;
+    const fileId = frameworkToDelete.mainFileId; // Use mainFileId for delete
     try {
       const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
@@ -170,20 +214,39 @@ function OfficialFramework() {
     setFrameworkToDelete(null);
   };
 
-  const handleDownloadFramework = async (row) => {
-    if (!row.fileInfo?.fileId) return;
+  /* ---------------- UPLOAD TO AI ---------------- */
+  const handleUploadToAi = async (row) => {
+    // Use versionFileId for AI upload (specific version)
+    if (!row.fileInfo?.versionFileId) {
+      toast.error("File version ID not found");
+      return;
+    }
 
     try {
-      setDownloadingId(row.fileInfo.fileId);
+      const result = await uploadOfficialFrameworkToAi(
+        row.fileInfo.versionFileId,
+      ); // Use versionFileId
+      toast.success(result.message || "Framework uploaded to AI successfully");
+      fetchOfficialFramework(); // Refresh to get updated AI status
+    } catch (error) {
+      console.error("Upload to AI error:", error);
+      toast.error(error.message || "Failed to upload framework to AI");
+      fetchOfficialFramework(); // Refresh to get updated AI status
+      throw error; // Re-throw to let ActionDropdown handle loading state
+    }
+  };
 
+  const handleDownloadFramework = async (row) => {
+    if (!row.fileInfo?.versionFileId) return;
+
+    try {
       await downloadOfficialFrameworkFile(
-        row.fileInfo.fileId,
+        row.fileInfo.versionFileId, // Use versionFileId for download
         row.fileInfo.originalFileName,
       );
     } catch (err) {
-      toast.error(err.message || "Failed to download framework");
-    } finally {
-      setDownloadingId(null);
+      toast.error(err.message);
+      throw err; // Re-throw to let ActionDropdown handle loading state
     }
   };
 
@@ -192,7 +255,7 @@ function OfficialFramework() {
     {
       key: "frameworkCode",
       label: "Framework Code",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {value}
@@ -202,9 +265,12 @@ function OfficialFramework() {
     {
       key: "frameworkName",
       label: "Framework Name",
-      sortable: true,
+      sortable: false,
       render: (value) => (
-        <span className="font-medium text-foreground line-clamp-1">
+        <span
+          className="font-medium text-foreground line-clamp-1"
+          title={value}
+        >
           {value}
         </span>
       ),
@@ -212,7 +278,7 @@ function OfficialFramework() {
     {
       key: "frameworkType",
       label: "File Info",
-      sortable: true,
+      sortable: false,
       render: (value, row) => (
         <FileTypeCard
           fileType={value || row.frameworkType}
@@ -222,9 +288,15 @@ function OfficialFramework() {
       ),
     },
     {
+      key: "aiUpload",
+      label: "Ai Status",
+      sortable: false,
+      render: (value, row) => <AiUploadStatusCard aiUpload={row.aiUpload} />,
+    },
+    {
       key: "uploadedBy",
       label: "Uploaded By",
-      sortable: true,
+      sortable: false,
       render: (value, row) => {
         return (
           <UserMiniCard name={value.name} email={value.email} icon="user" />
@@ -234,7 +306,7 @@ function OfficialFramework() {
     {
       key: "createdAt",
       label: "Uploaded At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),
@@ -242,54 +314,105 @@ function OfficialFramework() {
   ];
 
   const renderActions = (row) => {
-    const isDownloading = downloadingId === row.fileInfo?.fileId;
+    const aiStatus = row.aiUpload?.status;
+
+    const actions = [
+      {
+        id: `view-${row.id}`,
+        label: "View Details",
+        icon: "eye",
+        className: "text-blue-600 dark:text-blue-400",
+        onClick: () => navigate(`/official-frameworks/${row.id}`),
+      },
+      {
+        id: `download-${row.fileInfo?.fileId}`,
+        label: "Download",
+        icon: "download",
+        className: "text-green-600 dark:text-green-400",
+        onClick: () => handleDownloadFramework(row),
+      },
+      {
+        id: `edit-${row.mainFileId}`,
+        label: "Edit Framework",
+        icon: "edit",
+        className: "text-primary",
+        onClick: () => handleUpdateFramework(row),
+      },
+      {
+        id: `delete-${row.mainFileId}`,
+        label: "Delete Framework",
+        icon: "trash",
+        className: "text-red-600 dark:text-red-400",
+        onClick: () => handleDeleteFramework(row),
+      },
+    ];
+
+    // Add AI-specific actions based on status (at index 0 - first position)
+    if (!aiStatus) {
+      // Not sent to AI - show "Send to AI" action
+      actions.splice(0, 0, {
+        id: `send-ai-${row.fileInfo?.versionFileId}`,
+        label: "Send to AI",
+        icon: "upload",
+        className: "text-blue-600 dark:text-blue-400",
+        onClick: () => handleUploadToAi(row),
+      });
+    } else if (aiStatus === "failed" || aiStatus === "skipped") {
+      // Failed or Skipped - show "Retry AI Upload" action
+      actions.splice(0, 0, {
+        id: `retry-ai-${row.fileInfo?.versionFileId}`,
+        label: "Retry AI Upload",
+        icon: "refresh",
+        className: "text-orange-600 dark:text-orange-400",
+        onClick: () => handleUploadToAi(row),
+      });
+    } else if (aiStatus === "processing") {
+      // Processing - show "View AI Status" action (disabled)
+      actions.splice(0, 0, {
+        id: `ai-status-${row.fileInfo?.versionFileId}`,
+        label: "AI Processing...",
+        icon: "clock",
+        className: "text-blue-600 dark:text-blue-400",
+        disabled: true,
+      });
+    }
 
     return (
-      <div className="flex gap-1 justify-center">
-        <button
-          className={`px-3 py-2 rounded-full transition-all duration-200 cursor-pointer
-          ${
-            isDownloading
-              ? "text-green-400 opacity-60 cursor-not-allowed"
-              : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 hover:scale-105"
-          }`}
-          title="Download Framework"
-          disabled={isDownloading}
-          onClick={() => handleDownloadFramework(row)}
-        >
-          {isDownloading ? (
-            <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" />
-          ) : (
-            <Icon name="download" size="16px" />
-          )}
-        </button>
-        <button
-          className="px-3 py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Edit Framework"
-          onClick={() => handleUpdateFramework(row)}
-        >
-          <Icon name="edit" size="16px" />
-        </button>
-        <button
-          className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-          title="Delete Framework"
-          onClick={() => handleDeleteFramework(row)}
-        >
-          <Icon name="trash" size="16px" />
-        </button>
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
       </div>
     );
   };
 
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() => setUploadModalOpen(true)}
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Add New Framework
-    </button>
-  );
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "uploaded", label: "Uploaded" },
+            { value: "failed", label: "Failed" },
+            { value: "skiped", label: "Skiped" },
+            { value: "processing", label: "Processing" },
+            { value: "completed", label: "Completed" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
+        <button
+          onClick={() => setUploadModalOpen(true)}
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Add New Framework
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

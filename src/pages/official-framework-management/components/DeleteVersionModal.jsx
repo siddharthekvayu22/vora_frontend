@@ -1,14 +1,20 @@
 import { useState } from "react";
-import Icon from "../../../../components/Icon";
+import Icon from "../../../components/Icon";
 
 /**
- * DeleteCategoryModal Component - Confirmation dialog for deleting a category
+ * DeleteVersionModal Component - Confirmation dialog for deleting a file version
  *
- * @param {Object} category - Category to delete
+ * @param {Object} version - Version object to delete
+ * @param {string} version.version - Version number (e.g., "1.0.0")
+ * @param {string} version.fileId - Version file ID
+ * @param {string} version.originalFileName - Original file name
+ * @param {string} version.fileSize - File size
+ * @param {string} version.frameworkType - File type
+ * @param {Object} version.uploadedBy - Uploader info
  * @param {Function} onConfirm - Confirm delete handler
  * @param {Function} onCancel - Cancel handler
  */
-export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
+export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -16,7 +22,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting category:", error);
+      console.error("Error deleting version:", error);
     } finally {
       setDeleting(false);
     }
@@ -37,7 +43,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
               <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete Category
+                Delete Version
               </h2>
             </div>
             <button
@@ -52,40 +58,56 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
 
         <div className="p-4">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            Are you sure you want to delete this framework category? This action
-            cannot be undone.
+            Are you sure you want to delete version{" "}
+            <span className="font-semibold text-foreground">
+              {version.version}
+            </span>
+            ? This action cannot be undone.
           </p>
 
           <div className="bg-muted rounded-xl p-3 border-l-4 border-red-500 mb-4">
-            <div className="flex items-center gap-3 mb-1">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                <Icon name="chart" size="20px" />
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
+                <Icon name="document" size="20px" />
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {category.frameworkCategoryName}
+                  {version.originalFileName}
                 </h4>
                 <p className="text-sm text-muted-foreground m-0">
-                  Code: {category.code}
+                  Version: {version.version}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2 mt-1">
-              <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                  category.isActive
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                }`}
-              >
-                {category.isActive ? "Active" : "Inactive"}
+            <div className="flex gap-2 mt-2">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                {version.frameworkType?.toUpperCase() || "PDF"}
               </span>
+              {version.fileSize && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
+                  {version.fileSize}
+                </span>
+              )}
             </div>
-            {category.description && (
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                {category.description}
+            {version.uploadedBy?.name && (
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                Uploaded by: {version.uploadedBy.name}
               </p>
             )}
+          </div>
+
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+            <div className="flex gap-2">
+              <Icon
+                name="info"
+                size="16px"
+                className="text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"
+              />
+              <p className="text-xs text-yellow-800 dark:text-yellow-200 leading-relaxed">
+                Other versions will remain intact. If this is the current
+                version, the latest version will become the new current version.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -113,7 +135,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
             ) : (
               <>
                 <Icon name="trash" size="16px" />
-                Delete Category
+                Delete Version
               </>
             )}
           </button>

@@ -109,8 +109,10 @@ import {
   // Heroicons for additional variety
   HiOutlineDocumentText,
   HiOutlineClipboardList,
+  HiDotsVertical,
 } from "react-icons/hi";
 import { FaAngleDown } from "react-icons/fa";
+import { RiRobot2Fill } from "react-icons/ri";
 
 // Icon mapping from old names to React Icons components
 const iconMap = {
@@ -185,6 +187,7 @@ const iconMap = {
   delete: MdDelete,
   trash: MdDelete,
   edit: MdEdit,
+  "more-vertical": HiDotsVertical,
 
   // Time icons
   clock: FiClock,
@@ -231,6 +234,9 @@ const iconMap = {
   ppt: MdDescription,
   csv: MdTableChart,
   zip: MdFolder,
+
+  // Ai icons
+  "ai-bot": RiRobot2Fill,
 
   // Activity specific
   activity: FiActivity,

@@ -1,6 +1,6 @@
 import { Route } from "react-router-dom";
 import PublicRoute from "./PublicRoute";
-import AuthLayout from "../layout/AuthLayout";
+import AuthLayout from "../../layout/AuthLayout";
 
 const authRoutes = [
   <Route

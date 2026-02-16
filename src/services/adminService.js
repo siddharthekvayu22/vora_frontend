@@ -26,77 +26,26 @@ export function getAdminFrameworkCategory({
   );
 }
 /**
- * Get admin framework access
+ * Get admin framework access (all statuses)
  */
 export function getAdminFrameworkAccess({
   page = 1,
   limit = 10,
   search = "",
+  status = "",
+  sortBy = "createdAt",
+  sortOrder = "desc",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(status && { status }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
   return apiRequest(
-    `/admin/framework-access/access/approved?${params.toString()}`,
-    true,
-  );
-}
-
-/**
- * Get admin framework access requests
- */
-export function getAdminFrameworkAccessRequests({
-  page = 1,
-  limit = 10,
-  search = "",
-} = {}) {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search }),
-  });
-  return apiRequest(
-    `/admin/framework-access/access/requests?${params.toString()}`,
-    true,
-  );
-}
-
-/**
- * Get admin framework access rejected
- */
-export function getAdminFrameworkAccessRejected({
-  page = 1,
-  limit = 10,
-  search = "",
-} = {}) {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search }),
-  });
-  return apiRequest(
-    `/admin/framework-access/access/rejected?${params.toString()}`,
-    true,
-  );
-}
-
-/**
- * Get admin framework access revoked
- */
-export function getAdminFrameworkAccessRevoked({
-  page = 1,
-  limit = 10,
-  search = "",
-} = {}) {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-    ...(search && { search }),
-  });
-  return apiRequest(
-    `/admin/framework-access/access/revoked?${params.toString()}`,
+    `/admin/framework-access/access/?${params.toString()}`,
     true,
   );
 }
@@ -149,7 +98,7 @@ export function revokeFrameworkAccess(expertId, frameworkId) {
   return apiRequest(
     `/admin/framework-access/access/revoke/${expertId}/${frameworkId}`,
     {
-      method: "DELETE",
+      method: "PUT",
     },
     true,
   );
@@ -198,9 +147,6 @@ export default {
   getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
-  getAdminFrameworkAccessRequests,
-  getAdminFrameworkAccessRejected,
-  getAdminFrameworkAccessRevoked,
   createFrameworkCategory,
   updateFrameworkCategory,
   deleteFrameworkCategory,

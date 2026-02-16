@@ -14,7 +14,7 @@ function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
-  const role = user?.role || "expert";
+  const role = user?.role;
 
   /* ================= NAV CONFIG ================= */
   const navigationConfig = {
@@ -49,31 +49,10 @@ function Sidebar() {
           },
           {
             id: "framework-access",
-            title: "Access Approved",
-            description: "Manage approved access",
-            icon: "check-circle",
-            path: "/framework-access/approved",
-          },
-          {
-            id: "framework-access-requests",
-            title: "Access Requests",
-            description: "Manage access requests",
-            icon: "clock",
-            path: "/framework-access/requests",
-          },
-          {
-            id: "framework-access-rejected",
-            title: "Access Rejected",
-            description: "View rejected access",
-            icon: "x-circle",
-            path: "/framework-access/rejected",
-          },
-          {
-            id: "framework-access-revoked",
-            title: "Access Revoked",
-            description: "View revoked access",
-            icon: "user-minus",
-            path: "/framework-access/revoked",
+            title: "Framework Access",
+            description: "Manage all framework access",
+            icon: "shield",
+            path: "/framework-access",
           },
         ],
       },
@@ -132,7 +111,7 @@ function Sidebar() {
       // },
     ],
 
-    user: [
+    company: [
       {
         id: "dashboard",
         title: "Dashboard",
@@ -141,11 +120,11 @@ function Sidebar() {
         path: "/dashboard",
       },
       {
-        id: "documents",
-        title: "Documents",
-        description: "View & manage documents",
-        icon: "file",
-        path: "/documents",
+        id: "company-users",
+        title: "User Management",
+        description: "Manage users & roles",
+        icon: "user",
+        path: "/users",
       },
       {
         id: "frameworks",
@@ -153,6 +132,13 @@ function Sidebar() {
         description: "View & browse frameworks",
         icon: "framework",
         path: "/frameworks",
+      },
+      {
+        id: "documents",
+        title: "Documents",
+        description: "View & manage documents",
+        icon: "file",
+        path: "/documents",
       },
     ],
   };
@@ -224,13 +210,12 @@ function Sidebar() {
       {/* Sidebar */}
       <aside
         className={`fixed left-0 top-0 z-50 h-screen w-[340px] bg-background flex flex-col
-                    shadow-2xl transition-transform duration-300
+                    shadow-2xl transition-transform duration-300 border-r border-border
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* ================= HEADER ================= */}
         <div
           className="relative flex items-center justify-between overflow-hidden
-                     border-b-2 border-[var(--line)]
                      bg-gradient-to-br from-primary to-primary-2
                      px-6 py-7"
         >
@@ -413,7 +398,9 @@ function Sidebar() {
                   ? "Admin"
                   : role === "expert"
                     ? "System Expert"
-                    : "System User"}
+                    : role === "company"
+                      ? "System Company"
+                      : "System User"}
               </div>
             </div>
           </Link>

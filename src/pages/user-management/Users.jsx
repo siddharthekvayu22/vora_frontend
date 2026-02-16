@@ -15,8 +15,12 @@ import {
 import { formatDate } from "../../utils/dateFormatter";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
+import ActionDropdown from "../../components/custom/ActionDropdown";
+import SelectDropdown from "../../components/custom/SelectDropdown";
+import { useAuth } from "../../context/useAuth";
 
 function Users() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +36,8 @@ function Users() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [sortConfig, setSortConfig] = useState({
     sortBy: "createdAt",
     sortOrder: "desc",
@@ -52,11 +58,15 @@ function Users() {
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
+    const role = searchParams.get("role") || "";
+    const status = searchParams.get("status") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
     setPagination((p) => ({ ...p, currentPage: page }));
     setSearchTerm(search);
+    setRoleFilter(role);
+    setStatusFilter(status);
     setSortConfig({ sortBy, sortOrder });
   }, [searchParams]);
 
@@ -68,6 +78,8 @@ function Users() {
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
+        role: roleFilter,
+        isActive: statusFilter,
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
       });
@@ -100,7 +112,14 @@ function Users() {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
+  }, [
+    pagination.currentPage,
+    pagination.limit,
+    searchTerm,
+    roleFilter,
+    statusFilter,
+    sortConfig,
+  ]);
 
   useEffect(() => {
     fetchUsers();
@@ -133,6 +152,20 @@ function Users() {
     setSearchParams(p);
 
     setSortConfig({ sortBy: key, sortOrder: order });
+  };
+
+  const handleRoleFilter = (role) => {
+    const p = new URLSearchParams(searchParams);
+    role ? p.set("role", role) : p.delete("role");
+    p.set("page", "1");
+    setSearchParams(p);
+  };
+
+  const handleStatusFilter = (status) => {
+    const p = new URLSearchParams(searchParams);
+    status ? p.set("status", status) : p.delete("status");
+    p.set("page", "1");
+    setSearchParams(p);
   };
 
   /* ---------------- CRUD ---------------- */
@@ -190,6 +223,7 @@ function Users() {
     } catch (e) {
       toast.error(e.message || "Failed to toggle user status");
       console.error("Toggle status error:", e);
+      throw e; // Re-throw to let ActionDropdown handle loading state
     }
   };
 
@@ -210,7 +244,7 @@ function Users() {
     {
       key: "phone",
       label: "Phone",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <div className="flex items-center gap-2">
           <Icon name="phone" size="14px" className="text-muted-foreground" />
@@ -227,6 +261,7 @@ function Users() {
           admin: "red",
           expert: "blue",
           company: "green",
+          user: "yellow",
         };
 
         return (
@@ -240,7 +275,7 @@ function Users() {
     {
       key: "isActive",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (v) => (
         <CustomBadge
           label={v ? "Active" : "Inactive"}
@@ -251,17 +286,17 @@ function Users() {
     {
       key: "createdBy",
       label: "Created By",
-      sortable: true,
+      sortable: false,
       render: (value, row) => {
         if (row.createdBy === "self") {
           return <UserMiniCard isSelf />;
         }
 
-        if (value?.name) {
+        if (row.createdBy?.user) {
           return (
             <UserMiniCard
-              name={value.name}
-              email={value.email}
+              name={row.createdBy.user.name}
+              email={row.createdBy.user.email}
             />
           );
         }
@@ -282,47 +317,85 @@ function Users() {
     },
   ];
 
-  const renderActions = (row) => (
-    <div className="flex gap-1 justify-center">
-      <button
-        onClick={() => handleToggleStatus(row)}
-        className={`px-3 py-2 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer ${
-          row.isActive
-            ? "hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400"
-            : "hover:bg-green-50 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400"
-        }`}
-        title={row.isActive ? "Deactivate User" : "Activate User"}
-      >
-        <Icon name="power" size="16px" />
-      </button>
-      <button
-        onClick={() => setModalState({ isOpen: true, mode: "edit", user: row })}
-        className="px-3 py-2 hover:bg-primary/10 text-primary rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Edit User"
-      >
-        <Icon name="edit" size="16px" />
-      </button>
-      <button
-        onClick={() => setDeleteModalState({ isOpen: true, user: row })}
-        className="px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full transition-all duration-200 hover:scale-105 cursor-pointer"
-        title="Delete User"
-      >
-        <Icon name="trash" size="16px" />
-      </button>
-    </div>
-  );
+  const renderActions = (row) => {
+    const actions = [
+      {
+        id: `toggle-${row._id || row.id}`,
+        label: row.isActive ? "Deactivate User" : "Activate User",
+        icon: "power",
+        className: row.isActive ? "text-destructive" : "text-green-600",
+        onClick: () => handleToggleStatus(row),
+      },
+      {
+        id: `edit-${row._id || row.id}`,
+        label: "Edit User",
+        icon: "edit",
+        className: "text-primary",
+        onClick: () => setModalState({ isOpen: true, mode: "edit", user: row }),
+      },
+      {
+        id: `delete-${row._id || row.id}`,
+        label: "Delete User",
+        icon: "trash",
+        className: "text-destructive",
+        onClick: () => setDeleteModalState({ isOpen: true, user: row }),
+      },
+    ];
 
-  const renderHeaderButtons = () => (
-    <button
-      onClick={() =>
-        setModalState({ isOpen: true, mode: "create", user: null })
-      }
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
-    >
-      <Icon name="plus" size="18px" />
-      Add New User
-    </button>
-  );
+    return (
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
+      </div>
+    );
+  };
+
+  const renderHeaderButtons = () => {
+    return (
+      <>
+        {/* Role Filter */}
+        {user.role === "admin" && (
+          <SelectDropdown
+            value={roleFilter}
+            onChange={handleRoleFilter}
+            options={[
+              { value: "", label: "All Roles" },
+              { value: "admin", label: "Admin" },
+              { value: "expert", label: "Expert" },
+              { value: "company", label: "Company" },
+              { value: "user", label: "User" },
+            ]}
+            placeholder="All Roles"
+            size="lg"
+            variant="default"
+          />
+        )}
+
+        {/* Status Filter */}
+        <SelectDropdown
+          value={statusFilter}
+          onChange={handleStatusFilter}
+          options={[
+            { value: "", label: "All Status" },
+            { value: "true", label: "Active" },
+            { value: "false", label: "Inactive" },
+          ]}
+          placeholder="All Status"
+          size="lg"
+          variant="default"
+        />
+
+        <button
+          onClick={() =>
+            setModalState({ isOpen: true, mode: "create", user: null })
+          }
+          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+        >
+          <Icon name="plus" size="18px" />
+          Add New User
+        </button>
+      </>
+    );
+  };
 
   /* ---------------- UI ---------------- */
   return (

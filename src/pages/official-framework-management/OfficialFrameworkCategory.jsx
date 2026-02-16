@@ -7,6 +7,7 @@ import { getOfficialFrameworkCategory } from "../../services/officialFrameworkSe
 import { formatDate } from "../../utils/dateFormatter";
 import RequestAccessModal from "./components/RequestAccessModal";
 import CustomBadge from "../../components/custom/CustomBadge";
+import ActionDropdown from "../../components/custom/ActionDropdown";
 
 function OfficialFrameworkCategory() {
   const [officialFrameworkCategory, setOfficialFrameworkCategory] = useState(
@@ -126,6 +127,7 @@ function OfficialFrameworkCategory() {
 
   /* ---------------- REQUEST ACCESS HANDLERS ---------------- */
   const handleRequestAccessSuccess = () => {
+    fetchOfficialFrameworkCategory();
     setRequestModalState({ isOpen: false, framework: null });
     // Optionally refresh data or show success message
   };
@@ -135,7 +137,7 @@ function OfficialFrameworkCategory() {
     {
       key: "code",
       label: "Code",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
           {value}
@@ -145,9 +147,14 @@ function OfficialFrameworkCategory() {
     {
       key: "frameworkCategoryName",
       label: "Category Name",
-      sortable: true,
+      sortable: false,
       render: (value) => (
-        <span className="font-medium text-foreground">{value}</span>
+        <span
+          className="font-medium text-foreground line-clamp-1"
+          title={value}
+        >
+          {value}
+        </span>
       ),
     },
     {
@@ -155,7 +162,10 @@ function OfficialFrameworkCategory() {
       label: "Description",
       sortable: false,
       render: (value) => (
-        <span className="text-muted-foreground text-sm line-clamp-2 max-w-xs">
+        <span
+          className="text-muted-foreground text-sm line-clamp-2 max-w-xs"
+          title={value}
+        >
           {value}
         </span>
       ),
@@ -163,7 +173,7 @@ function OfficialFrameworkCategory() {
     {
       key: "isActive",
       label: "Status",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <CustomBadge
           label={value ? "Active" : "Inactive"}
@@ -174,7 +184,7 @@ function OfficialFrameworkCategory() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: true,
+      sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),
@@ -183,19 +193,29 @@ function OfficialFrameworkCategory() {
 
   const renderActions = (row) => {
     const isActive = row.isActive;
+    const hasRequested = row.hasRequested;
+    const isDisabled = !isActive || hasRequested;
+
+    const actions = [
+      {
+        id: `request-${row.id}`,
+        label: hasRequested ? "Requested" : "Request Access",
+        icon: hasRequested ? "check" : "plus",
+        className: hasRequested
+          ? "text-muted-foreground"
+          : "text-primary dark:text-primary",
+        disabled: isDisabled,
+        onClick: () => {
+          if (!isDisabled) {
+            setRequestModalState({ isOpen: true, framework: row });
+          }
+        },
+      },
+    ];
+
     return (
-      <div className="flex gap-1 justify-center">
-        <button
-          disabled={!isActive}
-          onClick={() => setRequestModalState({ isOpen: true, framework: row })}
-          className={`px-3 py-2 text-xs rounded-full transition-all duration-200 inline-flex items-center justify-center gap-2 ${
-            !isActive
-              ? "bg-muted text-muted-foreground cursor-not-allowed opacity-50"
-              : "bg-primary/20 hover:bg-primary/10 dark:hover:bg-primary/30 text-primary cursor-pointer"
-          }`}
-        >
-          <Icon name="plus" size="12px" /> Request
-        </button>
+      <div className="flex justify-center">
+        <ActionDropdown actions={actions} />
       </div>
     );
   };

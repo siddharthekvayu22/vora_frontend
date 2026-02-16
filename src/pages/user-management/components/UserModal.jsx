@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 import SelectDropdown from "../../../components/custom/SelectDropdown";
+import { AuthContext } from "../../../context/AuthContext";
 
 /**
  * UserModal Component - Handles Create and Edit modes
@@ -17,6 +18,8 @@ export default function UserModal({
   onSave,
   onClose,
 }) {
+  const { user: currentUser } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,6 +28,26 @@ export default function UserModal({
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+
+  // Get role options based on current user's role
+  const getRoleOptions = () => {
+    const currentUserRole = currentUser?.role;
+
+    if (currentUserRole === "admin") {
+      // Admin can create all roles
+      return [
+        { value: "expert", label: "Expert" },
+        { value: "admin", label: "Admin" },
+        { value: "company", label: "Company" },
+      ];
+    } else if (currentUserRole === "company") {
+      // Company can only create users
+      return [{ value: "user", label: "User" }];
+    }
+
+    // Default fallback (shouldn't reach here normally)
+    return [{ value: "user", label: "User" }];
+  };
 
   useEffect(() => {
     if (user && mode === "edit") {
@@ -35,15 +58,16 @@ export default function UserModal({
         role: user.role || "",
       });
     } else if (mode === "create") {
-      // Set default role for create mode
+      // Set default role based on current user's role
+      const defaultRole = currentUser?.role === "admin" ? "expert" : "user";
       setFormData({
         name: "",
         email: "",
         phone: "",
-        role: "expert",
+        role: defaultRole,
       });
     }
-  }, [user, mode]);
+  }, [user, mode, currentUser]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -125,10 +149,10 @@ export default function UserModal({
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll"
+        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px] rounded-t-2xl">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -207,11 +231,7 @@ export default function UserModal({
               <SelectDropdown
                 value={formData.role}
                 onChange={(value) => handleChange("role", value)}
-                options={[
-                  { value: "expert", label: "Expert" },
-                  { value: "admin", label: "Admin" },
-                  { value: "company", label: "Company" },
-                ]}
+                options={getRoleOptions()}
                 placeholder="Select role"
                 variant="default"
                 size="lg"

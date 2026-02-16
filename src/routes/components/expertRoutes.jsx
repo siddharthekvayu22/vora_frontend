@@ -1,12 +1,13 @@
 import { Route } from "react-router-dom";
-import Layout from "../layout/Layout";
+import Layout from "../../layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Expert Pages
-import ExpertDashboard from "../pages/dashboard-management/ExpertDashboard";
-import OfficialFramework from "../pages/official-framework-management/OfficialFramework";
-import OfficialFrameworkCategory from "../pages/official-framework-management/OfficialFrameworkCategory";
-import OfficialFrameworkAccess from "../pages/official-framework-management/OfficialFrameworkAccess";
+import ExpertDashboard from "../../pages/dashboard-management/ExpertDashboard";
+import OfficialFramework from "../../pages/official-framework-management/OfficialFramework";
+import OfficialFrameworkDetail from "../../pages/official-framework-management/OfficialFrameworkDetail";
+import OfficialFrameworkCategory from "../../pages/official-framework-management/OfficialFrameworkCategory";
+import OfficialFrameworkAccess from "../../pages/official-framework-management/OfficialFrameworkAccess";
 
 const expertRoutes = [
   // Expert Dashboard
@@ -30,6 +31,18 @@ const expertRoutes = [
       <ProtectedRoute>
         <Layout>
           <OfficialFramework />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="official-framework-detail"
+    path="/official-frameworks/:id"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <OfficialFrameworkDetail />
         </Layout>
       </ProtectedRoute>
     }

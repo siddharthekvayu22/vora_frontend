@@ -16,6 +16,7 @@ import DeleteCategoryModal from "./components/DeleteCategoryModal";
 import { formatDate } from "../../../utils/dateFormatter";
 import CustomBadge from "../../../components/custom/CustomBadge";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
+import UserMiniCard from "@/components/custom/UserMiniCard";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -217,6 +218,14 @@ function Category() {
           label={value ? "Active" : "Inactive"}
           color={value ? "green" : "red"}
         />
+      ),
+    },
+    {
+      key: "createdBy",
+      label: "Created By",
+      sortable: false,
+      render: (value, row) => (
+        <UserMiniCard name={value.name} email={value.email} />
       ),
     },
     {

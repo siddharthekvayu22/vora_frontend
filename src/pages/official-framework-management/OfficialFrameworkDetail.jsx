@@ -140,22 +140,69 @@ function OfficialFrameworkDetail() {
     fetchFrameworkDetails(false);
   }, [id]);
 
-  // Polling effect for AI status updates
+  // Polling effect for AI status updates with exponential backoff
   useEffect(() => {
+    // Check if user is on detail page (path should be /official-frameworks/:id)
+    const isOnDetailPage = window.location.pathname.includes(
+      `/official-frameworks/${id}`,
+    );
+    if (!isOnDetailPage) {
+      return;
+    }
+
     if (!framework?.fileVersions?.length) return;
 
     const currentVersion = framework.fileVersions[0];
     const status = currentVersion?.aiUpload?.status;
 
-    // Start polling if status is "uploaded" or "processing"
-    if (status === "uploaded" || status === "processing") {
-      const interval = setInterval(() => {
-        fetchFrameworkDetails(true); // Background refresh
-      }, 5000); // Poll every 5 seconds
-
-      return () => clearInterval(interval);
+    // Only poll if status is "uploaded" or "processing"
+    if (status !== "uploaded" && status !== "processing") {
+      return;
     }
-  }, [framework?.fileVersions?.[0]?.aiUpload?.status]);
+
+    let pollCount = 0;
+    let timeoutId = null;
+
+    const getNextPollDelay = (count) => {
+      // Exponential backoff: 5s, 10s, 20s, 40s, then 60s (max)
+      const delays = [5000, 10000, 20000, 40000, 60000];
+      return delays[Math.min(count, delays.length - 1)];
+    };
+
+    const pollForStatus = () => {
+      const delay = getNextPollDelay(pollCount);
+
+      timeoutId = setTimeout(async () => {
+        // Check if still on detail page
+        const stillOnPage = window.location.pathname.includes(
+          `/official-frameworks/${id}`,
+        );
+        if (!stillOnPage) {
+          console.log("User left detail page, stopping polling");
+          return;
+        }
+
+        await fetchFrameworkDetails(true); // Background refresh
+        pollCount++;
+
+        // Continue polling if status is still processing
+        const updatedStatus = framework?.fileVersions?.[0]?.aiUpload?.status;
+        if (updatedStatus === "uploaded" || updatedStatus === "processing") {
+          pollForStatus(); // Schedule next poll
+        }
+      }, delay);
+    };
+
+    // Start first poll
+    pollForStatus();
+
+    // Cleanup function - stops polling when component unmounts or dependencies change
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [framework?.fileVersions?.[0]?.aiUpload?.status, id]);
 
   const fetchFrameworkDetails = async (isBackgroundRefresh = false) => {
     try {

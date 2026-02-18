@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import toast from "react-hot-toast";
 import { loginApi } from "../../services/authService";
+import { Button } from "@/components/ui/button";
 
 function Login() {
   const navigate = useNavigate();
@@ -101,15 +102,16 @@ function Login() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
+        size="lg"
           type="submit"
           disabled={isLoading}
-          className={`mt-2 w-full rounded-xl bg-linear-to-r from-primary to-primary/80 py-3 text-base font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg ${
+          className={`mt-2  w-full rounded-xl ${
             isLoading ? "cursor-not-allowed" : "cursor-pointer"
           }`}
         >
           {isLoading ? "Signing in..." : "LOGIN"}
-        </button>
+        </Button>
       </form>
 
       {/* Footer */}

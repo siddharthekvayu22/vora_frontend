@@ -6,6 +6,7 @@ import Icon from "../../components/Icon";
 import EditProfileModal from "./components/EditProfileModal";
 import ChangePasswordModal from "./components/ChangePasswordModal";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 function Profile() {
   const { user: authUser } = useAuth();
@@ -54,12 +55,12 @@ function Profile() {
             className="text-muted-foreground mb-4"
           />
           <p className="text-muted-foreground">Failed to load profile data</p>
-          <button
+          <Button
             onClick={fetchProfileData}
-            className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="mt-4 px-4 py-2 bg-primary text-white "
           >
             Retry
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -286,20 +287,20 @@ function Profile() {
               </h3>
             </div>
             <div className="p-6 space-y-3">
-              <button
+              <Button
                 onClick={() => setShowEditModal(true)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer"
+                className=" flex items-center  p-3 "
               >
                 <Icon name="edit" size="16px" />
                 <span>Edit Profile</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setShowPasswordModal(true)}
-                className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer"
+                className=" flex items-center  p-3"
               >
                 <Icon name="key" size="16px" />
                 <span>Change Password</span>
-              </button>
+              </Button>
             </div>
           </div>
         </div>

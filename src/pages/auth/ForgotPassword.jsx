@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { forgotPassword } from "../../services/authService";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
+import { Button } from "@/components/ui/button";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -82,19 +83,16 @@ function ForgotPassword() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
+          size="lg"
           type="submit"
           disabled={isLoading}
           className={`mt-2 w-full rounded-xl
-            bg-linear-to-r from-primary to-primary/80
-            py-3 text-base font-bold text-white
-            shadow-md
-            transition hover:-translate-y-0.5 hover:shadow-lg ${
-              isLoading ? "cursor-not-allowed" : "cursor-pointer"
+            ${isLoading ? "cursor-not-allowed" : "cursor-pointer"
             }`}
         >
           {isLoading ? "Sending OTP..." : "SEND OTP"}
-        </button>
+        </Button>
       </form>
 
       {/* Footer */}

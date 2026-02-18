@@ -8,6 +8,7 @@ import {
   assignFrameworkAccess,
 } from "../../../../services/adminService";
 import CustomBadge from "../../../../components/custom/CustomBadge";
+import { Button } from "@/components/ui/button";
 
 // Debounce utility function
 function useDebounce(value, delay) {
@@ -392,13 +393,15 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 </p>
               </div>
             </div>
-            <button
+               <Button
+              size="icon"
+              variant="outline"
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onClose}
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               title="Close"
             >
-              <Icon name="x" size="18px" />
-            </button>
+              <Icon name="x" size="20px" />
+            </Button>
           </div>
         </div>
 

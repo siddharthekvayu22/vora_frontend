@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { register } from "../../services/authService";
 import { useAuth } from "../../context/useAuth";
+import { Button } from "@/components/ui/button";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.name.trim()) {
       toast.error("Name is required");
@@ -47,11 +48,11 @@ function Register() {
     try {
       setLoading(true);
       const response = await register(formData);
-      
+
       if (response) {
         // Store email for OTP verification
         setEmailForVerification(formData.email);
-        
+
         toast.success("Registration successful! Please check your email for the verification code.");
         // Navigate to OTP verification page directly
         navigate("/auth/verify-otp");
@@ -162,18 +163,13 @@ function Register() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
+          size="lg"
           type="submit"
           disabled={loading}
           className="
             mt-2 w-full rounded-xl
-            bg-linear-to-r from-primary to-primary/80
-            py-3 text-base font-bold text-white
-            shadow-md
-            transition hover:-translate-y-0.5 hover:shadow-lg
-            disabled:opacity-50 disabled:cursor-not-allowed
-            disabled:hover:translate-y-0 disabled:hover:shadow-md
-            flex items-center justify-center gap-2
+
           "
         >
           {loading ? (
@@ -184,7 +180,7 @@ function Register() {
           ) : (
             "Register"
           )}
-        </button>
+        </Button>
       </form>
 
       {/* Footer */}

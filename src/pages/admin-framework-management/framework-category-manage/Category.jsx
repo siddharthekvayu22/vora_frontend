@@ -236,7 +236,7 @@ function Category() {
         id: `edit-${row._id || row.id}`,
         label: "Edit Category",
         icon: "edit",
-        className: "text-primary",
+        className: "text-primary hover:text-primary",
         onClick: () =>
           setModalState({ isOpen: true, mode: "edit", category: row }),
       },
@@ -244,7 +244,7 @@ function Category() {
         id: `delete-${row._id || row.id}`,
         label: "Delete Category",
         icon: "trash",
-        className: "text-destructive",
+        className: "text-destructive hover:text-destructive",
         onClick: () => setDeleteModalState({ isOpen: true, category: row }),
       },
     ];

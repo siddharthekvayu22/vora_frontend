@@ -47,7 +47,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
                 Delete Version
               </h2>
             </div>
-              <Button
+            <Button
               size="icon"
               variant="outline"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
@@ -115,18 +115,19 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
-          <button
+          <Button
             type="button"
-            className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            variant="outline"
+            className="flex-1 rounded-lg"
             onClick={onCancel}
             disabled={deleting}
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-destructive text-white hover:bg-destructive/80 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleConfirm}
             disabled={deleting}
           >
@@ -141,7 +142,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
                 Delete Version
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

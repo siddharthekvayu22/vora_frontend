@@ -117,7 +117,7 @@ function ActionDropdown({ actions = [] }) {
                     onClick={() => handleActionClick(action, actionId)}
                     variant="ghost"
                     disabled={isDisabled || isLoading}
-                    className={`flex items-center justify-start gap-3 w-full px-4 py-2 transition  ${
+                    className={`flex items-center justify-start gap-3 w-full px-4 py-2 transition rounded-none  ${
                       isDisabled
                         ? "opacity-50 cursor-not-allowed"
                         : ""

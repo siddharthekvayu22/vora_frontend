@@ -42,8 +42,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
               </h2>
             </div>
             <Button
-            size="icon"
-            variant="outline"
+              size="icon"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onCancel}
               title="Close"
@@ -75,22 +74,20 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
             </div>
             <div className="flex gap-2 mt-2">
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  user.role === "admin"
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "admin"
                     ? "bg-red-100 text-red-800"
                     : user.role === "expert"
                       ? "bg-blue-100 text-blue-800"
                       : "bg-green-100 text-green-800"
-                }`}
+                  }`}
               >
                 {user.role}
               </span>
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                  user.isEmailVerified
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isEmailVerified
                     ? "bg-green-100 text-green-800"
                     : "bg-yellow-100 text-yellow-800"
-                }`}
+                  }`}
               >
                 {user.isEmailVerified ? "Verified" : "Pending"}
               </span>

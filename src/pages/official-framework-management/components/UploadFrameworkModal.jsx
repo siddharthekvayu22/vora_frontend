@@ -7,6 +7,7 @@ import {
   getOfficialFrameworkCategoryAccess,
   uploadOfficialFramework,
 } from "../../../services/officialFrameworkService";
+import { Button } from "@/components/ui/button";
 
 /**
  * Upload Framework Modal Component
@@ -236,14 +237,14 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                 Upload Framework
               </h2>
             </div>
-            <button
+            <Button
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={handleClose}
               disabled={saving}
               title="Close"
             >
               <Icon name="close" size="20px" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -350,9 +351,8 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   {!formData.file ? (
                     <label
                       htmlFor="framework-file"
-                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                        errors.file ? "border-red-500" : "border-border"
-                      }`}
+                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${errors.file ? "border-red-500" : "border-border"
+                        }`}
                     >
                       <div className="text-center">
                         <Icon
@@ -373,11 +373,10 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     </label>
                   ) : (
                     <div
-                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
-                        errors.file
-                          ? "border-red-500"
-                          : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                      }`}
+                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${errors.file
+                        ? "border-red-500"
+                        : "border-green-200 bg-green-50 dark:bg-green-900/20"
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <FileTypeCard
@@ -388,17 +387,20 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                       <div className="flex items-center gap-2">
                         <label
                           htmlFor="framework-file"
-                          className="px-3 py-1.5 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded-md hover:bg-primary/20 transition-colors cursor-pointer"
+                          className="flex items-center justify-center w-8 h-8 text-primary bg-primary/10 border border-primary/20 rounded hover:bg-primary/20 transition-colors cursor-pointer"
+                          title="Change file"
                         >
-                          Change
+                          <Icon name="refresh" size="18px" />
                         </label>
-                        <button
+                        <Button
                           type="button"
+                          size="icon"
                           onClick={handleFileRemove}
-                          className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                          className="flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                          title="Remove file"
                         >
-                          Remove
-                        </button>
+                          <Icon name="close" size="18px" />
+                        </Button>
                       </div>
                     </div>
                   )}
@@ -411,18 +413,19 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         {/* Footer */}
         {!loadingCategories && approvedCategories.length > 0 && (
           <div className="flex gap-2 justify-end p-3 border-t border-border">
-            <button
+            <Button
               type="button"
-              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
+              variant="outline"
+              className="flex-1 rounded-lg"
               onClick={handleClose}
               disabled={saving}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSubmit}
               disabled={saving}
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {saving ? (
                 <>
@@ -435,7 +438,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   Upload Framework
                 </>
               )}
-            </button>
+            </Button>
           </div>
         )}
       </div>

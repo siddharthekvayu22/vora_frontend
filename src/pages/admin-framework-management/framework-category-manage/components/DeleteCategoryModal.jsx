@@ -43,9 +43,8 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
             </div>
             <Button
               size="icon"
-              variant="outline"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
+              onClick={onCancel}
               title="Close"
             >
               <Icon name="x" size="20px" />
@@ -75,11 +74,10 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
             </div>
             <div className="flex gap-2 mt-1">
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                  category.isActive
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${category.isActive
                     ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                     : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                }`}
+                  }`}
               >
                 {category.isActive ? "Active" : "Inactive"}
               </span>
@@ -93,18 +91,19 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
-          <button
+           <Button
             type="button"
-            className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            variant="outline"
+            className="flex-1 rounded-lg"
             onClick={onCancel}
             disabled={deleting}
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 bg-destructive text-white hover:bg-destructive/80 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleConfirm}
             disabled={deleting}
           >
@@ -119,7 +118,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
                 Delete Category
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

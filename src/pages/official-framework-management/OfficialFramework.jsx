@@ -322,28 +322,28 @@ function OfficialFramework() {
         id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
-        className: "text-blue-600 dark:text-blue-400",
+        className: "text-blue-600 hover:text-blue-600",
         onClick: () => navigate(`/official-frameworks/${row.id}`),
       },
       {
         id: `download-${row.fileInfo?.fileId}`,
         label: "Download",
         icon: "download",
-        className: "text-green-600 dark:text-green-400",
+        className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadFramework(row),
       },
       {
         id: `edit-${row.mainFileId}`,
         label: "Edit Framework",
         icon: "edit",
-        className: "text-primary",
+        className: "text-primary hover:text-primary",
         onClick: () => handleUpdateFramework(row),
       },
       {
         id: `delete-${row.mainFileId}`,
         label: "Delete Framework",
         icon: "trash",
-        className: "text-red-600 dark:text-red-400",
+        className: "text-red-600 hover:text-red-600",
         onClick: () => handleDeleteFramework(row),
       },
     ];
@@ -355,7 +355,7 @@ function OfficialFramework() {
         id: `send-ai-${row.fileInfo?.versionFileId}`,
         label: "Send to AI",
         icon: "upload",
-        className: "text-blue-600 dark:text-blue-400",
+        className: "text-blue-600 hover:text-blue-600",
         onClick: () => handleUploadToAi(row),
       });
     } else if (aiStatus === "failed" || aiStatus === "skipped") {
@@ -364,7 +364,7 @@ function OfficialFramework() {
         id: `retry-ai-${row.fileInfo?.versionFileId}`,
         label: "Retry AI Upload",
         icon: "refresh",
-        className: "text-orange-600 dark:text-orange-400",
+        className: "text-orange-600 hover:text-orange-600",
         onClick: () => handleUploadToAi(row),
       });
     } else if (aiStatus === "processing") {
@@ -373,7 +373,7 @@ function OfficialFramework() {
         id: `ai-status-${row.fileInfo?.versionFileId}`,
         label: "AI Processing...",
         icon: "clock",
-        className: "text-blue-600 dark:text-blue-400",
+        className: "text-blue-600 hover:text-blue-600",
         disabled: true,
       });
     }

@@ -376,7 +376,7 @@ function FrameworkAccess() {
           id: `approve-${row.id}`,
           label: "Approve Request",
           icon: "check",
-          className: "text-green-600 dark:text-green-400",
+          className: "text-green-600 hover:text-green-600",
           onClick: () =>
             setApproveModalState({ isOpen: true, accessRecord: row }),
         },
@@ -384,7 +384,7 @@ function FrameworkAccess() {
           id: `reject-${row.id}`,
           label: "Reject Request",
           icon: "x",
-          className: "text-destructive",
+          className: "text-destructive hover:text-destructive",
           onClick: () =>
             setRejectModalState({ isOpen: true, accessRecord: row }),
         },
@@ -394,7 +394,7 @@ function FrameworkAccess() {
         id: `revoke-${row.id}`,
         label: "Revoke Access",
         icon: "trash",
-        className: "text-destructive",
+        className: "text-destructive hover:text-destructive",
         onClick: () => setRevokeModalState({ isOpen: true, accessRecord: row }),
       });
     }

@@ -236,6 +236,7 @@ function Users() {
     try {
       const response = await syncUsersToAllServices();
       toast.success(response.message || "Users synced successfully");
+      fetchUsers();
     } catch (e) {
       toast.error(e.message || "Failed to sync users");
       console.error("Sync users error:", e);

@@ -12,7 +12,7 @@ function Header({ pageTitle, breadcrumbs = [] }) {
   const defaultActions = [
     {
       id: "refresh",
-      title: "Refresh",
+      title: "Page Refresh",
       label: "↻",
       onClick: refreshPage,
     },

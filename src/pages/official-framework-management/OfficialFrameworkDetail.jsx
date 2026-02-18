@@ -126,6 +126,7 @@ function OfficialFrameworkDetail() {
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPolling, setIsPolling] = useState(false);
   const [uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [versionToDelete, setVersionToDelete] = useState(null);
@@ -136,21 +137,92 @@ function OfficialFrameworkDetail() {
   const [showHash, setShowHash] = useState(new Set());
 
   useEffect(() => {
-    fetchFrameworkDetails();
+    fetchFrameworkDetails(false);
   }, [id]);
 
-  const fetchFrameworkDetails = async () => {
+  // Polling effect for AI status updates with exponential backoff
+  useEffect(() => {
+    // Check if user is on detail page (path should be /official-frameworks/:id)
+    const isOnDetailPage = window.location.pathname.includes(
+      `/official-frameworks/${id}`,
+    );
+    if (!isOnDetailPage) {
+      return;
+    }
+
+    if (!framework?.fileVersions?.length) return;
+
+    const currentVersion = framework.fileVersions[0];
+    const status = currentVersion?.aiUpload?.status;
+
+    // Only poll if status is "uploaded" or "processing"
+    if (status !== "uploaded" && status !== "processing") {
+      return;
+    }
+
+    let pollCount = 0;
+    let timeoutId = null;
+
+    const getNextPollDelay = (count) => {
+      // Exponential backoff: 5s, 10s, 20s, 40s, then 60s (max)
+      const delays = [5000, 10000, 20000, 40000, 60000];
+      return delays[Math.min(count, delays.length - 1)];
+    };
+
+    const pollForStatus = () => {
+      const delay = getNextPollDelay(pollCount);
+
+      timeoutId = setTimeout(async () => {
+        // Check if still on detail page
+        const stillOnPage = window.location.pathname.includes(
+          `/official-frameworks/${id}`,
+        );
+        if (!stillOnPage) {
+          console.log("User left detail page, stopping polling");
+          return;
+        }
+
+        await fetchFrameworkDetails(true); // Background refresh
+        pollCount++;
+
+        // Continue polling if status is still processing
+        const updatedStatus = framework?.fileVersions?.[0]?.aiUpload?.status;
+        if (updatedStatus === "uploaded" || updatedStatus === "processing") {
+          pollForStatus(); // Schedule next poll
+        }
+      }, delay);
+    };
+
+    // Start first poll
+    pollForStatus();
+
+    // Cleanup function - stops polling when component unmounts or dependencies change
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [framework?.fileVersions?.[0]?.aiUpload?.status, id]);
+
+  const fetchFrameworkDetails = async (isBackgroundRefresh = false) => {
     try {
-      setLoading(true);
+      if (!isBackgroundRefresh) {
+        setLoading(true);
+      } else {
+        setIsPolling(true);
+      }
       const response = await getOfficialFrameworkById(id);
       if (response.success) {
         setFramework(response.data.framework);
       }
     } catch (error) {
-      toast.error(error.message || "Failed to fetch framework details");
-      navigate("/official-frameworks");
+      if (!isBackgroundRefresh) {
+        toast.error(error.message || "Failed to fetch framework details");
+        navigate("/official-frameworks");
+      }
     } finally {
       setLoading(false);
+      setIsPolling(false);
     }
   };
 
@@ -170,10 +242,10 @@ function OfficialFrameworkDetail() {
 
       const response = await uploadOfficialFrameworkToAi(versionFileId);
       toast.success(response.message || "File uploaded to AI successfully");
-      fetchFrameworkDetails();
+      fetchFrameworkDetails(true); // Background refresh after upload
     } catch (error) {
       toast.error(error.message || "Failed to upload to AI");
-      fetchFrameworkDetails();
+      fetchFrameworkDetails(true); // Background refresh on error
     } finally {
       // Remove this versionFileId from the uploading set
       setUploadingToAi((prev) => {
@@ -309,9 +381,24 @@ function OfficialFrameworkDetail() {
     (v) => v.version === framework.currentVersion,
   );
 
+  // Check if currently polling for AI status
+  const isAIProcessing =
+    framework.fileVersions?.[0]?.aiUpload?.status === "uploaded" ||
+    framework.fileVersions?.[0]?.aiUpload?.status === "processing";
+
   return (
     <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
+        {/* Polling Indicator - Always show when AI is processing */}
+        {isAIProcessing && (
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg shadow-lg backdrop-blur-sm">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+              {isPolling ? "Checking AI status..." : "Monitoring AI status..."}
+            </span>
+          </div>
+        )}
+
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
         <div className="rounded-2xl overflow-hidden bg-card border border-border">
           <div className="h-1 bg-gradient-to-r from-primary to-secondary" />

@@ -16,6 +16,7 @@ import DeleteCategoryModal from "./components/DeleteCategoryModal";
 import { formatDate } from "../../../utils/dateFormatter";
 import CustomBadge from "../../../components/custom/CustomBadge";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
+import { Button } from "@/components/ui/button";
 
 function Category() {
   const [frameworkCategory, setFrameworkCategory] = useState([]);
@@ -256,15 +257,16 @@ function Category() {
   };
 
   const renderHeaderButtons = () => (
-    <button
-      className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+    <Button
+    
+      className="flex items-center gap-3 px-5 py-3 "
       onClick={() =>
         setModalState({ isOpen: true, mode: "create", category: null })
       }
     >
       <Icon name="plus" size="18px" />
       Add New Framework Category
-    </button>
+    </Button>
   );
 
   /* ---------------- UI ---------------- */

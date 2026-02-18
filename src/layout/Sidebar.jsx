@@ -4,6 +4,7 @@ import { useAuth } from "../context/useAuth";
 import { useTheme } from "../context/ThemeContext";
 import Icon from "../components/Icon";
 import logoImage from "../assets/loggo.png";
+import { Button } from "@/components/ui/button";
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -177,18 +178,16 @@ function Sidebar() {
       {/* Hamburger */}
       {/* Premium Hamburger */}
       {!isOpen && (
-        <button
+        <Button
           onClick={() => setIsOpen(true)}
           aria-label="Open sidebar"
+          variant="outline"
+          size="icon"
           className="
       fixed left-2 top-5 z-50
       flex h-11 w-11 items-center justify-center
       rounded-2xl
       bg-gradient-to-br from-primary to-primary/70
-      shadow-[0_8px_30px_rgba(20,184,166,0.45)]
-      transition-all duration-300
-      hover:scale-105 hover:shadow-[0_12px_40px_rgba(20,184,166,0.65)]
-      active:scale-95 cursor-pointer
     "
         >
           <div className="flex flex-col gap-[4px]">
@@ -196,7 +195,7 @@ function Sidebar() {
             <span className="h-[2px] w-4 rounded-full bg-white opacity-80" />
             <span className="h-[2px] w-5 rounded-full bg-white" />
           </div>
-        </button>
+        </Button>
       )}
 
       {/* Overlay */}
@@ -251,14 +250,14 @@ function Sidebar() {
             </div>
           </div>
 
-          <button
+          <Button
             onClick={() => setIsOpen(false)}
             className="relative z-10 flex h-9 w-9 items-center justify-center
                        rounded-lg border border-white/30 bg-white/20
                        text-white transition hover:rotate-90 hover:bg-red-500 cursor-pointer"
           >
             <Icon name="close" size="20px" />
-          </button>
+          </Button>
         </div>
 
         {/* ================= MENU ================= */}
@@ -278,30 +277,27 @@ function Sidebar() {
                   }}
                   className={`group relative flex cursor-pointer items-center gap-4
                             rounded-2xl px-4 py-3 transition-all
-                  ${
-                    isParentActive(item)
+                  ${isParentActive(item)
                       ? "border border-primary bg-gradient-to-br from-primary/15 to-primary-2/15 shadow-md"
                       : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
-                  }`}
+                    }`}
                 >
                   {/* Left accent */}
                   <span
                     className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
-                    ${
-                      isParentActive(item)
+                    ${isParentActive(item)
                         ? "h-2/3 bg-gradient-to-b from-primary to-primary-2"
                         : "h-0 bg-primary group-hover:h-1/2 transition-all"
-                    }`}
+                      }`}
                   />
 
                   {/* Icon */}
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl border transition
-                    ${
-                      isParentActive(item)
+                    ${isParentActive(item)
                         ? "border-primary bg-primary/20 text-primary scale-110"
                         : "border-border bg-muted text-muted-foreground group-hover:text-primary"
-                    }`}
+                      }`}
                   >
                     <Icon name={item.icon} size="20px" />
                   </div>
@@ -310,11 +306,10 @@ function Sidebar() {
                   <div className="flex flex-1 flex-col">
                     <span
                       className={`text-sm font-semibold
-                      ${
-                        isParentActive(item)
+                      ${isParentActive(item)
                           ? "text-primary"
                           : "text-foreground"
-                      }`}
+                        }`}
                     >
                       {item.title}
                     </span>
@@ -329,11 +324,10 @@ function Sidebar() {
                   {item.children && (
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-md border transition
-                      ${
-                        activeMenu === item.id
+                      ${activeMenu === item.id
                           ? "rotate-180 border-primary bg-primary text-white"
                           : "border-border bg-muted text-muted-foreground"
-                      }`}
+                        }`}
                     >
                       <Icon name="arrow-down" size="12px" />
                     </div>
@@ -349,19 +343,17 @@ function Sidebar() {
                         to={sub.path}
                         onClick={() => setIsOpen(false)}
                         className={`group flex items-center gap-3 rounded-xl px-3 py-2 transition
-                        ${
-                          isActive(sub.path)
+                        ${isActive(sub.path)
                             ? "bg-primary/20 text-primary border-l-2 border-primary"
                             : "hover:translate-x-1 hover:bg-muted"
-                        }`}
+                          }`}
                       >
                         <div
                           className={`flex h-8 w-8 items-center justify-center rounded-lg border
-                          ${
-                            isActive(sub.path)
+                          ${isActive(sub.path)
                               ? "border-primary bg-primary/20 text-primary scale-110"
                               : "border-border bg-muted text-muted-foreground"
-                          }`}
+                            }`}
                         >
                           <Icon name={sub.icon} size="16px" />
                         </div>
@@ -406,19 +398,21 @@ function Sidebar() {
           </Link>
 
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={toggleTheme}
-              className="flex-1 rounded-xl border border-border bg-primary/70 py-2 text-sm hover:bg-primary/50 text-white"
+              size="icon"
+              className="flex-1 "
             >
               Theme
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => logout()}
-              className="flex-1 rounded-xl border border-red-500 bg-red-500/10
+              size="icon"
+              className="flex-1 border border-red-500 bg-red-500/10
                          py-2 text-sm text-red-500 hover:bg-red-500 hover:text-white"
             >
               Logout
-            </button>
+            </Button>
           </div>
         </div>
       </aside>

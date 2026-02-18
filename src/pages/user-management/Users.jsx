@@ -18,6 +18,7 @@ import UserMiniCard from "../../components/custom/UserMiniCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { useAuth } from "../../context/useAuth";
+import { Button } from "@/components/ui/button";
 
 function Users() {
   const { user } = useAuth();
@@ -384,15 +385,15 @@ function Users() {
           variant="default"
         />
 
-        <button
+        <Button
           onClick={() =>
             setModalState({ isOpen: true, mode: "create", user: null })
           }
-          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+          className="flex items-center gap-3 px-5 py-3 "
         >
           <Icon name="plus" size="18px" />
           Add New User
-        </button>
+        </Button>
       </>
     );
   };

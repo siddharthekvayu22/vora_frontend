@@ -8,6 +8,7 @@ import VerifyOtp from "../pages/auth/VerifyOtp";
 import { useTheme } from "../context/ThemeContext";
 import Icon from "../components/Icon";
 import logoImage from "../assets/loggo.png";
+import { Button } from "@/components/ui/button";
 
 function AuthLayout() {
   const location = useLocation();
@@ -36,21 +37,21 @@ function AuthLayout() {
   return (
     <div className="relative min-h-screen flex bg-background overflow-hidden">
       {/* Theme Toggle */}
-      <button
+      <Button
         onClick={toggleTheme}
+        size="icon"
+        variant="outline"
         className="
           fixed top-6 right-6 z-50
           flex h-12 w-12 items-center justify-center
           rounded-full border border-border
-          bg-card text-foreground
           shadow-md transition
           hover:scale-110 hover:rotate-12
-          hover:bg-primary hover:text-primary-foreground
         "
         aria-label="Toggle theme"
       >
         <Icon name={theme === "light" ? "moon" : "sun"} size="20px" />
-      </button>
+      </Button>
 
       {/* LEFT : Branding Section */}
       <div

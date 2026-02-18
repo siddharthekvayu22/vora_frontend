@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
+import { Button } from "@/components/ui/button";
 
 /**
  * DeleteUserModal Component - Confirmation dialog for deleting a user
@@ -28,7 +29,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
       onClick={onCancel}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
+        className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
@@ -40,13 +41,15 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
                 Delete User
               </h2>
             </div>
-            <button
+            <Button
+            size="icon"
+            variant="outline"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onCancel}
               title="Close"
             >
               <Icon name="x" size="20px" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -95,19 +98,20 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end p-3 border-t border-border">
-          <button
+        <div className="flex items-center gap-3 p-3 border-t border-border">
+          <Button
             type="button"
-            className="w-full px-6 py-2 text-xs font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            variant="outline"
+            className="flex-1 rounded-lg"
             onClick={onCancel}
             disabled={deleting}
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="w-full inline-flex items-center justify-center gap-2 px-6 py-2 text-xs font-semibold rounded-lg bg-red-500 text-white hover:bg-red-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 bg-destructive hover:bg-destructive/80 text-white rounded-lg"
             onClick={() => handleConfirm(false)}
             disabled={deleting}
           >
@@ -122,7 +126,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
                 Delete
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

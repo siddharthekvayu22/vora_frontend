@@ -4,6 +4,7 @@ import { useAuth } from "../../context/useAuth";
 import { useEffect } from "react";
 import { verifyEmail } from "../../services/authService";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 function VerifyEmail() {
   const navigate = useNavigate();
@@ -109,23 +110,20 @@ function VerifyEmail() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
+          size="lg"
           type="submit"
           disabled={isLoading || cooldown > 0}
           className={`mt-2 w-full rounded-xl
-            bg-linear-to-r from-primary to-primary/80
-            py-3 text-base font-bold text-white
-            shadow-md
-            transition hover:-translate-y-0.5 hover:shadow-lg ${
-              isLoading ? "cursor-not-allowed" : "cursor-pointer"
+            ${isLoading ? "cursor-not-allowed" : "cursor-pointer"
             }`}
         >
           {cooldown > 0
             ? `WAIT ${cooldown}s`
             : isLoading
-            ? "Sending..."
-            : "SEND OTP"}
-        </button>
+              ? "Sending..."
+              : "SEND OTP"}
+        </Button>
       </form>
 
       {/* Footer */}

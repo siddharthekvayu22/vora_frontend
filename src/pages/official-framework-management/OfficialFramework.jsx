@@ -18,6 +18,7 @@ import {
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
+import { Button } from "@/components/ui/button";
 
 function OfficialFramework() {
   const navigate = useNavigate();
@@ -403,13 +404,13 @@ function OfficialFramework() {
           size="lg"
           variant="default"
         />
-        <button
+        <Button
           onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+          className="flex items-center gap-3 px-5 py-3 "
         >
           <Icon name="plus" size="18px" />
           Add New Framework
-        </button>
+        </Button>
       </>
     );
   };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
+import { Button } from "@/components/ui/button";
 
 /**
  * ApproveAccessModal Component - Modal for approving framework access requests
@@ -46,13 +47,15 @@ export default function ApproveAccessModal({
                 Approve Framework Access
               </h2>
             </div>
-            <button
+            <Button
+              size="icon"
+              variant="outline"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onCancel}
+              onClick={onClose}
               title="Close"
             >
               <Icon name="x" size="20px" />
-            </button>
+            </Button>
           </div>
         </div>
 

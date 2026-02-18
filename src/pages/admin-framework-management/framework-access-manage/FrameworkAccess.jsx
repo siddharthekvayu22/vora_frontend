@@ -20,6 +20,7 @@ import CustomBadge from "../../../components/custom/CustomBadge";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
 import SelectDropdown from "../../../components/custom/SelectDropdown";
+import { Button } from "@/components/ui/button";
 
 function FrameworkAccess() {
   const [frameworkAccess, setFrameworkAccess] = useState([]);
@@ -423,13 +424,14 @@ function FrameworkAccess() {
           size="lg"
           variant="default"
         />
-        <button
+        <Button
           onClick={() => setGiveAccessModalState({ isOpen: true })}
-          className="flex items-center gap-3 px-5 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:scale-[102%] transition-all duration-200 font-medium text-xs cursor-pointer"
+          className="flex items-center gap-3 px-5 py-3"
+          
         >
           <Icon name="plus" size="18px" />
           Give Framework Access
-        </button>
+        </Button>
       </>
     );
   };

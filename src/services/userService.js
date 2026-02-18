@@ -107,6 +107,23 @@ export function toggleUserStatus(userId) {
   );
 }
 
+/**
+ * Sync users to all services (Admin)
+ */
+export function syncUsersToAllServices() {
+  return apiRequest(
+    `/auth/internal/users/sync`,
+    {
+      method: "POST",
+      headers: {
+        "x-internal-user-sync-api-key": import.meta.env
+          .VITE_INTERNAL_USER_SYNC_API_KEY,
+      },
+    },
+    true,
+  );
+}
+
 export default {
   getAllUsers,
   getUserById,
@@ -115,4 +132,5 @@ export default {
   updateUser,
   deleteUser,
   toggleUserStatus,
+  syncUsersToAllServices,
 };

@@ -11,6 +11,7 @@ import {
   deleteUser,
   updateUserByAdmin,
   toggleUserStatus,
+  syncUsersToAllServices,
 } from "../../services/userService";
 import { formatDate } from "../../utils/dateFormatter";
 import CustomBadge from "../../components/custom/CustomBadge";
@@ -54,6 +55,8 @@ function Users() {
     isOpen: false,
     user: null,
   });
+
+  const [syncLoading, setSyncLoading] = useState(false);
 
   /* ---------------- URL SYNC ---------------- */
   useEffect(() => {
@@ -228,6 +231,19 @@ function Users() {
     }
   };
 
+  const handleSyncUsers = async () => {
+    setSyncLoading(true);
+    try {
+      const response = await syncUsersToAllServices();
+      toast.success(response.message || "Users synced successfully");
+    } catch (e) {
+      toast.error(e.message || "Failed to sync users");
+      console.error("Sync users error:", e);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -355,6 +371,21 @@ function Users() {
   const renderHeaderButtons = () => {
     return (
       <>
+        {/* Sync users to all services  */}
+        <Button
+          size="lg"
+          onClick={handleSyncUsers}
+          disabled={syncLoading}
+          className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
+          title="Sync all users to services"
+        >
+          <Icon
+            name={syncLoading ? "refresh" : "refresh"}
+            size="18px"
+            className={syncLoading ? "animate-spin" : ""}
+          />
+          {syncLoading ? "Syncing..." : "Sync Users"}
+        </Button>
         {/* Role Filter */}
         {user.role === "admin" && (
           <SelectDropdown

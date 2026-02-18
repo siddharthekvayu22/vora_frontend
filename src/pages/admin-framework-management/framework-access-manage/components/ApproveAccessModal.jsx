@@ -1,6 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
+import { Button } from "@/components/ui/button";
 
 /**
  * ApproveAccessModal Component - Modal for approving framework access requests
@@ -46,13 +47,14 @@ export default function ApproveAccessModal({
                 Approve Framework Access
               </h2>
             </div>
-            <button
+            <Button
+              size="icon"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onCancel}
               title="Close"
             >
               <Icon name="x" size="20px" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -118,18 +120,19 @@ export default function ApproveAccessModal({
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
-          <button
+          <Button
             type="button"
-            className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            variant="outline"
+            className="flex-1 rounded-lg"
             onClick={onCancel}
             disabled={approving}
           >
             Cancel
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/80 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleConfirm}
             disabled={approving}
           >
@@ -144,7 +147,7 @@ export default function ApproveAccessModal({
                 Approve Access
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

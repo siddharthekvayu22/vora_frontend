@@ -341,21 +341,23 @@ function Users() {
         id: `toggle-${row._id || row.id}`,
         label: row.isActive ? "Deactivate User" : "Activate User",
         icon: "power",
-        className: row.isActive ? "text-destructive" : "text-green-600",
+        className: row.isActive
+      ? "text-destructive hover:text-destructive"
+      : "text-green-600 hover:text-green-600",
         onClick: () => handleToggleStatus(row),
       },
       {
         id: `edit-${row._id || row.id}`,
         label: "Edit User",
         icon: "edit",
-        className: "text-primary",
+        className: "text-primary hover:text-primary",
         onClick: () => setModalState({ isOpen: true, mode: "edit", user: row }),
       },
       {
         id: `delete-${row._id || row.id}`,
         label: "Delete User",
         icon: "trash",
-        className: "text-destructive",
+        className: "text-destructive hover:text-destructive",
         onClick: () => setDeleteModalState({ isOpen: true, user: row }),
       },
     ];
@@ -418,11 +420,10 @@ function Users() {
         />
 
         <Button
-          size="lg"
           onClick={() =>
             setModalState({ isOpen: true, mode: "create", user: null })
           }
-          className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
+          className="flex items-center gap-3 px-5 py-3"
         >
           <Icon name="plus" size="18px" />
           Add New User

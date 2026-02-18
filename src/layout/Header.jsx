@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Icon from "../components/Icon";
+import { Button } from "@/components/ui/button";
 
 function Header({ pageTitle, breadcrumbs = [] }) {
   const navigate = useNavigate();
@@ -61,15 +62,17 @@ function Header({ pageTitle, breadcrumbs = [] }) {
         {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-2">
           {defaultActions.map((action) => (
-            <button
+            <Button
               key={action.id}
+              variant="outline"
+              size="icon"
               onClick={action.onClick}
               title={action.title}
-              className="rounded-lg border border-border px-3 py-2 text-sm font-medium text-muted-foreground transition hover:border-primary hover:bg-muted hover:text-primary cursor-pointer"
+              className="px-3 py-2 transition"
             >
               {action.icon && <Icon name={action.icon} size="16px" />}
               {action.label}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

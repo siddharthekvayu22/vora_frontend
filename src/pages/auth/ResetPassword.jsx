@@ -4,6 +4,7 @@ import { useAuth } from "../../context/useAuth";
 import { useEffect } from "react";
 import { resendOTP, resetPassword } from "../../services/authService";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -192,19 +193,17 @@ function ResetPassword() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
+           size="lg"
           type="submit"
           disabled={isLoading}
           className={`mt-4 w-full rounded-xl
-            bg-linear-to-r from-primary to-primary/80
-            py-3 text-base font-bold text-white
-            shadow-md
-            transition hover:-translate-y-0.5 hover:shadow-lg ${
+            ${
               isLoading ? "cursor-not-allowed" : "cursor-pointer"
             }`}
         >
           {isLoading ? "Resetting..." : "RESET PASSWORD"}
-        </button>
+        </Button>
       </form>
 
       {/* Footer */}

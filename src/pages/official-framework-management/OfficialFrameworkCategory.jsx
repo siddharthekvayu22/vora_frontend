@@ -212,7 +212,7 @@ function OfficialFrameworkCategory() {
         icon: hasRequested ? "check" : "plus",
         className: hasRequested
           ? "text-muted-foreground"
-          : "text-primary dark:text-primary",
+          : "text-primary hover:text-primary",
         disabled: isDisabled,
         onClick: () => {
           if (!isDisabled) {

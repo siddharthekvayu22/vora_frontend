@@ -252,8 +252,8 @@ function OfficialFrameworkAccess() {
         className: isDisabled
           ? "text-muted-foreground"
           : isRevokedOrRejected
-            ? "text-orange-600 dark:text-orange-400"
-            : "text-primary dark:text-primary",
+            ? "text-orange-600 hover:text-orange-600"
+            : "text-primary hover:text-primary",
         disabled: isDisabled,
         onClick: () => {
           if (!isDisabled) {

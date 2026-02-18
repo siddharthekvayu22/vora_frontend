@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { updateUser } from "../../../services/userService";
 import Icon from "../../../components/Icon";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
 
 function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
   const [formData, setFormData] = useState({
@@ -74,13 +75,14 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
                 Edit Profile
               </h2>
             </div>
-            <button
+            <Button
+              variant="ghost"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onClose}
               title="Close"
             >
               <Icon name="x" size="20px" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -119,17 +121,18 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
           </div>
 
           <div className="flex gap-2 justify-end p-3 border-t border-border">
-            <button
+            <Button
               type="button"
-              className="flex-1 px-4 py-2 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
+              className="flex-1 px-4 py-2 text-sm font-semibold  bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
               onClick={onClose}
               disabled={loading}
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+               
+              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-white disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
               disabled={loading}
             >
               {loading ? (
@@ -143,7 +146,7 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
                   Update Profile
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -23,17 +23,9 @@ import {
   FiEdit,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
-import DeleteVersionModal from "./components/DeleteVersionModal";
-import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
-import RejectFrameworkModal from "./components/RejectFrameworkModal";
-import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
 import {
   downloadOfficialFrameworkFile,
-  getOfficialFrameworkById,
-  uploadOfficialFrameworkToAi,
-  deleteOfficialFrameworkVersion,
-  approveOfficialFramework,
-  rejectOfficialFramework,
+  getApprovedOfficialFrameworkById,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
@@ -128,12 +120,6 @@ function OfficialFrameworkDetail() {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPolling, setIsPolling] = useState(false);
-  const [uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [versionToDelete, setVersionToDelete] = useState(null);
-  const [approveModalOpen, setApproveModalOpen] = useState(false);
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
-  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
@@ -221,7 +207,7 @@ function OfficialFrameworkDetail() {
       } else {
         setIsPolling(true);
       }
-      const response = await getOfficialFrameworkById(id);
+      const response = await getApprovedOfficialFrameworkById(id);
       if (response.success) {
         setFramework(response.data.framework);
       }
@@ -243,117 +229,6 @@ function OfficialFrameworkDetail() {
     } catch (error) {
       toast.error(error.message || "Failed to download file");
     }
-  };
-
-  const handleUploadToAi = async (versionFileId) => {
-    try {
-      // Add this versionFileId to the uploading set
-      setUploadingToAi((prev) => new Set(prev).add(versionFileId));
-
-      const response = await uploadOfficialFrameworkToAi(versionFileId);
-      toast.success(response.message || "File uploaded to AI successfully");
-      fetchFrameworkDetails(true); // Background refresh after upload
-    } catch (error) {
-      toast.error(error.message || "Failed to upload to AI");
-      fetchFrameworkDetails(true); // Background refresh on error
-    } finally {
-      // Remove this versionFileId from the uploading set
-      setUploadingToAi((prev) => {
-        const next = new Set(prev);
-        next.delete(versionFileId);
-        return next;
-      });
-    }
-  };
-
-  const handleDeleteVersion = (version) => {
-    setVersionToDelete(version);
-    setDeleteModalOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!versionToDelete) return;
-
-    try {
-      const response = await deleteOfficialFrameworkVersion(
-        framework.mainFileId,
-        versionToDelete.fileId,
-      );
-      if (response.success) {
-        toast.success(response.message || "Version deleted successfully");
-        fetchFrameworkDetails();
-        setDeleteModalOpen(false);
-        setVersionToDelete(null);
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to delete version");
-      throw error; // Re-throw to let modal handle loading state
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-    setVersionToDelete(null);
-  };
-
-  const handleApprove = () => {
-    setApproveModalOpen(true);
-  };
-
-  const handleApproveConfirm = async () => {
-    try {
-      const response = await approveOfficialFramework(framework.id);
-      if (response.success) {
-        toast.success(response.message || "Framework approved successfully");
-        fetchFrameworkDetails();
-        setApproveModalOpen(false);
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to approve framework");
-      throw error;
-    }
-  };
-
-  const handleApproveCancel = () => {
-    setApproveModalOpen(false);
-  };
-
-  const handleReject = () => {
-    setRejectModalOpen(true);
-  };
-
-  const handleRejectConfirm = async (rejectionReason) => {
-    try {
-      const response = await rejectOfficialFramework(
-        framework.id,
-        rejectionReason,
-      );
-      if (response.success) {
-        toast.success(response.message || "Framework rejected successfully");
-        fetchFrameworkDetails();
-        setRejectModalOpen(false);
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to reject framework");
-      throw error;
-    }
-  };
-
-  const handleRejectCancel = () => {
-    setRejectModalOpen(false);
-  };
-
-  const handleUpdate = () => {
-    setUpdateModalOpen(true);
-  };
-
-  const handleUpdateSuccess = () => {
-    fetchFrameworkDetails();
-    setUpdateModalOpen(false);
-  };
-
-  const handleUpdateCancel = () => {
-    setUpdateModalOpen(false);
   };
 
   const toggleVersion = (version) => {
@@ -428,10 +303,6 @@ function OfficialFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={handleUpdate}>
-                  <FiEdit size={16} />
-                  Update Framework
-                </Button>
                 <Button
                   onClick={() => navigate(-1)}
                   className="flex items-center gap-2"
@@ -636,61 +507,6 @@ function OfficialFrameworkDetail() {
                         Download
                       </Button>
 
-                      {!isCurrent && framework.fileVersions.length > 1 && (
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDeleteVersion(ver)}
-                          className="flex items-center gap-2"
-                        >
-                          <FiTrash size={15} />
-                          Delete
-                        </Button>
-                      )}
-
-                      {/* Show Approve/Reject buttons only for current version when AI is completed and status is pending */}
-                      {isCurrent &&
-                        ver.aiUpload?.status === "completed" &&
-                        framework.approval.status === "pending" && (
-                          <>
-                            <Button
-                              onClick={handleApprove}
-                              className="flex items-center gap-2"
-                            >
-                              <FiCheckCircle size={16} />
-                              Approve
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              onClick={handleReject}
-                              className="flex items-center gap-2"
-                            >
-                              <FiXCircle size={16} />
-                              Reject
-                            </Button>
-                          </>
-                        )}
-                      {/* Show Upload to AI button when not uploaded, not processing, and not completed */}
-                      {(!ver.aiUpload ||
-                        (ver.aiUpload.status !== "completed" &&
-                          ver.aiUpload.status !== "uploaded" &&
-                          ver.aiUpload.status !== "processing")) && (
-                        <Button
-                          variant="secondary"
-                          onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={uploadingToAi.has(ver.fileId)}
-                          className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {uploadingToAi.has(ver.fileId) ? (
-                            <FiLoader size={13} className="animate-spin" />
-                          ) : (
-                            <FiUploadCloud size={13} />
-                          )}
-                          {ver.aiUpload?.status === "failed" ||
-                          ver.aiUpload?.status === "skipped"
-                            ? "Retry AI Upload"
-                            : "Upload to AI"}
-                        </Button>
-                      )}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -1142,43 +958,6 @@ function OfficialFrameworkDetail() {
           </div>
         </div>
       </div>
-
-      {/* Delete Version Modal */}
-      {deleteModalOpen && versionToDelete && (
-        <DeleteVersionModal
-          version={versionToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
-
-      {/* Approve Framework Modal */}
-      {approveModalOpen && (
-        <ApproveFrameworkModal
-          framework={framework}
-          onConfirm={handleApproveConfirm}
-          onCancel={handleApproveCancel}
-        />
-      )}
-
-      {/* Reject Framework Modal */}
-      {rejectModalOpen && (
-        <RejectFrameworkModal
-          framework={framework}
-          onConfirm={handleRejectConfirm}
-          onCancel={handleRejectCancel}
-        />
-      )}
-
-      {/* Update Framework Modal */}
-      {updateModalOpen && (
-        <UpdateFrameworkModal
-          isOpen={updateModalOpen}
-          onClose={handleUpdateCancel}
-          onSuccess={handleUpdateSuccess}
-          framework={framework}
-        />
-      )}
     </div>
   );
 }

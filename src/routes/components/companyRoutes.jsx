@@ -5,6 +5,9 @@ import ProtectedRoute from "./ProtectedRoute";
 // Company Pages
 import Dashboard from "../../pages/dashboard-management/Dashboard";
 import Users from "../../pages/user-management/Users";
+import CompanyFramework from "@/pages/company-framework-management/CompanyFramework";
+import OfficialFramework from "@/pages/company-framework-management/OfficialFramework";
+import OfficialFrameworkDetail from "@/pages/company-framework-management/OfficialFrameworkDetail";
 
 const companyRoutes = [
   <Route
@@ -25,6 +28,39 @@ const companyRoutes = [
       <ProtectedRoute>
         <Layout>
           <Users />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="company-framework"
+    path="/frameworks"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <CompanyFramework />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="company-official-framework"
+    path="/official-framework"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <OfficialFramework />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="company-official-framework-detail"
+    path="/official-frameworks/:id"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <OfficialFrameworkDetail />
         </Layout>
       </ProtectedRoute>
     }

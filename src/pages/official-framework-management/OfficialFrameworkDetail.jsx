@@ -36,6 +36,7 @@ import {
   rejectOfficialFramework,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
+import { Button } from "@/components/ui/button";
 
 function InfoItem({ icon, label, value }) {
   return (
@@ -139,6 +140,15 @@ function OfficialFrameworkDetail() {
   useEffect(() => {
     fetchFrameworkDetails(false);
   }, [id]);
+
+  // Set all versions as expanded by default when framework loads
+  useEffect(() => {
+    if (framework?.fileVersions?.length) {
+      setExpandedVersions(
+        new Set(framework.fileVersions.map((v) => v.version)),
+      );
+    }
+  }, [framework?.fileVersions?.length]);
 
   // Polling effect for AI status updates with exponential backoff
   useEffect(() => {
@@ -418,19 +428,16 @@ function OfficialFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button
-                  onClick={handleUpdate}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer"
-                >
+                <Button onClick={handleUpdate}>
                   <FiEdit size={16} />
                   Update Framework
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => navigate("/official-frameworks")}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                  className="flex items-center gap-2"
                 >
                   <FiArrowLeft size={20} /> Back
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -619,24 +626,25 @@ function OfficialFrameworkDetail() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button
+                      <Button
                         onClick={() =>
                           handleDownload(ver.fileId, ver.originalFileName)
                         }
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                        className="flex items-center gap-2"
                       >
                         <FiDownload size={15} />
                         Download
-                      </button>
+                      </Button>
 
                       {!isCurrent && framework.fileVersions.length > 1 && (
-                        <button
+                        <Button
+                          variant="destructive"
                           onClick={() => handleDeleteVersion(ver)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                          className="flex items-center gap-2"
                         >
                           <FiTrash size={15} />
                           Delete
-                        </button>
+                        </Button>
                       )}
 
                       {/* Show Approve/Reject buttons only for current version when AI is completed and status is pending */}
@@ -644,20 +652,21 @@ function OfficialFrameworkDetail() {
                         ver.aiUpload?.status === "completed" &&
                         framework.approval.status === "pending" && (
                           <>
-                            <button
+                            <Button
                               onClick={handleApprove}
-                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-primary/80 bg-primary text-primary-foreground cursor-pointer"
+                              className="flex items-center gap-2"
                             >
                               <FiCheckCircle size={16} />
                               Approve
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              variant="destructive"
                               onClick={handleReject}
-                              className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-red-600/80 bg-red-600 text-white cursor-pointer"
+                              className="flex items-center gap-2"
                             >
                               <FiXCircle size={16} />
                               Reject
-                            </button>
+                            </Button>
                           </>
                         )}
                       {/* Show Upload to AI button when not uploaded, not processing, and not completed */}
@@ -665,10 +674,11 @@ function OfficialFrameworkDetail() {
                         (ver.aiUpload.status !== "completed" &&
                           ver.aiUpload.status !== "uploaded" &&
                           ver.aiUpload.status !== "processing")) && (
-                        <button
+                        <Button
+                          variant="secondary"
                           onClick={() => handleUploadToAi(ver.fileId)}
                           disabled={uploadingToAi.has(ver.fileId)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-300 hover:bg-secondary/80 bg-secondary text-secondary-foreground cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {uploadingToAi.has(ver.fileId) ? (
                             <FiLoader size={13} className="animate-spin" />
@@ -679,11 +689,13 @@ function OfficialFrameworkDetail() {
                           ver.aiUpload?.status === "skipped"
                             ? "Retry AI Upload"
                             : "Upload to AI"}
-                        </button>
+                        </Button>
                       )}
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => toggleVersion(ver.version)}
-                        className="ml-2 p-2 hover:bg-muted rounded-lg transition-colors cursor-pointer"
+                        className="ml-2"
                         aria-label={isExpanded ? "Collapse" : "Expand"}
                       >
                         {isExpanded ? (
@@ -691,7 +703,7 @@ function OfficialFrameworkDetail() {
                         ) : (
                           <FiChevronDown size={18} />
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
@@ -728,13 +740,15 @@ function OfficialFrameworkDetail() {
                       </div>
 
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => toggleHash(ver.version)}
-                          className="flex items-center gap-1.5 text-xs font-medium transition-colors duration-200 text-muted-foreground cursor-pointer"
+                          className="flex items-center gap-1.5"
                         >
                           <FiHash size={13} />
                           {hashVisible ? "Hide" : "Show"} file hash
-                        </button>
+                        </Button>
                       </div>
 
                       {hashVisible && (

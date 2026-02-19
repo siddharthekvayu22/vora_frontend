@@ -393,9 +393,8 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 </p>
               </div>
             </div>
-               <Button
+            <Button
               size="icon"
-              variant="outline"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onClose}
               title="Close"
@@ -648,16 +647,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
         {/* Footer */}
         <div className="flex gap-2 justify-end p-3 border-t border-border">
-          <button
+          <Button
             onClick={onClose}
-            className="flex-1 px-3 py-1.5 text-sm font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
+            type="button"
+            variant="outline"
+            className="flex-1 rounded-lg"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleAssignAccess}
             disabled={!selectedUser || !selectedFramework || assigning}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-1.5 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+            className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {assigning ? (
               <>
@@ -670,7 +671,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 Continue
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import CardWrapper from "./components/CardWrapper";
 import MetricCard from "./components/MetricCard";
 import UserRegistrationChart from "../../components/charts/UserRegistrationChart";
 import Icon from "../../components/Icon";
-import { getAdminDashboardAnalytics } from "../../services/adminService";
+import { getAdminDashboardAnalytics } from "../../services/dashboardService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";

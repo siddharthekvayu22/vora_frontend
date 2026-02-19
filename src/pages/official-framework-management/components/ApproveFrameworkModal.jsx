@@ -48,10 +48,10 @@ export default function ApproveFrameworkModal({
                 Approve Framework
               </h2>
             </div>
-             <Button
+            <Button
               size="icon"
               className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
+              onClick={onCancel}
               title="Close"
             >
               <Icon name="x" size="20px" />

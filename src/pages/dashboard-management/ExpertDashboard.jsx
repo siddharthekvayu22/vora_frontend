@@ -58,7 +58,7 @@ export default function ExpertDashboard() {
     {
       label: "TOTAL FRAMEWORKS",
       value: stats.totalFrameworks,
-      trend: "Frameworks uploaded by me",
+      trend: "Frameworks uploaded",
       trendColor: "text-blue-500",
       icon: "framework",
     },
@@ -72,7 +72,7 @@ export default function ExpertDashboard() {
     {
       label: "SUCCESS RATE",
       value: `${stats.successRate}%`,
-      trend: "Approval rate for my uploads",
+      trend: "Approval rate for uploads",
       trendColor: "text-green-500",
       icon: "check-circle",
     },

@@ -1,13 +1,6 @@
 import { apiRequest } from "./apiService";
 
 /**
- * Get admin dashboard analytics
- */
-export function getAdminDashboardAnalytics() {
-  return apiRequest("/admin/dashboard/analytics", true);
-}
-
-/**
  * Get admin framework category
  */
 export function getAdminFrameworkCategory({
@@ -144,7 +137,6 @@ export function assignFrameworkAccess(expertId, frameworkId) {
 }
 
 export default {
-  getAdminDashboardAnalytics,
   getAdminFrameworkCategory,
   getAdminFrameworkAccess,
   createFrameworkCategory,

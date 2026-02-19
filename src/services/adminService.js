@@ -4,7 +4,7 @@ import { apiRequest } from "./apiService";
  * Get admin dashboard analytics
  */
 export function getAdminDashboardAnalytics() {
-  return apiRequest("/admin/dashboard/analytics", true);
+  return apiRequest("/dashboard/admin/analytics", true);
 }
 
 /**

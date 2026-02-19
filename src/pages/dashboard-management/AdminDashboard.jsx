@@ -25,7 +25,7 @@ export default function AdminDashboard() {
       setDashboardData(response.data);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      toast.error("Failed to load dashboard data");
+      toast.error(error.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -52,10 +52,7 @@ export default function AdminDashboard() {
             className="text-muted-foreground mb-4"
           />
           <p className="text-muted-foreground">Failed to load dashboard data</p>
-          <Button
-            onClick={fetchDashboardData}
-            className="mt-4"
-          >
+          <Button onClick={fetchDashboardData} className="mt-4">
             Retry
           </Button>
         </div>
@@ -214,14 +211,15 @@ export default function AdminDashboard() {
                         {user.name}
                       </h4>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${user.role === "admin"
+                        className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+                          user.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : user.role === "expert"
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
                               : user.role === "company"
                                 ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
                                 : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          }`}
+                        }`}
                       >
                         {user.role}
                       </span>

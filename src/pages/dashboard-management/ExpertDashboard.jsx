@@ -132,7 +132,7 @@ export default function ExpertDashboard() {
     },
   ];
 
-  const getStatusColor = (status) => {
+  const getApprovalStatusColor = (status) => {
     switch (status) {
       case "approved":
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
@@ -140,6 +140,21 @@ export default function ExpertDashboard() {
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
       case "rejected":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
+    }
+  };
+
+  const getAiStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+      case "processing":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+      case "failed":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      case "skipped":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
     }
@@ -362,11 +377,22 @@ export default function ExpertDashboard() {
                       <h4 className="font-semibold text-foreground text-sm truncate">
                         {upload.name}
                       </h4>
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(upload.status)}`}
-                      >
-                        {upload.status}
-                      </span>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${getApprovalStatusColor(upload.approvalStatus)}`}
+                          title="Expert Approval Status"
+                        >
+                          {upload.approvalStatus}
+                        </span>
+                        {upload.aiStatus && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getAiStatusColor(upload.aiStatus)}`}
+                            title="AI Processing Status"
+                          >
+                            AI: {upload.aiStatus}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <span>{upload.type.toUpperCase()}</span>

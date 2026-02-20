@@ -8,6 +8,7 @@ import Users from "../../pages/user-management/Users";
 import CompanyFramework from "@/pages/company-framework-management/CompanyFramework";
 import OfficialFramework from "@/pages/company-framework-management/OfficialFramework";
 import OfficialFrameworkDetail from "@/pages/company-framework-management/OfficialFrameworkDetail";
+import CompanyFrameworkDetail from "@/pages/company-framework-management/CompanyFrameworkDetail";
 
 const companyRoutes = [
   <Route
@@ -39,6 +40,17 @@ const companyRoutes = [
       <ProtectedRoute>
         <Layout>
           <CompanyFramework />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="company-framework-detail"
+    path="/frameworks/:id"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <CompanyFrameworkDetail />
         </Layout>
       </ProtectedRoute>
     }

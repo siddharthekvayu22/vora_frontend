@@ -94,6 +94,8 @@ import {
   MdWork,
 } from "react-icons/md";
 
+import { TbRefresh } from "react-icons/tb";
+
 import {
   // Additional icons from Feather Icons
   FiActivity,
@@ -215,7 +217,6 @@ const iconMap = {
   // Misc icons
   star: MdStar,
   heart: MdFavorite,
-  refresh: MdRefresh,
   link: MdLink,
   tag: MdLabel,
   lightbulb: MdLightbulb,
@@ -234,6 +235,7 @@ const iconMap = {
   ppt: MdDescription,
   csv: MdTableChart,
   zip: MdFolder,
+  refresh: TbRefresh,
 
   // Ai icons
   "ai-bot": RiRobot2Fill,

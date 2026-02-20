@@ -583,44 +583,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
               </div>
             </div>
           </div>
-
-          {/* Selection Summary */}
-          {(selectedUser || selectedFramework) && (
-            <div className="mt-4 p-3 bg-muted/50 rounded-xl border border-border">
-              <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                <Icon name="info" size="14px" className="text-primary" />
-                Selection Summary
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center gap-2">
-                  <Icon
-                    name="user"
-                    size="14px"
-                    className="text-blue-600 dark:text-blue-400"
-                  />
-                  <span className="text-sm text-muted-foreground">User:</span>
-                  <span className="text-sm font-medium text-foreground">
-                    {selectedUser ? selectedUser.name : "Not selected"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Icon
-                    name="shield"
-                    size="14px"
-                    className="text-purple-600 dark:text-purple-400"
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    Framework:
-                  </span>
-                  <span className="text-sm font-medium text-foreground">
-                    {selectedFramework
-                      ? selectedFramework.frameworkCategoryName
-                      : "Not selected"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Footer */}

@@ -372,23 +372,6 @@ function Users() {
   const renderHeaderButtons = () => {
     return (
       <>
-        {/* Sync users to all services  */}
-        {user.role === "admin" && (
-          <Button
-            size="lg"
-            onClick={handleSyncUsers}
-            disabled={syncLoading}
-            className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
-            title="Sync all users to services"
-          >
-            <Icon
-              name={syncLoading ? "refresh" : "refresh"}
-              size="18px"
-              className={syncLoading ? "animate-spin" : ""}
-            />
-            {syncLoading ? "Syncing..." : "Sync Users"}
-          </Button>
-        )}
         {/* Role Filter */}
         {user.role === "admin" && (
           <SelectDropdown
@@ -420,6 +403,24 @@ function Users() {
           size="lg"
           variant="default"
         />
+
+        {/* Sync users to all services  */}
+        {user.role === "admin" && (
+          <Button
+            size="lg"
+            onClick={handleSyncUsers}
+            disabled={syncLoading}
+            className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
+            title="Sync all users to services"
+          >
+            <Icon
+              name={syncLoading ? "refresh" : "refresh"}
+              size="18px"
+              className={syncLoading ? "animate-spin" : ""}
+            />
+            {syncLoading ? "Syncing..." : "Sync Users"}
+          </Button>
+        )}
 
         <Button
           onClick={() =>

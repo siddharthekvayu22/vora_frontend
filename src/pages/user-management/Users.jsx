@@ -342,8 +342,8 @@ function Users() {
         label: row.isActive ? "Deactivate User" : "Activate User",
         icon: "power",
         className: row.isActive
-      ? "text-destructive hover:text-destructive"
-      : "text-green-600 hover:text-green-600",
+          ? "text-destructive hover:text-destructive"
+          : "text-green-600 hover:text-green-600",
         onClick: () => handleToggleStatus(row),
       },
       {
@@ -372,21 +372,6 @@ function Users() {
   const renderHeaderButtons = () => {
     return (
       <>
-        {/* Sync users to all services  */}
-        <Button
-          size="lg"
-          onClick={handleSyncUsers}
-          disabled={syncLoading}
-          className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
-          title="Sync all users to services"
-        >
-          <Icon
-            name={syncLoading ? "refresh" : "refresh"}
-            size="18px"
-            className={syncLoading ? "animate-spin" : ""}
-          />
-          {syncLoading ? "Syncing..." : "Sync Users"}
-        </Button>
         {/* Role Filter */}
         {user.role === "admin" && (
           <SelectDropdown
@@ -419,11 +404,30 @@ function Users() {
           variant="default"
         />
 
+        {/* Sync users to all services  */}
+        {user.role === "admin" && (
+          <Button
+            size="lg"
+            onClick={handleSyncUsers}
+            disabled={syncLoading}
+            className="flex items-center gap-3 transition-all duration-200"
+            title="Sync all users to services"
+          >
+            <Icon
+              name={syncLoading ? "refresh" : "refresh"}
+              size="18px"
+              className={syncLoading ? "animate-spin" : ""}
+            />
+            {syncLoading ? "Syncing..." : "Sync Users"}
+          </Button>
+        )}
+
         <Button
+          size="lg"
           onClick={() =>
             setModalState({ isOpen: true, mode: "create", user: null })
           }
-          className="flex items-center gap-3 px-5 py-3"
+          className="flex items-center gap-3"
         >
           <Icon name="plus" size="18px" />
           Add New User

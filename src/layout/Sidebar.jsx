@@ -103,13 +103,6 @@ function Sidebar() {
           },
         ],
       },
-      // {
-      //   id: "reports",
-      //   title: "Reports",
-      //   description: "Compliance reports",
-      //   icon: "chart",
-      //   path: "/reports",
-      // },
     ],
 
     company: [
@@ -128,11 +121,26 @@ function Sidebar() {
         path: "/users",
       },
       {
-        id: "frameworks",
-        title: "Frameworks",
-        description: "View & browse frameworks",
+        id: "company-framework-management",
+        title: "Framework Management",
+        description: "Manage framework & access",
         icon: "framework",
-        path: "/frameworks",
+        children: [
+          {
+            id: "company-frameworks",
+            title: "Frameworks",
+            description: "View & manage frameworks",
+            icon: "framework",
+            path: "/frameworks",
+          },
+          {
+            id: "company-official-framework",
+            title: "Official Framework",
+            description: "Official framework",
+            icon: "framework",
+            path: "/official-framework",
+          },
+        ],
       },
       {
         id: "documents",
@@ -277,27 +285,30 @@ function Sidebar() {
                   }}
                   className={`group relative flex cursor-pointer items-center gap-4
                             rounded-2xl px-4 py-3 transition-all
-                  ${isParentActive(item)
+                  ${
+                    isParentActive(item)
                       ? "border border-primary bg-gradient-to-br from-primary/15 to-primary-2/15 shadow-md"
                       : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
-                    }`}
+                  }`}
                 >
                   {/* Left accent */}
                   <span
                     className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
-                    ${isParentActive(item)
+                    ${
+                      isParentActive(item)
                         ? "h-2/3 bg-gradient-to-b from-primary to-primary-2"
                         : "h-0 bg-primary group-hover:h-1/2 transition-all"
-                      }`}
+                    }`}
                   />
 
                   {/* Icon */}
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-xl border transition
-                    ${isParentActive(item)
+                    ${
+                      isParentActive(item)
                         ? "border-primary bg-primary/20 text-primary scale-110"
                         : "border-border bg-muted text-muted-foreground group-hover:text-primary"
-                      }`}
+                    }`}
                   >
                     <Icon name={item.icon} size="20px" />
                   </div>
@@ -306,10 +317,11 @@ function Sidebar() {
                   <div className="flex flex-1 flex-col">
                     <span
                       className={`text-sm font-semibold
-                      ${isParentActive(item)
+                      ${
+                        isParentActive(item)
                           ? "text-primary"
                           : "text-foreground"
-                        }`}
+                      }`}
                     >
                       {item.title}
                     </span>
@@ -324,10 +336,11 @@ function Sidebar() {
                   {item.children && (
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded-md border transition
-                      ${activeMenu === item.id
+                      ${
+                        activeMenu === item.id
                           ? "rotate-180 border-primary bg-primary text-white"
                           : "border-border bg-muted text-muted-foreground"
-                        }`}
+                      }`}
                     >
                       <Icon name="arrow-down" size="12px" />
                     </div>
@@ -343,17 +356,19 @@ function Sidebar() {
                         to={sub.path}
                         onClick={() => setIsOpen(false)}
                         className={`group flex items-center gap-3 rounded-xl px-3 py-2 transition
-                        ${isActive(sub.path)
+                        ${
+                          isActive(sub.path)
                             ? "bg-primary/20 text-primary border-l-2 border-primary"
                             : "hover:translate-x-1 hover:bg-muted"
-                          }`}
+                        }`}
                       >
                         <div
                           className={`flex h-8 w-8 items-center justify-center rounded-lg border
-                          ${isActive(sub.path)
+                          ${
+                            isActive(sub.path)
                               ? "border-primary bg-primary/20 text-primary scale-110"
                               : "border-border bg-muted text-muted-foreground"
-                            }`}
+                          }`}
                         >
                           <Icon name={sub.icon} size="16px" />
                         </div>
@@ -398,11 +413,7 @@ function Sidebar() {
           </Link>
 
           <div className="flex gap-2">
-            <Button
-              onClick={toggleTheme}
-              size="icon"
-              className="flex-1 "
-            >
+            <Button onClick={toggleTheme} size="icon" className="flex-1 ">
               Theme
             </Button>
             <Button

@@ -3,22 +3,17 @@ import toast from "react-hot-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
-import UploadFrameworkModal from "./components/UploadFrameworkModal";
-import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
-import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
-import {
-  downloadOfficialFrameworkFile,
-  getAllOfficialFrameworks,
-  deleteOfficialFramework,
-  uploadOfficialFrameworkToAi,
-} from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
+import {
+  downloadOfficialFrameworkFile,
+  getApprovedOfficialFrameworks,
+} from "@/services/officialFrameworkService";
 
 function OfficialFramework() {
   const navigate = useNavigate();
@@ -69,7 +64,7 @@ function OfficialFramework() {
   const fetchOfficialFramework = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getAllOfficialFrameworks({
+      const res = await getApprovedOfficialFrameworks({
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
@@ -153,90 +148,6 @@ function OfficialFramework() {
     setSearchParams(p);
   };
 
-  const handleUploadSuccess = async () => {
-    // Retry logic to handle async event processing
-    const maxRetries = 5;
-    const retryDelay = 500; // 500ms between retries
-
-    const previousCount = officialFramework.length;
-
-    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
-      const data = await fetchOfficialFramework();
-
-      // Check if new framework was added
-      if (data.length > previousCount) {
-        // Success - new framework found
-        return;
-      }
-
-      // Wait before next retry (except on last iteration)
-      if (retryCount < maxRetries - 1) {
-        await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      }
-    }
-
-    // Final refresh if still not found
-    await fetchOfficialFramework();
-  };
-
-  const handleUpdateFramework = (framework) => {
-    setFrameworkToUpdate(framework);
-    setUpdateModalOpen(true);
-  };
-
-  const handleUpdateSuccess = () => {
-    // Refresh the framework list after successful update
-    fetchOfficialFramework();
-  };
-
-  const handleDeleteFramework = (framework) => {
-    setFrameworkToDelete(framework);
-    setDeleteModalOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (!frameworkToDelete) return;
-    const fileId = frameworkToDelete.mainFileId; // Use mainFileId for delete
-    try {
-      const result = await deleteOfficialFramework(fileId);
-      toast.success(result.message || "Framework deleted successfully");
-      fetchOfficialFramework(); // Refresh the list
-      setDeleteModalOpen(false);
-      setFrameworkToDelete(null);
-    } catch (error) {
-      console.error("Delete error:", error);
-      toast.error(error.message || "Failed to delete framework");
-      throw error; // Re-throw to let modal handle loading state
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
-    setFrameworkToDelete(null);
-  };
-
-  /* ---------------- UPLOAD TO AI ---------------- */
-  const handleUploadToAi = async (row) => {
-    // Use versionFileId for AI upload (specific version)
-    if (!row.fileInfo?.versionFileId) {
-      toast.error("File version ID not found");
-      return;
-    }
-
-    try {
-      const result = await uploadOfficialFrameworkToAi(
-        row.fileInfo.versionFileId,
-      ); // Use versionFileId
-      toast.success(result.message || "Framework uploaded to AI successfully");
-      fetchOfficialFramework(); // Refresh to get updated AI status
-    } catch (error) {
-      console.error("Upload to AI error:", error);
-      toast.error(error.message || "Failed to upload framework to AI");
-      fetchOfficialFramework(); // Refresh to get updated AI status
-      throw error; // Re-throw to let ActionDropdown handle loading state
-    }
-  };
-
   const handleDownloadFramework = async (row) => {
     if (!row.fileInfo?.versionFileId) return;
 
@@ -315,8 +226,6 @@ function OfficialFramework() {
   ];
 
   const renderActions = (row) => {
-    const aiStatus = row.aiUpload?.status;
-
     const actions = [
       {
         id: `view-${row.id}`,
@@ -332,87 +241,12 @@ function OfficialFramework() {
         className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadFramework(row),
       },
-      {
-        id: `edit-${row.mainFileId}`,
-        label: "Edit Framework",
-        icon: "edit",
-        className: "text-primary hover:text-primary",
-        onClick: () => handleUpdateFramework(row),
-      },
-      {
-        id: `delete-${row.mainFileId}`,
-        label: "Delete Framework",
-        icon: "trash",
-        className: "text-red-600 hover:text-red-600",
-        onClick: () => handleDeleteFramework(row),
-      },
     ];
-
-    // Add AI-specific actions based on status (at index 0 - first position)
-    if (!aiStatus) {
-      // Not sent to AI - show "Send to AI" action
-      actions.splice(0, 0, {
-        id: `send-ai-${row.fileInfo?.versionFileId}`,
-        label: "Send to AI",
-        icon: "upload",
-        className: "text-blue-600 hover:text-blue-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "failed" || aiStatus === "skipped") {
-      // Failed or Skipped - show "Retry AI Upload" action
-      actions.splice(0, 0, {
-        id: `retry-ai-${row.fileInfo?.versionFileId}`,
-        label: "Retry AI Upload",
-        icon: "refresh",
-        className: "text-orange-600 hover:text-orange-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "processing") {
-      // Processing - show "View AI Status" action (disabled)
-      actions.splice(0, 0, {
-        id: `ai-status-${row.fileInfo?.versionFileId}`,
-        label: "AI Processing...",
-        icon: "clock",
-        className: "text-blue-600 hover:text-blue-600",
-        disabled: true,
-      });
-    }
 
     return (
       <div className="flex justify-center">
         <ActionDropdown actions={actions} />
       </div>
-    );
-  };
-
-  const renderHeaderButtons = () => {
-    return (
-      <>
-        {/* Status Filter */}
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "uploaded", label: "Uploaded" },
-            { value: "failed", label: "Failed" },
-            { value: "skiped", label: "Skiped" },
-            { value: "processing", label: "Processing" },
-            { value: "completed", label: "Completed" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
-        <Button
-          size="lg"
-          onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3"
-        >
-          <Icon name="plus" size="18px" />
-          Add New Framework
-        </Button>
-      </>
     );
   };
 
@@ -429,37 +263,9 @@ function OfficialFramework() {
         sortConfig={sortConfig}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
-        renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search framework name, code, or uploader..."
         emptyMessage={emptyMessage}
       />
-
-      {/* Upload Framework Modal */}
-      <UploadFrameworkModal
-        isOpen={uploadModalOpen}
-        onClose={() => setUploadModalOpen(false)}
-        onSuccess={handleUploadSuccess}
-      />
-
-      {/* Update Framework Modal */}
-      <UpdateFrameworkModal
-        isOpen={updateModalOpen}
-        onClose={() => {
-          setUpdateModalOpen(false);
-          setFrameworkToUpdate(null);
-        }}
-        onSuccess={handleUpdateSuccess}
-        framework={frameworkToUpdate}
-      />
-
-      {/* Delete Framework Modal */}
-      {deleteModalOpen && frameworkToDelete && (
-        <DeleteOfficialFrameworkModal
-          framework={frameworkToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
     </div>
   );
 }

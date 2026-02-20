@@ -214,6 +214,7 @@ const UserRegistrationChart = ({ data }) => {
             tickLine={false}
             tick={{ fontSize: 12, fill: colors.text }}
             domain={[0, "dataMax + 1"]}
+            allowDecimals={false}
           />
 
           <Tooltip content={<CustomTooltip />} />

@@ -252,13 +252,13 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     <tr
       key={user.id}
       onClick={() => handleUserSelect(user)}
-      className={`cursor-pointer transition-all duration-200 hover:bg-muted/50 ${
+      className={`cursor-pointer transition-all duration-200 hover:bg-muted/80 ${
         selectedUser?.id === user.id
           ? "bg-primary/10 border-l-4 border-primary"
           : "border-l-4 border-transparent"
       }`}
     >
-      <td className="px-3 py-2">
+      <td className="px-3 py-2 w-[80%]">
         <div className="flex items-center gap-2">
           <div
             className={`w-6 h-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20`}
@@ -266,26 +266,19 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             <Icon name="user" size="14px" />
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-foreground text-sm">
+            <span className="font-medium text-foreground text-sm line-clamp-1">
               {user.name}
             </span>
             <span className="text-xs text-muted-foreground">{user.email}</span>
           </div>
         </div>
       </td>
-      <td className="px-3 py-2">
-        <CustomBadge
-          label={user.role}
-          color={
-            user.role === "admin"
-              ? "blue"
-              : user.role === "expert"
-                ? "green"
-                : "gray"
-          }
-        >
-          {user.role}
-        </CustomBadge>
+      <td className="px-3 py-2 w-[20%]">
+        <div className="flex justify-end">
+          <CustomBadge label={user.role} color={"green"}>
+            {user.role}
+          </CustomBadge>
+        </div>
       </td>
     </tr>
   );
@@ -350,7 +343,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         <button
           onClick={() => onPageChange(pagination.currentPage - 1)}
           disabled={!pagination.hasPrevPage}
-          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Previous
         </button>
@@ -360,7 +353,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         <button
           onClick={() => onPageChange(pagination.currentPage + 1)}
           disabled={!pagination.hasNextPage}
-          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-2 py-1 text-xs border border-border rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           Next
         </button>
@@ -451,33 +444,18 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                         className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                       />
                     </div>
-
-                    {/* Role Filter */}
-                    <SelectDropdown
-                      value={usersRoleFilter}
-                      onChange={handleUserRoleFilter}
-                      options={[
-                        { value: "", label: "All Roles" },
-                        { value: "admin", label: "Admin" },
-                        { value: "expert", label: "Expert" },
-                        { value: "company", label: "Company" },
-                      ]}
-                      placeholder="All Roles"
-                      size="md"
-                      variant="default"
-                    />
                   </div>
                 </div>
 
                 {/* Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-muted/30">
+                    <thead className="bg-muted/80 border-b border-border">
                       <tr>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider w-3/5">
                           User
                         </th>
-                        <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                        <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider w-2/5 pr-12">
                           Role
                         </th>
                       </tr>
@@ -557,7 +535,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 {/* Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-muted/30">
+                    <thead className="bg-muted/80 border-b border-border">
                       <tr>
                         <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                           Framework

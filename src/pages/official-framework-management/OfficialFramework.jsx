@@ -405,8 +405,9 @@ function OfficialFramework() {
           variant="default"
         />
         <Button
+          size="lg"
           onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3 px-5 py-3 "
+          className="flex items-center gap-3"
         >
           <Icon name="plus" size="18px" />
           Add New Framework

@@ -410,7 +410,7 @@ function Users() {
             size="lg"
             onClick={handleSyncUsers}
             disabled={syncLoading}
-            className="flex items-center gap-3 px-5 py-3 transition-all duration-200"
+            className="flex items-center gap-3 transition-all duration-200"
             title="Sync all users to services"
           >
             <Icon
@@ -423,10 +423,11 @@ function Users() {
         )}
 
         <Button
+          size="lg"
           onClick={() =>
             setModalState({ isOpen: true, mode: "create", user: null })
           }
-          className="flex items-center gap-3 px-5 py-3"
+          className="flex items-center gap-3"
         >
           <Icon name="plus" size="18px" />
           Add New User

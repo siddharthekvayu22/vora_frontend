@@ -425,9 +425,9 @@ function FrameworkAccess() {
           variant="default"
         />
         <Button
+          size="lg"
           onClick={() => setGiveAccessModalState({ isOpen: true })}
           className="flex items-center gap-3 px-5 py-3"
-          
         >
           <Icon name="plus" size="18px" />
           Give Framework Access

@@ -19,6 +19,7 @@ import {
   FiActivity,
   FiTrash,
   FiEdit,
+  FiGitMerge,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
@@ -28,6 +29,7 @@ import {
   getCompanyFrameworkById,
   uploadCompanyFrameworkToAi,
   deleteCompanyFrameworkVersion,
+  compareFrameworks,
 } from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
@@ -127,6 +129,7 @@ function CompanyFrameworkDetail() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
+  const [comparingFrameworks, setComparingFrameworks] = useState(new Set());
 
   useEffect(() => {
     fetchFrameworkDetails(false);
@@ -287,6 +290,30 @@ function CompanyFrameworkDetail() {
 
   const handleUpdateCancel = () => {
     setUpdateModalOpen(false);
+  };
+
+  const handleCompare = async (companyJobId) => {
+    try {
+      // For now, we'll just show a toast that the button works
+      // You'll need to implement a modal to select the official framework
+      toast.success(
+        "Compare functionality - Select official framework to compare",
+      );
+
+      // Example of how to call the API when you have both job IDs:
+      // setComparingFrameworks((prev) => new Set(prev).add(companyJobId));
+      // const response = await compareFrameworks(companyJobId, officialJobId);
+      // toast.success(response.message || "Comparison started successfully");
+      // You can navigate to comparison results or show in modal
+    } catch (error) {
+      toast.error(error.message || "Failed to start comparison");
+    } finally {
+      setComparingFrameworks((prev) => {
+        const next = new Set(prev);
+        next.delete(companyJobId);
+        return next;
+      });
+    }
   };
 
   const toggleVersion = (version) => {
@@ -476,6 +503,25 @@ function CompanyFrameworkDetail() {
                         <FiDownload size={15} />
                         Download
                       </Button>
+
+                      {ver.aiUpload?.status === "completed" &&
+                        ver.aiUpload?.job_id && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleCompare(ver.aiUpload.job_id)}
+                            disabled={comparingFrameworks.has(
+                              ver.aiUpload.job_id,
+                            )}
+                            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {comparingFrameworks.has(ver.aiUpload.job_id) ? (
+                              <FiLoader size={13} className="animate-spin" />
+                            ) : (
+                              <FiGitMerge size={13} />
+                            )}
+                            Compare
+                          </Button>
+                        )}
 
                       {!isCurrent && framework.fileVersions.length > 1 && (
                         <Button

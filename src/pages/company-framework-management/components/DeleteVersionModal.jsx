@@ -2,18 +2,7 @@ import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
 
-/**
- * DeleteOfficialFrameworkModal Component - Confirmation dialog for deleting a framework
- *
- * @param {Object} framework - Framework to delete
- * @param {Function} onConfirm - Confirm delete handler
- * @param {Function} onCancel - Cancel handler
- */
-export default function DeleteOfficialFrameworkModal({
-  framework,
-  onConfirm,
-  onCancel,
-}) {
+export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -21,7 +10,7 @@ export default function DeleteOfficialFrameworkModal({
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting framework:", error);
+      console.error("Error deleting version:", error);
     } finally {
       setDeleting(false);
     }
@@ -42,7 +31,7 @@ export default function DeleteOfficialFrameworkModal({
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
               <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete Framework
+                Delete Version
               </h2>
             </div>
             <Button
@@ -58,8 +47,8 @@ export default function DeleteOfficialFrameworkModal({
 
         <div className="p-4">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            Are you sure you want to delete this framework? This action cannot
-            be undone.
+            Are you sure you want to delete this version? This action cannot be
+            undone.
           </p>
 
           <div className="bg-muted rounded-xl p-3 border-l-4 border-red-500 mb-4">
@@ -69,28 +58,23 @@ export default function DeleteOfficialFrameworkModal({
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {framework.frameworkName}
+                  Version {version.version}
                 </h4>
                 <p className="text-sm text-muted-foreground m-0">
-                  Code: {framework.frameworkCode}
+                  {version.originalFileName}
                 </p>
               </div>
             </div>
             <div className="flex gap-2 mt-1">
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                {framework.frameworkType?.toUpperCase() || "PDF"}
+                {version.frameworkType?.toUpperCase() || "PDF"}
               </span>
-              {framework.fileInfo?.fileSize && (
+              {version.fileSize && (
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
-                  {framework.fileInfo.fileSize}
+                  {version.fileSize}
                 </span>
               )}
             </div>
-            {framework.uploadedBy?.name && (
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Uploaded by: {framework.uploadedBy.name}
-              </p>
-            )}
           </div>
         </div>
 
@@ -119,7 +103,7 @@ export default function DeleteOfficialFrameworkModal({
             ) : (
               <>
                 <Icon name="trash" size="16px" />
-                Delete Framework
+                Delete Version
               </>
             )}
           </Button>

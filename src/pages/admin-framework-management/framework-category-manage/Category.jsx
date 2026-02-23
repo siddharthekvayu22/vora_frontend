@@ -267,8 +267,8 @@ function Category() {
 
   const renderHeaderButtons = () => (
     <Button
-    
-      className="flex items-center gap-3 px-5 py-3 "
+      size="lg"
+      className="flex items-center gap-3"
       onClick={() =>
         setModalState({ isOpen: true, mode: "create", category: null })
       }

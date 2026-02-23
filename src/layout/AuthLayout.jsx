@@ -9,10 +9,27 @@ import { useTheme } from "../context/ThemeContext";
 import Icon from "../components/Icon";
 import logoImage from "../assets/loggo.png";
 import { Button } from "@/components/ui/button";
+import { syncUsersToAllServices } from "../services/userService";
+import { toast } from "react-hot-toast";
+import { useState } from "react";
 
 function AuthLayout() {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const [syncLoading, setSyncLoading] = useState(false);
+
+  const handleSyncUsers = async () => {
+    setSyncLoading(true);
+    try {
+      const response = await syncUsersToAllServices();
+      toast.success(response.message || "Users synced successfully");
+    } catch (e) {
+      toast.error(e.message || "Failed to sync users");
+      console.error("Sync users error:", e);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
 
   // Route ke basis pe component decide karte hain
   const renderAuthForm = () => {
@@ -51,6 +68,27 @@ function AuthLayout() {
         aria-label="Toggle theme"
       >
         <Icon name={theme === "light" ? "moon" : "sun"} size="20px" />
+      </Button>
+      <Button
+        onClick={handleSyncUsers}
+        size="icon"
+        variant="outline"
+        disabled={syncLoading}
+        className="
+          fixed top-6 right-20 z-50
+          flex h-12 w-12 items-center justify-center
+          rounded-full border border-border
+          shadow-md transition
+          hover:scale-110 hover:rotate-12
+          disabled:opacity-50 disabled:cursor-not-allowed
+        "
+        aria-label="Sync users"
+      >
+        <Icon
+          name={"refresh"}
+          size="20px"
+          className={syncLoading ? "animate-spin" : ""}
+        />
       </Button>
 
       {/* LEFT : Branding Section */}

@@ -4,14 +4,33 @@ import MetricCard from "./components/MetricCard";
 import Icon from "../../components/Icon";
 import { formatDate } from "../../utils/dateFormatter";
 import { Link } from "react-router-dom";
+import { getExpertDashboardAnalytics } from "../../services/dashboardService";
+import toast from "react-hot-toast";
 
 export default function ExpertDashboard() {
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+  const [recentUploads, setRecentUploads] = useState([]);
 
   useEffect(() => {
-    // Simulate loading
-    setTimeout(() => setLoading(false), 1000);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await getExpertDashboardAnalytics();
+      if (response.success) {
+        setStats(response.data.stats);
+        setRecentUploads(response.data.recentUploads);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      toast.error("Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -24,90 +43,22 @@ export default function ExpertDashboard() {
     );
   }
 
-  // Static data for expert dashboard
-  const stats = {
-    totalFrameworks: 24,
-    totalCategories: 8,
-    successRate: 87.5, // (approved/total * 100)
-    totalUploadSize: "200.4 MB",
-    uploadFrequency: {
-      thisMonth: 6,
-      lastMonth: 4,
-    },
-    categoryPopularity: [
-      { name: "ISO Standards", count: 8 },
-      { name: "Security Frameworks", count: 6 },
-      { name: "Quality Management", count: 4 },
-      { name: "Risk Management", count: 3 },
-      { name: "Data Protection", count: 3 },
-    ],
-    fileTypeDistribution: {
-      pdf: 45,
-      docx: 35,
-      xlsx: 20,
-    },
-    recentActivity: 3, // last 7 days
-    mostUsedCategory: "ISO Standards",
-    largestFile: {
-      name: "ISO_27001_Complete_Guide.pdf",
-      size: "8.2 MB",
-    },
-    firstUpload: "2024-01-15T10:30:00Z",
-    lastUpload: "2024-02-03T14:22:00Z",
-    pendingRequests: 2,
-    inaccessibleCategories: 3,
-  };
-
-  // Recent uploads (static data)
-  const recentUploads = [
-    {
-      id: 1,
-      name: "ISO 9001 Quality Management Framework",
-      type: "pdf",
-      size: "299.2 KB",
-      uploadedAt: "2024-02-03T14:22:00Z",
-      status: "approved",
-    },
-    {
-      id: 2,
-      name: "ISO 27001 Information Security",
-      type: "docx",
-      size: "22.72 KB",
-      uploadedAt: "2024-02-02T11:15:00Z",
-      status: "pending",
-    },
-    {
-      id: 3,
-      name: "GDPR Compliance Framework",
-      type: "pdf",
-      size: "1.8 MB",
-      uploadedAt: "2024-02-01T16:45:00Z",
-      status: "approved",
-    },
-    {
-      id: 4,
-      name: "Risk Assessment Template",
-      type: "xlsx",
-      size: "456 KB",
-      uploadedAt: "2024-01-30T09:30:00Z",
-      status: "approved",
-    },
-    {
-      id: 5,
-      name: "SOC 2 Compliance Guide",
-      type: "pdf",
-      size: "3.2 MB",
-      uploadedAt: "2024-01-28T13:20:00Z",
-      status: "rejected",
-    },
-  ];
+  if (!stats) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-muted-foreground">No dashboard data available</p>
+        </div>
+      </div>
+    );
+  }
 
   // Prepare metrics data
   const metrics = [
     {
       label: "TOTAL FRAMEWORKS",
       value: stats.totalFrameworks,
-      trend: "Frameworks uploaded by me",
+      trend: "Frameworks uploaded",
       trendColor: "text-blue-500",
       icon: "framework",
     },
@@ -121,7 +72,7 @@ export default function ExpertDashboard() {
     {
       label: "SUCCESS RATE",
       value: `${stats.successRate}%`,
-      trend: "Approval rate for my uploads",
+      trend: "Approval rate for uploads",
       trendColor: "text-green-500",
       icon: "check-circle",
     },
@@ -181,7 +132,7 @@ export default function ExpertDashboard() {
     },
   ];
 
-  const getStatusColor = (status) => {
+  const getApprovalStatusColor = (status) => {
     switch (status) {
       case "approved":
         return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
@@ -189,6 +140,21 @@ export default function ExpertDashboard() {
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
       case "rejected":
         return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
+    }
+  };
+
+  const getAiStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+      case "processing":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+      case "failed":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      case "skipped":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
     }
@@ -280,12 +246,46 @@ export default function ExpertDashboard() {
                     {stats.recentActivity} uploads (7 days)
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-2 bg-muted rounded">
-                  <span className="text-sm text-muted-foreground">
-                    Pending Requests
+              </div>
+            </div>
+
+            {/* Access Status Counts */}
+            <div className="space-y-3">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <Icon name="key" size="16px" className="text-blue-500" />
+                Framework Access Status
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded border border-green-200 dark:border-green-800">
+                  <span className="text-sm text-green-700 dark:text-green-400">
+                    Approved
                   </span>
-                  <span className="text-sm font-medium text-yellow-600">
+                  <span className="text-sm font-bold text-green-700 dark:text-green-400">
+                    {stats.approvedAccess}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
+                  <span className="text-sm text-yellow-700 dark:text-yellow-400">
+                    Pending
+                  </span>
+                  <span className="text-sm font-bold text-yellow-700 dark:text-yellow-400">
                     {stats.pendingRequests}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded border border-red-200 dark:border-red-800">
+                  <span className="text-sm text-red-700 dark:text-red-400">
+                    Rejected
+                  </span>
+                  <span className="text-sm font-bold text-red-700 dark:text-red-400">
+                    {stats.rejectedAccess}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900/20 rounded border border-gray-200 dark:border-gray-800">
+                  <span className="text-sm text-gray-700 dark:text-gray-400">
+                    Revoked
+                  </span>
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-400">
+                    {stats.revokedAccess}
                   </span>
                 </div>
               </div>
@@ -323,17 +323,24 @@ export default function ExpertDashboard() {
                 Top Categories
               </h4>
               <div className="space-y-2">
-                {stats.categoryPopularity.slice(0, 3).map((cat, index) => (
-                  <div
-                    key={cat.name}
-                    className="flex items-center justify-between p-2 bg-muted rounded"
-                  >
-                    <span className="text-sm">{cat.name}</span>
-                    <span className="text-sm font-medium text-primary">
-                      {cat.count}
-                    </span>
-                  </div>
-                ))}
+                {stats.categoryPopularity &&
+                stats.categoryPopularity.length > 0 ? (
+                  stats.categoryPopularity.slice(0, 3).map((cat, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-muted rounded"
+                    >
+                      <span className="text-sm">{cat.name}</span>
+                      <span className="text-sm font-medium text-primary">
+                        {cat.count}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-2">
+                    No category data available
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -356,38 +363,55 @@ export default function ExpertDashboard() {
           className="flex flex-col"
         >
           <div className="space-y-2 flex-1">
-            {recentUploads.map((upload) => (
-              <div
-                key={upload.id}
-                className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                  <Icon name={getFileTypeIcon(upload.type)} size="18px" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-semibold text-foreground text-sm truncate">
-                      {upload.name}
-                    </h4>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(upload.status)}`}
-                    >
-                      {upload.status}
-                    </span>
+            {recentUploads && recentUploads.length > 0 ? (
+              recentUploads.map((upload) => (
+                <div
+                  key={upload.id}
+                  className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                >
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Icon name={getFileTypeIcon(upload.type)} size="18px" />
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{upload.type.toUpperCase()}</span>
-                    <span>•</span>
-                    <span>{upload.size}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-foreground text-sm truncate">
+                        {upload.name}
+                      </h4>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-medium ${getApprovalStatusColor(upload.approvalStatus)}`}
+                          title="Expert Approval Status"
+                        >
+                          {upload.approvalStatus}
+                        </span>
+                        {upload.aiStatus && (
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${getAiStatusColor(upload.aiStatus)}`}
+                            title="AI Processing Status"
+                          >
+                            AI: {upload.aiStatus}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{upload.type.toUpperCase()}</span>
+                      <span>•</span>
+                      <span>{upload.size}</span>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs whitespace-nowrap">
+                      {formatDate(upload.uploadedAt)}
+                    </p>
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="text-xs whitespace-nowrap">
-                    {formatDate(upload.uploadedAt)}
-                  </p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No recent uploads</p>
               </div>
-            ))}
+            )}
           </div>
         </CardWrapper>
 

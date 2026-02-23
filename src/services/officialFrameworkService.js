@@ -203,6 +203,40 @@ export function rejectOfficialFramework(frameworkId, rejectionReason) {
   );
 }
 
+// ========================================
+// COMPANY USER APIS (Approved Frameworks Only)
+// ========================================
+
+/**
+ * Get all approved official frameworks for company users
+ */
+export function getApprovedOfficialFrameworks({
+  page = 1,
+  limit = 10,
+  search = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(search && { search }),
+  });
+
+  return apiRequest(
+    `/official-frameworks/frameworks/approved-frameworks?${params.toString()}`,
+    true,
+  );
+}
+
+/**
+ * Get approved official framework by ID for company users
+ */
+export function getApprovedOfficialFrameworkById(id) {
+  return apiRequest(
+    `/official-frameworks/frameworks/approved-frameworks/${id}`,
+    true,
+  );
+}
+
 export default {
   getOfficialFrameworkById,
   getAllOfficialFrameworks,
@@ -216,4 +250,6 @@ export default {
   deleteOfficialFrameworkVersion,
   approveOfficialFramework,
   rejectOfficialFramework,
+  getApprovedOfficialFrameworks,
+  getApprovedOfficialFrameworkById,
 };

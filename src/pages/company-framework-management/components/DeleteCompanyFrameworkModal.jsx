@@ -2,14 +2,7 @@ import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
 
-/**
- * DeleteOfficialFrameworkModal Component - Confirmation dialog for deleting a framework
- *
- * @param {Object} framework - Framework to delete
- * @param {Function} onConfirm - Confirm delete handler
- * @param {Function} onCancel - Cancel handler
- */
-export default function DeleteOfficialFrameworkModal({
+export default function DeleteCompanyFrameworkModal({
   framework,
   onConfirm,
   onCancel,

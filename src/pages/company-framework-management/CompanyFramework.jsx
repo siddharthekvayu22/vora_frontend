@@ -3,29 +3,29 @@ import toast from "react-hot-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
-import UploadFrameworkModal from "./components/UploadFrameworkModal";
-import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
-import DeleteOfficialFrameworkModal from "./components/DeleteOfficialFrameworkModal";
+import UploadCompanyFrameworkModal from "./components/UploadCompanyFrameworkModal";
+import UpdateCompanyFrameworkModal from "./components/UpdateCompanyFrameworkModal";
+import DeleteCompanyFrameworkModal from "./components/DeleteCompanyFrameworkModal";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import FileTypeCard from "../../components/custom/FileTypeCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
 import {
-  downloadOfficialFrameworkFile,
-  getAllOfficialFrameworks,
-  deleteOfficialFramework,
-  uploadOfficialFrameworkToAi,
-} from "../../services/officialFrameworkService";
+  downloadCompanyFrameworkFile,
+  getAllCompanyFrameworks,
+  deleteCompanyFramework,
+  uploadCompanyFrameworkToAi,
+} from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
 
-function OfficialFramework() {
+function CompanyFramework() {
   const navigate = useNavigate();
-  const [officialFramework, setOfficialFramework] = useState([]);
+  const [companyFramework, setCompanyFramework] = useState([]);
   const [loading, setLoading] = useState(true);
   const [emptyMessage, setEmptyMessage] = useState(
-    "No official framework found",
+    "No company framework found",
   );
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
@@ -66,10 +66,10 @@ function OfficialFramework() {
   }, [searchParams]);
 
   /* ---------------- FETCH DATA ---------------- */
-  const fetchOfficialFramework = useCallback(async () => {
+  const fetchCompanyFramework = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getAllOfficialFrameworks({
+      const res = await getAllCompanyFrameworks({
         page: pagination.currentPage,
         limit: pagination.limit,
         search: searchTerm,
@@ -78,14 +78,14 @@ function OfficialFramework() {
         status: statusFilter,
       });
 
-      setOfficialFramework(res.data || []);
+      setCompanyFramework(res.data || []);
 
       if (res.message && res.data?.length === 0) {
         setEmptyMessage(res.message);
       } else if (searchTerm && res.data?.length === 0) {
         setEmptyMessage(`No framework found for "${searchTerm}"`);
       } else {
-        setEmptyMessage("No official framework found");
+        setEmptyMessage("No company framework found");
       }
 
       setPagination((p) => ({
@@ -96,11 +96,11 @@ function OfficialFramework() {
         hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
       }));
 
-      return res.data || []; // Return data for retry logic
+      return res.data || [];
     } catch (err) {
-      toast.error(err.message || "Failed to load official framework");
-      setOfficialFramework([]);
-      setEmptyMessage("Failed to load official framework");
+      toast.error(err.message || "Failed to load company framework");
+      setCompanyFramework([]);
+      setEmptyMessage("Failed to load company framework");
       return [];
     } finally {
       setLoading(false);
@@ -114,8 +114,8 @@ function OfficialFramework() {
   ]);
 
   useEffect(() => {
-    fetchOfficialFramework();
-  }, [fetchOfficialFramework]);
+    fetchCompanyFramework();
+  }, [fetchCompanyFramework]);
 
   /* ---------------- HANDLERS ---------------- */
   const handlePageChange = (page) => {
@@ -154,29 +154,24 @@ function OfficialFramework() {
   };
 
   const handleUploadSuccess = async () => {
-    // Retry logic to handle async event processing
     const maxRetries = 5;
-    const retryDelay = 500; // 500ms between retries
+    const retryDelay = 500;
 
-    const previousCount = officialFramework.length;
+    const previousCount = companyFramework.length;
 
     for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
-      const data = await fetchOfficialFramework();
+      const data = await fetchCompanyFramework();
 
-      // Check if new framework was added
       if (data.length > previousCount) {
-        // Success - new framework found
         return;
       }
 
-      // Wait before next retry (except on last iteration)
       if (retryCount < maxRetries - 1) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
 
-    // Final refresh if still not found
-    await fetchOfficialFramework();
+    await fetchCompanyFramework();
   };
 
   const handleUpdateFramework = (framework) => {
@@ -185,8 +180,7 @@ function OfficialFramework() {
   };
 
   const handleUpdateSuccess = () => {
-    // Refresh the framework list after successful update
-    fetchOfficialFramework();
+    fetchCompanyFramework();
   };
 
   const handleDeleteFramework = (framework) => {
@@ -196,17 +190,17 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-    const fileId = frameworkToDelete.mainFileId; // Use mainFileId for delete
+    const fileId = frameworkToDelete.mainFileId;
     try {
-      const result = await deleteOfficialFramework(fileId);
+      const result = await deleteCompanyFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
-      fetchOfficialFramework(); // Refresh the list
+      fetchCompanyFramework();
       setDeleteModalOpen(false);
       setFrameworkToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(error.message || "Failed to delete framework");
-      throw error; // Re-throw to let modal handle loading state
+      throw error;
     }
   };
 
@@ -217,23 +211,22 @@ function OfficialFramework() {
 
   /* ---------------- UPLOAD TO AI ---------------- */
   const handleUploadToAi = async (row) => {
-    // Use versionFileId for AI upload (specific version)
     if (!row.fileInfo?.versionFileId) {
       toast.error("File version ID not found");
       return;
     }
 
     try {
-      const result = await uploadOfficialFrameworkToAi(
+      const result = await uploadCompanyFrameworkToAi(
         row.fileInfo.versionFileId,
-      ); // Use versionFileId
+      );
       toast.success(result.message || "Framework uploaded to AI successfully");
-      fetchOfficialFramework(); // Refresh to get updated AI status
+      fetchCompanyFramework();
     } catch (error) {
       console.error("Upload to AI error:", error);
       toast.error(error.message || "Failed to upload framework to AI");
-      fetchOfficialFramework(); // Refresh to get updated AI status
-      throw error; // Re-throw to let ActionDropdown handle loading state
+      fetchCompanyFramework();
+      throw error;
     }
   };
 
@@ -241,28 +234,18 @@ function OfficialFramework() {
     if (!row.fileInfo?.versionFileId) return;
 
     try {
-      await downloadOfficialFrameworkFile(
-        row.fileInfo.versionFileId, // Use versionFileId for download
+      await downloadCompanyFrameworkFile(
+        row.fileInfo.versionFileId,
         row.fileInfo.originalFileName,
       );
     } catch (err) {
       toast.error(err.message);
-      throw err; // Re-throw to let ActionDropdown handle loading state
+      throw err;
     }
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
-    {
-      key: "frameworkCode",
-      label: "Framework Code",
-      sortable: false,
-      render: (value) => (
-        <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
-          {value}
-        </span>
-      ),
-    },
     {
       key: "frameworkName",
       label: "Framework Name",
@@ -323,7 +306,7 @@ function OfficialFramework() {
         label: "View Details",
         icon: "eye",
         className: "text-blue-600 hover:text-blue-600",
-        onClick: () => navigate(`/official-frameworks/${row.id}`),
+        onClick: () => navigate(`/frameworks/${row.id}`),
       },
       {
         id: `download-${row.fileInfo?.fileId}`,
@@ -348,9 +331,7 @@ function OfficialFramework() {
       },
     ];
 
-    // Add AI-specific actions based on status (at index 0 - first position)
     if (!aiStatus) {
-      // Not sent to AI - show "Send to AI" action
       actions.splice(0, 0, {
         id: `send-ai-${row.fileInfo?.versionFileId}`,
         label: "Send to AI",
@@ -359,7 +340,6 @@ function OfficialFramework() {
         onClick: () => handleUploadToAi(row),
       });
     } else if (aiStatus === "failed" || aiStatus === "skipped") {
-      // Failed or Skipped - show "Retry AI Upload" action
       actions.splice(0, 0, {
         id: `retry-ai-${row.fileInfo?.versionFileId}`,
         label: "Retry AI Upload",
@@ -368,7 +348,6 @@ function OfficialFramework() {
         onClick: () => handleUploadToAi(row),
       });
     } else if (aiStatus === "processing") {
-      // Processing - show "View AI Status" action (disabled)
       actions.splice(0, 0, {
         id: `ai-status-${row.fileInfo?.versionFileId}`,
         label: "AI Processing...",
@@ -388,7 +367,6 @@ function OfficialFramework() {
   const renderHeaderButtons = () => {
     return (
       <>
-        {/* Status Filter */}
         <SelectDropdown
           value={statusFilter}
           onChange={handleStatusFilter}
@@ -419,10 +397,9 @@ function OfficialFramework() {
   /* ---------------- UI ---------------- */
   return (
     <div className="mt-5 pb-5">
-      {/* Data Table */}
       <DataTable
         columns={columns}
-        data={officialFramework}
+        data={companyFramework}
         loading={loading}
         onSearch={handleSearch}
         onSort={handleSort}
@@ -434,15 +411,13 @@ function OfficialFramework() {
         emptyMessage={emptyMessage}
       />
 
-      {/* Upload Framework Modal */}
-      <UploadFrameworkModal
+      <UploadCompanyFrameworkModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
         onSuccess={handleUploadSuccess}
       />
 
-      {/* Update Framework Modal */}
-      <UpdateFrameworkModal
+      <UpdateCompanyFrameworkModal
         isOpen={updateModalOpen}
         onClose={() => {
           setUpdateModalOpen(false);
@@ -452,9 +427,8 @@ function OfficialFramework() {
         framework={frameworkToUpdate}
       />
 
-      {/* Delete Framework Modal */}
       {deleteModalOpen && frameworkToDelete && (
-        <DeleteOfficialFrameworkModal
+        <DeleteCompanyFrameworkModal
           framework={frameworkToDelete}
           onConfirm={handleDeleteConfirm}
           onCancel={handleDeleteCancel}
@@ -464,4 +438,4 @@ function OfficialFramework() {
   );
 }
 
-export default OfficialFramework;
+export default CompanyFramework;

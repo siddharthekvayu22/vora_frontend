@@ -214,6 +214,7 @@ const UserRegistrationChart = ({ data }) => {
             tickLine={false}
             tick={{ fontSize: 12, fill: colors.text }}
             domain={[0, "dataMax + 1"]}
+            allowDecimals={false}
           />
 
           <Tooltip content={<CustomTooltip />} />
@@ -235,25 +236,7 @@ const UserRegistrationChart = ({ data }) => {
 
           <Area
             type="monotone"
-            dataKey="selfRegistration"
-            stackId="1"
-            stroke={colors.selfReg}
-            strokeWidth={2}
-            fill="url(#selfRegGradient)"
-            dot={{ fill: colors.selfReg, strokeWidth: 2, r: 4 }}
-            activeDot={{
-              r: 6,
-              stroke: colors.selfReg,
-              strokeWidth: 2,
-              fill: isDark ? "#1f2937" : "#ffffff",
-              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
-            }}
-          />
-
-          <Area
-            type="monotone"
             dataKey="adminCreation"
-            stackId="1"
             stroke={colors.admin}
             strokeWidth={2}
             fill="url(#adminGradient)"
@@ -270,7 +253,6 @@ const UserRegistrationChart = ({ data }) => {
           <Area
             type="monotone"
             dataKey="companyCreation"
-            stackId="1"
             stroke={colors.company}
             strokeWidth={2}
             fill="url(#companyGradient)"
@@ -278,6 +260,22 @@ const UserRegistrationChart = ({ data }) => {
             activeDot={{
               r: 6,
               stroke: colors.company,
+              strokeWidth: 2,
+              fill: isDark ? "#1f2937" : "#ffffff",
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",
+            }}
+          />
+
+          <Area
+            type="monotone"
+            dataKey="selfRegistration"
+            stroke={colors.selfReg}
+            strokeWidth={2}
+            fill="url(#selfRegGradient)"
+            dot={{ fill: colors.selfReg, strokeWidth: 2, r: 4 }}
+            activeDot={{
+              r: 6,
+              stroke: colors.selfReg,
               strokeWidth: 2,
               fill: isDark ? "#1f2937" : "#ffffff",
               filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))",

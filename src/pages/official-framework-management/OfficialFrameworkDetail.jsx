@@ -27,6 +27,8 @@ import DeleteVersionModal from "./components/DeleteVersionModal";
 import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
 import RejectFrameworkModal from "./components/RejectFrameworkModal";
 import UpdateFrameworkModal from "./components/UpdateFrameworkModal";
+import EditControlModal from "./components/EditControlModal";
+import DeleteControlModal from "./components/DeleteControlModal";
 import {
   downloadOfficialFrameworkFile,
   getOfficialFrameworkById,
@@ -34,6 +36,8 @@ import {
   deleteOfficialFrameworkVersion,
   approveOfficialFramework,
   rejectOfficialFramework,
+  deleteOfficialFrameworkControl,
+  updateOfficialFrameworkControl,
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
@@ -136,6 +140,10 @@ function OfficialFrameworkDetail() {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
+  const [editControlModalOpen, setEditControlModalOpen] = useState(false);
+  const [controlToEdit, setControlToEdit] = useState(null);
+  const [deleteControlModalOpen, setDeleteControlModalOpen] = useState(false);
+  const [controlToDelete, setControlToDelete] = useState(null);
 
   useEffect(() => {
     fetchFrameworkDetails(false);
@@ -370,6 +378,74 @@ function OfficialFrameworkDetail() {
       next.has(version) ? next.delete(version) : next.add(version);
       return next;
     });
+  };
+
+  const handleEditControl = (control) => {
+    setControlToEdit(control);
+    setEditControlModalOpen(true);
+  };
+
+  const handleEditControlSave = async (updatedControl) => {
+    try {
+      const response = await updateOfficialFrameworkControl(
+        framework.id,
+        framework.currentVersion,
+        updatedControl.Control_id,
+        {
+          Control_name: updatedControl.Control_name,
+          Control_type: updatedControl.Control_type,
+          Control_description: updatedControl.Control_description,
+          Deployment_points: updatedControl.Deployment_points,
+        }
+      );
+      
+      if (response.success) {
+        toast.success(response.message || "Control updated successfully");
+        fetchFrameworkDetails();
+        setEditControlModalOpen(false);
+        setControlToEdit(null);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update control");
+      throw error;
+    }
+  };
+
+  const handleEditControlCancel = () => {
+    setEditControlModalOpen(false);
+    setControlToEdit(null);
+  };
+
+  const handleDeleteControl = (control) => {
+    setControlToDelete(control);
+    setDeleteControlModalOpen(true);
+  };
+
+  const handleDeleteControlConfirm = async () => {
+    if (!controlToDelete) return;
+
+    try {
+      const response = await deleteOfficialFrameworkControl(
+        framework.id,
+        framework.currentVersion,
+        controlToDelete.Control_id
+      );
+      
+      if (response.success) {
+        toast.success(response.message || "Control deleted successfully");
+        fetchFrameworkDetails();
+        setDeleteControlModalOpen(false);
+        setControlToDelete(null);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to delete control");
+      throw error;
+    }
+  };
+
+  const handleDeleteControlCancel = () => {
+    setDeleteControlModalOpen(false);
+    setControlToDelete(null);
   };
 
   if (loading) {
@@ -1085,14 +1161,36 @@ function OfficialFrameworkDetail() {
                                             <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
                                               {control.Control_id}
                                             </span>
-                                            <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
                                               <h4 className="text-sm font-bold text-foreground">
                                                 {control.Control_name}
                                               </h4>
+                                              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                                {control.Control_type}
+                                              </span>
                                             </div>
-                                            <span className="flex-shrink-0 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                              {control.Control_type}
-                                            </span>
+                                            {framework.approval.status === "pending" && (
+                                              <div className="flex items-center gap-1 flex-shrink-0">
+                                                <Button
+                                                  size="icon"
+                                                  variant="ghost"
+                                                  className="w-8 h-8 rounded-lg hover:bg-primary/10 text-primary"
+                                                  onClick={() => handleEditControl(control)}
+                                                  title="Edit Control"
+                                                >
+                                                  <Icon name="edit" size="14px" />
+                                                </Button>
+                                                <Button
+                                                  size="icon"
+                                                  variant="ghost"
+                                                  className="w-8 h-8 rounded-lg hover:bg-red-500/10 text-red-600"
+                                                  onClick={() => handleDeleteControl(control)}
+                                                  title="Delete Control"
+                                                >
+                                                  <Icon name="trash" size="14px" />
+                                                </Button>
+                                              </div>
+                                            )}
                                           </div>
                                         </div>
 
@@ -1177,6 +1275,24 @@ function OfficialFrameworkDetail() {
           onClose={handleUpdateCancel}
           onSuccess={handleUpdateSuccess}
           framework={framework}
+        />
+      )}
+
+      {/* Edit Control Modal */}
+      {editControlModalOpen && controlToEdit && (
+        <EditControlModal
+          control={controlToEdit}
+          onSave={handleEditControlSave}
+          onCancel={handleEditControlCancel}
+        />
+      )}
+
+      {/* Delete Control Modal */}
+      {deleteControlModalOpen && controlToDelete && (
+        <DeleteControlModal
+          control={controlToDelete}
+          onConfirm={handleDeleteControlConfirm}
+          onCancel={handleDeleteControlCancel}
         />
       )}
     </div>

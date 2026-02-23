@@ -14,12 +14,18 @@ export default function EditControlModal({ control, onSave, onCancel }) {
     Control_name: control.Control_name || "",
     Control_type: control.Control_type || "",
     Control_description: control.Control_description || "",
-    Deployment_points: Array.isArray(control.Deployment_points)
-      ? control.Deployment_points.map((point, i) => `${i + 1}. ${point}`).join(
-          "\n",
-        )
-      : control.Deployment_points || "",
   });
+
+  // Initialize deployment points as array
+  const [deploymentPoints, setDeploymentPoints] = useState(() => {
+    if (Array.isArray(control.Deployment_points)) {
+      return control.Deployment_points.length > 0
+        ? control.Deployment_points
+        : [""];
+    }
+    return [""];
+  });
+
   const [saving, setSaving] = useState(false);
 
   const handleChange = (field, value) => {
@@ -29,25 +35,51 @@ export default function EditControlModal({ control, onSave, onCancel }) {
     }));
   };
 
+  const handlePointChange = (index, value) => {
+    const newPoints = [...deploymentPoints];
+    newPoints[index] = value;
+    setDeploymentPoints(newPoints);
+  };
+
+  const addPoint = () => {
+    setDeploymentPoints([...deploymentPoints, ""]);
+  };
+
+  const removePoint = (index) => {
+    if (deploymentPoints.length > 1) {
+      const newPoints = deploymentPoints.filter((_, i) => i !== index);
+      setDeploymentPoints(newPoints);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      // Convert Deployment_points string to array
-      const deploymentPointsArray = formData.Deployment_points.split("\n")
-        .map((point) => point.trim().replace(/^\d+\.\s*/, "")) // Remove numbering if present
-        .filter((point) => point.length > 0); // Remove empty lines
+      // Filter out empty points
+      const filteredPoints = deploymentPoints
+        .map((point) => point.trim())
+        .filter((point) => point.length > 0);
 
       await onSave({
         ...control,
         ...formData,
-        Deployment_points: deploymentPointsArray,
+        Deployment_points: filteredPoints,
       });
     } catch (error) {
       console.error("Error saving control:", error);
     } finally {
       setSaving(false);
     }
+  };
+
+  // Check if form is valid
+  const isFormValid = () => {
+    // Check if at least one deployment point has content
+    const hasValidPoints = deploymentPoints.some(
+      (point) => point.trim().length > 0,
+    );
+    return hasValidPoints;
   };
 
   return (
@@ -131,21 +163,52 @@ export default function EditControlModal({ control, onSave, onCancel }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Deployment Points
-              </label>
-              <p className="text-xs text-muted-foreground my-2">
-                Enter each point on a new line. Numbering is optional.
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-medium text-foreground">
+                  Deployment Points
+                </label>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={addPoint}
+                  className="h-7 px-2 text-xs bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20"
+                >
+                  <Icon name="plus" size="14px" />
+                  <span className="ml-1">Add Point</span>
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">
+                Add deployment points one by one. Each point will be numbered
+                automatically.
               </p>
-              <textarea
-                value={formData.Deployment_points}
-                onChange={(e) =>
-                  handleChange("Deployment_points", e.target.value)
-                }
-                rows={5}
-                className="w-full h-auto px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none"
-                placeholder="Enter deployment points (one per line or numbered)..."
-              />
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                {deploymentPoints.map((point, index) => (
+                  <div key={index} className="flex gap-2 items-start">
+                    <div className="flex-shrink-0 w-6 h-9 flex items-center justify-center text-xs font-medium text-muted-foreground bg-muted rounded">
+                      {index + 1}
+                    </div>
+                    <input
+                      type="text"
+                      value={point}
+                      onChange={(e) => handlePointChange(index, e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                      placeholder={`Enter point ${index + 1}...`}
+                    />
+                    {deploymentPoints.length > 1 && (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => removePoint(index)}
+                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        title="Remove point"
+                      >
+                        <Icon name="trash" size="16px" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -163,7 +226,7 @@ export default function EditControlModal({ control, onSave, onCancel }) {
             <Button
               type="submit"
               className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
-              disabled={saving}
+              disabled={saving || !isFormValid()}
             >
               {saving ? (
                 <>

@@ -3,19 +3,13 @@ import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
 
 /**
- * DeleteVersionModal Component - Confirmation dialog for deleting a file version
+ * DeleteControlModal Component - Confirmation dialog for deleting a control
  *
- * @param {Object} version - Version object to delete
- * @param {string} version.version - Version number (e.g., "1.0.0")
- * @param {string} version.fileId - Version file ID
- * @param {string} version.originalFileName - Original file name
- * @param {string} version.fileSize - File size
- * @param {string} version.frameworkType - File type
- * @param {Object} version.uploadedBy - Uploader info
+ * @param {Object} control - Control to delete
  * @param {Function} onConfirm - Confirm delete handler
  * @param {Function} onCancel - Cancel handler
  */
-export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
+export default function DeleteControlModal({ control, onConfirm, onCancel }) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -23,7 +17,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting version:", error);
+      console.error("Error deleting control:", error);
     } finally {
       setDeleting(false);
     }
@@ -31,7 +25,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10001] animate-in fade-in duration-200"
       onClick={onCancel}
     >
       <div
@@ -44,7 +38,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
               <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete Version
+                Delete Control
               </h2>
             </div>
             <Button
@@ -60,54 +54,29 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
 
         <div className="p-4">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            Are you sure you want to delete version{" "}
-            <span className="font-semibold text-foreground">
-              {version.version}
-            </span>
-            ? This action cannot be undone.
+            Are you sure you want to delete this control? This action cannot be
+            undone.
           </p>
 
           <div className="bg-muted rounded-xl p-3 border-l-4 border-red-500 mb-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
-                <Icon name="document" size="20px" />
+                <span className="text-sm font-bold">{control.Control_id}</span>
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {version.originalFileName}
+                  {control.Control_name}
                 </h4>
-                <p className="text-sm text-muted-foreground m-0">
-                  Version: {version.version}
-                </p>
               </div>
             </div>
             <div className="flex gap-2 mt-2">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                {version.frameworkType?.toUpperCase() || "PDF"}
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary/15 text-secondary">
+                {control.Control_type}
               </span>
-              {version.fileSize && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
-                  {version.fileSize}
-                </span>
-              )}
             </div>
-            {version.uploadedBy?.name && (
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                Uploaded by: {version.uploadedBy.name}
-              </p>
-            )}
-          </div>
-
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
-            <div className="flex gap-2">
-              <Icon
-                name="info"
-                size="16px"
-                className="text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"
-              />
-              <p className="text-xs text-yellow-800 dark:text-yellow-200 leading-relaxed">
-                Other versions will remain intact. If this is the current
-                version, the latest version will become the new current version.
+            <div className="mt-3 pt-3 border-t border-border">
+              <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                {control.Control_description}
               </p>
             </div>
           </div>
@@ -138,7 +107,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
             ) : (
               <>
                 <Icon name="trash" size="16px" />
-                Delete Version
+                Delete Control
               </>
             )}
           </Button>

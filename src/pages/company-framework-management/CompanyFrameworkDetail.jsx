@@ -24,6 +24,7 @@ import {
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
 import UpdateCompanyFrameworkModal from "./components/UpdateCompanyFrameworkModal";
+import CompareFrameworkModal from "./components/CompareFrameworkModal";
 import {
   downloadCompanyFrameworkFile,
   getCompanyFrameworkById,
@@ -130,6 +131,9 @@ function CompanyFrameworkDetail() {
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
   const [comparingFrameworks, setComparingFrameworks] = useState(new Set());
+  const [compareModalOpen, setCompareModalOpen] = useState(false);
+  const [selectedVersionForCompare, setSelectedVersionForCompare] =
+    useState(null);
 
   useEffect(() => {
     fetchFrameworkDetails(false);
@@ -292,28 +296,14 @@ function CompanyFrameworkDetail() {
     setUpdateModalOpen(false);
   };
 
-  const handleCompare = async (companyJobId) => {
-    try {
-      // For now, we'll just show a toast that the button works
-      // You'll need to implement a modal to select the official framework
-      toast.success(
-        "Compare functionality - Select official framework to compare",
-      );
+  const handleCompare = (version) => {
+    setSelectedVersionForCompare(version);
+    setCompareModalOpen(true);
+  };
 
-      // Example of how to call the API when you have both job IDs:
-      // setComparingFrameworks((prev) => new Set(prev).add(companyJobId));
-      // const response = await compareFrameworks(companyJobId, officialJobId);
-      // toast.success(response.message || "Comparison started successfully");
-      // You can navigate to comparison results or show in modal
-    } catch (error) {
-      toast.error(error.message || "Failed to start comparison");
-    } finally {
-      setComparingFrameworks((prev) => {
-        const next = new Set(prev);
-        next.delete(companyJobId);
-        return next;
-      });
-    }
+  const handleCompareModalClose = () => {
+    setCompareModalOpen(false);
+    setSelectedVersionForCompare(null);
   };
 
   const toggleVersion = (version) => {
@@ -508,17 +498,10 @@ function CompanyFrameworkDetail() {
                         ver.aiUpload?.job_id && (
                           <Button
                             variant="secondary"
-                            onClick={() => handleCompare(ver.aiUpload.job_id)}
-                            disabled={comparingFrameworks.has(
-                              ver.aiUpload.job_id,
-                            )}
-                            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={() => handleCompare(ver)}
+                            className="flex items-center gap-2"
                           >
-                            {comparingFrameworks.has(ver.aiUpload.job_id) ? (
-                              <FiLoader size={13} className="animate-spin" />
-                            ) : (
-                              <FiGitMerge size={13} />
-                            )}
+                            <FiGitMerge size={13} />
                             Compare
                           </Button>
                         )}
@@ -734,6 +717,18 @@ function CompanyFrameworkDetail() {
           onClose={handleUpdateCancel}
           onSuccess={handleUpdateSuccess}
           framework={framework}
+        />
+      )}
+
+      {compareModalOpen && selectedVersionForCompare && (
+        <CompareFrameworkModal
+          isOpen={compareModalOpen}
+          onClose={handleCompareModalClose}
+          companyFramework={{
+            ...framework,
+            frameworkName: framework.frameworkName,
+            aiUpload: selectedVersionForCompare.aiUpload,
+          }}
         />
       )}
     </div>

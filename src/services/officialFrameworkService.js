@@ -203,6 +203,36 @@ export function rejectOfficialFramework(frameworkId, rejectionReason) {
   );
 }
 
+/**
+ * Delete control from framework version
+ */
+export function deleteOfficialFrameworkControl(frameworkId, version, controlId) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/versions/${version}/controls/${controlId}`,
+    {
+      method: "DELETE",
+    },
+    true,
+  );
+}
+
+/**
+ * Update control in framework version
+ */
+export function updateOfficialFrameworkControl(frameworkId, version, controlId, controlData) {
+  return apiRequest(
+    `/official-frameworks/frameworks/${frameworkId}/versions/${version}/controls/${controlId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(controlData),
+    },
+    true,
+  );
+}
+
 // ========================================
 // COMPANY USER APIS (Approved Frameworks Only)
 // ========================================
@@ -250,6 +280,8 @@ export default {
   deleteOfficialFrameworkVersion,
   approveOfficialFramework,
   rejectOfficialFramework,
+  deleteOfficialFrameworkControl,
+  updateOfficialFrameworkControl,
   getApprovedOfficialFrameworks,
   getApprovedOfficialFrameworkById,
 };

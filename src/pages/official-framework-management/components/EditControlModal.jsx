@@ -82,6 +82,8 @@ export default function EditControlModal({ control, onSave, onCancel }) {
     return hasValidPoints;
   };
 
+  const isDisabled = saving || !isFormValid();
+
   return (
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
@@ -177,11 +179,11 @@ export default function EditControlModal({ control, onSave, onCancel }) {
                   <span className="ml-1">Add Point</span>
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mb-3">
+              <p className="text-xs text-muted-foreground">
                 Add deployment points one by one. Each point will be numbered
                 automatically.
               </p>
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[300px] overflow-y-auto py-1">
                 {deploymentPoints.map((point, index) => (
                   <div key={index} className="flex gap-2 items-start">
                     <div className="flex-shrink-0 w-6 h-9 flex items-center justify-center text-xs font-medium text-muted-foreground bg-muted rounded">
@@ -223,23 +225,28 @@ export default function EditControlModal({ control, onSave, onCancel }) {
               Cancel
             </Button>
 
-            <Button
-              type="submit"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed"
-              disabled={saving || !isFormValid()}
+            <div
+              className="flex-1"
+              style={{ cursor: isDisabled ? "not-allowed" : "pointer" }}
             >
-              {saving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Icon name="check" size="16px" />
-                  Save Changes
-                </>
-              )}
-            </Button>
+              <Button
+                type="submit"
+                className="w-full inline-flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 disabled:opacity-60"
+                disabled={isDisabled}
+              >
+                {saving ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="check" size="16px" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
       </div>

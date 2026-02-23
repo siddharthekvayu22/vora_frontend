@@ -1226,11 +1226,14 @@ function OfficialFrameworkDetail() {
                                                 control.Deployment_points,
                                               )
                                                 ? control.Deployment_points
-                                                : control.Deployment_points.split(
-                                                    /\d+\.\s+/,
-                                                  ).filter((point) =>
-                                                    point.trim(),
-                                                  )
+                                                : typeof control.Deployment_points ===
+                                                    "string"
+                                                  ? control.Deployment_points.split(
+                                                      /\d+\.\s+/,
+                                                    ).filter((point) =>
+                                                      point.trim(),
+                                                    )
+                                                  : []
                                               ).map((point, i) => (
                                                 <li key={i} className="pl-1">
                                                   {typeof point === "string"

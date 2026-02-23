@@ -617,7 +617,7 @@ function CompanyFrameworkDetail() {
                                       </span>
                                     </div>
                                   </div>
-                                  <div className="p-4 space-y-3">
+                                  <div className="p-3 space-y-2">
                                     {ver.aiUpload.message && (
                                       <div>
                                         <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
@@ -633,7 +633,7 @@ function CompanyFrameworkDetail() {
                                       <div
                                         className={
                                           ver.aiUpload.message
-                                            ? "pt-3 border-t border-border"
+                                            ? "pt-2 border-t border-border"
                                             : ""
                                         }
                                       >
@@ -647,7 +647,7 @@ function CompanyFrameworkDetail() {
                                     )}
 
                                     {ver.aiUpload.timestamp && (
-                                      <div className="pt-3 border-t border-border">
+                                      <div className="pt-2 border-t border-border">
                                         <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                           Timestamp
                                         </p>

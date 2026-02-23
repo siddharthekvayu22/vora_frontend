@@ -1211,15 +1211,14 @@ function OfficialFrameworkDetail() {
                                               Deployment Points
                                             </p>
                                             <ol className="text-xs text-foreground leading-relaxed space-y-1.5 list-decimal list-inside">
-                                              {control.Deployment_points.split(
-                                                /\d+\.\s+/,
-                                              )
-                                                .filter((point) => point.trim())
-                                                .map((point, i) => (
-                                                  <li key={i} className="pl-1">
-                                                    {point.trim()}
-                                                  </li>
-                                                ))}
+                                              {(Array.isArray(control.Deployment_points)
+                                                ? control.Deployment_points
+                                                : control.Deployment_points.split(/\d+\.\s+/).filter((point) => point.trim())
+                                              ).map((point, i) => (
+                                                <li key={i} className="pl-1">
+                                                  {typeof point === 'string' ? point.trim() : point}
+                                                </li>
+                                              ))}
                                             </ol>
                                           </div>
                                         </div>

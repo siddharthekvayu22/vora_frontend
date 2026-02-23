@@ -223,7 +223,7 @@ export function updateOfficialFrameworkControl(frameworkId, version, controlId, 
   return apiRequest(
     `/official-frameworks/frameworks/${frameworkId}/versions/${version}/controls/${controlId}`,
     {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },

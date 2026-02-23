@@ -14,7 +14,9 @@ export default function EditControlModal({ control, onSave, onCancel }) {
         Control_name: control.Control_name || "",
         Control_type: control.Control_type || "",
         Control_description: control.Control_description || "",
-        Deployment_points: control.Deployment_points || "",
+        Deployment_points: Array.isArray(control.Deployment_points)
+            ? control.Deployment_points.map((point, i) => `${i + 1}. ${point}`).join('\n')
+            : control.Deployment_points || "",
     });
     const [saving, setSaving] = useState(false);
 
@@ -28,9 +30,16 @@ export default function EditControlModal({ control, onSave, onCancel }) {
     const handleSave = async () => {
         setSaving(true);
         try {
+            // Convert Deployment_points string to array
+            const deploymentPointsArray = formData.Deployment_points
+                .split('\n')
+                .map(point => point.trim().replace(/^\d+\.\s*/, '')) // Remove numbering if present
+                .filter(point => point.length > 0); // Remove empty lines
+
             await onSave({
                 ...control,
                 ...formData,
+                Deployment_points: deploymentPointsArray,
             });
         } catch (error) {
             console.error("Error saving control:", error);
@@ -144,8 +153,11 @@ export default function EditControlModal({ control, onSave, onCancel }) {
                                 handleChange("Deployment_points", e.target.value)
                             }
                             className="w-full min-h-[200px] px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-y"
-                            placeholder="Enter deployment points (e.g., 1. Point one 2. Point two)..."
+                            placeholder="Enter deployment points (one per line or numbered)..."
                         />
+                        <p className="text-xs text-muted-foreground mt-2">
+                            Enter each point on a new line. Numbering is optional.
+                        </p>
                     </div>
                 </div>
 

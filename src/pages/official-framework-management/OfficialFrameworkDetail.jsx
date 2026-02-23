@@ -41,6 +41,7 @@ import {
 } from "../../services/officialFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/useAuth";
 
 function InfoItem({ icon, label, value }) {
   return (
@@ -127,6 +128,7 @@ function FileIcon({ type }) {
 }
 
 function OfficialFrameworkDetail() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
@@ -504,10 +506,12 @@ function OfficialFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={handleUpdate}>
-                  <FiEdit size={16} />
-                  Update Framework
-                </Button>
+                {user.role === "expert" && (
+                  <Button onClick={handleUpdate}>
+                    <FiEdit size={16} />
+                    Update Framework
+                  </Button>
+                )}
                 <Button
                   onClick={() => navigate(-1)}
                   className="flex items-center gap-2"
@@ -712,21 +716,24 @@ function OfficialFrameworkDetail() {
                         Download
                       </Button>
 
-                      {!isCurrent && framework.fileVersions.length > 1 && (
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDeleteVersion(ver)}
-                          className="flex items-center gap-2"
-                        >
-                          <FiTrash size={15} />
-                          Delete
-                        </Button>
-                      )}
+                      {!isCurrent &&
+                        framework.fileVersions.length > 1 &&
+                        user.role === "expert" && (
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteVersion(ver)}
+                            className="flex items-center gap-2"
+                          >
+                            <FiTrash size={15} />
+                            Delete
+                          </Button>
+                        )}
 
                       {/* Show Approve/Reject buttons only for current version when AI is completed and status is pending */}
                       {isCurrent &&
                         ver.aiUpload?.status === "completed" &&
-                        framework.approval.status === "pending" && (
+                        framework.approval.status === "pending" &&
+                        user.role === "expert" && (
                           <>
                             <Button
                               onClick={handleApprove}
@@ -749,24 +756,25 @@ function OfficialFrameworkDetail() {
                       {(!ver.aiUpload ||
                         (ver.aiUpload.status !== "completed" &&
                           ver.aiUpload.status !== "uploaded" &&
-                          ver.aiUpload.status !== "processing")) && (
-                        <Button
-                          variant="secondary"
-                          onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={uploadingToAi.has(ver.fileId)}
-                          className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {uploadingToAi.has(ver.fileId) ? (
-                            <FiLoader size={13} className="animate-spin" />
-                          ) : (
-                            <FiUploadCloud size={13} />
-                          )}
-                          {ver.aiUpload?.status === "failed" ||
-                          ver.aiUpload?.status === "skipped"
-                            ? "Retry AI Upload"
-                            : "Upload to AI"}
-                        </Button>
-                      )}
+                          ver.aiUpload.status !== "processing")) &&
+                        user.role === "expert" && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleUploadToAi(ver.fileId)}
+                            disabled={uploadingToAi.has(ver.fileId)}
+                            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {uploadingToAi.has(ver.fileId) ? (
+                              <FiLoader size={13} className="animate-spin" />
+                            ) : (
+                              <FiUploadCloud size={13} />
+                            )}
+                            {ver.aiUpload?.status === "failed" ||
+                            ver.aiUpload?.status === "skipped"
+                              ? "Retry AI Upload"
+                              : "Upload to AI"}
+                          </Button>
+                        )}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -1170,38 +1178,41 @@ function OfficialFrameworkDetail() {
                                               </span>
                                             </div>
                                             {framework.approval.status ===
-                                              "pending" && (
-                                              <div className="flex items-center gap-1 flex-shrink-0">
-                                                <Button
-                                                  size="icon"
-                                                  variant="ghost"
-                                                  className="w-8 h-8 rounded-lg hover:bg-primary/10 text-primary"
-                                                  onClick={() =>
-                                                    handleEditControl(control)
-                                                  }
-                                                  title="Edit Control"
-                                                >
-                                                  <Icon
-                                                    name="edit"
-                                                    size="14px"
-                                                  />
-                                                </Button>
-                                                <Button
-                                                  size="icon"
-                                                  variant="ghost"
-                                                  className="w-8 h-8 rounded-lg hover:bg-red-500/10 text-red-600"
-                                                  onClick={() =>
-                                                    handleDeleteControl(control)
-                                                  }
-                                                  title="Delete Control"
-                                                >
-                                                  <Icon
-                                                    name="trash"
-                                                    size="14px"
-                                                  />
-                                                </Button>
-                                              </div>
-                                            )}
+                                              "pending" &&
+                                              user.role === "expert" && (
+                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                  <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="w-8 h-8 rounded-lg hover:bg-primary/10 text-primary"
+                                                    onClick={() =>
+                                                      handleEditControl(control)
+                                                    }
+                                                    title="Edit Control"
+                                                  >
+                                                    <Icon
+                                                      name="edit"
+                                                      size="14px"
+                                                    />
+                                                  </Button>
+                                                  <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    className="w-8 h-8 rounded-lg hover:bg-red-500/10 text-red-600"
+                                                    onClick={() =>
+                                                      handleDeleteControl(
+                                                        control,
+                                                      )
+                                                    }
+                                                    title="Delete Control"
+                                                  >
+                                                    <Icon
+                                                      name="trash"
+                                                      size="14px"
+                                                    />
+                                                  </Button>
+                                                </div>
+                                              )}
                                           </div>
                                         </div>
 

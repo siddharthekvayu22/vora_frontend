@@ -19,8 +19,10 @@ import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/useAuth";
 
 function OfficialFramework() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [officialFramework, setOfficialFramework] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -332,50 +334,54 @@ function OfficialFramework() {
         className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadFramework(row),
       },
-      {
-        id: `edit-${row.mainFileId}`,
-        label: "Edit Framework",
-        icon: "edit",
-        className: "text-primary hover:text-primary",
-        onClick: () => handleUpdateFramework(row),
-      },
-      {
-        id: `delete-${row.mainFileId}`,
-        label: "Delete Framework",
-        icon: "trash",
-        className: "text-red-600 hover:text-red-600",
-        onClick: () => handleDeleteFramework(row),
-      },
+
+      ...(user.role === "expert"
+        ? [
+            {
+              id: `edit-${row.mainFileId}`,
+              label: "Edit Framework",
+              icon: "edit",
+              className: "text-primary hover:text-primary",
+              onClick: () => handleUpdateFramework(row),
+            },
+            {
+              id: `delete-${row.mainFileId}`,
+              label: "Delete Framework",
+              icon: "trash",
+              className: "text-red-600 hover:text-red-600",
+              onClick: () => handleDeleteFramework(row),
+            },
+          ]
+        : []),
     ];
 
-    // Add AI-specific actions based on status (at index 0 - first position)
-    if (!aiStatus) {
-      // Not sent to AI - show "Send to AI" action
-      actions.splice(0, 0, {
-        id: `send-ai-${row.fileInfo?.versionFileId}`,
-        label: "Send to AI",
-        icon: "upload",
-        className: "text-blue-600 hover:text-blue-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "failed" || aiStatus === "skipped") {
-      // Failed or Skipped - show "Retry AI Upload" action
-      actions.splice(0, 0, {
-        id: `retry-ai-${row.fileInfo?.versionFileId}`,
-        label: "Retry AI Upload",
-        icon: "refresh",
-        className: "text-orange-600 hover:text-orange-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "processing") {
-      // Processing - show "View AI Status" action (disabled)
-      actions.splice(0, 0, {
-        id: `ai-status-${row.fileInfo?.versionFileId}`,
-        label: "AI Processing...",
-        icon: "clock",
-        className: "text-blue-600 hover:text-blue-600",
-        disabled: true,
-      });
+    // Add AI-specific actions only for expert users
+    if (user.role === "expert") {
+      if (!aiStatus) {
+        actions.splice(0, 0, {
+          id: `send-ai-${row.fileInfo?.versionFileId}`,
+          label: "Send to AI",
+          icon: "upload",
+          className: "text-blue-600 hover:text-blue-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "failed" || aiStatus === "skipped") {
+        actions.splice(0, 0, {
+          id: `retry-ai-${row.fileInfo?.versionFileId}`,
+          label: "Retry AI Upload",
+          icon: "refresh",
+          className: "text-orange-600 hover:text-orange-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "processing") {
+        actions.splice(0, 0, {
+          id: `ai-status-${row.fileInfo?.versionFileId}`,
+          label: "AI Processing...",
+          icon: "clock",
+          className: "text-blue-600 hover:text-blue-600",
+          disabled: true,
+        });
+      }
     }
 
     return (
@@ -389,29 +395,33 @@ function OfficialFramework() {
     return (
       <>
         {/* Status Filter */}
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "uploaded", label: "Uploaded" },
-            { value: "failed", label: "Failed" },
-            { value: "skiped", label: "Skiped" },
-            { value: "processing", label: "Processing" },
-            { value: "completed", label: "Completed" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
-        <Button
-          size="lg"
-          onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3"
-        >
-          <Icon name="plus" size="18px" />
-          Add New Framework
-        </Button>
+        {user.role === "expert" && (
+          <SelectDropdown
+            value={statusFilter}
+            onChange={handleStatusFilter}
+            options={[
+              { value: "", label: "All Status" },
+              { value: "uploaded", label: "Uploaded" },
+              { value: "failed", label: "Failed" },
+              { value: "skiped", label: "Skiped" },
+              { value: "processing", label: "Processing" },
+              { value: "completed", label: "Completed" },
+            ]}
+            placeholder="All Status"
+            size="lg"
+            variant="default"
+          />
+        )}
+        {user.role === "expert" && (
+          <Button
+            size="lg"
+            onClick={() => setUploadModalOpen(true)}
+            className="flex items-center gap-3"
+          >
+            <Icon name="plus" size="18px" />
+            Add New Framework
+          </Button>
+        )}
       </>
     );
   };

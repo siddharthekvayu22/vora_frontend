@@ -396,9 +396,9 @@ function OfficialFrameworkDetail() {
           Control_type: updatedControl.Control_type,
           Control_description: updatedControl.Control_description,
           Deployment_points: updatedControl.Deployment_points,
-        }
+        },
       );
-      
+
       if (response.success) {
         toast.success(response.message || "Control updated successfully");
         fetchFrameworkDetails();
@@ -428,9 +428,9 @@ function OfficialFrameworkDetail() {
       const response = await deleteOfficialFrameworkControl(
         framework.id,
         framework.currentVersion,
-        controlToDelete.Control_id
+        controlToDelete.Control_id,
       );
-      
+
       if (response.success) {
         toast.success(response.message || "Control deleted successfully");
         fetchFrameworkDetails();
@@ -852,7 +852,7 @@ function OfficialFrameworkDetail() {
                                 <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
                                   <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                     <div className="flex items-center justify-between">
-                                      <h4 className="text-sm font-bold text-foreground">
+                                      <h4 className="text-sm font-semibold">
                                         Status
                                       </h4>
                                       <span
@@ -877,7 +877,7 @@ function OfficialFrameworkDetail() {
                                       </span>
                                     </div>
                                   </div>
-                                  <div className="p-4 space-y-3">
+                                  <div className="p-3 space-y-2">
                                     {/* Show message only if it exists */}
                                     {ver.aiUpload.message && (
                                       <div>
@@ -895,7 +895,7 @@ function OfficialFrameworkDetail() {
                                       <div
                                         className={
                                           ver.aiUpload.message
-                                            ? "pt-3 border-t border-border"
+                                            ? "pt-2 border-t border-border"
                                             : ""
                                         }
                                       >
@@ -914,7 +914,7 @@ function OfficialFrameworkDetail() {
                                         <div
                                           className={
                                             ver.aiUpload.message
-                                              ? "pt-3 border-t border-border"
+                                              ? "pt-2 border-t border-border"
                                               : ""
                                           }
                                         >
@@ -930,7 +930,7 @@ function OfficialFrameworkDetail() {
                                     {/* Show resourceType for uploaded status */}
                                     {ver.aiUpload.status === "uploaded" &&
                                       ver.aiUpload.resourceType && (
-                                        <div className="pt-3 border-t border-border">
+                                        <div className="pt-2 border-t border-border">
                                           <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                             Resource Type
                                           </p>
@@ -942,7 +942,7 @@ function OfficialFrameworkDetail() {
 
                                     {/* Always show timestamp */}
                                     {ver.aiUpload.timestamp && (
-                                      <div className="pt-3 border-t border-border">
+                                      <div className="pt-2 border-t border-border">
                                         <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                           Timestamp
                                         </p>
@@ -958,7 +958,7 @@ function OfficialFrameworkDetail() {
                                     {ver.aiUpload.status === "completed" &&
                                       ver.aiUpload.extraction_reused !==
                                         undefined && (
-                                        <div className="pt-3 border-t border-border">
+                                        <div className="pt-2 border-t border-border">
                                           <div className="flex items-center justify-between">
                                             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                                               Extraction Reused
@@ -984,11 +984,11 @@ function OfficialFrameworkDetail() {
                                 {(ver.aiUpload.uuid || ver.aiUpload.job_id) && (
                                   <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
                                     <div className="px-4 py-3 bg-muted/50 border-b border-border">
-                                      <h4 className="text-sm font-bold text-foreground">
+                                      <h4 className="text-sm font-semibold">
                                         Identifiers
                                       </h4>
                                     </div>
-                                    <div className="p-4 space-y-3">
+                                    <div className="p-3 space-y-2">
                                       {ver.aiUpload.uuid && (
                                         <div>
                                           <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
@@ -1003,7 +1003,7 @@ function OfficialFrameworkDetail() {
                                         <div
                                           className={
                                             ver.aiUpload.uuid
-                                              ? "pt-3 border-t border-border"
+                                              ? "pt-2 border-t border-border"
                                               : ""
                                           }
                                         >
@@ -1016,7 +1016,7 @@ function OfficialFrameworkDetail() {
                                         </div>
                                       )}
                                       {ver.aiUpload.original_uuid && (
-                                        <div className="pt-3 border-t border-border">
+                                        <div className="pt-2 border-t border-border">
                                           <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
                                             Original UUID
                                           </p>
@@ -1029,98 +1029,98 @@ function OfficialFrameworkDetail() {
                                   </div>
                                 )}
 
-                                {/* Status History Card */}
+                                {/* ===== COMPACT STATUS HISTORY ===== */}
                                 {ver.aiUpload.status_history && (
-                                  <div className="rounded-xl border border-border bg-muted/30 overflow-hidden lg:col-span-2 h-fit">
-                                    <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                  <div className="rounded-xl border border-border bg-card lg:col-span-2">
+                                    {/* Header */}
+                                    <div className="px-4 py-2 border-b border-border bg-primary/5 flex items-center justify-between">
                                       <div className="flex items-center gap-2">
                                         <FiActivity
                                           size={14}
                                           className="text-primary"
                                         />
-                                        <h4 className="text-sm font-bold text-foreground">
-                                          Status History
-                                        </h4>
+                                        <h3 className="text-sm font-semibold">
+                                          AI Processing Timeline
+                                        </h3>
                                       </div>
-                                    </div>
-                                    <div className="p-4 space-y-3">
-                                      {/* Processing Time */}
+
                                       {ver.aiUpload.status_history
                                         .processing_time_seconds !==
                                         undefined && (
-                                        <div>
-                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                            Processing Time
-                                          </p>
-                                          <p className="text-xs text-foreground">
-                                            <span className="font-semibold">
+                                        <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">
+                                          {
+                                            ver.aiUpload.status_history
+                                              .processing_time_seconds
+                                          }
+                                          s
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {/* Timeline */}
+                                    <div className="px-4 py-3">
+                                      <div className="relative border-l border-border ml-2 space-y-3">
+                                        {ver.aiUpload.status_history.history?.map(
+                                          (item, idx) => {
+                                            const statusColor =
                                               {
-                                                ver.aiUpload.status_history
-                                                  .processing_time_seconds
-                                              }{" "}
-                                              seconds
-                                            </span>
-                                          </p>
-                                        </div>
-                                      )}
+                                                uploaded: "bg-blue-500",
+                                                processing: "bg-yellow-500",
+                                                completed: "bg-green-500",
+                                                failed: "bg-red-500",
+                                              }[item.status] || "bg-gray-400";
 
-                                      {/* Completed At */}
-                                      {ver.aiUpload.status_history
-                                        .completed_at && (
-                                        <div className="pt-3 border-t border-border">
-                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
-                                            Completed At
-                                          </p>
-                                          <p className="text-xs text-foreground">
-                                            {new Date(
-                                              ver.aiUpload.status_history
-                                                .completed_at,
-                                            ).toLocaleString()}
-                                          </p>
-                                        </div>
-                                      )}
+                                            return (
+                                              <div
+                                                key={idx}
+                                                className="relative pl-4"
+                                              >
+                                                {/* Dot */}
+                                                <span
+                                                  className={`absolute -left-[6px] top-[6px] w-2.5 h-2.5 rounded-full ${statusColor}`}
+                                                />
 
-                                      {/* History Timeline */}
-                                      {ver.aiUpload.status_history.history &&
-                                        ver.aiUpload.status_history.history
-                                          .length > 0 && (
-                                          <div className="pt-3 border-t border-border">
-                                            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
-                                              Timeline
-                                            </p>
-                                            <div className="space-y-2">
-                                              {ver.aiUpload.status_history.history.map(
-                                                (item, idx) => (
-                                                  <div
-                                                    key={idx}
-                                                    className="flex items-start gap-2 text-xs"
-                                                  >
-                                                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/15 text-primary flex items-center justify-center text-[10px] font-bold mt-0.5">
-                                                      {idx + 1}
-                                                    </span>
-                                                    <div className="flex-1">
-                                                      <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                                                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                                          {item.status}
-                                                        </span>
-                                                        <span className="text-muted-foreground">
-                                                          {new Date(
-                                                            item.timestamp,
-                                                          ).toLocaleString()}
-                                                        </span>
-                                                      </div>
+                                                {/* Row */}
+                                                <div className="flex items-start justify-between gap-3 text-xs">
+                                                  <div className="flex-1">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                      <span className="font-semibold uppercase tracking-wide">
+                                                        {item.status}
+                                                      </span>
+
                                                       {item.message && (
-                                                        <p className="text-foreground leading-relaxed">
-                                                          {item.message}
-                                                        </p>
+                                                        <span className="text-muted-foreground">
+                                                          — {item.message}
+                                                        </span>
                                                       )}
                                                     </div>
                                                   </div>
-                                                ),
-                                              )}
-                                            </div>
-                                          </div>
+
+                                                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                                    {formatDate(item.timestamp)}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            );
+                                          },
                                         )}
+                                      </div>
+
+                                      {/* Completed */}
+                                      {ver.aiUpload.status_history
+                                        .completed_at && (
+                                        <div className="mt-3 pt-2 border-t border-border text-[11px] text-muted-foreground flex items-center gap-1.5">
+                                          <FiCheckCircle
+                                            size={12}
+                                            className="text-green-500"
+                                          />
+                                          Completed •{" "}
+                                          {formatDate(
+                                            ver.aiUpload.status_history
+                                              .completed_at,
+                                          )}
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
                                 )}
@@ -1162,32 +1162,43 @@ function OfficialFrameworkDetail() {
                                               {control.Control_id}
                                             </span>
                                             <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
-                                              <h4 className="text-sm font-bold text-foreground">
+                                              <h4 className="text-sm font-semibold">
                                                 {control.Control_name}
                                               </h4>
                                               <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
                                                 {control.Control_type}
                                               </span>
                                             </div>
-                                            {framework.approval.status === "pending" && (
+                                            {framework.approval.status ===
+                                              "pending" && (
                                               <div className="flex items-center gap-1 flex-shrink-0">
                                                 <Button
                                                   size="icon"
                                                   variant="ghost"
                                                   className="w-8 h-8 rounded-lg hover:bg-primary/10 text-primary"
-                                                  onClick={() => handleEditControl(control)}
+                                                  onClick={() =>
+                                                    handleEditControl(control)
+                                                  }
                                                   title="Edit Control"
                                                 >
-                                                  <Icon name="edit" size="14px" />
+                                                  <Icon
+                                                    name="edit"
+                                                    size="14px"
+                                                  />
                                                 </Button>
                                                 <Button
                                                   size="icon"
                                                   variant="ghost"
                                                   className="w-8 h-8 rounded-lg hover:bg-red-500/10 text-red-600"
-                                                  onClick={() => handleDeleteControl(control)}
+                                                  onClick={() =>
+                                                    handleDeleteControl(control)
+                                                  }
                                                   title="Delete Control"
                                                 >
-                                                  <Icon name="trash" size="14px" />
+                                                  <Icon
+                                                    name="trash"
+                                                    size="14px"
+                                                  />
                                                 </Button>
                                               </div>
                                             )}
@@ -1211,12 +1222,20 @@ function OfficialFrameworkDetail() {
                                               Deployment Points
                                             </p>
                                             <ol className="text-xs text-foreground leading-relaxed space-y-1.5 list-decimal list-inside">
-                                              {(Array.isArray(control.Deployment_points)
+                                              {(Array.isArray(
+                                                control.Deployment_points,
+                                              )
                                                 ? control.Deployment_points
-                                                : control.Deployment_points.split(/\d+\.\s+/).filter((point) => point.trim())
+                                                : control.Deployment_points.split(
+                                                    /\d+\.\s+/,
+                                                  ).filter((point) =>
+                                                    point.trim(),
+                                                  )
                                               ).map((point, i) => (
                                                 <li key={i} className="pl-1">
-                                                  {typeof point === 'string' ? point.trim() : point}
+                                                  {typeof point === "string"
+                                                    ? point.trim()
+                                                    : point}
                                                 </li>
                                               ))}
                                             </ol>

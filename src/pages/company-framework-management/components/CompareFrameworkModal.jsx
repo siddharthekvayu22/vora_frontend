@@ -223,12 +223,12 @@ export default function CompareFrameworkModal({
                   framework.aiUpload?.job_id;
 
                 return (
-                  <div
+                  <button
                     key={framework.id}
                     onClick={() =>
                       canCompare && setSelectedFramework(framework)
                     }
-                    className={`p-3 rounded-xl border-2 transition-all ${
+                    className={`p-3 w-full cursor-pointer rounded-xl border-2 transition-all ${
                       isSelected
                         ? "border-primary bg-primary/5 shadow-sm"
                         : canCompare
@@ -298,7 +298,7 @@ export default function CompareFrameworkModal({
                         </div>
                       )}
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

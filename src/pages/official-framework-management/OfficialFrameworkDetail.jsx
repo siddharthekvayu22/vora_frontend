@@ -606,6 +606,19 @@ function OfficialFrameworkDetail() {
                   </span>
                 }
               />
+              <InfoItem
+                icon={<FiHash size={15} />}
+                label="Current File Id"
+                value={
+                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                    {
+                      framework.fileVersions.find(
+                        (v) => v.version === framework.currentVersion,
+                      )?.fileId
+                    }
+                  </span>
+                }
+              />
             </div>
 
             {/* Show rejection reason if framework is rejected */}

@@ -621,7 +621,7 @@ function CompanyFrameworkDetail() {
                                 <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
                                   <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                     <div className="flex items-center justify-between">
-                                      <h4 className="text-sm font-bold text-foreground">
+                                      <h4 className="text-sm font-semibold">
                                         Status
                                       </h4>
                                       <span
@@ -689,6 +689,54 @@ function CompanyFrameworkDetail() {
                                     )}
                                   </div>
                                 </div>
+                                {/* IDs Card - Only show if uuid or job_id exists */}
+                                {(ver.aiUpload.uuid || ver.aiUpload.job_id) && (
+                                  <div className="rounded-xl border border-border bg-muted/30 overflow-hidden h-fit">
+                                    <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                      <h4 className="text-sm font-semibold">
+                                        Identifiers
+                                      </h4>
+                                    </div>
+                                    <div className="p-3 space-y-0">
+                                      {ver.aiUpload.uuid && (
+                                        <div>
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                            UUID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.uuid}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {ver.aiUpload.job_id && (
+                                        <div
+                                          className={
+                                            ver.aiUpload.uuid
+                                              ? "pt-2 border-t border-border"
+                                              : ""
+                                          }
+                                        >
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                            Job ID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.job_id}
+                                          </p>
+                                        </div>
+                                      )}
+                                      {ver.aiUpload.original_uuid && (
+                                        <div className="pt-2 border-t border-border">
+                                          <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                            Original UUID
+                                          </p>
+                                          <p className="text-xs font-mono text-foreground break-all leading-relaxed">
+                                            {ver.aiUpload.original_uuid}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>

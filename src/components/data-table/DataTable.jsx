@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import Icon from "../Icon";
 import { Button } from "../ui/button";
-import SelectDropdown from "../custom/SelectDropdown";
 import {
   DropdownMenu,
   DropdownMenuContent,

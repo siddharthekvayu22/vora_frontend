@@ -484,15 +484,36 @@ function CompanyFrameworkDetail() {
                       </Button>
 
                       {ver.aiUpload?.status === "completed" &&
-                        ver.aiUpload?.job_id && (
+                        ver.aiUpload?.job_id &&
+                        ver.comparison?.status !== "comparison_completed" && (
                           <Button
                             variant="secondary"
                             onClick={() => {
                               setSelectedVersionForCompare(ver);
                               setCompareModalOpen(true);
                             }}
+                            disabled={
+                              ver.comparison?.status === "comparison_started" ||
+                              ver.comparison?.status === "comparison_processing"
+                            }
                           >
-                            <FiGitMerge size={13} /> Compare
+                            {ver.comparison?.status === "comparison_started" ||
+                            ver.comparison?.status ===
+                              "comparison_processing" ? (
+                              <>
+                                <FiLoader size={13} className="animate-spin" />
+                                {ver.comparison?.status === "comparison_started"
+                                  ? "Starting..."
+                                  : "Comparing..."}
+                              </>
+                            ) : (
+                              <>
+                                <FiGitMerge size={13} />
+                                {ver.comparison?.status === "comparison_failed"
+                                  ? "Retry Compare"
+                                  : "Compare"}
+                              </>
+                            )}
                           </Button>
                         )}
 

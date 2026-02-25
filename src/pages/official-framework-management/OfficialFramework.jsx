@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadFrameworkModal from "./components/UploadFrameworkModal";
@@ -19,164 +19,45 @@ import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/useAuth";
+import { useTableData } from "../../components/data-table/hooks/useTableData";
 
 function OfficialFramework() {
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [officialFramework, setOfficialFramework] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "No official framework found",
-  );
+
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    limit: 10,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-
-  /* ---------------- URL SYNC ---------------- */
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    const search = searchParams.get("search") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-    const status = searchParams.get("status") || "";
-
-    setPagination((p) => ({ ...p, currentPage: page }));
-    setSearchTerm(search);
-    setStatusFilter(status);
-    setSortConfig({ sortBy, sortOrder });
-  }, [searchParams]);
-
-  /* ---------------- FETCH DATA ---------------- */
-  const fetchOfficialFramework = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getAllOfficialFrameworks({
-        page: pagination.currentPage,
-        limit: pagination.limit,
-        search: searchTerm,
-        sortBy: sortConfig.sortBy,
-        sortOrder: sortConfig.sortOrder,
-        status: statusFilter,
-      });
-
-      setOfficialFramework(res.data || []);
-
-      if (res.message && res.data?.length === 0) {
-        setEmptyMessage(res.message);
-      } else if (searchTerm && res.data?.length === 0) {
-        setEmptyMessage(`No framework found for "${searchTerm}"`);
-      } else {
-        setEmptyMessage("No official framework found");
-      }
-
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
-
-      return res.data || []; // Return data for retry logic
-    } catch (err) {
-      toast.error(err.message || "Failed to load official framework");
-      setOfficialFramework([]);
-      setEmptyMessage("Failed to load official framework");
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    pagination.currentPage,
-    pagination.limit,
+  // Use custom hook for table data management
+  const {
+    data: officialFramework,
+    loading,
+    emptyMessage,
+    pagination,
     searchTerm,
     sortConfig,
-    statusFilter,
-  ]);
-
-  useEffect(() => {
-    fetchOfficialFramework();
-  }, [fetchOfficialFramework]);
+    onSearch: handleSearch,
+    onSort: handleSort,
+    onFilterChange,
+    refetch,
+  } = useTableData(getAllOfficialFrameworks, {
+    defaultLimit: 10,
+    defaultSortBy: "createdAt",
+    defaultSortOrder: "desc",
+    emptyMessage: "No official framework found",
+  });
 
   /* ---------------- HANDLERS ---------------- */
-  const handlePageChange = (page) => {
-    const p = new URLSearchParams(searchParams);
-    p.set("page", page);
-    setSearchParams(p);
-  };
-
-  const handleSearch = (term) => {
-    const p = new URLSearchParams(searchParams);
-    term ? p.set("search", term) : p.delete("search");
-    p.set("page", "1");
-    setSearchParams(p);
-  };
-
-  const handleSort = (key) => {
-    const order =
-      sortConfig.sortBy === key && sortConfig.sortOrder === "asc"
-        ? "desc"
-        : "asc";
-
-    const p = new URLSearchParams(searchParams);
-    p.set("sortBy", key);
-    p.set("sortOrder", order);
-    p.set("page", "1");
-    setSearchParams(p);
-
-    setSortConfig({ sortBy: key, sortOrder: order });
-  };
-
   const handleStatusFilter = (status) => {
-    const p = new URLSearchParams(searchParams);
-    status ? p.set("status", status) : p.delete("status");
-    p.set("page", "1");
-    setSearchParams(p);
+    onFilterChange("status", status);
   };
 
   const handleUploadSuccess = async () => {
-    // Retry logic to handle async event processing
-    const maxRetries = 5;
-    const retryDelay = 500; // 500ms between retries
-
-    const previousCount = officialFramework.length;
-
-    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
-      const data = await fetchOfficialFramework();
-
-      // Check if new framework was added
-      if (data.length > previousCount) {
-        // Success - new framework found
-        return;
-      }
-
-      // Wait before next retry (except on last iteration)
-      if (retryCount < maxRetries - 1) {
-        await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      }
-    }
-
-    // Final refresh if still not found
-    await fetchOfficialFramework();
+    await refetch();
   };
 
   const handleUpdateFramework = (framework) => {
@@ -185,8 +66,7 @@ function OfficialFramework() {
   };
 
   const handleUpdateSuccess = () => {
-    // Refresh the framework list after successful update
-    fetchOfficialFramework();
+    refetch();
   };
 
   const handleDeleteFramework = (framework) => {
@@ -196,17 +76,17 @@ function OfficialFramework() {
 
   const handleDeleteConfirm = async () => {
     if (!frameworkToDelete) return;
-    const fileId = frameworkToDelete.mainFileId; // Use mainFileId for delete
+    const fileId = frameworkToDelete.mainFileId;
     try {
       const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
-      fetchOfficialFramework(); // Refresh the list
+      refetch();
       setDeleteModalOpen(false);
       setFrameworkToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(error.message || "Failed to delete framework");
-      throw error; // Re-throw to let modal handle loading state
+      throw error;
     }
   };
 
@@ -217,7 +97,6 @@ function OfficialFramework() {
 
   /* ---------------- UPLOAD TO AI ---------------- */
   const handleUploadToAi = async (row) => {
-    // Use versionFileId for AI upload (specific version)
     if (!row.fileInfo?.versionFileId) {
       toast.error("File version ID not found");
       return;
@@ -226,14 +105,14 @@ function OfficialFramework() {
     try {
       const result = await uploadOfficialFrameworkToAi(
         row.fileInfo.versionFileId,
-      ); // Use versionFileId
+      );
       toast.success(result.message || "Framework uploaded to AI successfully");
-      fetchOfficialFramework(); // Refresh to get updated AI status
+      refetch();
     } catch (error) {
       console.error("Upload to AI error:", error);
       toast.error(error.message || "Failed to upload framework to AI");
-      fetchOfficialFramework(); // Refresh to get updated AI status
-      throw error; // Re-throw to let ActionDropdown handle loading state
+      refetch();
+      throw error;
     }
   };
 
@@ -242,12 +121,12 @@ function OfficialFramework() {
 
     try {
       await downloadOfficialFrameworkFile(
-        row.fileInfo.versionFileId, // Use versionFileId for download
+        row.fileInfo.versionFileId,
         row.fileInfo.originalFileName,
       );
     } catch (err) {
       toast.error(err.message);
-      throw err; // Re-throw to let ActionDropdown handle loading state
+      throw err;
     }
   };
 
@@ -332,50 +211,54 @@ function OfficialFramework() {
         className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadFramework(row),
       },
-      {
-        id: `edit-${row.mainFileId}`,
-        label: "Edit Framework",
-        icon: "edit",
-        className: "text-primary hover:text-primary",
-        onClick: () => handleUpdateFramework(row),
-      },
-      {
-        id: `delete-${row.mainFileId}`,
-        label: "Delete Framework",
-        icon: "trash",
-        className: "text-red-600 hover:text-red-600",
-        onClick: () => handleDeleteFramework(row),
-      },
+
+      ...(user.role === "expert"
+        ? [
+            {
+              id: `edit-${row.mainFileId}`,
+              label: "Edit Framework",
+              icon: "edit",
+              className: "text-primary hover:text-primary",
+              onClick: () => handleUpdateFramework(row),
+            },
+            {
+              id: `delete-${row.mainFileId}`,
+              label: "Delete Framework",
+              icon: "trash",
+              className: "text-red-600 hover:text-red-600",
+              onClick: () => handleDeleteFramework(row),
+            },
+          ]
+        : []),
     ];
 
-    // Add AI-specific actions based on status (at index 0 - first position)
-    if (!aiStatus) {
-      // Not sent to AI - show "Send to AI" action
-      actions.splice(0, 0, {
-        id: `send-ai-${row.fileInfo?.versionFileId}`,
-        label: "Send to AI",
-        icon: "upload",
-        className: "text-blue-600 hover:text-blue-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "failed" || aiStatus === "skipped") {
-      // Failed or Skipped - show "Retry AI Upload" action
-      actions.splice(0, 0, {
-        id: `retry-ai-${row.fileInfo?.versionFileId}`,
-        label: "Retry AI Upload",
-        icon: "refresh",
-        className: "text-orange-600 hover:text-orange-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "processing") {
-      // Processing - show "View AI Status" action (disabled)
-      actions.splice(0, 0, {
-        id: `ai-status-${row.fileInfo?.versionFileId}`,
-        label: "AI Processing...",
-        icon: "clock",
-        className: "text-blue-600 hover:text-blue-600",
-        disabled: true,
-      });
+    // Add AI-specific actions only for expert users
+    if (user.role === "expert") {
+      if (!aiStatus) {
+        actions.splice(0, 0, {
+          id: `send-ai-${row.fileInfo?.versionFileId}`,
+          label: "Send to AI",
+          icon: "upload",
+          className: "text-blue-600 hover:text-blue-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "failed" || aiStatus === "skipped") {
+        actions.splice(0, 0, {
+          id: `retry-ai-${row.fileInfo?.versionFileId}`,
+          label: "Retry AI Upload",
+          icon: "refresh",
+          className: "text-orange-600 hover:text-orange-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "processing") {
+        actions.splice(0, 0, {
+          id: `ai-status-${row.fileInfo?.versionFileId}`,
+          label: "AI Processing...",
+          icon: "clock",
+          className: "text-blue-600 hover:text-blue-600",
+          disabled: true,
+        });
+      }
     }
 
     return (
@@ -386,32 +269,40 @@ function OfficialFramework() {
   };
 
   const renderHeaderButtons = () => {
+    // Get status from URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusFilter = urlParams.get("status") || "";
+
     return (
       <>
         {/* Status Filter */}
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "uploaded", label: "Uploaded" },
-            { value: "failed", label: "Failed" },
-            { value: "skiped", label: "Skiped" },
-            { value: "processing", label: "Processing" },
-            { value: "completed", label: "Completed" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
-        <Button
-          size="lg"
-          onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3"
-        >
-          <Icon name="plus" size="18px" />
-          Add New Framework
-        </Button>
+        {user.role === "expert" && (
+          <SelectDropdown
+            value={statusFilter}
+            onChange={handleStatusFilter}
+            options={[
+              { value: "", label: "All Status" },
+              { value: "uploaded", label: "Uploaded" },
+              { value: "failed", label: "Failed" },
+              { value: "skiped", label: "Skiped" },
+              { value: "processing", label: "Processing" },
+              { value: "completed", label: "Completed" },
+            ]}
+            placeholder="All Status"
+            size="lg"
+            variant="default"
+          />
+        )}
+        {user.role === "expert" && (
+          <Button
+            size="lg"
+            onClick={() => setUploadModalOpen(true)}
+            className="flex items-center gap-3"
+          >
+            <Icon name="plus" size="18px" />
+            Add New Framework
+          </Button>
+        )}
       </>
     );
   };
@@ -427,7 +318,8 @@ function OfficialFramework() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
-        pagination={{ ...pagination, onPageChange: handlePageChange }}
+        searchTerm={searchTerm}
+        pagination={pagination}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search framework name, code, or uploader..."

@@ -19,8 +19,10 @@ export default function SelectDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [openUpward, setOpenUpward] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+  const menuRef = useRef(null);
 
   // Size variants
   const sizeClasses = {
@@ -118,13 +120,40 @@ export default function SelectDropdown({
   useEffect(() => {
     if (isOpen && buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + 4,
-        left: rect.left,
-        width: rect.width,
-      });
+      const viewportHeight = window.innerHeight;
+
+      // Estimate dropdown height (max-height is 240px = 15rem)
+      const maxDropdownHeight = 240;
+      const estimatedDropdownHeight = Math.min(
+        options.length * 40, // Approximate height per option
+        maxDropdownHeight,
+      );
+
+      // Calculate available space below and above
+      const spaceBelow = viewportHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      // Determine if dropdown should open upward
+      const shouldOpenUpward =
+        spaceBelow < estimatedDropdownHeight && spaceAbove > spaceBelow;
+      setOpenUpward(shouldOpenUpward);
+
+      // Set position based on direction
+      if (shouldOpenUpward) {
+        setDropdownPosition({
+          bottom: viewportHeight - rect.top + 4,
+          left: rect.left,
+          width: rect.width,
+        });
+      } else {
+        setDropdownPosition({
+          top: rect.bottom + 4,
+          left: rect.left,
+          width: rect.width,
+        });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, options.length]);
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
@@ -163,10 +192,12 @@ export default function SelectDropdown({
       {/* Dropdown Menu */}
       {isOpen && (
         <div
-          ref={dropdownRef}
-          className="fixed bg-popover border border-border rounded-lg shadow-lg z-[9999] max-h-60 overflow-y-auto"
+          ref={menuRef}
+          className="fixed bg-popover border border-border rounded-lg shadow-lg z-9999 max-h-60 overflow-y-auto"
           style={{
-            top: `${dropdownPosition.top}px`,
+            ...(openUpward
+              ? { bottom: `${dropdownPosition.bottom}px` }
+              : { top: `${dropdownPosition.top}px` }),
             left: `${dropdownPosition.left}px`,
             width: `${dropdownPosition.width}px`,
           }}

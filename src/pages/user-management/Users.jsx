@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import DataTable from "../../components/data-table/DataTable";
 import UserModal from "./components/UserModal";
@@ -20,30 +19,10 @@ import ActionDropdown from "../../components/custom/ActionDropdown";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { useAuth } from "../../context/useAuth";
 import { Button } from "@/components/ui/button";
+import { useTableData } from "../../components/data-table/hooks/useTableData";
 
 function Users() {
   const { user } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState("No users found");
-
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    limit: 10,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
 
   const [modalState, setModalState] = useState({
     isOpen: false,
@@ -58,118 +37,32 @@ function Users() {
 
   const [syncLoading, setSyncLoading] = useState(false);
 
-  /* ---------------- URL SYNC ---------------- */
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    const search = searchParams.get("search") || "";
-    const role = searchParams.get("role") || "";
-    const status = searchParams.get("status") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-
-    setPagination((p) => ({ ...p, currentPage: page }));
-    setSearchTerm(search);
-    setRoleFilter(role);
-    setStatusFilter(status);
-    setSortConfig({ sortBy, sortOrder });
-  }, [searchParams]);
-
-  /* ---------------- FETCH USERS ---------------- */
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getAllUsers({
-        page: pagination.currentPage,
-        limit: pagination.limit,
-        search: searchTerm,
-        role: roleFilter,
-        isActive: statusFilter,
-        sortBy: sortConfig.sortBy,
-        sortOrder: sortConfig.sortOrder,
-      });
-
-      setUsers(res.data || res.users || []);
-
-      // Set the message from backend response, especially for empty results
-      if (res.message && (res.users?.length === 0 || res.data?.length === 0)) {
-        setEmptyMessage(res.message);
-      } else if (
-        searchTerm &&
-        (res.users?.length === 0 || res.data?.length === 0)
-      ) {
-        setEmptyMessage(`No users found for "${searchTerm}"`);
-      } else {
-        setEmptyMessage("No users found");
-      }
-
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
-    } catch (err) {
-      toast.error(err.message || "Failed to load users");
-      setUsers([]);
-      setEmptyMessage("Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    pagination.currentPage,
-    pagination.limit,
+  // Use custom hook for table data management
+  const {
+    data: users,
+    loading,
+    emptyMessage,
+    pagination,
     searchTerm,
-    roleFilter,
-    statusFilter,
     sortConfig,
-  ]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    onSearch: handleSearch,
+    onSort: handleSort,
+    onFilterChange,
+    refetch,
+  } = useTableData(getAllUsers, {
+    defaultLimit: 10,
+    defaultSortBy: "createdAt",
+    defaultSortOrder: "desc",
+    emptyMessage: "No users found",
+  });
 
   /* ---------------- HANDLERS ---------------- */
-  const handlePageChange = (page) => {
-    const p = new URLSearchParams(searchParams);
-    p.set("page", page);
-    setSearchParams(p);
-  };
-
-  const handleSearch = (term) => {
-    const p = new URLSearchParams(searchParams);
-    term ? p.set("search", term) : p.delete("search");
-    p.set("page", "1");
-    setSearchParams(p);
-  };
-
-  const handleSort = (key) => {
-    const order =
-      sortConfig.sortBy === key && sortConfig.sortOrder === "asc"
-        ? "desc"
-        : "asc";
-
-    const p = new URLSearchParams(searchParams);
-    p.set("sortBy", key);
-    p.set("sortOrder", order);
-    p.set("page", "1");
-    setSearchParams(p);
-
-    setSortConfig({ sortBy: key, sortOrder: order });
-  };
-
   const handleRoleFilter = (role) => {
-    const p = new URLSearchParams(searchParams);
-    role ? p.set("role", role) : p.delete("role");
-    p.set("page", "1");
-    setSearchParams(p);
+    onFilterChange("role", role);
   };
 
   const handleStatusFilter = (status) => {
-    const p = new URLSearchParams(searchParams);
-    status ? p.set("status", status) : p.delete("status");
-    p.set("page", "1");
-    setSearchParams(p);
+    onFilterChange("isActive", status);
   };
 
   /* ---------------- CRUD ---------------- */
@@ -184,7 +77,7 @@ function Users() {
         toast.success(response.message || "User updated successfully");
       }
       setModalState({ isOpen: false, mode: "view", user: null });
-      fetchUsers();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to save user");
       console.error("Save user error:", e);
@@ -193,7 +86,6 @@ function Users() {
 
   const handleDeleteUser = async () => {
     try {
-      // Handle both _id and id fields for user identification
       const userId = deleteModalState.user?._id || deleteModalState.user?.id;
 
       if (!userId) {
@@ -205,16 +97,16 @@ function Users() {
       await deleteUser(userId);
       toast.success("User deleted successfully");
       setDeleteModalState({ isOpen: false, user: null });
-      fetchUsers();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to delete user");
       console.error("Delete user error:", e);
     }
   };
 
-  const handleToggleStatus = async (user) => {
+  const handleToggleStatus = async (row) => {
     try {
-      const userId = user?._id || user?.id;
+      const userId = row?._id || row?.id;
 
       if (!userId) {
         toast.error("User ID not found. Cannot toggle status.");
@@ -223,11 +115,11 @@ function Users() {
 
       const response = await toggleUserStatus(userId);
       toast.success(response.message || "User status updated successfully");
-      fetchUsers();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to toggle user status");
       console.error("Toggle status error:", e);
-      throw e; // Re-throw to let ActionDropdown handle loading state
+      throw e;
     }
   };
 
@@ -236,7 +128,7 @@ function Users() {
     try {
       const response = await syncUsersToAllServices();
       toast.success(response.message || "Users synced successfully");
-      fetchUsers();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to sync users");
       console.error("Sync users error:", e);
@@ -370,6 +262,10 @@ function Users() {
   };
 
   const renderHeaderButtons = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roleFilter = urlParams.get("role") || "";
+    const statusFilter = urlParams.get("isActive") || "";
+
     return (
       <>
         {/* Role Filter */}
@@ -447,7 +343,8 @@ function Users() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
-        pagination={{ ...pagination, onPageChange: handlePageChange }}
+        searchTerm={searchTerm}
+        pagination={pagination}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search users by name, email, or phone..."

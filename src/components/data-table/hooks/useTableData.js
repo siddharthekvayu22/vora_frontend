@@ -54,11 +54,12 @@ export function useTableData(fetchFunction, options = {}) {
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || defaultSortBy;
     const sortOrder = searchParams.get("sortOrder") || defaultSortOrder;
+    const limit = parseInt(searchParams.get("limit")) || defaultLimit;
 
-    setPagination((p) => ({ ...p, currentPage: page }));
+    setPagination((p) => ({ ...p, currentPage: page, limit }));
     setSearchTerm(search);
     setSortConfig({ sortBy, sortOrder });
-  }, [searchParams, defaultSortBy, defaultSortOrder]);
+  }, [searchParams, defaultSortBy, defaultSortOrder, defaultLimit]);
 
   /* ---------------- FETCH DATA ---------------- */
   const fetchData = useCallback(async () => {
@@ -69,11 +70,12 @@ export function useTableData(fetchFunction, options = {}) {
     const search = searchParams.get("search") || "";
     const sortBy = searchParams.get("sortBy") || defaultSortBy;
     const sortOrder = searchParams.get("sortOrder") || defaultSortOrder;
+    const limit = parseInt(searchParams.get("limit")) || defaultLimit;
 
     // Build query params object
     const queryParams = {
       page,
-      limit: pagination.limit,
+      limit,
       search,
       sortBy,
       sortOrder,
@@ -81,7 +83,7 @@ export function useTableData(fetchFunction, options = {}) {
 
     // Add any additional query params from URL
     for (const [key, value] of searchParams.entries()) {
-      if (!["page", "search", "sortBy", "sortOrder"].includes(key)) {
+      if (!["page", "search", "sortBy", "sortOrder", "limit"].includes(key)) {
         queryParams[key] = value;
       }
     }
@@ -104,6 +106,7 @@ export function useTableData(fetchFunction, options = {}) {
       setPagination((p) => ({
         ...p,
         currentPage: page,
+        limit,
         totalPages: res.pagination?.totalPages || 1,
         totalItems: res.pagination?.totalItems || 0,
         hasPrevPage: page > 1,
@@ -128,11 +131,11 @@ export function useTableData(fetchFunction, options = {}) {
     }
   }, [
     searchParams,
-    pagination.limit,
     fetchFunction,
     defaultEmptyMessage,
     defaultSortBy,
     defaultSortOrder,
+    defaultLimit,
     onError,
     ...additionalDeps,
   ]);
@@ -189,6 +192,16 @@ export function useTableData(fetchFunction, options = {}) {
     [searchParams, setSearchParams],
   );
 
+  const handleLimitChange = useCallback(
+    (newLimit) => {
+      const p = new URLSearchParams(searchParams);
+      p.set("limit", newLimit);
+      p.set("page", "1"); // Reset to first page when changing limit
+      setSearchParams(p);
+    },
+    [searchParams, setSearchParams],
+  );
+
   const refetch = useCallback(() => {
     return fetchData();
   }, [fetchData]);
@@ -203,6 +216,7 @@ export function useTableData(fetchFunction, options = {}) {
     pagination: {
       ...pagination,
       onPageChange: handlePageChange,
+      onLimitChange: handleLimitChange,
     },
 
     // Search & Sort

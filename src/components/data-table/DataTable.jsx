@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Icon from "../Icon";
 import { Button } from "../ui/button";
+import SelectDropdown from "../custom/SelectDropdown";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -301,13 +302,37 @@ export default function DataTable({
       {/* Pagination */}
       {pagination && pagination.totalPages > 0 && (
         <div className="flex justify-between items-center px-4 py-3 border-t border-border bg-muted flex-wrap gap-4">
-          <div className="text-sm text-muted-foreground">
-            Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
-            {Math.min(
-              pagination.currentPage * pagination.limit,
-              pagination.totalItems,
-            )}{" "}
-            of {pagination.totalItems} entries
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
+              {Math.min(
+                pagination.currentPage * pagination.limit,
+                pagination.totalItems,
+              )}{" "}
+              of {pagination.totalItems} entries
+            </div>
+            {pagination.onLimitChange && (
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-muted-foreground">
+                  Per page:
+                </label>
+                <SelectDropdown
+                  value={pagination.limit.toString()}
+                  onChange={(value) => pagination.onLimitChange(Number(value))}
+                  options={[
+                    { value: "5", label: "5" },
+                    { value: "10", label: "10" },
+                    { value: "25", label: "25" },
+                    { value: "50", label: "50" },
+                    { value: "100", label: "100" },
+                  ]}
+                  placeholder={pagination.limit.toString()}
+                  size="sm"
+                  variant="default"
+                  disabled={loading}
+                />
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <button

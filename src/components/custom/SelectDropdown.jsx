@@ -193,7 +193,7 @@ export default function SelectDropdown({
       {isOpen && (
         <div
           ref={menuRef}
-          className="fixed bg-popover border border-border rounded-lg shadow-lg z-[9999] max-h-60 overflow-y-auto"
+          className="fixed bg-popover border border-border rounded-lg shadow-lg z-9999 max-h-60 overflow-y-auto"
           style={{
             ...(openUpward
               ? { bottom: `${dropdownPosition.bottom}px` }

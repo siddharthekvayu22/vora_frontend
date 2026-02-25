@@ -32,6 +32,7 @@ import {
 } from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
+import ComparisonTable from "./components/ComparisonTable";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
@@ -776,7 +777,6 @@ function CompanyFrameworkDetail() {
                         </div>
                       )}
                       {/* comparison Info */}
-                      {/* comparison Info */}
                       {ver.comparison && (
                         <div className="rounded-xl border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
@@ -789,9 +789,9 @@ function CompanyFrameworkDetail() {
                           </div>
 
                           <div className="p-4 overflow-y-auto">
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-12 gap-4">
                               {/* Status Card */}
-                              <div className="rounded-xl border border-border bg-muted/30">
+                              <div className="rounded-xl border border-border bg-muted/30 col-span-6">
                                 <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                   <div className="flex items-center justify-between">
                                     <h4 className="text-sm font-semibold">
@@ -915,7 +915,7 @@ function CompanyFrameworkDetail() {
                                 ver.comparison?.company_controls_job_id ||
                                 ver.comparison?.official_controls_job_id ||
                                 ver.comparison?.original_comparison_id) && (
-                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden col-span-6">
                                   <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                     <h4 className="text-sm font-semibold">
                                       Identifiers
@@ -987,6 +987,19 @@ function CompanyFrameworkDetail() {
                                     )}
                                   </div>
                                 </div>
+                              )}
+
+                              {/* Comparison Data Table */}
+                              {ver.comparison?.comparisons?.comparison_data
+                                ?.length > 0 && (
+                                <ComparisonTable
+                                  comparisonData={
+                                    ver.comparison.comparisons.comparison_data
+                                  }
+                                  totalControls={
+                                    ver.comparison.comparisons.total_controls
+                                  }
+                                />
                               )}
                             </div>
                           </div>

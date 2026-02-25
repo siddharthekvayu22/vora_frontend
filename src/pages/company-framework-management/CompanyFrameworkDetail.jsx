@@ -767,6 +767,23 @@ function CompanyFrameworkDetail() {
                           </div>
                         </div>
                       )}
+                      {/* comparison Info */}
+                      {ver.comparison && (
+                        <div className="rounded-xl border border-border bg-card overflow-hidden">
+                          <div className="px-4 py-3 bg-secondary/5 border-b border-border">
+                            <div className="flex items-center gap-2">
+                              <FiInfo size={16} className="text-secondary" />
+                              <h3 className="text-sm font-bold">
+                                Comparison Information
+                              </h3>
+                            </div>
+                          </div>
+
+                          <div className="p-4 max-h-[400px] overflow-y-auto border border-red-500">
+                            comparison GUi here
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

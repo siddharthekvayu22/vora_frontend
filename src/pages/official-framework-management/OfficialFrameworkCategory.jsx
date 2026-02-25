@@ -240,6 +240,7 @@ function OfficialFrameworkCategory() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
+        searchTerm={searchTerm}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
         searchPlaceholder="Search official category..."

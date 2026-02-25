@@ -282,6 +282,7 @@ function OfficialFrameworkAccess() {
         onSort={handleSort}
         sortConfig={sortConfig}
         renderActions={renderActions}
+        searchTerm={searchTerm}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         searchPlaceholder="Search framework, expert, status..."
         emptyMessage={emptyMessage}

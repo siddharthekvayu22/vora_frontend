@@ -447,6 +447,7 @@ function FrameworkAccess() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
+        searchTerm={searchTerm}
         pagination={{ ...pagination, onPageChange: handlePageChange }}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}

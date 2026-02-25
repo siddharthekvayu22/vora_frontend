@@ -768,6 +768,7 @@ function CompanyFrameworkDetail() {
                         </div>
                       )}
                       {/* comparison Info */}
+                      {/* comparison Info */}
                       {ver.comparison && (
                         <div className="rounded-xl border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
@@ -779,8 +780,207 @@ function CompanyFrameworkDetail() {
                             </div>
                           </div>
 
-                          <div className="p-4 max-h-[400px] overflow-y-auto border border-red-500">
-                            comparison GUi here
+                          <div className="p-4 overflow-y-auto">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                              {/* Status Card */}
+                              <div className="rounded-xl border border-border bg-muted/30">
+                                <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-sm font-semibold">
+                                      Status
+                                    </h4>
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                        ver.comparison.status ===
+                                        "comparison_completed"
+                                          ? "bg-green-500/15 text-green-600"
+                                          : ver.comparison.status ===
+                                                "comparison_started" ||
+                                              ver.comparison.status ===
+                                                "comparison_processing"
+                                            ? "bg-blue-500/15 text-blue-600"
+                                            : ver.comparison.status ===
+                                                "comparison_failed"
+                                              ? "bg-red-500/15 text-red-600"
+                                              : "bg-yellow-500/15 text-yellow-600"
+                                      }`}
+                                    >
+                                      {ver.comparison.status}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="p-3 space-y-2">
+                                  {/* Message */}
+                                  {ver.comparison.message && (
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Message
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {ver.comparison.message}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Total Controls */}
+                                  {ver.comparison.total_controls !==
+                                    undefined && (
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Total Controls
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {ver.comparison.total_controls}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Timestamp */}
+                                  {ver.comparison.timestamp && (
+                                    <div className="pt-2 border-t border-border">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Timestamp
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {new Date(
+                                          ver.comparison.timestamp,
+                                        ).toLocaleString()}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Last Updated */}
+                                  {ver.comparison.lastUpdated && (
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Last Updated
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {new Date(
+                                          ver.comparison.lastUpdated,
+                                        ).toLocaleString()}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Comparison Time */}
+                                  {ver.comparison.comparison_time_seconds !==
+                                    undefined && (
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Processing Time
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {ver.comparison.comparison_time_seconds}{" "}
+                                        sec
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Reused Flag */}
+                                  {ver.comparison.comparison_reused !==
+                                    undefined && (
+                                    <div className="pt-2 border-t border-border">
+                                      <div className="flex items-center justify-between">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                                          Reused from Duplicate
+                                        </p>
+                                        <span
+                                          className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                            ver.comparison.comparison_reused
+                                              ? "bg-blue-500/15 text-blue-600"
+                                              : "bg-gray-500/15 text-gray-600"
+                                          }`}
+                                        >
+                                          {ver.comparison.comparison_reused
+                                            ? "Yes"
+                                            : "No"}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Identifiers Card */}
+                              {(ver.comparison?.comparison_id ||
+                                ver.comparison?.company_controls_job_id ||
+                                ver.comparison?.official_controls_job_id ||
+                                ver.comparison?.original_comparison_id) && (
+                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+                                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                    <h4 className="text-sm font-semibold">
+                                      Identifiers
+                                    </h4>
+                                  </div>
+                                  <div className="p-3 space-y-2">
+                                    {/* Comparison ID */}
+                                    {ver.comparison.comparison_id && (
+                                      <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Comparison ID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {ver.comparison.comparison_id}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Company Controls Job ID */}
+                                    {ver.comparison.company_controls_job_id && (
+                                      <div
+                                        className={
+                                          ver.comparison.comparison_id
+                                            ? "pt-2 border-t border-border"
+                                            : ""
+                                        }
+                                      >
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Company Controls Job ID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {
+                                            ver.comparison
+                                              .company_controls_job_id
+                                          }
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Official Controls Job ID */}
+                                    {ver.comparison
+                                      .official_controls_job_id && (
+                                      <div className="pt-2 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Official Controls Job ID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {
+                                            ver.comparison
+                                              .official_controls_job_id
+                                          }
+                                        </p>
+                                      </div>
+                                    )}
+
+                                    {/* Original Comparison ID (when reused) */}
+                                    {ver.comparison.original_comparison_id && (
+                                      <div className="pt-2 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Original Comparison ID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {
+                                            ver.comparison
+                                              .original_comparison_id
+                                          }
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       )}

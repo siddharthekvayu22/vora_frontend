@@ -2,6 +2,13 @@ import { useState, useCallback, useEffect } from "react";
 import Icon from "../Icon";
 import { Button } from "../ui/button";
 import SelectDropdown from "../custom/SelectDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -130,12 +137,12 @@ export default function DataTable({
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
       {/* Table Header with Search */}
-      <div className="flex justify-between items-center p-4 border-b border-border bg-gradient-to-r from-card to-muted/30">
+      <div className="flex justify-between items-center p-4 border-b border-border bg-linear-to-r from-card to-muted/30">
         <div className="relative flex items-center gap-3 bg-input border border-border rounded-lg px-3 py-2.5 flex-1 max-w-md transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm">
           <Icon
             name="search"
             size="14px"
-            className="text-muted-foreground flex-shrink-0"
+            className="text-muted-foreground shrink-0"
           />
           <input
             type="text"
@@ -145,13 +152,13 @@ export default function DataTable({
             className="flex-1 border-none bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
           />
           {isSearching && (
-            <div className="flex items-center justify-center flex-shrink-0">
+            <div className="flex items-center justify-center shrink-0">
               <div className="w-3 h-3 border-2 border-border border-t-primary rounded-full animate-spin"></div>
             </div>
           )}
           {searchTerm && !isSearching && (
             <Button
-              className="flex items-center justify-center flex-shrink-0 w-5 h-5 transition-all duration-200"
+              className="flex items-center justify-center shrink-0 w-5 h-5 transition-all duration-200"
               variant="ghost"
               onClick={() => {
                 setSearchTerm("");
@@ -192,7 +199,7 @@ export default function DataTable({
       >
         <table className="w-full border-collapse">
           <thead className="sticky top-0 z-10 bg-muted">
-            <tr className="bg-gradient-to-r from-muted to-muted/50">
+            <tr className="bg-linear-to-r from-muted to-muted/50">
               <th className="w-16 px-4 py-2.5 text-left border-b border-border font-semibold text-xs text-muted-foreground uppercase tracking-wider whitespace-nowrap bg-muted">
                 <div className="flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
@@ -313,24 +320,35 @@ export default function DataTable({
             </div>
             {pagination.onLimitChange && (
               <div className="flex items-center gap-2">
-                <label className="text-sm text-muted-foreground">
+                <label className="text-sm text-muted-foreground whitespace-nowrap">
                   Per page:
                 </label>
-                <SelectDropdown
-                  value={pagination.limit.toString()}
-                  onChange={(value) => pagination.onLimitChange(Number(value))}
-                  options={[
-                    { value: "5", label: "5" },
-                    { value: "10", label: "10" },
-                    { value: "25", label: "25" },
-                    { value: "50", label: "50" },
-                    { value: "100", label: "100" },
-                  ]}
-                  placeholder={pagination.limit.toString()}
-                  size="sm"
-                  variant="default"
-                  disabled={loading}
-                />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="justify-between"
+                      disabled={loading}
+                    >
+                      <span>{pagination.limit}</span>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end" className="min-w-[70px]">
+                    {["5", "10", "25", "50", "100"].map((value) => (
+                      <DropdownMenuItem
+                        key={value}
+                        className="justify-center cursor-pointer"
+                        onClick={() => pagination.onLimitChange(Number(value))}
+                      >
+                        {value}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
           </div>

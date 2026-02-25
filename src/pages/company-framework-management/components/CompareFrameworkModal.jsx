@@ -21,6 +21,7 @@ function debounce(func, wait) {
 export default function CompareFrameworkModal({
   isOpen,
   onClose,
+  onSuccess,
   companyFramework,
 }) {
   const [officialFrameworks, setOfficialFrameworks] = useState([]);
@@ -108,7 +109,13 @@ export default function CompareFrameworkModal({
         toast.success(
           response.message || "Framework comparison started successfully",
         );
-        handleClose();
+
+        // Call onSuccess if provided, otherwise call handleClose
+        if (onSuccess) {
+          await onSuccess();
+        } else {
+          handleClose();
+        }
       }
     } catch (error) {
       toast.error(error.message || "Failed to start comparison");

@@ -807,6 +807,14 @@ function CompanyFrameworkDetail() {
             setCompareModalOpen(false);
             setSelectedVersionForCompare(null);
           }}
+          onSuccess={async () => {
+            // Wait for backend to update comparison status
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Fetch updated framework data to trigger polling
+            await fetchFrameworkDetails(true);
+            setCompareModalOpen(false);
+            setSelectedVersionForCompare(null);
+          }}
           companyFramework={{
             ...framework,
             frameworkName: framework.frameworkName,

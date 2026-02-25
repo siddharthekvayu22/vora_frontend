@@ -124,6 +124,24 @@ export function deleteCompanyFrameworkVersion(fileId, versionFileId) {
   );
 }
 
+/**
+ * Compare company framework with official framework
+ */
+export function compareFrameworks(companyControlsJobId, officialControlsJobId) {
+  const params = new URLSearchParams({
+    companyControlsJobId,
+    officialControlsJobId,
+  });
+
+  return apiRequest(
+    `/company-frameworks/frameworks/compare?${params.toString()}`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
 export default {
   getCompanyFrameworkById,
   getAllCompanyFrameworks,
@@ -133,4 +151,5 @@ export default {
   deleteCompanyFramework,
   deleteCompanyFrameworkVersion,
   uploadCompanyFrameworkToAi,
+  compareFrameworks,
 };

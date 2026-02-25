@@ -1,5 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import {
   getAdminFrameworkAccess,
@@ -21,31 +20,9 @@ import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
 import SelectDropdown from "../../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
+import { useTableData } from "../../../components/data-table/hooks/useTableData";
 
 function FrameworkAccess() {
-  const [frameworkAccess, setFrameworkAccess] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "No framework access records found",
-  );
-
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    limit: 10,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-
   const [viewModalState, setViewModalState] = useState({
     isOpen: false,
     accessRecord: null,
@@ -70,103 +47,28 @@ function FrameworkAccess() {
     isOpen: false,
   });
 
-  /* ---------------- URL SYNC ---------------- */
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    const search = searchParams.get("search") || "";
-    const status = searchParams.get("status") || "";
-    const sortBy = searchParams.get("sortBy") || "updatedAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-
-    setPagination((p) => ({ ...p, currentPage: page }));
-    setSearchTerm(search);
-    setStatusFilter(status);
-    setSortConfig({ sortBy, sortOrder });
-  }, [searchParams]);
-
-  /* ---------------- FETCH FRAMEWORK ACCESS ---------------- */
-  const fetchFrameworkAccess = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getAdminFrameworkAccess({
-        page: pagination.currentPage,
-        limit: pagination.limit,
-        search: searchTerm,
-        status: statusFilter,
-        sortBy: sortConfig.sortBy,
-        sortOrder: sortConfig.sortOrder,
-      });
-
-      setFrameworkAccess(res.data || []);
-
-      if (res.message && res.data?.length === 0) {
-        setEmptyMessage(res.message);
-      } else if (searchTerm && res.data?.length === 0) {
-        setEmptyMessage(`No framework access found for "${searchTerm}"`);
-      } else {
-        setEmptyMessage("No framework access records found");
-      }
-
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
-    } catch (err) {
-      toast.error(err.message || "Failed to load framework access");
-      setFrameworkAccess([]);
-      setEmptyMessage("Failed to load framework access");
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    pagination.currentPage,
-    pagination.limit,
+  // Use custom hook for table data management
+  const {
+    data: frameworkAccess,
+    loading,
+    emptyMessage,
+    pagination,
     searchTerm,
-    statusFilter,
     sortConfig,
-  ]);
-
-  useEffect(() => {
-    fetchFrameworkAccess();
-  }, [fetchFrameworkAccess]);
+    onSearch: handleSearch,
+    onSort: handleSort,
+    onFilterChange,
+    refetch,
+  } = useTableData(getAdminFrameworkAccess, {
+    defaultLimit: 10,
+    defaultSortBy: "updatedAt",
+    defaultSortOrder: "desc",
+    emptyMessage: "No framework access records found",
+  });
 
   /* ---------------- HANDLERS ---------------- */
-  const handlePageChange = (page) => {
-    const p = new URLSearchParams(searchParams);
-    p.set("page", page);
-    setSearchParams(p);
-  };
-
-  const handleSearch = (term) => {
-    const p = new URLSearchParams(searchParams);
-    term ? p.set("search", term) : p.delete("search");
-    p.set("page", "1");
-    setSearchParams(p);
-  };
-
-  const handleSort = (key) => {
-    const order =
-      sortConfig.sortBy === key && sortConfig.sortOrder === "asc"
-        ? "desc"
-        : "asc";
-
-    const p = new URLSearchParams(searchParams);
-    p.set("sortBy", key);
-    p.set("sortOrder", order);
-    p.set("page", "1");
-    setSearchParams(p);
-
-    setSortConfig({ sortBy: key, sortOrder: order });
-  };
-
   const handleStatusFilter = (status) => {
-    const p = new URLSearchParams(searchParams);
-    status ? p.set("status", status) : p.delete("status");
-    p.set("page", "1");
-    setSearchParams(p);
+    onFilterChange("status", status);
   };
 
   /* ---------------- APPROVE ACCESS ---------------- */
@@ -185,7 +87,7 @@ function FrameworkAccess() {
         response.message || "Framework access approved successfully",
       );
       setApproveModalState({ isOpen: false, accessRecord: null });
-      fetchFrameworkAccess();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to approve framework access");
       throw e;
@@ -208,7 +110,7 @@ function FrameworkAccess() {
         response.message || "Framework access rejected successfully",
       );
       setRejectModalState({ isOpen: false, accessRecord: null });
-      fetchFrameworkAccess();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to reject framework access");
       throw e;
@@ -232,7 +134,7 @@ function FrameworkAccess() {
         response.message || "Framework access revoked successfully",
       );
       setRevokeModalState({ isOpen: false, accessRecord: null });
-      fetchFrameworkAccess();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to revoke framework access");
       throw e;
@@ -242,7 +144,7 @@ function FrameworkAccess() {
   /* ---------------- GIVE ACCESS SUCCESS ---------------- */
   const handleGiveAccessSuccess = () => {
     setGiveAccessModalState({ isOpen: false });
-    fetchFrameworkAccess();
+    refetch();
   };
 
   /* ---------------- TABLE CONFIG ---------------- */
@@ -350,31 +252,34 @@ function FrameworkAccess() {
           date = row.createdAt;
         }
 
-        return (
-          <span className="text-sm whitespace-nowrap">
-            {date ? formatDate(date) : "—"}
-          </span>
+        return date ? (
+          <span className="text-sm whitespace-nowrap">{formatDate(date)}</span>
+        ) : (
+          <span className="text-muted-foreground text-sm">—</span>
         );
       },
     },
   ];
 
   const renderActions = (row) => {
+    const isPending = row.status === "pending";
+    const isApproved = row.status === "approved";
+
     const actions = [
       {
         id: `view-${row.id}`,
         label: "View Details",
         icon: "eye",
+        className: "text-blue-600 hover:text-blue-600",
         onClick: () => setViewModalState({ isOpen: true, accessRecord: row }),
       },
     ];
 
-    // Add status-specific actions
-    if (row.status === "pending") {
+    if (isPending) {
       actions.push(
         {
           id: `approve-${row.id}`,
-          label: "Approve Request",
+          label: "Approve Access",
           icon: "check",
           className: "text-green-600 hover:text-green-600",
           onClick: () =>
@@ -382,19 +287,21 @@ function FrameworkAccess() {
         },
         {
           id: `reject-${row.id}`,
-          label: "Reject Request",
+          label: "Reject Access",
           icon: "x",
-          className: "text-destructive hover:text-destructive",
+          className: "text-red-600 hover:text-red-600",
           onClick: () =>
             setRejectModalState({ isOpen: true, accessRecord: row }),
         },
       );
-    } else if (row.status === "approved") {
+    }
+
+    if (isApproved) {
       actions.push({
         id: `revoke-${row.id}`,
         label: "Revoke Access",
-        icon: "trash",
-        className: "text-destructive hover:text-destructive",
+        icon: "ban",
+        className: "text-orange-600 hover:text-orange-600",
         onClick: () => setRevokeModalState({ isOpen: true, accessRecord: row }),
       });
     }
@@ -407,9 +314,11 @@ function FrameworkAccess() {
   };
 
   const renderHeaderButtons = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusFilter = urlParams.get("status") || "";
+
     return (
       <>
-        {/* Status Filter */}
         <SelectDropdown
           value={statusFilter}
           onChange={handleStatusFilter}
@@ -426,8 +335,8 @@ function FrameworkAccess() {
         />
         <Button
           size="lg"
+          className="flex items-center gap-3"
           onClick={() => setGiveAccessModalState({ isOpen: true })}
-          className="flex items-center gap-3 px-5 py-3"
         >
           <Icon name="plus" size="18px" />
           Give Framework Access
@@ -447,14 +356,14 @@ function FrameworkAccess() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
-        pagination={{ ...pagination, onPageChange: handlePageChange }}
+        searchTerm={searchTerm}
+        pagination={pagination}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
-        searchPlaceholder="Search framework access..."
+        searchPlaceholder="Search expert, framework, status..."
         emptyMessage={emptyMessage}
       />
 
-      {/* View Modal */}
       {viewModalState.isOpen && (
         <AccessViewModal
           accessRecord={viewModalState.accessRecord}
@@ -464,7 +373,6 @@ function FrameworkAccess() {
         />
       )}
 
-      {/* Approve Modal */}
       {approveModalState.isOpen && (
         <ApproveAccessModal
           accessRecord={approveModalState.accessRecord}
@@ -475,7 +383,6 @@ function FrameworkAccess() {
         />
       )}
 
-      {/* Reject Modal */}
       {rejectModalState.isOpen && (
         <RejectAccessModal
           accessRecord={rejectModalState.accessRecord}
@@ -486,7 +393,6 @@ function FrameworkAccess() {
         />
       )}
 
-      {/* Revoke Modal */}
       {revokeModalState.isOpen && (
         <RevokeAccessModal
           accessRecord={revokeModalState.accessRecord}
@@ -497,7 +403,6 @@ function FrameworkAccess() {
         />
       )}
 
-      {/* Give Access Modal */}
       {giveAccessModalState.isOpen && (
         <GiveFrameworkAccessModal
           onSuccess={handleGiveAccessSuccess}

@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import UploadCompanyFrameworkModal from "./components/UploadCompanyFrameworkModal";
@@ -19,159 +19,43 @@ import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
 import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
+import { useTableData } from "../../components/data-table/hooks/useTableData";
 
 function CompanyFramework() {
   const navigate = useNavigate();
-  const [companyFramework, setCompanyFramework] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "No company framework found",
-  );
+
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    limit: 10,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-
-  /* ---------------- URL SYNC ---------------- */
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    const search = searchParams.get("search") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-    const status = searchParams.get("status") || "";
-
-    setPagination((p) => ({ ...p, currentPage: page }));
-    setSearchTerm(search);
-    setStatusFilter(status);
-    setSortConfig({ sortBy, sortOrder });
-  }, [searchParams]);
-
-  /* ---------------- FETCH DATA ---------------- */
-  const fetchCompanyFramework = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getAllCompanyFrameworks({
-        page: pagination.currentPage,
-        limit: pagination.limit,
-        search: searchTerm,
-        sortBy: sortConfig.sortBy,
-        sortOrder: sortConfig.sortOrder,
-        status: statusFilter,
-      });
-
-      setCompanyFramework(res.data || []);
-
-      if (res.message && res.data?.length === 0) {
-        setEmptyMessage(res.message);
-      } else if (searchTerm && res.data?.length === 0) {
-        setEmptyMessage(`No framework found for "${searchTerm}"`);
-      } else {
-        setEmptyMessage("No company framework found");
-      }
-
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
-
-      return res.data || [];
-    } catch (err) {
-      toast.error(err.message || "Failed to load company framework");
-      setCompanyFramework([]);
-      setEmptyMessage("Failed to load company framework");
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, [
-    pagination.currentPage,
-    pagination.limit,
+  // Use custom hook for table data management
+  const {
+    data: companyFramework,
+    loading,
+    emptyMessage,
+    pagination,
     searchTerm,
     sortConfig,
-    statusFilter,
-  ]);
-
-  useEffect(() => {
-    fetchCompanyFramework();
-  }, [fetchCompanyFramework]);
+    onSearch: handleSearch,
+    onSort: handleSort,
+    onFilterChange,
+    refetch,
+  } = useTableData(getAllCompanyFrameworks, {
+    defaultLimit: 10,
+    defaultSortBy: "createdAt",
+    defaultSortOrder: "desc",
+    emptyMessage: "No company framework found",
+  });
 
   /* ---------------- HANDLERS ---------------- */
-  const handlePageChange = (page) => {
-    const p = new URLSearchParams(searchParams);
-    p.set("page", page);
-    setSearchParams(p);
-  };
-
-  const handleSearch = (term) => {
-    const p = new URLSearchParams(searchParams);
-    term ? p.set("search", term) : p.delete("search");
-    p.set("page", "1");
-    setSearchParams(p);
-  };
-
-  const handleSort = (key) => {
-    const order =
-      sortConfig.sortBy === key && sortConfig.sortOrder === "asc"
-        ? "desc"
-        : "asc";
-
-    const p = new URLSearchParams(searchParams);
-    p.set("sortBy", key);
-    p.set("sortOrder", order);
-    p.set("page", "1");
-    setSearchParams(p);
-
-    setSortConfig({ sortBy: key, sortOrder: order });
-  };
-
   const handleStatusFilter = (status) => {
-    const p = new URLSearchParams(searchParams);
-    status ? p.set("status", status) : p.delete("status");
-    p.set("page", "1");
-    setSearchParams(p);
+    onFilterChange("status", status);
   };
 
   const handleUploadSuccess = async () => {
-    const maxRetries = 5;
-    const retryDelay = 500;
-
-    const previousCount = companyFramework.length;
-
-    for (let retryCount = 0; retryCount < maxRetries; retryCount++) {
-      const data = await fetchCompanyFramework();
-
-      if (data.length > previousCount) {
-        return;
-      }
-
-      if (retryCount < maxRetries - 1) {
-        await new Promise((resolve) => setTimeout(resolve, retryDelay));
-      }
-    }
-
-    await fetchCompanyFramework();
+    await refetch();
   };
 
   const handleUpdateFramework = (framework) => {
@@ -180,7 +64,7 @@ function CompanyFramework() {
   };
 
   const handleUpdateSuccess = () => {
-    fetchCompanyFramework();
+    refetch();
   };
 
   const handleDeleteFramework = (framework) => {
@@ -194,7 +78,7 @@ function CompanyFramework() {
     try {
       const result = await deleteCompanyFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
-      fetchCompanyFramework();
+      refetch();
       setDeleteModalOpen(false);
       setFrameworkToDelete(null);
     } catch (error) {
@@ -221,11 +105,11 @@ function CompanyFramework() {
         row.fileInfo.versionFileId,
       );
       toast.success(result.message || "Framework uploaded to AI successfully");
-      fetchCompanyFramework();
+      refetch();
     } catch (error) {
       console.error("Upload to AI error:", error);
       toast.error(error.message || "Failed to upload framework to AI");
-      fetchCompanyFramework();
+      refetch();
       throw error;
     }
   };
@@ -365,6 +249,9 @@ function CompanyFramework() {
   };
 
   const renderHeaderButtons = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusFilter = urlParams.get("status") || "";
+
     return (
       <>
         <SelectDropdown
@@ -404,7 +291,8 @@ function CompanyFramework() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
-        pagination={{ ...pagination, onPageChange: handlePageChange }}
+        searchTerm={searchTerm}
+        pagination={pagination}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search framework name, code, or uploader..."

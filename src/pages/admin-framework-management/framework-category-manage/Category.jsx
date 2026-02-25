@@ -1,7 +1,4 @@
-import { useEffect } from "react";
-import { useCallback } from "react";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   getAdminFrameworkCategory,
@@ -18,30 +15,9 @@ import CustomBadge from "../../../components/custom/CustomBadge";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
 import UserMiniCard from "@/components/custom/UserMiniCard";
 import { Button } from "@/components/ui/button";
+import { useTableData } from "../../../components/data-table/hooks/useTableData";
 
 function Category() {
-  const [frameworkCategory, setFrameworkCategory] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setLoading] = useState(true);
-  const [emptyMessage, setEmptyMessage] = useState(
-    "No framework category found",
-  );
-
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    limit: 10,
-    hasPrevPage: false,
-    hasNextPage: false,
-  });
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-
   const [modalState, setModalState] = useState({
     isOpen: false,
     mode: "create",
@@ -53,92 +29,23 @@ function Category() {
     category: null,
   });
 
-  /* ---------------- URL SYNC ---------------- */
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page")) || 1;
-    const search = searchParams.get("search") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-
-    setPagination((p) => ({ ...p, currentPage: page }));
-    setSearchTerm(search);
-    setSortConfig({ sortBy, sortOrder });
-  }, [searchParams]);
-
-  /* ---------------- FETCH CATEGORY ---------------- */
-  const fetchFrameworkCategory = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await getAdminFrameworkCategory({
-        page: pagination.currentPage,
-        limit: pagination.limit,
-        search: searchTerm,
-        sortBy: sortConfig.sortBy,
-        sortOrder: sortConfig.sortOrder,
-      });
-
-      setFrameworkCategory(res.data || []);
-
-      // Set the message from backend response, especially for empty results
-      if (res.message && res.data?.length === 0) {
-        setEmptyMessage(res.message);
-      } else if (
-        searchTerm &&
-        (res.users?.length === 0 || res.data?.length === 0)
-      ) {
-        setEmptyMessage(`No framework category found for "${searchTerm}"`);
-      } else {
-        setEmptyMessage("No framework category");
-      }
-
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
-    } catch (err) {
-      toast.error(err.message || "Failed to load framework category");
-      setFrameworkCategory([]);
-      setEmptyMessage("Failed to load framework category");
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.currentPage, pagination.limit, searchTerm, sortConfig]);
-
-  useEffect(() => {
-    fetchFrameworkCategory();
-  }, [fetchFrameworkCategory]);
-
-  /* ---------------- HANDLERS ---------------- */
-  const handlePageChange = (page) => {
-    const p = new URLSearchParams(searchParams);
-    p.set("page", page);
-    setSearchParams(p);
-  };
-
-  const handleSearch = (term) => {
-    const p = new URLSearchParams(searchParams);
-    term ? p.set("search", term) : p.delete("search");
-    p.set("page", "1");
-    setSearchParams(p);
-  };
-
-  const handleSort = (key) => {
-    const order =
-      sortConfig.sortBy === key && sortConfig.sortOrder === "asc"
-        ? "desc"
-        : "asc";
-
-    const p = new URLSearchParams(searchParams);
-    p.set("sortBy", key);
-    p.set("sortOrder", order);
-    p.set("page", "1");
-    setSearchParams(p);
-
-    setSortConfig({ sortBy: key, sortOrder: order });
-  };
+  // Use custom hook for table data management
+  const {
+    data: frameworkCategory,
+    loading,
+    emptyMessage,
+    pagination,
+    searchTerm,
+    sortConfig,
+    onSearch: handleSearch,
+    onSort: handleSort,
+    refetch,
+  } = useTableData(getAdminFrameworkCategory, {
+    defaultLimit: 10,
+    defaultSortBy: "createdAt",
+    defaultSortOrder: "desc",
+    emptyMessage: "No framework category found",
+  });
 
   /* ---------------- CRUD ---------------- */
   const handleSaveCategory = async (data) => {
@@ -152,7 +59,7 @@ function Category() {
         toast.success(response.message || "Category updated successfully");
       }
       setModalState({ isOpen: false, mode: "create", category: null });
-      fetchFrameworkCategory();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to save category");
       console.error("Save category error:", e);
@@ -173,7 +80,7 @@ function Category() {
       const response = await deleteFrameworkCategory(categoryId);
       toast.success(response.message || "Category deleted successfully");
       setDeleteModalState({ isOpen: false, category: null });
-      fetchFrameworkCategory();
+      refetch();
     } catch (e) {
       toast.error(e.message || "Failed to delete category");
       console.error("Delete category error:", e);
@@ -289,7 +196,8 @@ function Category() {
         onSearch={handleSearch}
         onSort={handleSort}
         sortConfig={sortConfig}
-        pagination={{ ...pagination, onPageChange: handlePageChange }}
+        searchTerm={searchTerm}
+        pagination={pagination}
         renderActions={renderActions}
         renderHeaderActions={renderHeaderButtons}
         searchPlaceholder="Search category..."

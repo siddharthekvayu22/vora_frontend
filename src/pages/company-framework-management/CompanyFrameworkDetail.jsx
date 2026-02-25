@@ -111,13 +111,20 @@ const FileIcon = ({ type }) => {
 };
 
 // ========== CUSTOM HOOK FOR POLLING ==========
-const useAIPolling = (framework, setFramework, id) => {
+const useStatusPolling = (framework, setFramework, id) => {
   const pollingRef = useRef(null);
   const isActiveRef = useRef(true);
 
   useEffect(() => {
-    const status = framework?.fileVersions?.[0]?.aiUpload?.status;
-    const shouldPoll = status === "uploaded" || status === "processing";
+    const aiStatus = framework?.fileVersions?.[0]?.aiUpload?.status;
+    const comparisonStatus = framework?.fileVersions?.[0]?.comparison?.status;
+
+    const shouldPollAI = aiStatus === "uploaded" || aiStatus === "processing";
+    const shouldPollComparison =
+      comparisonStatus === "comparison_started" ||
+      comparisonStatus === "comparison_processing";
+
+    const shouldPoll = shouldPollAI || shouldPollComparison;
     const isCorrectPage = window.location.pathname.includes(
       `/frameworks/${id}`,
     );
@@ -147,12 +154,21 @@ const useAIPolling = (framework, setFramework, id) => {
 
           if (response.success && isActiveRef.current) {
             const newFramework = response.data.framework;
-            const newStatus = newFramework?.fileVersions?.[0]?.aiUpload?.status;
+            const newAIStatus =
+              newFramework?.fileVersions?.[0]?.aiUpload?.status;
+            const newComparisonStatus =
+              newFramework?.fileVersions?.[0]?.comparison?.status;
 
             setFramework(newFramework);
             pollCount++;
 
-            if (newStatus === "uploaded" || newStatus === "processing") {
+            const continuePollingAI =
+              newAIStatus === "uploaded" || newAIStatus === "processing";
+            const continuePollingComparison =
+              newComparisonStatus === "comparison_started" ||
+              newComparisonStatus === "comparison_processing";
+
+            if (continuePollingAI || continuePollingComparison) {
               poll();
             }
           }
@@ -171,7 +187,12 @@ const useAIPolling = (framework, setFramework, id) => {
       isActiveRef.current = false;
       if (pollingRef.current) clearTimeout(pollingRef.current);
     };
-  }, [framework?.fileVersions?.[0]?.aiUpload?.status, id, setFramework]);
+  }, [
+    framework?.fileVersions?.[0]?.aiUpload?.status,
+    framework?.fileVersions?.[0]?.comparison?.status,
+    id,
+    setFramework,
+  ]);
 };
 
 // ========== MAIN COMPONENT ==========
@@ -192,7 +213,7 @@ function CompanyFrameworkDetail() {
     useState(null);
 
   // Use custom polling hook
-  useAIPolling(framework, setFramework, id);
+  useStatusPolling(framework, setFramework, id);
 
   // Fetch framework details
   const fetchFrameworkDetails = useCallback(
@@ -318,15 +339,32 @@ function CompanyFrameworkDetail() {
     framework.fileVersions?.[0]?.aiUpload?.status,
   );
 
+  const isComparisonProcessing = [
+    "comparison_started",
+    "comparison_processing",
+  ].includes(framework.fileVersions?.[0]?.comparison?.status);
+
   return (
     <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
-        {/* Polling Indicator */}
+        {/* AI Polling Indicator */}
         {isAIProcessing && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg shadow-lg backdrop-blur-sm">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
               {isPolling ? "Checking AI status..." : "Monitoring AI status..."}
+            </span>
+          </div>
+        )}
+
+        {/* Comparison Polling Indicator */}
+        {isComparisonProcessing && (
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg shadow-lg backdrop-blur-sm">
+            <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+              {isPolling
+                ? "Checking comparison status..."
+                : "Monitoring comparison..."}
             </span>
           </div>
         )}
@@ -527,23 +565,32 @@ function CompanyFrameworkDetail() {
                       )}
 
                       {(!ver.aiUpload ||
-                        !["completed", "uploaded", "processing"].includes(
-                          ver.aiUpload?.status,
-                        )) && (
+                        !["completed"].includes(ver.aiUpload?.status)) && (
                         <Button
                           variant="secondary"
                           onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={uploadingToAi.has(ver.fileId)}
+                          disabled={
+                            ver.aiUpload?.status === "uploaded" ||
+                            ver.aiUpload?.status === "processing"
+                          }
                         >
-                          {uploadingToAi.has(ver.fileId) ? (
-                            <FiLoader size={13} className="animate-spin" />
+                          {ver.aiUpload?.status === "uploaded" ||
+                          ver.aiUpload?.status === "processing" ? (
+                            <>
+                              <FiLoader size={13} className="animate-spin" />
+                              {ver.aiUpload?.status === "processing"
+                                ? "Processing..."
+                                : "Uploading..."}
+                            </>
                           ) : (
-                            <FiUploadCloud size={13} />
+                            <>
+                              <FiUploadCloud size={13} />
+                              {ver.aiUpload?.status === "failed" ||
+                              ver.aiUpload?.status === "skipped"
+                                ? "Retry AI Upload"
+                                : "Upload to AI"}
+                            </>
                           )}
-                          {ver.aiUpload?.status === "failed" ||
-                          ver.aiUpload?.status === "skipped"
-                            ? "Retry AI Upload"
-                            : "Upload to AI"}
                         </Button>
                       )}
 

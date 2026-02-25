@@ -371,7 +371,7 @@ function CompanyFrameworkDetail() {
 
         {/* Framework Overview Card */}
         <div className="rounded-2xl overflow-hidden bg-card border border-border">
-          <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
+          <div className="h-1 bg-linear-to-r from-primary to-secondary" />
           <div className="p-6">
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
@@ -523,7 +523,10 @@ function CompanyFrameworkDetail() {
 
                       {ver.aiUpload?.status === "completed" &&
                         ver.aiUpload?.job_id &&
-                        ver.comparison?.status !== "comparison_completed" && (
+                        (ver.comparison?.status !== "comparison_completed" ||
+                          (ver.comparison?.status === "comparison_completed" &&
+                            ver.comparison?.comparisons?.comparison_data
+                              ?.length === 0)) && (
                           <Button
                             variant="secondary"
                             onClick={() => {
@@ -547,7 +550,12 @@ function CompanyFrameworkDetail() {
                             ) : (
                               <>
                                 <FiGitMerge size={13} />
-                                {ver.comparison?.status === "comparison_failed"
+                                {ver.comparison?.status ===
+                                  "comparison_failed" ||
+                                (ver.comparison?.status ===
+                                  "comparison_completed" &&
+                                  ver.comparison?.comparisons?.comparison_data
+                                    ?.length === 0)
                                   ? "Retry Compare"
                                   : "Compare"}
                               </>

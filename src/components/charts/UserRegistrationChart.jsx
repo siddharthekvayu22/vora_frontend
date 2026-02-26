@@ -56,7 +56,7 @@ const UserRegistrationChart = ({ data }) => {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-1.5">
                 <div
-                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: colors.selfReg }}
                 ></div>
                 <span className="text-xs text-muted-foreground">Self Reg</span>
@@ -71,7 +71,7 @@ const UserRegistrationChart = ({ data }) => {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-1.5">
                 <div
-                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: colors.admin }}
                 ></div>
                 <span className="text-xs text-muted-foreground">Admin</span>
@@ -86,7 +86,7 @@ const UserRegistrationChart = ({ data }) => {
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-1.5">
                 <div
-                  className="w-2 h-2 rounded-full flex-shrink-0"
+                  className="w-2 h-2 rounded-full shrink-0"
                   style={{ backgroundColor: colors.company }}
                 ></div>
                 <span className="text-xs text-muted-foreground">Company</span>

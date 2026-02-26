@@ -56,7 +56,7 @@ function MetricCard({ icon, label, value, trend, trendColor, subtitle }) {
             </>
           )}
         </div>
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-popover-foreground/10">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-popover-foreground/10">
           {icon}
         </div>
       </div>

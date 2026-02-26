@@ -103,7 +103,7 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
               <Icon
                 name="info"
                 size="16px"
-                className="text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0"
+                className="text-yellow-600 dark:text-yellow-400 mt-0.5 shrink-0"
               />
               <p className="text-xs text-yellow-800 dark:text-yellow-200 leading-relaxed">
                 Other versions will remain intact. If this is the current

@@ -489,7 +489,7 @@ function OfficialFrameworkDetail() {
 
         {/* ===== FRAMEWORK OVERVIEW CARD ===== */}
         <div className="rounded-2xl overflow-hidden bg-card border border-border">
-          <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
+          <div className="h-1 bg-linear-to-r from-primary to-secondary" />
           <div className="p-6">
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
@@ -628,7 +628,7 @@ function OfficialFrameworkDetail() {
                   <div className="flex gap-3">
                     <FiXCircle
                       size={20}
-                      className="text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0"
+                      className="text-red-600 dark:text-red-400 mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
@@ -655,7 +655,7 @@ function OfficialFrameworkDetail() {
                   <div className="flex gap-3">
                     <FiCheckCircle
                       size={20}
-                      className="text-primary mt-0.5 flex-shrink-0"
+                      className="text-primary mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-foreground mb-1">
@@ -1179,7 +1179,7 @@ function OfficialFrameworkDetail() {
                                       >
                                         <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                           <div className="flex items-center gap-3">
-                                            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
+                                            <span className="shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
                                               {control.Control_id}
                                             </span>
                                             <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
@@ -1193,7 +1193,7 @@ function OfficialFrameworkDetail() {
                                             {framework.approval.status ===
                                               "pending" &&
                                               user.role === "expert" && (
-                                                <div className="flex items-center gap-1 flex-shrink-0">
+                                                <div className="flex items-center gap-1 shrink-0">
                                                   <Button
                                                     size="icon"
                                                     variant="ghost"

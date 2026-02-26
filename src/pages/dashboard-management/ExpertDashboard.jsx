@@ -377,7 +377,7 @@ export default function ExpertDashboard() {
                       <h4 className="font-semibold text-foreground text-sm truncate">
                         {upload.name}
                       </h4>
-                      <div className="flex items-center gap-1 flex-shrink-0">
+                      <div className="flex items-center gap-1 shrink-0">
                         <span
                           className={`px-2 py-0.5 rounded-full text-xs font-medium ${getApprovalStatusColor(upload.approvalStatus)}`}
                           title="Expert Approval Status"
@@ -400,7 +400,7 @@ export default function ExpertDashboard() {
                       <span>{upload.size}</span>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
+                  <div className="text-right shrink-0">
                     <p className="text-xs whitespace-nowrap">
                       {formatDate(upload.uploadedAt)}
                     </p>
@@ -506,7 +506,7 @@ export default function ExpertDashboard() {
               className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
             >
               <div
-                className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${a.color}`}
+                className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${a.color}`}
               >
                 <Icon name={a.icon} size="18px" />
               </div>
@@ -514,7 +514,7 @@ export default function ExpertDashboard() {
                 <p className="font-semibold text-sm">{a.title}</p>
                 <p className="text-xs text-muted-foreground">{a.desc}</p>
               </div>
-              <span className="text-muted-foreground group-hover:translate-x-1 transition flex-shrink-0">
+              <span className="text-muted-foreground group-hover:translate-x-1 transition shrink-0">
                 <Icon name="arrow-right" size="16px" />
               </span>
             </Link>

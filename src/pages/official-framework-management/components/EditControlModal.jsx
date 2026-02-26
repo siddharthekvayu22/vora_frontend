@@ -186,7 +186,7 @@ export default function EditControlModal({ control, onSave, onCancel }) {
               <div className="space-y-2 max-h-[300px] overflow-y-auto py-1">
                 {deploymentPoints.map((point, index) => (
                   <div key={index} className="flex gap-2 items-start">
-                    <div className="flex-shrink-0 w-6 h-9 flex items-center justify-center text-xs font-medium text-muted-foreground bg-muted rounded">
+                    <div className="shrink-0 w-6 h-9 flex items-center justify-center text-xs font-medium text-muted-foreground bg-muted rounded">
                       {index + 1}
                     </div>
                     <input

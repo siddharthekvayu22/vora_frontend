@@ -86,7 +86,7 @@ export default function ApproveFrameworkModal({
               <Icon
                 name="info"
                 size="16px"
-                className="text-primary mt-0.5 flex-shrink-0"
+                className="text-primary mt-0.5 shrink-0"
               />
               <p className="text-xs text-foreground leading-relaxed">
                 Once approved, this framework will be marked as verified and can

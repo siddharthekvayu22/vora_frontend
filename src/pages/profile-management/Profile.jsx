@@ -84,7 +84,7 @@ function Profile() {
       {/* Profile Header */}
       <div className="rounded-2xl border border-border bg-linear-to-br from-background to-card shadow-xl overflow-hidden">
         {/* Cover Background */}
-        <div className="h-20 bg-gradient-to-r from-primary to-primary-2 relative">
+        <div className="h-20 bg-linear-to-r from-primary to-primary-2 relative">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -bottom-12 left-6">
             <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary to-primary-2 border-4 border-background shadow-xl flex items-center justify-center">

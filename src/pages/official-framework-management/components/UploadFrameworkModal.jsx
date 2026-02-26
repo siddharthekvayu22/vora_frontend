@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
-import SelectDropdown from "../../../components/custom/SelectDropdown";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
@@ -131,6 +137,15 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  // Get selected category label
+  const getSelectedCategoryLabel = () => {
+    if (!formData.frameworkCategoryId) return "Select a category";
+    const selected = approvedCategories.find(
+      (cat) => cat.value === formData.frameworkCategoryId,
+    );
+    return selected ? selected.label : "Select a category";
+  };
+
   // Validate form
   const validateForm = () => {
     const newErrors = {};
@@ -220,7 +235,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={handleClose}
     >
       <div
@@ -228,7 +243,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -283,20 +298,48 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                 <label className="form-label">
                   Framework Category <span className="required">*</span>
                 </label>
-                <SelectDropdown
-                  value={formData.frameworkCategoryId}
-                  onChange={(value) =>
-                    handleChange("frameworkCategoryId", value)
-                  }
-                  options={[
-                    { value: "", label: "Select a category" },
-                    ...approvedCategories,
-                  ]}
-                  placeholder="Choose framework category"
-                  variant="default"
-                  size="lg"
-                  buttonClassName="border-2 py-[0.60rem] rounded-sm"
-                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full justify-between border-2 py-[0.70rem] h-auto font-normal bg-background hover:bg-background ${
+                        errors.frameworkCategoryId
+                          ? "border-red-500 dark:border-red-500"
+                          : "border-border dark:border-gray-600"
+                      } dark:hover:border-gray-500`}
+                    >
+                      {getSelectedCategoryLabel()}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="w-(--radix-dropdown-menu-trigger-width) border-border dark:border-gray-600 dark:bg-gray-800 z-10001"
+                    align="start"
+                    sideOffset={4}
+                  >
+                    <DropdownMenuItem
+                      onClick={() => handleChange("frameworkCategoryId", "")}
+                      className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                    >
+                      Select a category
+                    </DropdownMenuItem>
+                    {approvedCategories.map((category) => (
+                      <DropdownMenuItem
+                        key={category.value}
+                        onClick={() =>
+                          handleChange("frameworkCategoryId", category.value)
+                        }
+                        className={`cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white ${
+                          formData.frameworkCategoryId === category.value
+                            ? "bg-primary/10 text-primary font-medium"
+                            : ""
+                        }`}
+                      >
+                        {category.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               {/* Framework Name */}
@@ -351,8 +394,9 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   {!formData.file ? (
                     <label
                       htmlFor="framework-file"
-                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${errors.file ? "border-red-500" : "border-border"
-                        }`}
+                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
+                        errors.file ? "border-red-500" : "border-border"
+                      }`}
                     >
                       <div className="text-center">
                         <Icon
@@ -373,10 +417,11 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     </label>
                   ) : (
                     <div
-                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${errors.file
-                        ? "border-red-500"
-                        : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                        }`}
+                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
+                        errors.file
+                          ? "border-red-500"
+                          : "border-green-200 bg-green-50 dark:bg-green-900/20"
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <FileTypeCard

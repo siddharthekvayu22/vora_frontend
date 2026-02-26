@@ -25,14 +25,14 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={onCancel}
     >
       <div
         className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -74,10 +74,11 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
             </div>
             <div className="flex gap-2 mt-1">
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${category.isActive
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  category.isActive
                     ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                     : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                  }`}
+                }`}
               >
                 {category.isActive ? "Active" : "Inactive"}
               </span>
@@ -91,7 +92,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
         </div>
 
         <div className="flex gap-2 justify-end p-3 border-t border-border">
-           <Button
+          <Button
             type="button"
             variant="outline"
             className="flex-1 rounded-lg"

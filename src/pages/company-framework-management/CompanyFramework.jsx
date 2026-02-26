@@ -17,9 +17,15 @@ import {
 } from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import AiUploadStatusCard from "../../components/custom/AiUploadStatusCard";
-import SelectDropdown from "../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
 import { useTableData } from "../../components/data-table/hooks/useTableData";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 function CompanyFramework() {
   const navigate = useNavigate();
@@ -254,21 +260,69 @@ function CompanyFramework() {
 
     return (
       <>
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "uploaded", label: "Uploaded" },
-            { value: "failed", label: "Failed" },
-            { value: "skiped", label: "Skiped" },
-            { value: "processing", label: "Processing" },
-            { value: "completed", label: "Completed" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
+        {/* Status Filter */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+            >
+              {statusFilter
+                ? statusFilter === "uploaded"
+                  ? "Uploaded"
+                  : statusFilter === "failed"
+                    ? "Failed"
+                    : statusFilter === "skipped"
+                      ? "Skipped"
+                      : statusFilter === "processing"
+                        ? "Processing"
+                        : statusFilter === "completed"
+                          ? "Completed"
+                          : "All Status"
+                : "All Status"}
+              <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              All Status
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("uploaded")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Uploaded
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("failed")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Failed
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("skipped")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Skipped
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("processing")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Processing
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("completed")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Completed
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button
           size="lg"
           onClick={() => setUploadModalOpen(true)}

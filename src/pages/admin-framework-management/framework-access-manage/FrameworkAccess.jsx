@@ -18,9 +18,15 @@ import UserMiniCard from "../../../components/custom/UserMiniCard";
 import CustomBadge from "../../../components/custom/CustomBadge";
 import FrameworkMiniCard from "../../../components/custom/FrameworkMiniCard";
 import ActionDropdown from "../../../components/custom/ActionDropdown";
-import SelectDropdown from "../../../components/custom/SelectDropdown";
 import { Button } from "@/components/ui/button";
 import { useTableData } from "../../../components/data-table/hooks/useTableData";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 function FrameworkAccess() {
   const [viewModalState, setViewModalState] = useState({
@@ -319,20 +325,60 @@ function FrameworkAccess() {
 
     return (
       <>
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "pending", label: "Pending" },
-            { value: "approved", label: "Approved" },
-            { value: "rejected", label: "Rejected" },
-            { value: "revoked", label: "Revoked" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+            >
+              {statusFilter
+                ? statusFilter === "pending"
+                  ? "Pending"
+                  : statusFilter === "approved"
+                    ? "Approved"
+                    : statusFilter === "rejected"
+                      ? "Rejected"
+                      : statusFilter === "revoked"
+                        ? "Revoked"
+                        : "All Status"
+                : "All Status"}
+              <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              All Status
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("pending")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Pending
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("approved")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Approved
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("rejected")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Rejected
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("revoked")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Revoked
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button
           size="lg"
           className="flex items-center gap-3"

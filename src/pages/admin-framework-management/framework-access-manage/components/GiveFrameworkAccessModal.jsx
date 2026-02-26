@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
-import SelectDropdown from "../../../../components/custom/SelectDropdown";
 import { getAllUsers } from "../../../../services/userService";
 import {
   getAdminFrameworkCategory,
@@ -261,7 +260,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       <td className="px-3 py-2 w-[80%]">
         <div className="flex items-center gap-2">
           <div
-            className={`w-6 h-6 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20`}
+            className={`w-6 h-6 rounded-full bg-linear-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary border border-primary/20`}
           >
             <Icon name="user" size="14px" />
           </div>
@@ -364,7 +363,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
   /* ---------------- UI ---------------- */
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
@@ -372,7 +371,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-[70px]">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-[70px]">
           <div className="absolute top-0 right-0 w-[120px] h-[120px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-2">

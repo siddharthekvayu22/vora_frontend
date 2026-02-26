@@ -307,9 +307,9 @@ export default function DataTable({
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 0 && (
-        <div className="flex justify-between items-center px-4 py-3 border-t border-border bg-muted flex-wrap gap-4">
+        <div className="flex justify-between items-center px-4 py-3 border-t border-border bg-muted flex-wrap gap-4 text-muted-foreground">
           <div className="flex items-center gap-4">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm">
               Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
               {Math.min(
                 pagination.currentPage * pagination.limit,
@@ -319,16 +319,14 @@ export default function DataTable({
             </div>
             {pagination.onLimitChange && (
               <div className="flex items-center gap-2">
-                <label className="text-sm text-muted-foreground whitespace-nowrap">
-                  Per page:
-                </label>
+                <label className="text-sm whitespace-nowrap">Per page:</label>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="justify-between"
+                      size="xs"
+                      className="justify-between rounded min-w-[50px] select-none"
                       disabled={loading}
                     >
                       <span>{pagination.limit}</span>
@@ -336,7 +334,10 @@ export default function DataTable({
                     </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="min-w-[70px]">
+                  <DropdownMenuContent
+                    align="center"
+                    className="min-w-[50px] p-0 rounded"
+                  >
                     {["5", "10", "25", "50", "100"].map((value) => (
                       <DropdownMenuItem
                         key={value}
@@ -352,17 +353,21 @@ export default function DataTable({
             )}
           </div>
           <div className="flex items-center gap-2">
-            <button
-              className="flex items-center justify-center w-8 h-8 border border-border rounded-md bg-card text-foreground cursor-pointer transition-all duration-200 hover:border-primary hover:text-primary hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-sm"
               onClick={() => pagination.onPageChange(1)}
               disabled={!pagination.hasPrevPage || loading}
               title="First page"
             >
-              <Icon name="arrow-left" size="14px" />
-              <Icon name="arrow-left" size="14px" />
-            </button>
-            <button
-              className="flex items-center justify-center w-8 h-8 border border-border rounded-md bg-card text-foreground cursor-pointer transition-all duration-200 hover:border-primary hover:text-primary hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed"
+              <Icon name="left-dubble-arrow" size="14px" />
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-sm"
               onClick={() =>
                 pagination.onPageChange(pagination.currentPage - 1)
               }
@@ -370,9 +375,9 @@ export default function DataTable({
               title="Previous page"
             >
               <Icon name="arrow-left" size="14px" />
-            </button>
+            </Button>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 select-none">
               {generatePageNumbers(
                 pagination.currentPage,
                 pagination.totalPages,
@@ -385,24 +390,30 @@ export default function DataTable({
                     ...
                   </span>
                 ) : (
-                  <button
+                  <Button
                     key={page}
-                    className={`flex items-center justify-center min-w-8 h-8 px-3 border rounded-md text-sm cursor-pointer transition-all duration-200 disabled:cursor-not-allowed ${
-                      page === pagination.currentPage
-                        ? "bg-primary text-primary-foreground font-semibold border-primary"
-                        : "border-transparent bg-transparent text-foreground hover:bg-accent hover:border-border"
-                    }`}
+                    variant={
+                      page === pagination.currentPage ? "default" : "ghost"
+                    }
+                    size="sm"
                     onClick={() => pagination.onPageChange(page)}
                     disabled={loading}
+                    className={
+                      page === pagination.currentPage
+                        ? "font-semibold rounded-sm"
+                        : "border-transparent"
+                    }
                   >
                     {page}
-                  </button>
+                  </Button>
                 ),
               )}
             </div>
 
-            <button
-              className="flex items-center justify-center w-8 h-8 border border-border rounded-md bg-card text-foreground cursor-pointer transition-all duration-200 hover:border-primary hover:text-primary hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-sm"
               onClick={() =>
                 pagination.onPageChange(pagination.currentPage + 1)
               }
@@ -410,16 +421,18 @@ export default function DataTable({
               title="Next page"
             >
               <Icon name="arrow-right" size="14px" />
-            </button>
-            <button
-              className="flex items-center justify-center w-8 h-8 border border-border rounded-md bg-card text-foreground cursor-pointer transition-all duration-200 hover:border-primary hover:text-primary hover:bg-primary/10 disabled:opacity-40 disabled:cursor-not-allowed"
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-sm disabled:cursor-not-allowed"
               onClick={() => pagination.onPageChange(pagination.totalPages)}
               disabled={!pagination.hasNextPage || loading}
               title="Last page"
             >
-              <Icon name="arrow-right" size="14px" />
-              <Icon name="arrow-right" size="14px" />
-            </button>
+              <Icon name="right-dubble-arrow" size="14px" />
+            </Button>
           </div>
         </div>
       )}

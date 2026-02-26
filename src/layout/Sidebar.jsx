@@ -195,7 +195,7 @@ function Sidebar() {
       fixed left-2 top-5 z-50
       flex h-11 w-11 items-center justify-center
       rounded-2xl
-      bg-gradient-to-br from-primary to-primary/70
+      bg-linear-to-br from-primary to-primary/70
     "
         >
           <div className="flex flex-col gap-[4px]">
@@ -223,7 +223,7 @@ function Sidebar() {
         {/* ================= HEADER ================= */}
         <div
           className="relative flex items-center justify-between overflow-hidden
-                     bg-gradient-to-br from-primary to-primary-2
+                     bg-linear-to-br from-primary to-primary-2
                      px-6 py-7"
         >
           <span
@@ -287,7 +287,7 @@ function Sidebar() {
                             rounded-2xl px-4 py-3 transition-all
                   ${
                     isParentActive(item)
-                      ? "border border-primary bg-gradient-to-br from-primary/15 to-primary-2/15 shadow-md"
+                      ? "border border-primary bg-linear-to-br from-primary/15 to-primary-2/15 shadow-md"
                       : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
                   }`}
                 >
@@ -387,7 +387,7 @@ function Sidebar() {
           <Link
             to={"/profile"}
             onClick={() => setIsOpen(false)}
-            className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-gradient-to-br from-primary/15 to-primary-2/15 p-3 hover:shadow-md cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+            className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-linear-to-br from-primary/15 to-primary-2/15 p-3 hover:shadow-md cursor-pointer transition-all duration-200 hover:scale-[1.02]"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white animate-pulse">
               <Icon name="user" size="18px" />

@@ -16,10 +16,16 @@ import { formatDate } from "../../utils/dateFormatter";
 import CustomBadge from "../../components/custom/CustomBadge";
 import UserMiniCard from "../../components/custom/UserMiniCard";
 import ActionDropdown from "../../components/custom/ActionDropdown";
-import SelectDropdown from "../../components/custom/SelectDropdown";
 import { useAuth } from "../../context/useAuth";
 import { Button } from "@/components/ui/button";
 import { useTableData } from "../../components/data-table/hooks/useTableData";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 function Users() {
   const { user } = useAuth();
@@ -270,35 +276,99 @@ function Users() {
       <>
         {/* Role Filter */}
         {user.role === "admin" && (
-          <SelectDropdown
-            value={roleFilter}
-            onChange={handleRoleFilter}
-            options={[
-              { value: "", label: "All Roles" },
-              { value: "admin", label: "Admin" },
-              { value: "expert", label: "Expert" },
-              { value: "company", label: "Company" },
-              { value: "user", label: "User" },
-            ]}
-            placeholder="All Roles"
-            size="lg"
-            variant="default"
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+              >
+                {roleFilter
+                  ? roleFilter === "admin"
+                    ? "Admin"
+                    : roleFilter === "expert"
+                      ? "Expert"
+                      : roleFilter === "company"
+                        ? "Company"
+                        : roleFilter === "user"
+                          ? "User"
+                          : "All Roles"
+                  : "All Roles"}
+                <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+              <DropdownMenuItem
+                onClick={() => handleRoleFilter("")}
+                className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+              >
+                All Roles
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleRoleFilter("admin")}
+                className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+              >
+                Admin
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleRoleFilter("expert")}
+                className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+              >
+                Expert
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleRoleFilter("company")}
+                className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+              >
+                Company
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleRoleFilter("user")}
+                className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+              >
+                User
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
         {/* Status Filter */}
-        <SelectDropdown
-          value={statusFilter}
-          onChange={handleStatusFilter}
-          options={[
-            { value: "", label: "All Status" },
-            { value: "true", label: "Active" },
-            { value: "false", label: "Inactive" },
-          ]}
-          placeholder="All Status"
-          size="lg"
-          variant="default"
-        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+            >
+              {statusFilter
+                ? statusFilter === "true"
+                  ? "Active"
+                  : "Inactive"
+                : "All Status"}
+              <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              All Status
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("true")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Active
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusFilter("false")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Inactive
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Sync users to all services  */}
         {user.role === "admin" && (

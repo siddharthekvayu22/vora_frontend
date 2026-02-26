@@ -113,7 +113,7 @@ import {
   HiOutlineClipboardList,
   HiDotsVertical,
 } from "react-icons/hi";
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleDown, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { RiRobot2Fill } from "react-icons/ri";
 
 // Icon mapping from old names to React Icons components
@@ -176,9 +176,11 @@ const iconMap = {
   // Arrow icons
   "arrow-up": MdArrowUpward,
   "arrow-down": MdArrowDownward,
-  "arrow-left": MdArrowBack,
-  "arrow-right": MdArrowForward,
+  "arrow-left": FaAngleLeft,
+  "arrow-right": FaAngleRight,
   "chevron-down": MdKeyboardArrowDown,
+  "left-dubble-arrow": FaAngleDoubleLeft,
+  "right-dubble-arrow": FaAngleDoubleRight,
 
   // Action icons
   plus: MdAdd,

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
-import SelectDropdown from "../../../components/custom/SelectDropdown";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
   getOfficialFrameworkCategoryAccess,
@@ -285,7 +284,7 @@ export default function UpdateFrameworkModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={handleClose}
     >
       <div
@@ -293,7 +292,7 @@ export default function UpdateFrameworkModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -348,19 +347,23 @@ export default function UpdateFrameworkModal({
                 <label className="form-label">
                   Framework Category <span className="required">*</span>
                 </label>
-                <SelectDropdown
-                  value={formData.frameworkCategoryId}
-                  onChange={(value) =>
-                    handleChange("frameworkCategoryId", value)
-                  }
-                  options={[
-                    { value: "", label: "Select a category" },
-                    ...approvedCategories,
-                  ]}
-                  placeholder="Choose framework category"
-                  variant="default"
-                  size="lg"
-                  buttonClassName="border-2 py-[0.60rem] rounded-sm"
+                <input
+                  type="text"
+                  className="form-input bg-gray-100 dark:bg-gray-800/50 cursor-not-allowed opacity-90"
+                  value={(() => {
+                    if (
+                      formData.frameworkCategoryId &&
+                      approvedCategories.length > 0
+                    ) {
+                      const selectedCategory = approvedCategories.find(
+                        (cat) => cat.value === formData.frameworkCategoryId,
+                      );
+                      return selectedCategory ? selectedCategory.label : "";
+                    }
+                    return "";
+                  })()}
+                  disabled
+                  placeholder="Framework category (auto-selected)"
                 />
               </div>
 
@@ -443,8 +446,9 @@ export default function UpdateFrameworkModal({
                       {!formData.file ? (
                         <label
                           htmlFor="update-framework-file"
-                          className={`flex items-center justify-center w-full px-3 py-1 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 min-h-[70px] ${errors.file ? "border-red-500" : "border-border"
-                            }`}
+                          className={`flex items-center justify-center w-full px-3 py-1 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 min-h-[70px] ${
+                            errors.file ? "border-red-500" : "border-border"
+                          }`}
                         >
                           <div className="text-center">
                             <Icon
@@ -462,10 +466,11 @@ export default function UpdateFrameworkModal({
                         </label>
                       ) : (
                         <div
-                          className={`flex items-center justify-between w-full px-3 py-2.5 border-2 rounded-lg min-h-[70px] ${errors.file
+                          className={`flex items-center justify-between w-full px-3 py-2.5 border-2 rounded-lg min-h-[70px] ${
+                            errors.file
                               ? "border-red-500"
                               : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                            }`}
+                          }`}
                         >
                           <FileTypeCard
                             fileName={formData.file.name}

@@ -1,9 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
-import SelectDropdown from "../../../components/custom/SelectDropdown";
 import { AuthContext } from "../../../context/AuthContext";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 /**
  * UserModal Component - Handles Create and Edit modes
@@ -146,14 +152,14 @@ export default function UserModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
         className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px] rounded-t-2xl">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px] rounded-t-2xl">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -183,8 +189,9 @@ export default function UserModal({
               <input
                 id="user-email"
                 type="email"
-                className={`form-input ${errors.email ? "error" : ""} ${mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
+                className={`form-input ${errors.email ? "error" : ""} ${
+                  mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
+                }`}
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 placeholder="Enter email address"
@@ -229,15 +236,46 @@ export default function UserModal({
               <label htmlFor="user-role" className="form-label">
                 Role <span className="required">*</span>
               </label>
-              <SelectDropdown
-                value={formData.role}
-                onChange={(value) => handleChange("role", value)}
-                options={getRoleOptions()}
-                placeholder="Select role"
-                variant="default"
-                size="lg"
-                buttonClassName="border-2 py-[0.60rem] rounded-sm"
-              />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={`w-full justify-between border-2 py-[0.70rem] h-[50px] font-normal bg-background hover:bg-background ${
+                      errors.role
+                        ? "border-red-500 dark:border-red-500"
+                        : "border-border dark:border-gray-600"
+                    } dark:hover:border-gray-500`}
+                  >
+                    <span className="truncate">
+                      {formData.role
+                        ? getRoleOptions().find(
+                            (opt) => opt.value === formData.role,
+                          )?.label
+                        : "Select role"}
+                    </span>
+                    <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-(--radix-dropdown-menu-trigger-width) border-border dark:border-gray-600 dark:bg-gray-800 z-10001"
+                  align="start"
+                  sideOffset={4}
+                >
+                  {getRoleOptions().map((option) => (
+                    <DropdownMenuItem
+                      key={option.value}
+                      onClick={() => handleChange("role", option.value)}
+                      className={`cursor-pointer py-2.5 dark:focus:bg-gray-700 dark:focus:text-white ${
+                        formData.role === option.value
+                          ? "bg-primary/10 text-primary font-medium"
+                          : ""
+                      }`}
+                    >
+                      {option.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -251,7 +289,6 @@ export default function UserModal({
               Cancel
             </Button>
             <Button
-
               type="submit"
               className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={saving}

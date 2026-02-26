@@ -25,14 +25,14 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10000] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
       onClick={onCancel}
     >
       <div
         className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
           <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -74,20 +74,22 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
             </div>
             <div className="flex gap-2 mt-2">
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.role === "admin"
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  user.role === "admin"
                     ? "bg-red-100 text-red-800"
                     : user.role === "expert"
                       ? "bg-blue-100 text-blue-800"
                       : "bg-green-100 text-green-800"
-                  }`}
+                }`}
               >
                 {user.role}
               </span>
               <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${user.isEmailVerified
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  user.isEmailVerified
                     ? "bg-green-100 text-green-800"
                     : "bg-yellow-100 text-yellow-800"
-                  }`}
+                }`}
               >
                 {user.isEmailVerified ? "Verified" : "Pending"}
               </span>

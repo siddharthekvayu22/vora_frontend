@@ -107,9 +107,7 @@ const ControlColumn = ({
       <p className="font-medium text-foreground">
         {frameworkId ? `${frameworkId} - ${name}` : name}
       </p>
-      <p className="text-xs text-muted-foreground line-clamp-2">
-        {description}
-      </p>
+      <p className="text-xs text-muted-foreground">{description}</p>
       <DeploymentPoints points={deploymentPoints} />
     </div>
   );

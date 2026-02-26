@@ -1175,9 +1175,9 @@ function OfficialFrameworkDetail() {
                                     (control, idx) => (
                                       <div
                                         key={idx}
-                                        className="rounded-xl border border-border bg-muted/30 overflow-hidden hover:shadow-md transition-shadow h-fit"
+                                        className="rounded-xl border border-border bg-muted/30 overflow-hidden hover:shadow-md transition-shadow h-full"
                                       >
-                                        <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                        <div className="px-4 py-2 bg-muted/50 border-b border-border">
                                           <div className="flex items-center gap-3">
                                             <span className="shrink-0 w-8 h-8 rounded-full bg-primary/15 text-primary flex items-center justify-center text-sm font-bold">
                                               {control.Control_id}
@@ -1186,9 +1186,11 @@ function OfficialFrameworkDetail() {
                                               <h4 className="text-sm font-semibold">
                                                 {control.Control_name}
                                               </h4>
-                                              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
-                                                {control.Control_type}
-                                              </span>
+                                              {control.Control_type && (
+                                                <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-secondary/15 text-secondary">
+                                                  {control.Control_type}
+                                                </span>
+                                              )}
                                             </div>
                                             {framework.approval.status ===
                                               "pending" &&

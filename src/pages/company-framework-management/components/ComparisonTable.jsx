@@ -145,10 +145,10 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
           <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Client Control
+                Framework Control
               </th>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Framework Control
+                Client Control
               </th>
               <th className="px-4 py-3 text-right font-medium text-muted-foreground w-fit">
                 Match Score
@@ -158,15 +158,6 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
           <tbody className="divide-y divide-border">
             {comparisonData.map((item, idx) => (
               <tr key={idx} className="hover:bg-muted/20 transition-colors">
-                {/* Client Control Column */}
-                <td className="px-4 py-3 align-top">
-                  <ControlColumn
-                    name={item.Client_control_name}
-                    description={item.Client_control_description}
-                    deploymentPoints={item.Client_deployment_points}
-                  />
-                </td>
-
                 {/* Framework Control Column */}
                 <td className="px-4 py-3 align-top">
                   <ControlColumn
@@ -174,6 +165,14 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
                     description={item.Framework_control_description}
                     deploymentPoints={item.Framework_deployment_points}
                     frameworkId={item.Framework_control_id}
+                  />
+                </td>
+                {/* Client Control Column */}
+                <td className="px-4 py-3 align-top">
+                  <ControlColumn
+                    name={item.Client_control_name}
+                    description={item.Client_control_description}
+                    deploymentPoints={item.Client_deployment_points}
                   />
                 </td>
 

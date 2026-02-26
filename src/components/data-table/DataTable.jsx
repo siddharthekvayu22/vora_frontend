@@ -327,8 +327,8 @@ export default function DataTable({
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="justify-between"
+                      size="xs"
+                      className="justify-between rounded min-w-[50px]"
                       disabled={loading}
                     >
                       <span>{pagination.limit}</span>
@@ -336,7 +336,10 @@ export default function DataTable({
                     </Button>
                   </DropdownMenuTrigger>
 
-                  <DropdownMenuContent align="end" className="min-w-[70px]">
+                  <DropdownMenuContent
+                    align="center"
+                    className="min-w-[50px] p-0 rounded"
+                  >
                     {["5", "10", "25", "50", "100"].map((value) => (
                       <DropdownMenuItem
                         key={value}

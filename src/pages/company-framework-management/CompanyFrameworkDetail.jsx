@@ -33,6 +33,7 @@ import {
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
 import ComparisonTable from "./components/ComparisonTable";
+import DeploymentGapsTable from "./components/DeploymentGapsTable";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
@@ -681,7 +682,7 @@ function CompanyFrameworkDetail() {
                             </div>
                           </div>
 
-                          <div className="p-4 max-h-[400px] overflow-y-auto">
+                          <div className="p-4 max-h-100 overflow-y-auto">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               {/* Status Card */}
                               <div className="rounded border border-border bg-muted/30 overflow-hidden">
@@ -1001,6 +1002,27 @@ function CompanyFrameworkDetail() {
                                   }
                                 />
                               )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {/* deployment gap info */}
+                      {ver.deploymentGap && (
+                        <div className="mt-6">
+                          <div className="rounded border border-border bg-card overflow-hidden">
+                            <div className="px-4 py-3 bg-secondary/5 border-b border-border">
+                              <div className="flex items-center gap-2">
+                                <FiInfo size={16} className="text-secondary" />
+                                <h3 className="text-sm font-bold">
+                                  Deployment Gap Analysis
+                                </h3>
+                              </div>
+                            </div>
+
+                            <div className="p-4">
+                              <DeploymentGapsTable
+                                deploymentGaps={ver.deploymentGap}
+                              />
                             </div>
                           </div>
                         </div>

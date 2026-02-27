@@ -1,5 +1,7 @@
 // src/pages/CompanyFramework/components/DeploymentGapsTable.jsx
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   FiChevronDown,
   FiChevronUp,
@@ -7,6 +9,8 @@ import {
   FiAlertCircle,
   FiXCircle,
   FiInfo,
+  FiClock,
+  FiHash,
 } from "react-icons/fi";
 
 // Status Badge Component
@@ -76,6 +80,19 @@ const SimilarityScore = ({ score }) => {
   );
 };
 
+// Info Card Component for Metadata
+const InfoCard = ({ icon, label, value }) => (
+  <div className="flex items-start gap-3 p-3 rounded bg-muted/30 border border-border">
+    <div className="mt-0.5 text-primary">{icon}</div>
+    <div>
+      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+        {label}
+      </p>
+      <p className="text-sm font-medium">{value}</p>
+    </div>
+  </div>
+);
+
 // Deployment Point Card Component
 const DeploymentPointCard = ({ point, index }) => {
   const [expanded, setExpanded] = useState(false);
@@ -87,8 +104,8 @@ const DeploymentPointCard = ({ point, index }) => {
         className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/50 transition-colors"
         onClick={() => setExpanded(!expanded)}
       >
-        <div className="flex items-center gap-3 flex-1">
-          <span className="text-xs font-mono bg-muted px-2 py-1 rounded">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <span className="text-xs font-mono bg-muted px-2 py-1 rounded whitespace-nowrap">
             Point {index + 1}
           </span>
           <span className="text-sm font-medium truncate flex-1">
@@ -96,7 +113,7 @@ const DeploymentPointCard = ({ point, index }) => {
           </span>
           <StatusBadge status={point.Implementation_Status} />
         </div>
-        <button className="p-1 hover:bg-muted rounded">
+        <button className="p-1 hover:bg-muted rounded ml-2">
           {expanded ? <FiChevronUp size={18} /> : <FiChevronDown size={18} />}
         </button>
       </div>
@@ -146,20 +163,184 @@ const DeploymentPointCard = ({ point, index }) => {
 const DeploymentGapsTable = ({ deploymentGaps }) => {
   const [expandedControls, setExpandedControls] = useState(new Set());
   const [filterStatus, setFilterStatus] = useState("all");
+  const [showMetadata, setShowMetadata] = useState(false);
 
-  console.log("deploymentGaps", deploymentGaps);
+  // Agar deploymentGaps hi null hai to return null
+  if (!deploymentGaps) return null;
 
-  if (!deploymentGaps?.deployment_gaps?.deployment_gap_results?.length) {
+  const hasResults =
+    deploymentGaps?.deployment_gaps?.deployment_gap_results?.length > 0;
+  const totalPoints =
+    deploymentGaps?.deployment_gaps?.total_deployment_points || 0;
+  const message = deploymentGaps?.message || "No deployment gap data available";
+
+  // Agar results nahi hain to sirf metadata dikhao
+  if (!hasResults) {
     return (
-      <div className="rounded border border-border bg-muted/30 p-8 text-center">
-        <FiInfo size={32} className="mx-auto mb-3 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          No deployment gap data available
-        </p>
+      <div className="space-y-4">
+        {/* Metadata Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <InfoCard
+            icon={<FiInfo size={15} />}
+            label="Status"
+            value={
+              <span
+                className={`px-2.5 py-1 rounded-full text-xs font-bold inline-block ${
+                  deploymentGaps.status === "deployment_gap_completed"
+                    ? "bg-green-500/15 text-green-600"
+                    : "bg-yellow-500/15 text-yellow-600"
+                }`}
+              >
+                {deploymentGaps.status || "Unknown"}
+              </span>
+            }
+          />
+          <InfoCard
+            icon={<FiHash size={15} />}
+            label="Deployment Gap ID"
+            value={
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xs font-mono bg-muted px-2 py-1 rounded truncate flex-1 max-w-60">
+                  {deploymentGaps.deployment_gap_id || "N/A"}
+                </span>
+                {deploymentGaps.deployment_gap_id && (
+                  <Button
+                    size="xs"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        deploymentGaps.deployment_gap_id,
+                      );
+                      toast.success("ID copied!");
+                    }}
+                    className="bg-primary/70"
+                  >
+                    Copy
+                  </Button>
+                )}
+              </div>
+            }
+          />
+          <InfoCard
+            icon={<FiClock size={15} />}
+            label="Timestamp"
+            value={
+              <span className="text-sm">
+                {deploymentGaps.timestamp
+                  ? new Date(deploymentGaps.timestamp).toLocaleString()
+                  : "N/A"}
+              </span>
+            }
+          />
+          <InfoCard
+            icon={<FiClock size={15} />}
+            label="Last Updated"
+            value={
+              <span className="text-sm">
+                {deploymentGaps.lastUpdated
+                  ? new Date(deploymentGaps.lastUpdated).toLocaleString()
+                  : "N/A"}
+              </span>
+            }
+          />
+        </div>
+
+        {/* Counts Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="p-4 rounded bg-card border border-border">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-1">
+              Company Controls
+            </p>
+            <p className="text-2xl font-bold">
+              {deploymentGaps.company_controls_count || 0}
+            </p>
+          </div>
+          <div className="p-4 rounded bg-card border border-border">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-1">
+              Official Controls
+            </p>
+            <p className="text-2xl font-bold">
+              {deploymentGaps.official_controls_count || 0}
+            </p>
+          </div>
+          <div className="p-4 rounded bg-card border border-border">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-1">
+              Matched Controls
+            </p>
+            <p className="text-2xl font-bold">
+              {deploymentGaps.matched_controls || 0}
+            </p>
+          </div>
+          <div className="p-4 rounded bg-card border border-border">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-1">
+              Total Results
+            </p>
+            <p className="text-2xl font-bold">
+              {deploymentGaps.total_results || 0}
+            </p>
+          </div>
+        </div>
+
+        {/* Message */}
+        <div className="rounded border border-border bg-muted/30 p-8 text-center">
+          <FiInfo size={32} className="mx-auto mb-3 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground mb-2">{message}</p>
+          {totalPoints === 0 && (
+            <p className="text-xs text-muted-foreground">
+              No deployment points were analyzed in this comparison.
+            </p>
+          )}
+        </div>
+
+        {/* Job IDs (collapsible) */}
+        <div className="border border-border rounded overflow-hidden">
+          <button
+            onClick={() => setShowMetadata(!showMetadata)}
+            className="w-full px-4 py-3 flex items-center justify-between bg-muted/30 hover:bg-muted/50 transition-colors"
+          >
+            <span className="text-sm font-medium">Additional Metadata</span>
+            {showMetadata ? (
+              <FiChevronUp size={18} />
+            ) : (
+              <FiChevronDown size={18} />
+            )}
+          </button>
+
+          {showMetadata && (
+            <div className="p-4 border-t border-border space-y-3">
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                  Company Controls Job ID
+                </p>
+                <p className="text-xs font-mono bg-muted p-2 rounded break-all">
+                  {deploymentGaps.company_controls_job_id || "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                  Official Controls Job ID
+                </p>
+                <p className="text-xs font-mono bg-muted p-2 rounded break-all">
+                  {deploymentGaps.official_controls_job_id || "N/A"}
+                </p>
+              </div>
+              {deploymentGaps.deployment_gap_id && (
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                    Deployment Gap ID
+                  </p>
+                  <p className="text-xs font-mono bg-muted p-2 rounded break-all">
+                    {deploymentGaps.deployment_gap_id}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
+  // Agar results hain to original UI dikhao
   const toggleControl = (controlId) => {
     setExpandedControls((prev) => {
       const next = new Set(prev);
@@ -196,9 +377,6 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
     });
 
   // Calculate statistics
-  const totalPoints =
-    deploymentGaps.deployment_gaps.total_deployment_points || 0;
-  const totalControls = filteredResults.length;
   const implementedPoints =
     deploymentGaps.deployment_gaps.deployment_gap_results.reduce(
       (acc, item) => {
@@ -328,14 +506,14 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
                 className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => toggleControl(controlId)}
               >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary whitespace-nowrap">
                     {controlId}
                   </span>
-                  <span className="font-medium">{controlName}</span>
+                  <span className="font-medium truncate">{controlName}</span>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 ml-4">
                   {/* Status indicators */}
                   <div className="flex items-center gap-2 text-xs">
                     {implementedCount > 0 && (
@@ -358,7 +536,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
                     )}
                   </div>
 
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
                     {points.length} points
                   </span>
 

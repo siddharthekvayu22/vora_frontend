@@ -38,32 +38,14 @@ export default function CompareFrameworkModal({
   const isDeploymentGap = mode === "deploymentGap";
   const actionText = isDeploymentGap ? "Analyze" : "Compare";
   const actioningText = isDeploymentGap ? "Analyzing" : "Comparing";
-  const actionedText = isDeploymentGap ? "analyzed" : "compared";
   const headerTitle = isDeploymentGap
     ? "Deployment Gap Analysis"
     : "Compare Framework";
   const headerIcon = isDeploymentGap ? "activity" : "shield-check";
-  const headerBgColor = isDeploymentGap
-    ? "from-secondary to-secondary/80"
-    : "from-primary to-primary/80";
   const buttonText = isDeploymentGap
     ? "Analyze Deployment Gap"
     : "Compare Frameworks";
   const buttonIcon = isDeploymentGap ? "activity" : "shield-check";
-  const buttonBgColor = isDeploymentGap
-    ? "bg-secondary hover:bg-secondary/90"
-    : "";
-  const selectBorderColor = isDeploymentGap
-    ? "border-secondary"
-    : "border-primary";
-  const selectBgColor = isDeploymentGap ? "bg-secondary/5" : "bg-primary/5";
-  const selectHoverColor = isDeploymentGap
-    ? "hover:border-secondary/50"
-    : "hover:border-primary/50";
-  const selectCheckBg = isDeploymentGap ? "bg-secondary" : "bg-primary";
-  const selectBadgeBg = isDeploymentGap
-    ? "bg-secondary/15 text-secondary"
-    : "bg-secondary/15 text-secondary";
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [selectedFramework, setSelectedFramework] = useState(null);
@@ -192,9 +174,7 @@ export default function CompareFrameworkModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div
-          className={`bg-linear-to-br ${headerBgColor} text-white p-6 relative overflow-hidden min-h-20`}
-        >
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
           <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -291,9 +271,9 @@ export default function CompareFrameworkModal({
                     className={cn(
                       "p-3 w-full cursor-pointer rounded border-2 transition-all",
                       isSelected
-                        ? `${selectBorderColor} ${selectBgColor} shadow-sm`
+                        ? "border-primary bg-primary/5 shadow-sm"
                         : canCompare
-                          ? `border-border ${selectHoverColor} hover:bg-muted/50 cursor-pointer`
+                          ? "border-border hover:border-primary/50 hover:bg-muted/50 cursor-pointer"
                           : "border-border bg-muted/30 cursor-not-allowed opacity-60",
                     )}
                     disabled={!canCompare}
@@ -351,9 +331,7 @@ export default function CompareFrameworkModal({
                       </div>
                       {isSelected && (
                         <div className="shrink-0">
-                          <div
-                            className={`w-5 h-5 rounded-full ${selectCheckBg} flex items-center justify-center`}
-                          >
+                          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                             <Icon
                               name="check"
                               size="14px"
@@ -418,7 +396,7 @@ export default function CompareFrameworkModal({
           <Button
             onClick={handleCompare}
             disabled={!selectedFramework || comparing}
-            className={`flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed ${buttonBgColor}`}
+            className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {comparing ? (
               <>

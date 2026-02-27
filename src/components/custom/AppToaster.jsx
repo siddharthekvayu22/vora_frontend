@@ -22,7 +22,7 @@ export default function AppToaster() {
           background: "var(--color-card)",
           color: "var(--color-foreground)",
           border: "1px solid var(--color-border)",
-          borderRadius: "var(--radius-lg)",
+          borderRadius: "0.25rem",
           boxShadow:
             "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
           fontFamily: "'Inter', system-ui, sans-serif",

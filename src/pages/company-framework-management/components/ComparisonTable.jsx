@@ -138,9 +138,9 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="max-h-[600px] overflow-y-auto">
         <table className="w-full text-sm">
-          <thead className="bg-muted/30 border-b border-border">
+          <thead className=" border-b border-border sticky top-0 z-10 bg-background">
             <tr>
               <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                 Framework Control

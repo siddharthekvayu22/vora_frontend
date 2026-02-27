@@ -298,7 +298,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
       </div>
 
       {/* Controls List */}
-      <div className="space-y-3">
+      <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
         {filteredResults.map((item, idx) => {
           const controlId = Object.keys(item)[0];
           const points = item[controlId];

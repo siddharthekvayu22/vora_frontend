@@ -198,10 +198,10 @@ function Sidebar() {
       bg-linear-to-br from-primary to-primary/70
     "
         >
-          <div className="flex flex-col gap-[4px]">
-            <span className="h-[2px] w-5 rounded-full bg-white" />
-            <span className="h-[2px] w-4 rounded-full bg-white opacity-80" />
-            <span className="h-[2px] w-5 rounded-full bg-white" />
+          <div className="flex flex-col gap-1">
+            <span className="h-0.5 w-5 rounded-full bg-white" />
+            <span className="h-0.5 w-4 rounded-full bg-white opacity-80" />
+            <span className="h-0.5 w-5 rounded-full bg-white" />
           </div>
         </Button>
       )}
@@ -210,13 +210,13 @@ function Sidebar() {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[2px]"
+          className="fixed inset-0 z-40 bg-black/10 backdrop-blur-0.5"
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-[340px] bg-background flex flex-col
+        className={`fixed left-0 top-0 z-50 h-screen w-85 bg-background flex flex-col
                     shadow-2xl transition-transform duration-300 border-r border-border
                     ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >

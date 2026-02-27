@@ -104,16 +104,6 @@ const DeploymentPointCard = ({ point, index }) => {
       {/* Expanded Content */}
       {expanded && (
         <div className="p-4 border-t border-border space-y-4">
-          {/* Client Point */}
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
-              Client Deployment Point
-            </p>
-            <p className="text-sm p-3 rounded bg-muted/30">
-              {point.Client_deployment_point}
-            </p>
-          </div>
-
           {/* Matched Framework Point */}
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -129,12 +119,22 @@ const DeploymentPointCard = ({ point, index }) => {
             </p>
           </div>
 
+          {/* Client Point */}
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-wider mb-2 text-muted-foreground">
+              Client Deployment Point
+            </p>
+            <p className="text-sm p-3 rounded bg-muted/30">
+              {point.Client_deployment_point}
+            </p>
+          </div>
+
           {/* Similarity Score */}
           <div className="flex items-center justify-between p-3 rounded bg-muted/30">
             <span className="text-xs font-medium text-muted-foreground">
               Similarity Score
             </span>
-            <SimilarityScore score={point.Similarity_Score_} />
+            <SimilarityScore score={point["Similarity_Score_%"]} />
           </div>
         </div>
       )}
@@ -169,9 +169,10 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
   };
 
   const expandAll = () => {
-    const allControlIds = deploymentGaps.deployment_gap_results.map(
-      (item) => Object.keys(item)[0],
-    );
+    const allControlIds =
+      deploymentGaps.deployment_gaps.deployment_gap_results.map(
+        (item) => Object.keys(item)[0],
+      );
     setExpandedControls(new Set(allControlIds));
   };
 
@@ -187,39 +188,43 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
     );
   };
 
-  const filteredResults = deploymentGaps.deployment_gap_results.filter(
-    (item) => {
+  const filteredResults =
+    deploymentGaps.deployment_gaps.deployment_gap_results.filter((item) => {
       const controlId = Object.keys(item)[0];
       const points = item[controlId];
       return filterByStatus(points, filterStatus);
-    },
-  );
+    });
 
   // Calculate statistics
-  const totalPoints = deploymentGaps.total_deployment_points || 0;
+  const totalPoints =
+    deploymentGaps.deployment_gaps.total_deployment_points || 0;
   const totalControls = filteredResults.length;
-  const implementedPoints = deploymentGaps.deployment_gap_results.reduce(
-    (acc, item) => {
-      const controlId = Object.keys(item)[0];
-      const points = item[controlId];
-      return (
-        acc +
-        points.filter((p) => p.Implementation_Status === "Implemented").length
-      );
-    },
-    0,
-  );
+  const implementedPoints =
+    deploymentGaps.deployment_gaps.deployment_gap_results.reduce(
+      (acc, item) => {
+        const controlId = Object.keys(item)[0];
+        const points = item[controlId];
+        return (
+          acc +
+          points.filter((p) => p.Implementation_Status === "Implemented").length
+        );
+      },
+      0,
+    );
   const partiallyImplementedPoints =
-    deploymentGaps.deployment_gap_results.reduce((acc, item) => {
-      const controlId = Object.keys(item)[0];
-      const points = item[controlId];
-      return (
-        acc +
-        points.filter(
-          (p) => p.Implementation_Status === "Partially Implemented",
-        ).length
-      );
-    }, 0);
+    deploymentGaps.deployment_gaps.deployment_gap_results.reduce(
+      (acc, item) => {
+        const controlId = Object.keys(item)[0];
+        const points = item[controlId];
+        return (
+          acc +
+          points.filter(
+            (p) => p.Implementation_Status === "Partially Implemented",
+          ).length
+        );
+      },
+      0,
+    );
   const notImplementedPoints =
     totalPoints - (implementedPoints + partiallyImplementedPoints);
 

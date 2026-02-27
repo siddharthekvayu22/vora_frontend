@@ -14,6 +14,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1700, // 1.7 MB
+  },
   server: {
     host: true, // or use '0.0.0.0' to expose on all network interfaces
     port: 5173,

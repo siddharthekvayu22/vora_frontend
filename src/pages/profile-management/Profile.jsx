@@ -36,7 +36,7 @@ function Profile() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
           <span className="text-muted-foreground">Loading profile...</span>
@@ -47,7 +47,7 @@ function Profile() {
 
   if (!profileData) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="text-center">
           <Icon
             name="warning"
@@ -82,9 +82,9 @@ function Profile() {
   return (
     <div className="space-y-6 my-5">
       {/* Profile Header */}
-      <div className="rounded-2xl border border-border bg-linear-to-br from-background to-card shadow-xl overflow-hidden">
+      <div className="rounded border border-border bg-linear-to-br from-background to-card shadow-xl overflow-hidden">
         {/* Cover Background */}
-        <div className="h-20 bg-gradient-to-r from-primary to-primary-2 relative">
+        <div className="h-20 bg-linear-to-r from-primary to-primary-2 relative">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute -bottom-12 left-6">
             <div className="w-24 h-24 rounded-full bg-linear-to-br from-primary to-primary-2 border-4 border-background shadow-xl flex items-center justify-center">
@@ -144,7 +144,7 @@ function Profile() {
         {/* Profile Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Account Information */}
-          <div className="rounded-2xl border border-border bg-linear-to-br from-background to-card shadow-xl">
+          <div className="rounded border border-border bg-linear-to-br from-background to-card shadow-xl">
             <div className="border-b border-border px-6 py-4">
               <h3 className="text-lg font-semibold text-foreground">
                 Account Information
@@ -154,17 +154,23 @@ function Profile() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="full-name"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Full Name
-                    </label>
+                    </Label>
                     <p className="text-foreground font-medium">
                       {profileData.name}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Email Address
-                    </label>
+                    </Label>
                     <div className="flex items-center gap-2">
                       <p className="text-foreground font-medium">
                         {profileData.email}
@@ -183,9 +189,12 @@ function Profile() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="number"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Phone Number
-                    </label>
+                    </Label>
                     <p className="text-foreground font-medium">
                       {profileData.phone}
                     </p>
@@ -193,9 +202,12 @@ function Profile() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="role"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Role
-                    </label>
+                    </Label>
                     <div>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(
@@ -208,17 +220,23 @@ function Profile() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="member-since"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Member Since
-                    </label>
+                    </Label>
                     <p className="text-foreground font-medium">
                       {formatDate(profileData.createdAt)}
                     </p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="last-update"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Last Updated
-                    </label>
+                    </Label>
                     <p className="text-foreground font-medium">
                       {formatDate(profileData.updatedAt)}
                     </p>
@@ -226,34 +244,42 @@ function Profile() {
                 </div>
               </div>
               {profileData.createdBy &&
-                typeof profileData.createdBy === "object" && (
+                profileData.createdBy.type === "admin" && (
                   <div className="pt-4 border-t border-border">
-                    <label className="text-sm font-medium text-muted-foreground">
+                    <Label
+                      htmlFor="created-by"
+                      className="text-sm font-medium text-muted-foreground"
+                    >
                       Created By
-                    </label>
+                    </Label>
                     <div className="flex items-center gap-3 mt-2">
                       <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                         <span className="text-sm font-medium text-primary">
-                          {profileData.createdBy.name?.charAt(0)?.toUpperCase()}
+                          {profileData.createdBy.user.name
+                            ?.charAt(0)
+                            ?.toUpperCase()}
                         </span>
                       </div>
                       <div>
                         <p className="text-foreground font-medium">
-                          {profileData.createdBy.name}
+                          {profileData.createdBy.user.name}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {profileData.createdBy.email} •{" "}
-                          {profileData.createdBy.role}
+                          {profileData.createdBy.user.email} •{" "}
+                          {profileData.createdBy.user.role}
                         </p>
                       </div>
                     </div>
                   </div>
                 )}
-              {profileData.createdBy === "self" && (
+              {profileData.createdBy.type === "self" && (
                 <div className="pt-4 border-t border-border">
-                  <label className="text-sm font-medium text-muted-foreground">
+                  <Label
+                    htmlFor="created-by"
+                    className="text-sm font-medium text-muted-foreground"
+                  >
                     Created By
-                  </label>
+                  </Label>
                   <p className="text-foreground font-medium">
                     Self Registration
                   </p>
@@ -266,13 +292,13 @@ function Profile() {
         {/* Quick Actions Sidebar */}
         <div className="space-y-6">
           {/* User ID Card */}
-          <div className="rounded-2xl border border-border bg-linear-to-br from-background to-card shadow-xl">
+          <div className="rounded border border-border bg-linear-to-br from-background to-card shadow-xl">
             <div className="border-b border-border px-6 py-4">
               <h3 className="text-lg font-semibold text-foreground">User ID</h3>
             </div>
             <div className="p-6">
               <div className="text-center">
-                <div className="text-sm font-mono bg-accent px-3 py-2 rounded-lg break-all">
+                <div className="text-sm font-mono bg-accent px-3 py-2 rounded break-all">
                   {profileData.id}
                 </div>
               </div>
@@ -280,7 +306,7 @@ function Profile() {
           </div>
 
           {/* Quick Actions */}
-          <div className="rounded-2xl border border-border bg-linear-to-br from-background to-card shadow-xl">
+          <div className="rounded border border-border bg-linear-to-br from-background to-card shadow-xl">
             <div className="border-b border-border px-6 py-4">
               <h3 className="text-lg font-semibold text-foreground">
                 Quick Actions

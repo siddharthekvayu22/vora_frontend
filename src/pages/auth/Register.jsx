@@ -4,13 +4,15 @@ import toast from "react-hot-toast";
 import { register } from "../../services/authService";
 import { useAuth } from "../../context/useAuth";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -18,9 +20,9 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -53,7 +55,9 @@ function Register() {
         // Store email for OTP verification
         setEmailForVerification(formData.email);
 
-        toast.success("Registration successful! Please check your email for the verification code.");
+        toast.success(
+          "Registration successful! Please check your email for the verification code.",
+        );
         // Navigate to OTP verification page directly
         navigate("/auth/verify-otp");
       }
@@ -66,7 +70,7 @@ function Register() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
+    <div className="w-full max-w-md rounded border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
       {/* Title */}
       <h1
         className="
@@ -87,78 +91,62 @@ function Register() {
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Name</label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
             type="text"
+            id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter your name"
             disabled={loading}
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Email */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Email Address</label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <Input
             type="email"
+            id="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email"
             disabled={loading}
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Phone */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Phone Number</label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone Number</Label>
+          <Input
             type="tel"
+            id="phone"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             placeholder="Enter your phone number (optional)"
             disabled={loading}
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Password */}
-        <div className="space-y-1">
-          <label className="text-sm font-medium">Password</label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
             type="password"
+            id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
             placeholder="Create a password"
             disabled={loading}
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className="w-full mt-1"
           />
         </div>
 
@@ -167,14 +155,11 @@ function Register() {
           size="lg"
           type="submit"
           disabled={loading}
-          className="
-            mt-2 w-full rounded-xl
-
-          "
+          className="mt-2 w-full cursor-pointer"
         >
           {loading ? (
             <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
               Registering...
             </>
           ) : (

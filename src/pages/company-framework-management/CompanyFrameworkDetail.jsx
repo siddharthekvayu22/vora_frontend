@@ -36,7 +36,7 @@ import ComparisonTable from "./components/ComparisonTable";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3 p-3 rounded-xl bg-muted">
+  <div className="flex items-start gap-3 p-3 rounded bg-muted">
     <div className="mt-0.5 text-primary">{icon}</div>
     <div>
       <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
@@ -350,7 +350,7 @@ function CompanyFrameworkDetail() {
       <div className="space-y-6">
         {/* AI Polling Indicator */}
         {isAIProcessing && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-lg shadow-lg backdrop-blur-sm">
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded shadow-lg backdrop-blur-sm">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
               {isPolling ? "Checking AI status..." : "Monitoring AI status..."}
@@ -360,7 +360,7 @@ function CompanyFrameworkDetail() {
 
         {/* Comparison Polling Indicator */}
         {isComparisonProcessing && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-lg shadow-lg backdrop-blur-sm">
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded shadow-lg backdrop-blur-sm">
             <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
               {isPolling
@@ -371,12 +371,12 @@ function CompanyFrameworkDetail() {
         )}
 
         {/* Framework Overview Card */}
-        <div className="rounded-2xl overflow-hidden bg-card border border-border">
+        <div className="rounded overflow-hidden bg-card border border-border">
           <div className="h-1 bg-linear-to-r from-primary to-secondary" />
           <div className="p-6">
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-primary/12 text-primary">
+                <div className="p-2.5 rounded bg-primary/12 text-primary">
                   <FiShield size={22} />
                 </div>
                 <div>
@@ -433,7 +433,7 @@ function CompanyFrameworkDetail() {
                 icon={<FiHash size={15} />}
                 label="Framework ID"
                 value={
-                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                  <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
                     {framework.id}
                   </span>
                 }
@@ -442,7 +442,7 @@ function CompanyFrameworkDetail() {
                 icon={<FiHash size={15} />}
                 label="File Object Id"
                 value={
-                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                  <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
                     {framework.mainFileId}
                   </span>
                 }
@@ -451,7 +451,7 @@ function CompanyFrameworkDetail() {
                 icon={<FiHash size={15} />}
                 label="Current File Id"
                 value={
-                  <span className="text-xs font-mono px-2 py-1 rounded-md bg-muted text-muted-foreground">
+                  <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
                     {
                       framework.fileVersions.find(
                         (v) => v.version === framework.currentVersion,
@@ -482,7 +482,7 @@ function CompanyFrameworkDetail() {
               return (
                 <div
                   key={ver.version}
-                  className={`rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg bg-card ${
+                  className={`rounded overflow-hidden transition-all duration-300 hover:shadow-lg bg-card ${
                     isCurrent ? "border border-primary" : "border border-border"
                   }`}
                 >
@@ -626,7 +626,7 @@ function CompanyFrameworkDetail() {
                       </div>
 
                       {/* User Info */}
-                      <div className="flex items-center gap-3 p-3 rounded-xl bg-muted">
+                      <div className="flex items-center gap-3 p-3 rounded bg-muted">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold bg-primary/20 text-primary">
                           {ver.uploadedBy?.name
                             ?.split(" ")
@@ -664,14 +664,14 @@ function CompanyFrameworkDetail() {
                       </div>
 
                       {hashVisible && (
-                        <div className="p-3 rounded-lg text-xs font-mono break-all bg-muted text-muted-foreground">
+                        <div className="p-3 rounded text-xs font-mono break-all bg-muted text-muted-foreground">
                           {ver.fileHash}
                         </div>
                       )}
 
                       {/* AI Info */}
                       {ver.aiUpload && (
-                        <div className="rounded-xl border border-border bg-card overflow-hidden">
+                        <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
                               <FiInfo size={16} className="text-secondary" />
@@ -684,7 +684,7 @@ function CompanyFrameworkDetail() {
                           <div className="p-4 max-h-[400px] overflow-y-auto">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               {/* Status Card */}
-                              <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+                              <div className="rounded border border-border bg-muted/30 overflow-hidden">
                                 <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                   <div className="flex items-center justify-between">
                                     <h4 className="text-sm font-semibold">
@@ -736,7 +736,7 @@ function CompanyFrameworkDetail() {
 
                               {/* Identifiers Card */}
                               {(ver.aiUpload.uuid || ver.aiUpload.job_id) && (
-                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+                                <div className="rounded border border-border bg-muted/30 overflow-hidden">
                                   <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                     <h4 className="text-sm font-semibold">
                                       Identifiers
@@ -778,7 +778,7 @@ function CompanyFrameworkDetail() {
                       )}
                       {/* comparison Info */}
                       {ver.comparison && (
-                        <div className="rounded-xl border border-border bg-card overflow-hidden">
+                        <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
                               <FiInfo size={16} className="text-secondary" />
@@ -791,7 +791,7 @@ function CompanyFrameworkDetail() {
                           <div className="p-4 overflow-y-auto">
                             <div className="grid grid-cols-12 gap-4">
                               {/* Status Card */}
-                              <div className="rounded-xl border border-border bg-muted/30 col-span-6">
+                              <div className="rounded border border-border bg-muted/30 col-span-6">
                                 <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                   <div className="flex items-center justify-between">
                                     <h4 className="text-sm font-semibold">
@@ -915,7 +915,7 @@ function CompanyFrameworkDetail() {
                                 ver.comparison?.company_controls_job_id ||
                                 ver.comparison?.official_controls_job_id ||
                                 ver.comparison?.original_comparison_id) && (
-                                <div className="rounded-xl border border-border bg-muted/30 overflow-hidden col-span-6">
+                                <div className="rounded border border-border bg-muted/30 overflow-hidden col-span-6">
                                   <div className="px-4 py-3 bg-muted/50 border-b border-border">
                                     <h4 className="text-sm font-semibold">
                                       Identifiers

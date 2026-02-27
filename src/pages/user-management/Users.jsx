@@ -231,6 +231,17 @@ function Users() {
         </div>
       ),
     },
+    {
+      key: "updatedAt",
+      label: "Updated At",
+      sortable: true,
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <Icon name="calendar" size="14px" className="text-muted-foreground" />
+          <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
+        </div>
+      ),
+    },
   ];
 
   const renderActions = (row) => {

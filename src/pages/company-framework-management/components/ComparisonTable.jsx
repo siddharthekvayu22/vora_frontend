@@ -107,9 +107,7 @@ const ControlColumn = ({
       <p className="font-medium text-foreground">
         {frameworkId ? `${frameworkId} - ${name}` : name}
       </p>
-      <p className="text-xs text-muted-foreground line-clamp-2">
-        {description}
-      </p>
+      <p className="text-xs text-muted-foreground">{description}</p>
       <DeploymentPoints points={deploymentPoints} />
     </div>
   );
@@ -130,7 +128,7 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
   if (!comparisonData?.length) return null;
 
   return (
-    <div className="rounded-xl border border-border bg-muted/30 col-span-12 overflow-hidden">
+    <div className="rounded border border-border bg-muted/30 col-span-12 overflow-hidden">
       <div className="px-4 py-3 bg-muted/50 border-b border-border">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-semibold">Comparison Results</h4>

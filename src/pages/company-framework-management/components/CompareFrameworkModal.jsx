@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getAllOfficialFrameworks } from "../../../services/officialFrameworkService";
 import { compareFrameworks } from "../../../services/companyFrameworkService";
+import { cn } from "@/lib/utils";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -139,12 +141,12 @@ export default function CompareFrameworkModal({
       onClick={handleClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[700px] w-[90%] max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 duration-300 border border-border"
+        className="bg-background rounded shadow-2xl max-w-175 w-[90%] max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="shield-check" size="24px" />
@@ -171,21 +173,23 @@ export default function CompareFrameworkModal({
 
         {/* Search */}
         <div className="px-4 py-3 border-b border-border bg-muted/30">
-          <div className="relative flex items-center gap-3 bg-background border border-border rounded-lg px-3 py-2.5 transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm">
-            <Icon
-              name="search"
-              size="14px"
-              className="text-muted-foreground flex-shrink-0"
-            />
-            <input
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <Icon
+                name="search"
+                size="14px"
+                className="text-muted-foreground"
+              />
+            </div>
+            <Input
               type="text"
               placeholder="Search official frameworks..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="flex-1 border-none bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
+              className="pl-9 pr-10"
             />
             {isSearching && (
-              <div className="flex items-center justify-center flex-shrink-0">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                 <div className="w-3 h-3 border-2 border-border border-t-primary rounded-full animate-spin"></div>
               </div>
             )}
@@ -235,13 +239,15 @@ export default function CompareFrameworkModal({
                     onClick={() =>
                       canCompare && setSelectedFramework(framework)
                     }
-                    className={`p-3 w-full cursor-pointer rounded-xl border-2 transition-all ${
+                    className={cn(
+                      "p-3 w-full cursor-pointer rounded border-2 transition-all",
                       isSelected
                         ? "border-primary bg-primary/5 shadow-sm"
                         : canCompare
                           ? "border-border hover:border-primary/50 hover:bg-muted/50 cursor-pointer"
-                          : "border-border bg-muted/30 cursor-not-allowed opacity-60"
-                    }`}
+                          : "border-border bg-muted/30 cursor-not-allowed opacity-60",
+                    )}
+                    disabled={!canCompare}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1 min-w-0">
@@ -268,13 +274,14 @@ export default function CompareFrameworkModal({
                         {framework.aiUpload && (
                           <div className="flex items-center gap-2">
                             <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              className={cn(
+                                "px-2 py-0.5 rounded-full text-[10px] font-bold",
                                 framework.aiUpload.status === "completed"
                                   ? "bg-green-500/15 text-green-600 dark:text-green-400"
                                   : framework.aiUpload.status === "processing"
                                     ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                                    : "bg-gray-500/15 text-gray-600 dark:text-gray-400"
-                              }`}
+                                    : "bg-gray-500/15 text-gray-600 dark:text-gray-400",
+                              )}
                             >
                               {framework.aiUpload.status}
                             </span>
@@ -294,7 +301,7 @@ export default function CompareFrameworkModal({
                         )}
                       </div>
                       {isSelected && (
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                           <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
                             <Icon
                               name="check"
@@ -351,7 +358,7 @@ export default function CompareFrameworkModal({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
             onClick={handleClose}
             disabled={comparing}
           >

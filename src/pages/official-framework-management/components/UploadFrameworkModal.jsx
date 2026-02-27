@@ -14,6 +14,8 @@ import {
   uploadOfficialFramework,
 } from "../../../services/officialFrameworkService";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 /**
  * Upload Framework Modal Component
@@ -239,12 +241,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
       onClick={handleClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[600px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-150 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="upload" size="24px" />
@@ -292,24 +294,28 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               {/* Framework Category */}
-              <div className="form-group">
-                <label className="form-label">
+              <div className="space-y-1.5">
+                <Label htmlFor="framework-category">
                   Framework Category <span className="required">*</span>
-                </label>
+                </Label>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className={`w-full justify-between border-2 py-[0.70rem] h-auto font-normal bg-background hover:bg-background ${
+                      className={cn(
+                        "w-full justify-between font-normal bg-background hover:bg-background",
                         errors.frameworkCategoryId
                           ? "border-red-500 dark:border-red-500"
-                          : "border-border dark:border-gray-600"
-                      } dark:hover:border-gray-500`}
+                          : "border-border dark:border-gray-600",
+                        "dark:hover:border-gray-500",
+                      )}
                     >
-                      {getSelectedCategoryLabel()}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
+                      <span className="truncate">
+                        {getSelectedCategoryLabel()}
+                      </span>
+                      <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
@@ -329,11 +335,11 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                         onClick={() =>
                           handleChange("frameworkCategoryId", category.value)
                         }
-                        className={`cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white ${
-                          formData.frameworkCategoryId === category.value
-                            ? "bg-primary/10 text-primary font-medium"
-                            : ""
-                        }`}
+                        className={cn(
+                          "cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white",
+                          formData.frameworkCategoryId === category.value &&
+                            "bg-primary/10 text-primary font-medium",
+                        )}
                       >
                         {category.label}
                       </DropdownMenuItem>
@@ -343,13 +349,16 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               </div>
 
               {/* Framework Name */}
-              <div className="form-group">
-                <label className="form-label">
+              <div className="space-y-1.5">
+                <Label htmlFor="framework-name">
                   Framework Name <span className="required">*</span>
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
-                  className={`form-input ${errors.frameworkName ? "error" : ""}`}
+                  className={
+                    errors.frameworkName &&
+                    "border-red-500 focus-visible:ring-red-500/20"
+                  }
                   value={formData.frameworkName}
                   onChange={(e) =>
                     handleChange("frameworkName", e.target.value)
@@ -359,13 +368,16 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               </div>
 
               {/* Version */}
-              <div className="form-group">
-                <label className="form-label">
+              <div className="space-y-1.5">
+                <Label htmlFor="version">
                   Version <span className="required">*</span>
-                </label>
-                <input
+                </Label>
+                <Input
                   type="text"
-                  className={`form-input ${errors.currentVersion ? "error" : ""}`}
+                  className={
+                    errors.currentVersion &&
+                    "border-red-500 focus-visible:ring-red-500/20"
+                  }
                   value={formData.currentVersion}
                   onChange={(e) =>
                     handleChange("currentVersion", e.target.value)
@@ -378,10 +390,10 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
               </div>
 
               {/* File Upload */}
-              <div className="form-group">
-                <label className="form-label">
+              <div className="space-y-1.5">
+                <Label htmlFor="framework-file">
                   Framework File <span className="required">*</span>
-                </label>
+                </Label>
                 <div className="relative">
                   <input
                     type="file"
@@ -392,11 +404,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                   />
 
                   {!formData.file ? (
-                    <label
+                    <Label
                       htmlFor="framework-file"
-                      className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                        errors.file ? "border-red-500" : "border-border"
-                      }`}
+                      className={cn(
+                        "flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded cursor-pointer transition-colors hover:bg-accent/50",
+                        errors.file ? "border-red-500" : "border-border",
+                      )}
                     >
                       <div className="text-center">
                         <Icon
@@ -414,14 +427,15 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                           Maximum file size: 50MB
                         </p>
                       </div>
-                    </label>
+                    </Label>
                   ) : (
                     <div
-                      className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
+                      className={cn(
+                        "flex items-center justify-between w-full px-4 py-4 border-2 rounded",
                         errors.file
                           ? "border-red-500"
-                          : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                      }`}
+                          : "border-green-200 bg-green-50 dark:bg-green-900/20",
+                      )}
                     >
                       <div className="flex items-center gap-3">
                         <FileTypeCard
@@ -430,16 +444,17 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                         />
                       </div>
                       <div className="flex items-center gap-2">
-                        <label
+                        <Label
                           htmlFor="framework-file"
                           className="flex items-center justify-center w-8 h-8 text-primary bg-primary/10 border border-primary/20 rounded hover:bg-primary/20 transition-colors cursor-pointer"
                           title="Change file"
                         >
                           <Icon name="refresh" size="18px" />
-                        </label>
+                        </Label>
                         <Button
                           type="button"
                           size="icon"
+                          variant="ghost"
                           onClick={handleFileRemove}
                           className="flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                           title="Remove file"
@@ -461,7 +476,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded"
               onClick={handleClose}
               disabled={saving}
             >

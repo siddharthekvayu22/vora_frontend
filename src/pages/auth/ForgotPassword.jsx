@@ -4,6 +4,8 @@ import { forgotPassword } from "../../services/authService";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ function ForgotPassword() {
       setEmailForVerification(formData.email);
 
       toast.success(
-        response.message || "OTP sent to your email. Please check your inbox"
+        response.message || "OTP sent to your email. Please check your inbox",
       );
 
       navigate("/auth/reset-password");
@@ -39,7 +41,7 @@ function ForgotPassword() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
+    <div className="w-full max-w-md rounded border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
       {/* Title */}
       <h1
         className="
@@ -63,22 +65,17 @@ function ForgotPassword() {
       {/* Form */}
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Email */}
-        <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email Address
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <Input
+            id="email"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
             placeholder="Enter your email"
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-            "
+            className="w-full mt-1"
           />
         </div>
 
@@ -87,9 +84,7 @@ function ForgotPassword() {
           size="lg"
           type="submit"
           disabled={isLoading}
-          className={`mt-2 w-full rounded-xl
-            ${isLoading ? "cursor-not-allowed" : "cursor-pointer"
-            }`}
+          className="w-full cursor-pointer"
         >
           {isLoading ? "Sending OTP..." : "SEND OTP"}
         </Button>

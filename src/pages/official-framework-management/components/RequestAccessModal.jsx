@@ -63,12 +63,12 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="plus-circle" size="24px" />
@@ -90,7 +90,7 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
         <form onSubmit={handleSubmit}>
           <div className="p-6 flex flex-col space-y-6">
             {/* Framework Details */}
-            <div className="bg-muted/50 rounded-xl p-4 border border-border">
+            <div className="bg-muted/50 rounded p-4 border border-border">
               <h3 className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
                 <Icon name="info" size="16px" className="text-primary" />
                 Framework Details
@@ -115,7 +115,7 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
                 </div>
 
                 {frameworkData?.description && (
-                  <div className="bg-background p-3 rounded-lg border border-border">
+                  <div className="bg-background p-3 rounded border border-border">
                     <p className="text-xs text-muted-foreground mb-1">
                       Description:
                     </p>
@@ -133,7 +133,7 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded"
               onClick={onClose}
               disabled={requesting}
             >

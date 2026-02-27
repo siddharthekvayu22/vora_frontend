@@ -32,11 +32,11 @@ export default function AccessViewModal({ accessRecord, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="eye" size="24px" />
@@ -58,7 +58,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
 
         <div className="p-3 space-y-8 overflow-y-auto sidebar-scroll max-h-[70vh]">
           {/* Record Information */}
-          <section className="bg-muted/50 rounded-xl p-5">
+          <section className="bg-muted/50 rounded p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
               <Icon name="info" size="18px" className="text-primary" />
               Record Information
@@ -91,7 +91,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           </section>
 
           {/* Expert Information */}
-          <section className="bg-muted/50 rounded-xl p-5">
+          <section className="bg-muted/50 rounded p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
               <Icon name="user" size="18px" className="text-primary" />
               Expert Information
@@ -137,7 +137,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           </section>
 
           {/* Framework Information */}
-          <section className="bg-muted/50 rounded-xl p-5">
+          <section className="bg-muted/50 rounded p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
               <Icon name="shield" size="18px" className="text-primary" />
               Framework Information
@@ -200,7 +200,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           </section>
 
           {/* Request Information */}
-          <section className="bg-muted/50 rounded-xl p-5">
+          <section className="bg-muted/50 rounded p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
               <Icon
                 name="message-square"
@@ -237,7 +237,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           {(accessRecord.status === "rejected" ||
             accessRecord.status === "approved" ||
             accessRecord.status === "revoked") && (
-            <section className="bg-muted/50 rounded-xl p-5">
+            <section className="bg-muted/50 rounded p-5">
               <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
                 <Icon name="user-check" size="18px" className="text-primary" />
                 Admin Action
@@ -380,7 +380,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
           )}
 
           {/* Timestamps */}
-          <section className="bg-muted/50 rounded-xl p-5">
+          <section className="bg-muted/50 rounded p-5">
             <h3 className="text-lg font-semibold text-foreground mb-5 flex items-center gap-2">
               <Icon name="clock" size="18px" className="text-primary" />
               Timeline

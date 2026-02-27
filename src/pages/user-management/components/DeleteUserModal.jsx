@@ -29,11 +29,11 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
       onClick={onCancel}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border overflow-hidden"
+        className="bg-background rounded shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
@@ -58,7 +58,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
             undone.
           </p>
 
-          <div className="bg-muted rounded-xl p-4 border-l-4 border-red-500 mb-6">
+          <div className="bg-muted rounded p-4 border-l-4 border-red-500 mb-6">
             <div className="flex items-center gap-4 mb-2">
               <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 <Icon name="user" size="24px" />
@@ -101,7 +101,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
             onClick={onCancel}
             disabled={deleting}
           >
@@ -110,7 +110,7 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
           <Button
             type="button"
-            className="flex-1 bg-destructive hover:bg-destructive/80 text-white rounded-lg"
+            className="flex-1 bg-destructive hover:bg-destructive/80 text-white rounded"
             onClick={() => handleConfirm(false)}
             disabled={deleting}
           >

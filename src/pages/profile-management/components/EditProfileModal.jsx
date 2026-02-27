@@ -3,6 +3,8 @@ import { updateUser } from "../../../services/userService";
 import Icon from "../../../components/Icon";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
   const [formData, setFormData] = useState({
@@ -63,11 +65,11 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="edit" size="24px" />
@@ -87,16 +89,15 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="p-4 flex flex-col">
+          <div className="p-4 flex flex-col gap-4">
             {/* Name Field */}
-            <div className="form-group">
-              <label htmlFor="profile-name" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="profile-name">
                 Full Name <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="profile-name"
                 type="text"
-                className="form-input"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 placeholder="Enter your full name"
@@ -105,14 +106,11 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
             </div>
 
             {/* Phone Field */}
-            <div className="form-group">
-              <label htmlFor="profile-phone" className="form-label">
-                Phone Number
-              </label>
-              <input
+            <div className="space-y-1.5">
+              <Label htmlFor="profile-phone">Phone Number</Label>
+              <Input
                 id="profile-phone"
                 type="tel"
-                className="form-input"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 placeholder="Enter your phone number"
@@ -123,7 +121,8 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
           <div className="flex gap-2 justify-end p-3 border-t border-border">
             <Button
               type="button"
-              className="flex-1 px-4 py-2 text-sm font-semibold  bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
+              variant="outline"
+              className="flex-1"
               onClick={onClose}
               disabled={loading}
             >
@@ -131,7 +130,7 @@ function EditProfileModal({ isOpen, onClose, profileData, onUpdate }) {
             </Button>
             <Button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-white disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               disabled={loading}
             >
               {loading ? (

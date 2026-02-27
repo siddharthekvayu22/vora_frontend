@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { resendOTP, resetPassword } from "../../services/authService";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -32,7 +34,7 @@ function ResetPassword() {
     if (resendCooldown > 0) {
       const timer = setTimeout(
         () => setResendCooldown(resendCooldown - 1),
-        1000
+        1000,
       );
       return () => clearTimeout(timer);
     }
@@ -63,7 +65,8 @@ function ResetPassword() {
       clearPendingEmail();
 
       toast.success(
-        response.message || "Password reset successful! Redirecting to login..."
+        response.message ||
+          "Password reset successful! Redirecting to login...",
       );
 
       // Navigate to login
@@ -72,10 +75,10 @@ function ResetPassword() {
       }, 500);
     } catch (error) {
       console.error(
-        error.message || "Failed to reset password. Please try again."
+        error.message || "Failed to reset password. Please try again.",
       );
       toast.error(
-        error.message || "Failed to reset password. Please try again."
+        error.message || "Failed to reset password. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -90,7 +93,7 @@ function ResetPassword() {
     try {
       const response = await resendOTP(email);
       toast.success(
-        response.message || "A new OTP has been sent to your email."
+        response.message || "A new OTP has been sent to your email.",
       );
       setResendCooldown(60);
     } catch (error) {
@@ -102,7 +105,7 @@ function ResetPassword() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
+    <div className="w-full max-w-md rounded border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
       {/* Title */}
       <h1
         className="
@@ -125,11 +128,9 @@ function ResetPassword() {
       {/* Form */}
       <form className="space-y-5" onSubmit={handleSubmit}>
         {/* OTP */}
-        <div className="space-y-1">
-          <label htmlFor="otp" className="text-sm font-medium">
-            Verification Code
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="otp">Verification Code</Label>
+          <Input
             type="text"
             id="otp"
             name="otp"
@@ -138,21 +139,15 @@ function ResetPassword() {
             maxLength={6}
             required
             placeholder="Enter 6-digit OTP"
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-            "
+            className="w-full mt-1"
           />
           <p className="text-xs text-muted-foreground">OTP sent to {email}</p>
         </div>
 
         {/* New Password */}
-        <div className="space-y-1">
-          <label htmlFor="newPassword" className="text-sm font-medium">
-            New Password
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="newPassword">New Password</Label>
+          <Input
             type="password"
             id="newPassword"
             name="newPassword"
@@ -160,11 +155,7 @@ function ResetPassword() {
             onChange={handleChange}
             required
             placeholder="Enter new password"
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-            "
+            className="w-full mt-1"
           />
           <p className="text-xs text-muted-foreground">
             Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
@@ -172,11 +163,9 @@ function ResetPassword() {
         </div>
 
         {/* Confirm Password */}
-        <div className="space-y-1">
-          <label htmlFor="confirmPassword" className="text-sm font-medium">
-            Confirm Password
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
@@ -184,23 +173,16 @@ function ResetPassword() {
             onChange={handleChange}
             required
             placeholder="Confirm new password"
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-            "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Button */}
         <Button
-           size="lg"
+          size="lg"
           type="submit"
           disabled={isLoading}
-          className={`mt-4 w-full rounded-xl
-            ${
-              isLoading ? "cursor-not-allowed" : "cursor-pointer"
-            }`}
+          className="mt-4 w-full cursor-pointer"
         >
           {isLoading ? "Resetting..." : "RESET PASSWORD"}
         </Button>
@@ -215,18 +197,17 @@ function ResetPassword() {
               Resend in {resendCooldown}s
             </span>
           ) : (
-            <Link
+            <button
               className={`font-medium text-primary ${
                 isResendOtpLoading
-                  ? "cursor-not-allowed"
+                  ? "cursor-not-allowed opacity-60"
                   : "cursor-pointer hover:underline"
               }`}
               onClick={handleResendOTP}
-              role="button"
               disabled={isResendOtpLoading}
             >
               {isResendOtpLoading ? "Resending..." : "Resend OTP"}
-            </Link>
+            </button>
           )}
         </div>
 

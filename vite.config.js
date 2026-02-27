@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1700, // 1.7 MB
+    chunkSizeWarningLimit: 5000, // 5 MB
   },
   server: {
     host: true, // or use '0.0.0.0' to expose on all network interfaces

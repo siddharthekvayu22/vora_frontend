@@ -2,7 +2,7 @@ import { useState } from "react";
 import { changePassword } from "../../../services/authService";
 import { useAuth } from "../../../context/useAuth";
 import Icon from "../../../components/Icon";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -104,7 +104,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
         className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">

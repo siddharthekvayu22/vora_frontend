@@ -10,7 +10,7 @@ import Icon from "../components/Icon";
 import logoImage from "../assets/loggo.png";
 import { Button } from "@/components/ui/button";
 import { syncUsersToAllServices } from "../services/userService";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { useState } from "react";
 
 function AuthLayout() {

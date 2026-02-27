@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "sonner"
 
 /**
  * Custom hook for managing table data with URL-based state management

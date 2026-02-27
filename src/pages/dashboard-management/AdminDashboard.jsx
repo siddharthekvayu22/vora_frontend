@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import CardWrapper from "./components/CardWrapper";
 import MetricCard from "./components/MetricCard";
 import UserRegistrationChart from "../../components/charts/UserRegistrationChart";

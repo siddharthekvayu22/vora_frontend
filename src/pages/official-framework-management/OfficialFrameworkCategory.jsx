@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategory } from "../../services/officialFrameworkService";

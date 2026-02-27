@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Icon from "../../../components/Icon";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import { updateCompanyFramework } from "../../../services/companyFrameworkService";
@@ -182,7 +182,7 @@ export default function UpdateCompanyFrameworkModal({
         className="bg-background rounded shadow-2xl max-w-150 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -224,7 +224,9 @@ export default function UpdateCompanyFrameworkModal({
 
             {/* File Management Section - 2 Column Layout */}
             <div className="space-y-1.5">
-              <Label className="mb-2">File Management</Label>
+              <Label htmlFor="file-management" className="mb-2">
+                File Management
+              </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Current File Column */}
                 <div className="space-y-1.5">
@@ -390,7 +392,7 @@ export default function UpdateCompanyFrameworkModal({
               </>
             ) : (
               <>
-                <Icon name="save" size="16px" />
+                <Icon name="check" size="16px" />
                 Update Framework
               </>
             )}

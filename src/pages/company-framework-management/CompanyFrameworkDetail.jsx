@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   FiArrowLeft,
   FiDownload,
@@ -33,6 +33,7 @@ import {
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
 import ComparisonTable from "./components/ComparisonTable";
+import DeploymentGapsTable from "./components/DeploymentGapsTable";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
@@ -119,13 +120,19 @@ const useStatusPolling = (framework, setFramework, id) => {
   useEffect(() => {
     const aiStatus = framework?.fileVersions?.[0]?.aiUpload?.status;
     const comparisonStatus = framework?.fileVersions?.[0]?.comparison?.status;
+    const deploymentGapStatus =
+      framework?.fileVersions?.[0]?.deploymentGap?.status;
 
     const shouldPollAI = aiStatus === "uploaded" || aiStatus === "processing";
     const shouldPollComparison =
       comparisonStatus === "comparison_started" ||
       comparisonStatus === "comparison_processing";
+    const shouldPollDeploymentGap =
+      deploymentGapStatus === "deployment_gap_started" ||
+      deploymentGapStatus === "deployment_gap_processing";
 
-    const shouldPoll = shouldPollAI || shouldPollComparison;
+    const shouldPoll =
+      shouldPollAI || shouldPollComparison || shouldPollDeploymentGap;
     const isCorrectPage = window.location.pathname.includes(
       `/frameworks/${id}`,
     );
@@ -159,6 +166,8 @@ const useStatusPolling = (framework, setFramework, id) => {
               newFramework?.fileVersions?.[0]?.aiUpload?.status;
             const newComparisonStatus =
               newFramework?.fileVersions?.[0]?.comparison?.status;
+            const newDeploymentGapStatus =
+              newFramework?.fileVersions?.[0]?.deploymentGap?.status;
 
             setFramework(newFramework);
             pollCount++;
@@ -168,8 +177,15 @@ const useStatusPolling = (framework, setFramework, id) => {
             const continuePollingComparison =
               newComparisonStatus === "comparison_started" ||
               newComparisonStatus === "comparison_processing";
+            const continuePollingDeploymentGap =
+              newDeploymentGapStatus === "deployment_gap_started" ||
+              newDeploymentGapStatus === "deployment_gap_processing";
 
-            if (continuePollingAI || continuePollingComparison) {
+            if (
+              continuePollingAI ||
+              continuePollingComparison ||
+              continuePollingDeploymentGap
+            ) {
               poll();
             }
           }
@@ -191,6 +207,7 @@ const useStatusPolling = (framework, setFramework, id) => {
   }, [
     framework?.fileVersions?.[0]?.aiUpload?.status,
     framework?.fileVersions?.[0]?.comparison?.status,
+    framework?.fileVersions?.[0]?.deploymentGap?.status,
     id,
     setFramework,
   ]);
@@ -211,6 +228,9 @@ function CompanyFrameworkDetail() {
   const [showHash, setShowHash] = useState(new Set());
   const [compareModalOpen, setCompareModalOpen] = useState(false);
   const [selectedVersionForCompare, setSelectedVersionForCompare] =
+    useState(null);
+  const [deploymentGapModalOpen, setDeploymentGapModalOpen] = useState(false);
+  const [selectedVersionForDeploymentGap, setSelectedVersionForDeploymentGap] =
     useState(null);
 
   // Use custom polling hook
@@ -345,27 +365,50 @@ function CompanyFrameworkDetail() {
     "comparison_processing",
   ].includes(framework.fileVersions?.[0]?.comparison?.status);
 
+  const isDeploymentGapProcessing = [
+    "deployment_gap_started",
+    "deployment_gap_processing",
+  ].includes(framework.fileVersions?.[0]?.deploymentGap?.status);
+
+  // Determine which process is active and get appropriate message
+  const getProcessingStatus = () => {
+    if (isAIProcessing) {
+      return {
+        message: isPolling
+          ? "Checking AI status..."
+          : "Monitoring AI status...",
+      };
+    }
+    if (isComparisonProcessing) {
+      return {
+        message: isPolling
+          ? "Checking comparison status..."
+          : "Monitoring comparison...",
+      };
+    }
+    if (isDeploymentGapProcessing) {
+      return {
+        message: isPolling
+          ? "Checking deployment gap status..."
+          : "Monitoring deployment gap analysis...",
+      };
+    }
+    return null;
+  };
+
+  const processingStatus = getProcessingStatus();
+  const isAnyProcessing =
+    isAIProcessing || isComparisonProcessing || isDeploymentGapProcessing;
+
   return (
     <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
-        {/* AI Polling Indicator */}
-        {isAIProcessing && (
+        {/* Unified Processing Indicator */}
+        {isAnyProcessing && processingStatus && (
           <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded shadow-lg backdrop-blur-sm">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
             <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
-              {isPolling ? "Checking AI status..." : "Monitoring AI status..."}
-            </span>
-          </div>
-        )}
-
-        {/* Comparison Polling Indicator */}
-        {isComparisonProcessing && (
-          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded shadow-lg backdrop-blur-sm">
-            <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
-              {isPolling
-                ? "Checking comparison status..."
-                : "Monitoring comparison..."}
+              {processingStatus.message}
             </span>
           </div>
         )}
@@ -564,6 +607,54 @@ function CompanyFrameworkDetail() {
                           </Button>
                         )}
 
+                      {ver.aiUpload?.status === "completed" &&
+                        ver.aiUpload?.job_id &&
+                        (ver.deploymentGap?.status !==
+                          "deployment_gap_completed" ||
+                          (ver.deploymentGap?.status ===
+                            "deployment_gap_completed" &&
+                            ver.deploymentGap?.deployment_gaps
+                              ?.deployment_gap_results?.length === 0)) && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => {
+                              setSelectedVersionForDeploymentGap(ver);
+                              setDeploymentGapModalOpen(true);
+                            }}
+                            disabled={
+                              ver.deploymentGap?.status ===
+                                "deployment_gap_started" ||
+                              ver.deploymentGap?.status ===
+                                "deployment_gap_processing"
+                            }
+                          >
+                            {ver.deploymentGap?.status ===
+                              "deployment_gap_started" ||
+                            ver.deploymentGap?.status ===
+                              "deployment_gap_processing" ? (
+                              <>
+                                <FiLoader size={13} className="animate-spin" />
+                                {ver.deploymentGap?.status ===
+                                "deployment_gap_started"
+                                  ? "Starting..."
+                                  : "Analyzing..."}
+                              </>
+                            ) : (
+                              <>
+                                <FiShield size={13} />
+                                {ver.deploymentGap?.status ===
+                                  "deployment_gap_failed" ||
+                                (ver.deploymentGap?.status ===
+                                  "deployment_gap_completed" &&
+                                  ver.deploymentGap?.deployment_gaps
+                                    ?.deployment_gap_results?.length === 0)
+                                  ? "Retry Gap Analysis"
+                                  : "Deployment Gap"}
+                              </>
+                            )}
+                          </Button>
+                        )}
+
                       {!isCurrent && framework.fileVersions.length > 1 && (
                         <Button
                           variant="destructive"
@@ -681,7 +772,7 @@ function CompanyFrameworkDetail() {
                             </div>
                           </div>
 
-                          <div className="p-4 max-h-[400px] overflow-y-auto">
+                          <div className="p-4 max-h-100 overflow-y-auto">
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                               {/* Status Card */}
                               <div className="rounded border border-border bg-muted/30 overflow-hidden">
@@ -1005,6 +1096,27 @@ function CompanyFrameworkDetail() {
                           </div>
                         </div>
                       )}
+                      {/* deployment gap info */}
+                      {ver.deploymentGap && (
+                        <div className="mt-6">
+                          <div className="rounded border border-border bg-card overflow-hidden">
+                            <div className="px-4 py-3 bg-secondary/5 border-b border-border">
+                              <div className="flex items-center gap-2">
+                                <FiInfo size={16} className="text-secondary" />
+                                <h3 className="text-sm font-bold">
+                                  Deployment Gap Analysis
+                                </h3>
+                              </div>
+                            </div>
+
+                            <div className="p-4">
+                              <DeploymentGapsTable
+                                deploymentGaps={ver.deploymentGap}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1058,6 +1170,30 @@ function CompanyFrameworkDetail() {
             frameworkName: framework.frameworkName,
             aiUpload: selectedVersionForCompare.aiUpload,
           }}
+        />
+      )}
+
+      {deploymentGapModalOpen && selectedVersionForDeploymentGap && (
+        <CompareFrameworkModal
+          isOpen={deploymentGapModalOpen}
+          onClose={() => {
+            setDeploymentGapModalOpen(false);
+            setSelectedVersionForDeploymentGap(null);
+          }}
+          onSuccess={async () => {
+            // Wait for backend to update deployment gap status
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Fetch updated framework data to trigger polling
+            await fetchFrameworkDetails(true);
+            setDeploymentGapModalOpen(false);
+            setSelectedVersionForDeploymentGap(null);
+          }}
+          companyFramework={{
+            ...framework,
+            frameworkName: framework.frameworkName,
+            aiUpload: selectedVersionForDeploymentGap.aiUpload,
+          }}
+          mode="deploymentGap"
         />
       )}
     </div>

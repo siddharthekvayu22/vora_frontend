@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   FiArrowLeft,
   FiDownload,
@@ -767,25 +767,33 @@ function OfficialFrameworkDetail() {
                         )}
                       {/* Show Upload to AI button when not uploaded, not processing, and not completed */}
                       {(!ver.aiUpload ||
-                        (ver.aiUpload.status !== "completed" &&
-                          ver.aiUpload.status !== "uploaded" &&
-                          ver.aiUpload.status !== "processing")) &&
+                        !["completed"].includes(ver.aiUpload?.status)) &&
                         user.role === "expert" && (
                           <Button
                             variant="secondary"
                             onClick={() => handleUploadToAi(ver.fileId)}
-                            disabled={uploadingToAi.has(ver.fileId)}
-                            className="flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={
+                              ver.aiUpload?.status === "uploaded" ||
+                              ver.aiUpload?.status === "processing"
+                            }
                           >
-                            {uploadingToAi.has(ver.fileId) ? (
-                              <FiLoader size={13} className="animate-spin" />
+                            {ver.aiUpload?.status === "uploaded" ||
+                            ver.aiUpload?.status === "processing" ? (
+                              <>
+                                <FiLoader size={13} className="animate-spin" />
+                                {ver.aiUpload?.status === "processing"
+                                  ? "Processing..."
+                                  : "Uploading..."}
+                              </>
                             ) : (
-                              <FiUploadCloud size={13} />
+                              <>
+                                <FiUploadCloud size={13} />
+                                {ver.aiUpload?.status === "failed" ||
+                                ver.aiUpload?.status === "skipped"
+                                  ? "Retry AI Upload"
+                                  : "Upload to AI"}
+                              </>
                             )}
-                            {ver.aiUpload?.status === "failed" ||
-                            ver.aiUpload?.status === "skipped"
-                              ? "Retry AI Upload"
-                              : "Upload to AI"}
                           </Button>
                         )}
                       <Button

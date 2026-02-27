@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Icon from "../../../../components/Icon";
 import { getAllUsers } from "../../../../services/userService";
 import {

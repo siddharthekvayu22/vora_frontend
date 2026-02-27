@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Icon from "../../../components/Icon";
 import { AuthContext } from "../../../context/AuthContext";
 import { Button } from "@/components/ui/button";

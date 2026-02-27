@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Icon from "../../../components/Icon";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import {
@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 /**
  * Update Framework Modal Component
@@ -294,7 +295,7 @@ export default function UpdateFrameworkModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">

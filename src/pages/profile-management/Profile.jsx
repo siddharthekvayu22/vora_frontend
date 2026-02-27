@@ -7,6 +7,7 @@ import EditProfileModal from "./components/EditProfileModal";
 import ChangePasswordModal from "./components/ChangePasswordModal";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 function Profile() {
   const { user: authUser } = useAuth();

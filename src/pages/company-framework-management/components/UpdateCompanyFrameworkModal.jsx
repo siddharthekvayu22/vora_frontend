@@ -224,7 +224,9 @@ export default function UpdateCompanyFrameworkModal({
 
             {/* File Management Section - 2 Column Layout */}
             <div className="space-y-1.5">
-              <Label className="mb-2">File Management</Label>
+              <Label htmlFor="file-management" className="mb-2">
+                File Management
+              </Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Current File Column */}
                 <div className="space-y-1.5">

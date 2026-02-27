@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 /**
  * RejectFrameworkModal Component - Confirmation dialog for rejecting a framework
@@ -37,11 +39,11 @@ export default function RejectFrameworkModal({
       onClick={onCancel}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
+        className="bg-background rounded shadow-2xl max-w-125 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="x-circle" size="24px" />
@@ -66,7 +68,7 @@ export default function RejectFrameworkModal({
             reason for rejection.
           </p>
 
-          <div className="bg-muted rounded-xl p-3 border-l-4 border-primary mb-4">
+          <div className="bg-muted rounded p-3 border-l-4 border-primary mb-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 <Icon name="shield" size="20px" />
@@ -83,18 +85,18 @@ export default function RejectFrameworkModal({
           </div>
 
           <div className="mb-4">
-            <label
+            <Label
               htmlFor="rejectionReason"
               className="block text-sm font-medium text-foreground mb-2"
             >
               Rejection Reason (Optional)
-            </label>
-            <textarea
+            </Label>
+            <Textarea
               id="rejectionReason"
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="Explain why this framework is being rejected..."
-              className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              className="w-full px-3 py-2 text-sm rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               rows={4}
               maxLength={500}
               disabled={rejecting}
@@ -104,7 +106,7 @@ export default function RejectFrameworkModal({
             </p>
           </div>
 
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded p-3">
             <div className="flex gap-2">
               <Icon
                 name="info"
@@ -123,7 +125,7 @@ export default function RejectFrameworkModal({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
             onClick={onCancel}
             disabled={rejecting}
           >

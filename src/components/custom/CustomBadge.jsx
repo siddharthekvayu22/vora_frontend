@@ -36,7 +36,7 @@ const CustomBadge = ({ label, color = "gray" }) => {
 
   return (
     <span
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold capitalize
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded text-xs font-semibold capitalize min-w-[80px]
       ${c.bg} ${c.text} border ${c.border}`}
     >
       <span className={`w-2 h-2 rounded-full ${c.dot}`} />

@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import Icon from "../../../components/Icon";
 import { AuthContext } from "../../../context/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 /**
  * UserModal Component - Handles Create and Edit modes
@@ -54,6 +57,13 @@ export default function UserModal({
 
     // Default fallback (shouldn't reach here normally)
     return [{ value: "user", label: "User" }];
+  };
+
+  // Helper function to get role label from value
+  const getRoleLabel = (roleValue) => {
+    if (!roleValue) return "Select role";
+    const option = getRoleOptions().find((opt) => opt.value === roleValue);
+    return option ? option.label : roleValue; // Return the value as fallback if label not found
   };
 
   useEffect(() => {
@@ -156,11 +166,11 @@ export default function UserModal({
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
+        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px] rounded-t-2xl">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20 rounded-t">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name={getIcon()} size="24px" />
@@ -180,18 +190,21 @@ export default function UserModal({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="p-4 flex flex-col">
+          <div className="p-4 flex flex-col gap-4">
             {/* Email Field */}
-            <div className="form-group">
-              <label htmlFor="user-email" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="user-email">
                 Email Address <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="user-email"
                 type="email"
-                className={`form-input ${errors.email ? "error" : ""} ${
-                  mode === "edit" ? "opacity-60 cursor-not-allowed" : ""
-                }`}
+                className={cn(
+                  errors.email &&
+                    "border-red-500 focus-visible:ring-red-500/20",
+                  mode === "edit" &&
+                    "bg-muted/50 opacity-60 cursor-not-allowed",
+                )}
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 placeholder="Enter email address"
@@ -200,14 +213,16 @@ export default function UserModal({
             </div>
 
             {/* Name Field */}
-            <div className="form-group">
-              <label htmlFor="user-name" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="user-name">
                 Full Name <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="user-name"
                 type="text"
-                className={`form-input ${errors.name ? "error" : ""}`}
+                className={
+                  errors.name && "border-red-500 focus-visible:ring-red-500/20"
+                }
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 placeholder="Enter full name"
@@ -216,14 +231,13 @@ export default function UserModal({
             </div>
 
             {/* Phone Field */}
-            <div className="form-group">
-              <label htmlFor="user-phone" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="user-phone">
                 Phone Number <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="user-phone"
                 type="tel"
-                className="form-input"
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 placeholder="Enter phone number"
@@ -232,26 +246,24 @@ export default function UserModal({
             </div>
 
             {/* Role */}
-            <div className="form-group">
-              <label htmlFor="user-role" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="user-role">
                 Role <span className="required">*</span>
-              </label>
+              </Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
-                    className={`w-full justify-between border-2 py-[0.70rem] h-[50px] font-normal bg-background hover:bg-background ${
+                    className={cn(
+                      "w-full justify-between font-normal bg-background hover:bg-background",
                       errors.role
                         ? "border-red-500 dark:border-red-500"
-                        : "border-border dark:border-gray-600"
-                    } dark:hover:border-gray-500`}
+                        : "border-border dark:border-gray-600",
+                      "dark:hover:border-gray-500",
+                    )}
                   >
                     <span className="truncate">
-                      {formData.role
-                        ? getRoleOptions().find(
-                            (opt) => opt.value === formData.role,
-                          )?.label
-                        : "Select role"}
+                      {getRoleLabel(formData.role)}
                     </span>
                     <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
                   </Button>
@@ -265,11 +277,11 @@ export default function UserModal({
                     <DropdownMenuItem
                       key={option.value}
                       onClick={() => handleChange("role", option.value)}
-                      className={`cursor-pointer py-2.5 dark:focus:bg-gray-700 dark:focus:text-white ${
-                        formData.role === option.value
-                          ? "bg-primary/10 text-primary font-medium"
-                          : ""
-                      }`}
+                      className={cn(
+                        "cursor-pointer py-2.5 dark:focus:bg-gray-700 dark:focus:text-white",
+                        formData.role === option.value &&
+                          "bg-primary/10 text-primary font-medium",
+                      )}
                     >
                       {option.label}
                     </DropdownMenuItem>
@@ -283,7 +295,7 @@ export default function UserModal({
             <Button
               type="button"
               variant="outline"
-              className="flex-1 px-4 py-2 font-semibold rounded-lg bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
+              className="flex-1 px-4 py-2 font-semibold rounded bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
               onClick={onClose}
             >
               Cancel

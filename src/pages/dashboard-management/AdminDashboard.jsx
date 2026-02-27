@@ -200,7 +200,7 @@ export default function AdminDashboard() {
               recentCreatedUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center gap-3 p-3 bg-accent rounded border border-border hover:border-primary/50 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                     <Icon name="user" size="18px" />
@@ -254,13 +254,13 @@ export default function AdminDashboard() {
               variant="outline"
               key={a.title}
               size="lg"
-              className="group flex gap-3 rounded-xl border border-border bg-accent px-5 py-10 shadow-lg hover:border-primary transition-all duration-200 cursor-pointer"
+              className="group flex gap-3 rounded border border-border bg-accent px-5 py-10 shadow-lg hover:border-primary transition-all duration-200 cursor-pointer"
               onClick={() => {
                 navigate(a.path);
               }}
             >
               <div
-                className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${a.color}`}
+                className={`h-10 w-10 rounded flex items-center justify-center shrink-0 ${a.color}`}
               >
                 <Icon name={a.icon} size="18px" />
               </div>

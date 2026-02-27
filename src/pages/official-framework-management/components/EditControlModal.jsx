@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 /**
  * EditControlModal Component - Modal for editing AI extracted control details
@@ -90,11 +93,11 @@ export default function EditControlModal({ control, onSave, onCancel }) {
       onClick={onCancel}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[700px] w-[90%] max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 border border-border flex flex-col"
+        className="bg-background rounded shadow-2xl max-w-175 w-[90%] max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 border border-border flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="edit" size="24px" />
@@ -123,52 +126,68 @@ export default function EditControlModal({ control, onSave, onCancel }) {
           className="flex flex-col flex-1 overflow-hidden"
         >
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+            {/* Control Name */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="control-name"
+                className="block text-sm font-medium text-foreground"
+              >
                 Control Name
-              </label>
-              <input
+              </Label>
+              <Input
+                id="control-name"
                 type="text"
                 value={formData.Control_name}
                 onChange={(e) => handleChange("Control_name", e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 placeholder="Enter control name..."
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+            {/* Control Type */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="control-type"
+                className="block text-sm font-medium text-foreground"
+              >
                 Control Type
-              </label>
-              <input
+              </Label>
+              <Input
+                id="control-type"
                 type="text"
                 value={formData.Control_type}
                 onChange={(e) => handleChange("Control_type", e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                 placeholder="Enter control type (e.g., Technical, Administrative)..."
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
+            {/* Description */}
+            <div className="space-y-2">
+              <Label
+                htmlFor="description"
+                className="block text-sm font-medium text-foreground"
+              >
                 Description
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 value={formData.Control_description}
                 onChange={(e) =>
                   handleChange("Control_description", e.target.value)
                 }
                 rows={3}
-                className="w-full h-auto px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary resize-none"
+                className="min-h-20 resize-none"
                 placeholder="Enter control description..."
               />
             </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-foreground">
+            {/* Deployment Points */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="deployment-points"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Deployment Points
-                </label>
+                </Label>
                 <Button
                   type="button"
                   size="sm"
@@ -183,17 +202,17 @@ export default function EditControlModal({ control, onSave, onCancel }) {
                 Add deployment points one by one. Each point will be numbered
                 automatically.
               </p>
-              <div className="space-y-2 max-h-[300px] overflow-y-auto py-1">
+              <div className="space-y-2 max-h-75 overflow-y-auto py-1">
                 {deploymentPoints.map((point, index) => (
                   <div key={index} className="flex gap-2 items-start">
                     <div className="shrink-0 w-6 h-9 flex items-center justify-center text-xs font-medium text-muted-foreground bg-muted rounded">
                       {index + 1}
                     </div>
-                    <input
+                    <Input
                       type="text"
                       value={point}
                       onChange={(e) => handlePointChange(index, e.target.value)}
-                      className="flex-1 px-3 py-2 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                      className="flex-1"
                       placeholder={`Enter point ${index + 1}...`}
                     />
                     {deploymentPoints.length > 1 && (
@@ -202,7 +221,7 @@ export default function EditControlModal({ control, onSave, onCancel }) {
                         size="icon"
                         variant="ghost"
                         onClick={() => removePoint(index)}
-                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
                         title="Remove point"
                       >
                         <Icon name="trash" size="16px" />
@@ -218,7 +237,7 @@ export default function EditControlModal({ control, onSave, onCancel }) {
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded"
               onClick={onCancel}
               disabled={saving}
             >

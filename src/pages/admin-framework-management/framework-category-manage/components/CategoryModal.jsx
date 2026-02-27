@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Icon from "../../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 /**
  * CategoryModal Component - Handles Create and Edit modes
@@ -99,11 +103,11 @@ export default function CategoryModal({
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name={getIcon()} size="24px" />
@@ -123,34 +127,39 @@ export default function CategoryModal({
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="p-4 flex flex-col">
+          <div className="p-4 flex flex-col gap-4">
             {/* Code Field */}
-            <div className="form-group">
-              <label htmlFor="category-code" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-code">
                 Code <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="category-code"
                 type="text"
-                className={`form-input ${errors.code ? "error" : ""}`}
+                className={
+                  errors.code && "border-red-500 focus-visible:ring-red-500/20"
+                }
                 value={formData.code}
                 onChange={(e) => handleChange("code", e.target.value)}
                 placeholder="Enter category code (e.g., iso27002)"
               />
               {errors.code && (
-                <span className="error-message">{errors.code}</span>
+                <p className="text-xs text-red-500 mt-1">{errors.code}</p>
               )}
             </div>
 
             {/* Framework Category Name Field */}
-            <div className="form-group">
-              <label htmlFor="category-name" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-name">
                 Framework Category Name <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="category-name"
                 type="text"
-                className={`form-input ${errors.frameworkCategoryName ? "error" : ""}`}
+                className={
+                  errors.frameworkCategoryName &&
+                  "border-red-500 focus-visible:ring-red-500/20"
+                }
                 value={formData.frameworkCategoryName}
                 onChange={(e) =>
                   handleChange("frameworkCategoryName", e.target.value)
@@ -158,57 +167,61 @@ export default function CategoryModal({
                 placeholder="Enter framework category name"
               />
               {errors.frameworkCategoryName && (
-                <span className="error-message">
+                <p className="text-xs text-red-500 mt-1">
                   {errors.frameworkCategoryName}
-                </span>
+                </p>
               )}
             </div>
 
             {/* Description Field */}
-            <div className="form-group">
-              <label htmlFor="category-description" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="category-description">
                 Description <span className="required">*</span>
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 id="category-description"
-                className={`form-input ${errors.description ? "error" : ""}`}
+                className={cn(
+                  "min-h-25",
+                  errors.description &&
+                    "border-red-500 focus-visible:ring-red-500/20",
+                )}
                 value={formData.description}
                 onChange={(e) => handleChange("description", e.target.value)}
                 placeholder="Enter category description"
                 rows={4}
               />
               {errors.description && (
-                <span className="error-message">{errors.description}</span>
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.description}
+                </p>
               )}
             </div>
 
             {/* Status Field - Only show in edit mode */}
             {mode === "edit" && (
-              <div className="form-group">
-                <label htmlFor="category-status" className="form-label">
-                  Status
-                </label>
-                <div className="flex items-center gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
+              <div className="space-y-1.5">
+                <Label htmlFor="category-status">Status</Label>
+                <div className="flex items-center gap-4">
+                  <Label className="flex items-center gap-2 cursor-pointer">
+                    <Input
                       type="radio"
                       name="isActive"
                       checked={formData.isActive === true}
                       onChange={() => handleChange("isActive", true)}
-                      className="text-primary focus:ring-primary"
+                      className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
                     />
-                    <span className="text-sm">Active</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
+                    <span className="text-sm font-medium">Active</span>
+                  </Label>
+                  <Label className="flex items-center gap-2 cursor-pointer">
+                    <Input
                       type="radio"
                       name="isActive"
                       checked={formData.isActive === false}
                       onChange={() => handleChange("isActive", false)}
-                      className="text-primary focus:ring-primary"
+                      className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
                     />
-                    <span className="text-sm">Inactive</span>
-                  </label>
+                    <span className="text-sm font-medium">Inactive</span>
+                  </Label>
                 </div>
               </div>
             )}
@@ -218,7 +231,7 @@ export default function CategoryModal({
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded"
               onClick={onClose}
             >
               Cancel

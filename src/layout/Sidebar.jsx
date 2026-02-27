@@ -194,7 +194,7 @@ function Sidebar() {
           className="
       fixed left-2 top-5 z-50
       flex h-11 w-11 items-center justify-center
-      rounded-2xl
+      rounded
       bg-linear-to-br from-primary to-primary/70
     "
         >
@@ -236,12 +236,12 @@ function Sidebar() {
           <div className="relative z-10 flex items-center gap-3">
             <div
               className="flex h-12 w-12 items-center justify-center
-                            rounded-xl shadow-lg overflow-hidden"
+                            rounded shadow-lg overflow-hidden"
             >
               <img
                 src={logoImage}
                 alt="VORA Logo"
-                className="h-full w-full object-contain rounded-xl mix-blend-screen"
+                className="h-full w-full object-contain rounded mix-blend-screen"
                 style={{
                   filter: "drop-shadow(0 0 5px rgba(255,255,255,0.5))",
                   background: "transparent",
@@ -261,7 +261,7 @@ function Sidebar() {
           <Button
             onClick={() => setIsOpen(false)}
             className="relative z-10 flex h-9 w-9 items-center justify-center
-                       rounded-lg border border-white/30 bg-white/20
+                       rounded border border-white/30 bg-white/20
                        text-white transition hover:rotate-90 hover:bg-red-500 cursor-pointer"
           >
             <Icon name="close" size="20px" />
@@ -284,7 +284,7 @@ function Sidebar() {
                     }
                   }}
                   className={`group relative flex cursor-pointer items-center gap-4
-                            rounded-2xl px-4 py-3 transition-all
+                            rounded px-4 py-3 transition-all
                   ${
                     isParentActive(item)
                       ? "border border-primary bg-linear-to-br from-primary/15 to-primary-2/15 shadow-md"
@@ -296,14 +296,14 @@ function Sidebar() {
                     className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
                     ${
                       isParentActive(item)
-                        ? "h-2/3 bg-gradient-to-b from-primary to-primary-2"
+                        ? "h-2/3 bg-linear-to-b from-primary to-primary-2"
                         : "h-0 bg-primary group-hover:h-1/2 transition-all"
                     }`}
                   />
 
                   {/* Icon */}
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl border transition
+                    className={`flex h-10 w-10 items-center justify-center rounded border transition
                     ${
                       isParentActive(item)
                         ? "border-primary bg-primary/20 text-primary scale-110"
@@ -335,7 +335,7 @@ function Sidebar() {
                   {/* Arrow */}
                   {item.children && (
                     <div
-                      className={`flex h-7 w-7 items-center justify-center rounded-md border transition
+                      className={`flex h-7 w-7 items-center justify-center rounded border transition
                       ${
                         activeMenu === item.id
                           ? "rotate-180 border-primary bg-primary text-white"
@@ -355,7 +355,7 @@ function Sidebar() {
                         key={sub.id}
                         to={sub.path}
                         onClick={() => setIsOpen(false)}
-                        className={`group flex items-center gap-3 rounded-xl px-3 py-2 transition
+                        className={`group flex items-center gap-3 rounded px-3 py-2 transition
                         ${
                           isActive(sub.path)
                             ? "bg-primary/20 text-primary border-l-2 border-primary"
@@ -363,7 +363,7 @@ function Sidebar() {
                         }`}
                       >
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-lg border
+                          className={`flex h-8 w-8 items-center justify-center rounded border
                           ${
                             isActive(sub.path)
                               ? "border-primary bg-primary/20 text-primary scale-110"
@@ -387,7 +387,7 @@ function Sidebar() {
           <Link
             to={"/profile"}
             onClick={() => setIsOpen(false)}
-            className="mb-4 flex items-center gap-3 rounded-xl border border-border bg-linear-to-br from-primary/15 to-primary-2/15 p-3 hover:shadow-md cursor-pointer transition-all duration-200 hover:scale-[1.02]"
+            className="mb-4 flex items-center gap-3 rounded border border-border bg-linear-to-br from-primary/15 to-primary-2/15 p-3 hover:shadow-md cursor-pointer transition-all duration-200"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white animate-pulse">
               <Icon name="user" size="18px" />

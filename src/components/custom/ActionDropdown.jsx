@@ -81,7 +81,7 @@ function ActionDropdown({ actions = [] }) {
       {open && (
         <div
           ref={dropdownRef}
-          className="fixed w-44 z-[9999]"
+          className="fixed w-44 z-9999"
           style={{
             ...(openUpward
               ? {
@@ -104,7 +104,7 @@ function ActionDropdown({ actions = [] }) {
           />
 
           {/* Dropdown body (content only) */}
-          <div className="bg-popover border rounded-sm overflow-hidden">
+          <div className="bg-popover border rounded overflow-hidden">
             {actions.map((action, idx) => {
               const actionId = action.id || idx;
               const isLoading = loadingActionId === actionId;
@@ -118,9 +118,7 @@ function ActionDropdown({ actions = [] }) {
                     variant="ghost"
                     disabled={isDisabled || isLoading}
                     className={`flex items-center justify-start gap-3 w-full px-4 py-2 transition rounded-none  ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
+                      isDisabled ? "opacity-50 cursor-not-allowed" : ""
                     } ${action.className || ""}`}
                   >
                     {isLoading ? (

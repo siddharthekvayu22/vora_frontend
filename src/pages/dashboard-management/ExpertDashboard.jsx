@@ -194,7 +194,7 @@ export default function ExpertDashboard() {
         <CardWrapper title="Upload Analytics" className="flex flex-col">
           <div className="space-y-4 flex-1">
             {/* Upload Frequency */}
-            <div className="p-4 bg-accent rounded-lg border border-border">
+            <div className="p-4 bg-accent rounded border border-border">
               <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                 <Icon name="calendar" size="16px" className="text-blue-500" />
                 Upload Frequency
@@ -367,7 +367,7 @@ export default function ExpertDashboard() {
               recentUploads.map((upload) => (
                 <div
                   key={upload.id}
-                  className="flex items-center gap-3 p-3 bg-accent rounded-lg border border-border hover:border-primary/50 transition-colors"
+                  className="flex items-center gap-3 p-3 bg-accent rounded border border-border hover:border-primary/50 transition-colors"
                 >
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                     <Icon name={getFileTypeIcon(upload.type)} size="18px" />
@@ -419,7 +419,7 @@ export default function ExpertDashboard() {
         <CardWrapper title="Account Summary" className="flex flex-col">
           <div className="space-y-4 flex-1">
             {/* Timeline */}
-            <div className="p-4 bg-accent rounded-lg border border-border">
+            <div className="p-4 bg-accent rounded border border-border">
               <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                 <Icon name="clock" size="16px" className="text-green-500" />
                 Timeline
@@ -458,7 +458,7 @@ export default function ExpertDashboard() {
             </div>
 
             {/* Access Summary */}
-            <div className="p-4 bg-accent rounded-lg border border-border">
+            <div className="p-4 bg-accent rounded border border-border">
               <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
                 <Icon name="key" size="16px" className="text-blue-500" />
                 Access Summary
@@ -480,7 +480,7 @@ export default function ExpertDashboard() {
             </div>
 
             {/* Largest File Info */}
-            <div className="p-4 bg-accent rounded-lg border border-border">
+            <div className="p-4 bg-accent rounded border border-border">
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                 <Icon name="file" size="16px" className="text-orange-500" />
                 Largest Upload
@@ -503,10 +503,10 @@ export default function ExpertDashboard() {
             <Link
               key={a.title}
               to={a.path}
-              className="group flex gap-3 rounded-xl border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
+              className="group flex gap-3 rounded border border-border bg-accent p-4 shadow-lg hover:border-primary transition-all duration-200"
             >
               <div
-                className={`h-10 w-10 rounded-lg flex items-center justify-center shrink-0 ${a.color}`}
+                className={`h-10 w-10 rounded flex items-center justify-center shrink-0 ${a.color}`}
               >
                 <Icon name={a.icon} size="18px" />
               </div>

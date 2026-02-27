@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { verifyEmail } from "../../services/authService";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function VerifyEmail() {
   const navigate = useNavigate();
@@ -51,7 +53,7 @@ function VerifyEmail() {
       setEmailForVerification(formData.email);
 
       toast.success(
-        response.message || "OTP sent successfully! Check your email."
+        response.message || "OTP sent successfully! Check your email.",
       );
       setCooldown(60); // 60 second cooldown
 
@@ -66,7 +68,7 @@ function VerifyEmail() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
+    <div className="w-full max-w-md rounded border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
       {/* Title */}
       <h1
         className="
@@ -89,11 +91,9 @@ function VerifyEmail() {
       {/* Form */}
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Email */}
-        <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email Address
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <Input
             type="email"
             id="email"
             name="email"
@@ -101,11 +101,7 @@ function VerifyEmail() {
             onChange={handleChange}
             required
             placeholder="Enter your email"
-            className="
-              w-full rounded-xl border border-border
-              bg-background px-4 py-3 text-sm
-              focus:outline-none focus:ring-2 focus:ring-primary/30
-            "
+            className="w-full mt-1"
           />
         </div>
 
@@ -114,9 +110,7 @@ function VerifyEmail() {
           size="lg"
           type="submit"
           disabled={isLoading || cooldown > 0}
-          className={`mt-2 w-full rounded-xl
-            ${isLoading ? "cursor-not-allowed" : "cursor-pointer"
-            }`}
+          className="mt-2 w-full cursor-pointer"
         >
           {cooldown > 0
             ? `WAIT ${cooldown}s`

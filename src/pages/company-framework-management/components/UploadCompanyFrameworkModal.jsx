@@ -4,6 +4,9 @@ import Icon from "../../../components/Icon";
 import FileTypeCard from "../../../components/custom/FileTypeCard";
 import { uploadCompanyFramework } from "../../../services/companyFrameworkService";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 export default function UploadCompanyFrameworkModal({
   isOpen,
@@ -145,11 +148,11 @@ export default function UploadCompanyFrameworkModal({
       onClick={handleClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[600px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-150 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="upload" size="24px" />
@@ -169,27 +172,37 @@ export default function UploadCompanyFrameworkModal({
         </div>
 
         <div className="p-4">
-          <form onSubmit={handleSubmit} className="flex flex-col">
-            <div className="form-group">
-              <label className="form-label">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Framework Name */}
+            <div className="space-y-1.5">
+              <Label htmlFor="framework-name">
                 Framework Name <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
+                id="framework-name"
                 type="text"
-                className={`form-input ${errors.frameworkName ? "error" : ""}`}
+                className={
+                  errors.frameworkName &&
+                  "border-red-500 focus-visible:ring-red-500/20"
+                }
                 value={formData.frameworkName}
                 onChange={(e) => handleChange("frameworkName", e.target.value)}
                 placeholder="e.g., Company Security Framework"
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">
+            {/* Version */}
+            <div className="space-y-1.5">
+              <Label htmlFor="version">
                 Version <span className="required">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
+                id="version"
                 type="text"
-                className={`form-input ${errors.currentVersion ? "error" : ""}`}
+                className={
+                  errors.currentVersion &&
+                  "border-red-500 focus-visible:ring-red-500/20"
+                }
                 value={formData.currentVersion}
                 onChange={(e) => handleChange("currentVersion", e.target.value)}
                 placeholder="e.g., 1.0.0"
@@ -199,12 +212,13 @@ export default function UploadCompanyFrameworkModal({
               </p>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">
+            {/* File Upload */}
+            <div className="space-y-1.5">
+              <Label htmlFor="framework-file">
                 Framework File <span className="required">*</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
                   type="file"
                   accept=".pdf,.doc,.docx,.xls,.xlsx"
                   onChange={handleFileChange}
@@ -213,11 +227,12 @@ export default function UploadCompanyFrameworkModal({
                 />
 
                 {!formData.file ? (
-                  <label
+                  <Label
                     htmlFor="company-framework-file"
-                    className={`flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded-lg cursor-pointer transition-colors hover:bg-accent/50 ${
-                      errors.file ? "border-red-500" : "border-border"
-                    }`}
+                    className={cn(
+                      "flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded cursor-pointer transition-colors hover:bg-accent/50",
+                      errors.file ? "border-red-500" : "border-border",
+                    )}
                   >
                     <div className="text-center">
                       <Icon
@@ -235,14 +250,15 @@ export default function UploadCompanyFrameworkModal({
                         Maximum file size: 50MB
                       </p>
                     </div>
-                  </label>
+                  </Label>
                 ) : (
                   <div
-                    className={`flex items-center justify-between w-full px-4 py-4 border-2 rounded-lg ${
+                    className={cn(
+                      "flex items-center justify-between w-full px-4 py-4 border-2 rounded",
                       errors.file
                         ? "border-red-500"
-                        : "border-green-200 bg-green-50 dark:bg-green-900/20"
-                    }`}
+                        : "border-green-200 bg-green-50 dark:bg-green-900/20",
+                    )}
                   >
                     <div className="flex items-center gap-3">
                       <FileTypeCard
@@ -251,16 +267,17 @@ export default function UploadCompanyFrameworkModal({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <label
+                      <Label
                         htmlFor="company-framework-file"
                         className="flex items-center justify-center w-8 h-8 text-primary bg-primary/10 border border-primary/20 rounded hover:bg-primary/20 transition-colors cursor-pointer"
                         title="Change file"
                       >
                         <Icon name="refresh" size="18px" />
-                      </label>
+                      </Label>
                       <Button
                         type="button"
                         size="icon"
+                        variant="ghost"
                         onClick={handleFileRemove}
                         className="flex items-center justify-center w-8 h-8 text-red-600 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
                         title="Remove file"
@@ -279,7 +296,7 @@ export default function UploadCompanyFrameworkModal({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
             onClick={handleClose}
             disabled={saving}
           >

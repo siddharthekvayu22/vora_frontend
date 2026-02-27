@@ -4,6 +4,9 @@ import { useAuth } from "../../../context/useAuth";
 import Icon from "../../../components/Icon";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
 
 function ChangePasswordModal({ isOpen, onClose }) {
   const { logout } = useAuth();
@@ -52,10 +55,6 @@ function ChangePasswordModal({ isOpen, onClose }) {
       return toast.error("Password does not meet security requirements");
     }
 
-    if (newPassword.length < 6) {
-      return toast.error("Password must be at least 6 characters");
-    }
-
     if (currentPassword === newPassword) {
       return toast.error("New password must be different");
     }
@@ -102,11 +101,11 @@ function ChangePasswordModal({ isOpen, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[550px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="key" size="24px" />
@@ -116,7 +115,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
             </div>
             <Button
               variant="ghost"
-              className=" rounded-full w-9 h-9 flex "
+              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={onClose}
               title="Close"
             >
@@ -126,17 +125,17 @@ function ChangePasswordModal({ isOpen, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="p-4 flex flex-col">
+          <div className="p-4 flex flex-col gap-4">
             {/* Current Password */}
-            <div className="form-group">
-              <label htmlFor="current-password" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="current-password">
                 Current Password <span className="required">*</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
                   id="current-password"
                   type={showPasswords.current ? "text" : "password"}
-                  className="form-input pr-12"
+                  className="pr-12"
                   value={formData.currentPassword}
                   onChange={(e) =>
                     handleChange("currentPassword", e.target.value)
@@ -149,7 +148,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
                   size="icon"
                   variant="ghost"
                   onClick={() => togglePasswordVisibility("current")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-accent rounded transition-colors"
                 >
                   <Icon
                     name={showPasswords.current ? "eye-off" : "eye"}
@@ -160,27 +159,26 @@ function ChangePasswordModal({ isOpen, onClose }) {
             </div>
 
             {/* New Password */}
-            <div className="form-group">
-              <label htmlFor="new-password" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="new-password">
                 New Password <span className="required">*</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
                   id="new-password"
                   type={showPasswords.new ? "text" : "password"}
-                  className="form-input pr-12"
+                  className="pr-12"
                   value={formData.newPassword}
                   onChange={(e) => handleChange("newPassword", e.target.value)}
                   placeholder="Enter new password"
                   required
-                  minLength={6}
                 />
                 <Button
                   type="button"
                   size="icon"
                   variant="ghost"
                   onClick={() => togglePasswordVisibility("new")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-accent rounded transition-colors"
                 >
                   <Icon
                     name={showPasswords.new ? "eye-off" : "eye"}
@@ -188,21 +186,22 @@ function ChangePasswordModal({ isOpen, onClose }) {
                   />
                 </Button>
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                Password must be at least 6 characters long
-              </div>
+              <p className="text-xs text-muted-foreground">
+                Password must be at least 8 characters long and meet all
+                requirements below
+              </p>
             </div>
 
             {/* Confirm Password */}
-            <div className="form-group">
-              <label htmlFor="confirm-password" className="form-label">
+            <div className="space-y-1.5">
+              <Label htmlFor="confirm-password">
                 Confirm New Password <span className="required">*</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
                   id="confirm-password"
                   type={showPasswords.confirm ? "text" : "password"}
-                  className="form-input pr-12"
+                  className="pr-12"
                   value={formData.confirmPassword}
                   onChange={(e) =>
                     handleChange("confirmPassword", e.target.value)
@@ -215,7 +214,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
                   size="icon"
                   variant="ghost"
                   onClick={() => togglePasswordVisibility("confirm")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-accent rounded transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-accent rounded transition-colors"
                 >
                   <Icon
                     name={showPasswords.confirm ? "eye-off" : "eye"}
@@ -227,28 +226,37 @@ function ChangePasswordModal({ isOpen, onClose }) {
 
             {/* Password Strength Indicator */}
             {formData.newPassword && (
-              <div className="p-3 bg-accent rounded-lg border border-border">
-                <div className="text-sm font-medium text-foreground mb-2">
+              <div className="p-4 bg-accent/30 rounded-lg border border-border">
+                <p className="text-sm font-medium text-foreground mb-3">
                   Password Requirements:
-                </div>
-
-                <div className="space-y-1 text-xs">
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {rules.map((rule, index) => (
                     <div
                       key={index}
-                      className={`flex items-center gap-2 ${
+                      className={cn(
+                        "flex items-center gap-2 text-xs",
                         rule.test(formData.newPassword)
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-muted-foreground",
+                      )}
                     >
-                      <Icon
-                        name={
-                          rule.test(formData.newPassword) ? "check" : "close"
-                        }
-                        size="12px"
-                      />
-                      {rule.label}
+                      <div
+                        className={cn(
+                          "w-4 h-4 rounded-full flex items-center justify-center shrink-0",
+                          rule.test(formData.newPassword)
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                            : "bg-muted text-muted-foreground",
+                        )}
+                      >
+                        <Icon
+                          name={
+                            rule.test(formData.newPassword) ? "check" : "close"
+                          }
+                          size="10px"
+                        />
+                      </div>
+                      <span>{rule.label}</span>
                     </div>
                   ))}
                 </div>
@@ -259,9 +267,8 @@ function ChangePasswordModal({ isOpen, onClose }) {
           <div className="flex gap-2 justify-end p-3 border-t border-border">
             <Button
               type="button"
-              size="icon"
               variant="outline"
-              className="flex-1 px-4 py-2 "
+              className="flex-1"
               onClick={onClose}
               disabled={loading}
             >
@@ -269,7 +276,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
             </Button>
             <Button
               type="submit"
-              className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none transition-all duration-200 cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2"
               disabled={loading || !isPasswordValid}
             >
               {loading ? (
@@ -290,5 +297,4 @@ function ChangePasswordModal({ isOpen, onClose }) {
     </div>
   );
 }
-
 export default ChangePasswordModal;

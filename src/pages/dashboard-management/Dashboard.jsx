@@ -162,10 +162,10 @@ export default function Dashboard() {
           {quickActions.map((a) => (
             <button
               key={a.title}
-              className="group flex gap-4 rounded-2xl border border-border bg-accent p-6 shadow-lg hover:border-primary"
+              className="group flex gap-4 rounded border border-border bg-accent p-6 shadow-lg hover:border-primary"
             >
               <div
-                className={`h-12 w-12 rounded-xl flex items-center justify-center ${a.color}`}
+                className={`h-12 w-12 rounded flex items-center justify-center ${a.color}`}
               >
                 <Icon name={a.icon} size="20px" />
               </div>
@@ -194,7 +194,7 @@ export default function Dashboard() {
           {activeAudits.map((a) => (
             <div
               key={a.name}
-              className="mb-6 border border-border rounded-xl p-5 last:mb-0 bg-accent"
+              className="mb-6 border border-border rounded p-5 last:mb-0 bg-accent"
             >
               <div className="flex justify-between">
                 <div>
@@ -235,7 +235,7 @@ export default function Dashboard() {
           {upcomingDeadlines.map((d, i) => (
             <div
               key={i}
-              className="flex justify-between p-3 bg-accent rounded-lg mb-3 border border-border"
+              className="flex justify-between p-3 bg-accent rounded mb-3 border border-border"
             >
               <div>
                 <p className="text-xl font-bold">
@@ -260,7 +260,7 @@ export default function Dashboard() {
           {recentActivity.map((r, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 p-3 bg-accent rounded-lg mb-2 border border-border"
+              className="flex items-center gap-3 p-3 bg-accent rounded mb-2 border border-border"
             >
               <div className="h-8 w-8 bg-popover-foreground/10 rounded-full flex items-center justify-center text-sm">
                 {r.user[0]}

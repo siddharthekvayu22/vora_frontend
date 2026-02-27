@@ -4,6 +4,8 @@ import { useAuth } from "../../context/useAuth";
 import toast from "react-hot-toast";
 import { loginApi } from "../../services/authService";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function Login() {
   const navigate = useNavigate();
@@ -23,15 +25,18 @@ function Login() {
       const response = await loginApi(formData.email, formData.password);
       login(response.data.user, response.data.token);
       toast.success(response.message || "Login successful");
-      
+
       // Role-based redirect
-      if (response.data.user?.role === 'admin') {
+      if (response.data.user?.role === "admin") {
         navigate("/admin-dashboard");
       } else {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.error("Login error:", error.message || "Invalid email or password");
+      console.error(
+        "Login error:",
+        error.message || "Invalid email or password",
+      );
       toast.error(error.message || "Invalid email or password");
     } finally {
       setIsLoading(false);
@@ -39,7 +44,7 @@ function Login() {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
+    <div className="w-full max-w-md rounded border border-border bg-card p-8 shadow-lg animate-in fade-in duration-500">
       {/* Title */}
       <h1
         className="
@@ -62,53 +67,41 @@ function Login() {
       {/* Form */}
       <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Email */}
-        <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium">
-            Email address
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="email">Email address</Label>
+          <Input
+            id="email"
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
             placeholder="Enter your email"
-            className="
-                w-full rounded-xl border border-border
-                bg-background px-4 py-3 text-sm
-                focus:outline-none focus:ring-2 focus:ring-primary/30
-              "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Password */}
-        <div className="space-y-1">
-          <label htmlFor="password" className="text-sm font-medium">
-            Password
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
             required
             placeholder="Enter your password"
-            className="
-                w-full rounded-xl border border-border
-                bg-background px-4 py-3 text-sm
-                focus:outline-none focus:ring-2 focus:ring-primary/30
-              "
+            className="w-full mt-1"
           />
         </div>
 
         {/* Button */}
         <Button
-        size="lg"
+          size="lg"
           type="submit"
           disabled={isLoading}
-          className={`mt-2  w-full rounded-xl ${
-            isLoading ? "cursor-not-allowed" : "cursor-pointer"
-          }`}
+          className="mt-2 w-full cursor-pointer"
         >
           {isLoading ? "Signing in..." : "LOGIN"}
         </Button>

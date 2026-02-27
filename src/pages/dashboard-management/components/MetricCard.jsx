@@ -22,7 +22,7 @@ function MetricCard({ icon, label, value, trend, trendColor, subtitle }) {
   const isUserCard = Array.isArray(trend);
 
   return (
-    <div className="rounded-2xl border border-border bg-accent p-4">
+    <div className="rounded border border-border bg-accent p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1">
           <p className="text-xs tracking-widest text-muted-foreground mb-2">
@@ -56,7 +56,7 @@ function MetricCard({ icon, label, value, trend, trendColor, subtitle }) {
             </>
           )}
         </div>
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-popover-foreground/10">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-popover-foreground/10">
           {icon}
         </div>
       </div>

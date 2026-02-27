@@ -132,7 +132,7 @@ const FileTypeCard = ({ fileType, fileSize, fileName }) => {
   return (
     <div className="flex items-center gap-2">
       <div
-        className={`w-8 h-8 rounded-lg ${config.bgColor} ${config.borderColor} border flex items-center justify-center ${config.textColor}`}
+        className={`w-8 h-8 rounded ${config.bgColor} ${config.borderColor} border flex items-center justify-center ${config.textColor}`}
       >
         <Icon name={config.icon} size="14px" />
       </div>

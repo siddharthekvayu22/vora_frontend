@@ -25,15 +25,15 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[10001] animate-in fade-in duration-200"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10001 animate-in fade-in duration-200"
       onClick={onCancel}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
+        className="bg-background rounded shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-[80px]">
-          <div className="absolute top-0 right-0 w-[150px] h-[150px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Icon name="warning" size="24px" />
@@ -58,7 +58,7 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
             undone.
           </p>
 
-          <div className="bg-muted rounded-xl p-3 border-l-4 border-red-500 mb-4">
+          <div className="bg-muted rounded p-3 border-l-4 border-red-500 mb-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
                 <span className="text-sm font-bold">{control.Control_id}</span>
@@ -86,7 +86,7 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
             onClick={onCancel}
             disabled={deleting}
           >

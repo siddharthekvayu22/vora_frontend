@@ -8,6 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -134,46 +136,46 @@ export default function DataTable({
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm">
+    <div className="bg-card border border-border rounded overflow-hidden shadow-sm">
       {/* Table Header with Search */}
       <div className="flex justify-between items-center p-4 border-b border-border bg-linear-to-r from-card to-muted/30">
-        <div className="relative flex items-center gap-3 bg-input border border-border rounded-lg px-3 py-2.5 flex-1 max-w-md transition-all duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 focus-within:shadow-sm">
-          <Icon
-            name="search"
-            size="14px"
-            className="text-muted-foreground shrink-0"
-          />
-          <input
+        <div className="relative flex items-center gap-3 flex-1 max-w-md">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Icon name="search" size="14px" className="text-muted-foreground" />
+          </div>
+          <Input
             type="text"
             placeholder={searchPlaceholder}
             value={searchTerm}
             onChange={handleSearchChange}
-            className="flex-1 border-none bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
+            className="pl-9 pr-20"
           />
-          {isSearching && (
-            <div className="flex items-center justify-center shrink-0">
-              <div className="w-3 h-3 border-2 border-border border-t-primary rounded-full animate-spin"></div>
-            </div>
-          )}
-          {searchTerm && !isSearching && (
-            <Button
-              className="flex items-center justify-center shrink-0 w-5 h-5 transition-all duration-200"
-              variant="ghost"
-              onClick={() => {
-                setSearchTerm("");
-                // Clear search should be immediate, not debounced
-                if (onClearSearch) {
-                  onClearSearch();
-                } else if (onSearch) {
-                  onSearch("");
-                }
-              }}
-              size="icon"
-              title="Clear search"
-            >
-              <Icon name="x" size="12px" />
-            </Button>
-          )}
+          <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
+            {isSearching && (
+              <div className="flex items-center justify-center">
+                <div className="w-3 h-3 border-2 border-border border-t-primary rounded-full animate-spin"></div>
+              </div>
+            )}
+            {searchTerm && !isSearching && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setSearchTerm("");
+                  // Clear search should be immediate, not debounced
+                  if (onClearSearch) {
+                    onClearSearch();
+                  } else if (onSearch) {
+                    onSearch("");
+                  }
+                }}
+                className="h-5 w-5 hover:bg-accent rounded-full"
+                title="Clear search"
+              >
+                <Icon name="x" size="12px" />
+              </Button>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-4">
           {renderHeaderActions && renderHeaderActions()}
@@ -319,14 +321,14 @@ export default function DataTable({
             </div>
             {pagination.onLimitChange && (
               <div className="flex items-center gap-2">
-                <label className="text-sm whitespace-nowrap">Per page:</label>
+                <Label className="text-sm whitespace-nowrap">Per page:</Label>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
                       size="xs"
-                      className="justify-between rounded min-w-[50px] select-none"
+                      className="justify-between rounded min-w-12.5 select-none"
                       disabled={loading}
                     >
                       <span>{pagination.limit}</span>
@@ -336,7 +338,7 @@ export default function DataTable({
 
                   <DropdownMenuContent
                     align="center"
-                    className="min-w-[50px] p-0 rounded"
+                    className="min-w-12.5 p-0 rounded"
                   >
                     {["5", "10", "25", "50", "100"].map((value) => (
                       <DropdownMenuItem
@@ -356,7 +358,7 @@ export default function DataTable({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-sm"
+              className="rounded"
               onClick={() => pagination.onPageChange(1)}
               disabled={!pagination.hasPrevPage || loading}
               title="First page"
@@ -367,7 +369,7 @@ export default function DataTable({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-sm"
+              className="rounded"
               onClick={() =>
                 pagination.onPageChange(pagination.currentPage - 1)
               }
@@ -400,7 +402,7 @@ export default function DataTable({
                     disabled={loading}
                     className={
                       page === pagination.currentPage
-                        ? "font-semibold rounded-sm"
+                        ? "font-semibold rounded"
                         : "border-transparent"
                     }
                   >
@@ -413,7 +415,7 @@ export default function DataTable({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-sm"
+              className="rounded"
               onClick={() =>
                 pagination.onPageChange(pagination.currentPage + 1)
               }
@@ -426,7 +428,7 @@ export default function DataTable({
             <Button
               variant="outline"
               size="sm"
-              className="rounded-sm disabled:cursor-not-allowed"
+              className="rounded disabled:cursor-not-allowed"
               onClick={() => pagination.onPageChange(pagination.totalPages)}
               disabled={!pagination.hasNextPage || loading}
               title="Last page"

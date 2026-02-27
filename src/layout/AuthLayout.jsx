@@ -148,7 +148,7 @@ function AuthLayout() {
               <div
                 key={i}
                 className="
-                  flex items-start gap-4 rounded-xl
+                  flex items-start gap-4 rounded
                   bg-white/10 backdrop-blur
                   border border-white/20 p-4
                   transition hover:translate-x-1
@@ -156,7 +156,7 @@ function AuthLayout() {
                 "
                 style={{ animationDelay: `${i * 150}ms` }}
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/20">
+                <div className="flex h-12 w-12 items-center justify-center rounded bg-white/20">
                   <Icon name={f.icon} size="24px" />
                 </div>
                 <div>

@@ -8,6 +8,7 @@ import {
 } from "../../../../services/adminService";
 import CustomBadge from "../../../../components/custom/CustomBadge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 // Debounce utility function
 function useDebounce(value, delay) {
@@ -367,12 +368,12 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-background rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
+        className="bg-background rounded shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-[70px]">
-          <div className="absolute top-0 right-0 w-[120px] h-[120px] bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
+        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-17.5">
+          <div className="absolute top-0 right-0 w-30 h-30 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Icon name="user-plus" size="22px" />
@@ -424,23 +425,25 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 )}
               </div>
 
-              <div className="border border-border rounded-xl bg-background">
+              <div className="border border-border rounded bg-background">
                 {/* Search and Filter */}
                 <div className="p-3 border-b border-border bg-muted/30">
                   <div className="flex gap-2">
                     {/* Search Input */}
                     <div className="relative flex-1">
-                      <Icon
-                        name="search"
-                        size="14px"
-                        className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-                      />
-                      <input
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                        <Icon
+                          name="search"
+                          size="14px"
+                          className="text-muted-foreground"
+                        />
+                      </div>
+                      <Input
                         type="text"
                         placeholder="Search users..."
                         value={usersSearchTerm}
                         onChange={(e) => handleUserSearch(e.target.value)}
-                        className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                        className="pl-8"
                       />
                     </div>
                   </div>
@@ -512,21 +515,23 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
                 )}
               </div>
 
-              <div className="border border-border rounded-xl overflow-hidden bg-background">
+              <div className="border border-border rounded overflow-hidden bg-background">
                 {/* Search */}
                 <div className="p-3 border-b border-border bg-muted/30">
                   <div className="relative">
-                    <Icon
-                      name="search"
-                      size="14px"
-                      className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-muted-foreground"
-                    />
-                    <input
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                      <Icon
+                        name="search"
+                        size="14px"
+                        className="text-muted-foreground"
+                      />
+                    </div>
+                    <Input
                       type="text"
                       placeholder="Search frameworks..."
                       value={frameworksSearchTerm}
                       onChange={(e) => handleFrameworkSearch(e.target.value)}
-                      className="w-full pl-8 pr-3 py-1.5 border border-border rounded-lg bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm"
+                      className="pl-8"
                     />
                   </div>
                 </div>
@@ -590,7 +595,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
             onClick={onClose}
             type="button"
             variant="outline"
-            className="flex-1 rounded-lg"
+            className="flex-1 rounded"
           >
             Cancel
           </Button>

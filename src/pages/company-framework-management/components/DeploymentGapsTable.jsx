@@ -1,7 +1,7 @@
 // src/pages/CompanyFramework/components/DeploymentGapsTable.jsx
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   FiChevronDown,
   FiChevronUp,

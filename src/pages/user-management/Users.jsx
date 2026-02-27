@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import DataTable from "../../components/data-table/DataTable";
 import UserModal from "./components/UserModal";
 import DeleteUserModal from "./components/DeleteUserModal";

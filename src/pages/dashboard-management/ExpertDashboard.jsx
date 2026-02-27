@@ -5,7 +5,7 @@ import Icon from "../../components/Icon";
 import { formatDate } from "../../utils/dateFormatter";
 import { Link } from "react-router-dom";
 import { getExpertDashboardAnalytics } from "../../services/dashboardService";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function ExpertDashboard() {
   const [loading, setLoading] = useState(true);

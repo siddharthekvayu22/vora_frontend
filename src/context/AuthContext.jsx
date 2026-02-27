@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { logoutApi } from "../services/authService";
 import { resetUnauthorizedFlag } from "../services/apiService";
 

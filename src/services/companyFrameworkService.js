@@ -142,6 +142,27 @@ export function compareFrameworks(companyControlsJobId, officialControlsJobId) {
   );
 }
 
+/**
+ * Analyze deployment gap between company and official framework
+ */
+export function analyzeDeploymentGap(
+  companyControlsJobId,
+  officialControlsJobId,
+) {
+  const params = new URLSearchParams({
+    companyControlsJobId,
+    officialControlsJobId,
+  });
+
+  return apiRequest(
+    `/company-frameworks/frameworks/deployment-gap?${params.toString()}`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
 export default {
   getCompanyFrameworkById,
   getAllCompanyFrameworks,
@@ -152,4 +173,5 @@ export default {
   deleteCompanyFrameworkVersion,
   uploadCompanyFrameworkToAi,
   compareFrameworks,
+  analyzeDeploymentGap,
 };

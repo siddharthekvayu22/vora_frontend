@@ -4,7 +4,10 @@ import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getAllOfficialFrameworks } from "../../../services/officialFrameworkService";
-import { compareFrameworks } from "../../../services/companyFrameworkService";
+import {
+  compareFrameworks,
+  analyzeDeploymentGap,
+} from "../../../services/companyFrameworkService";
 import { cn } from "@/lib/utils";
 
 // Debounce utility function
@@ -25,10 +28,42 @@ export default function CompareFrameworkModal({
   onClose,
   onSuccess,
   companyFramework,
+  mode = "compare", // "compare" or "deploymentGap"
 }) {
   const [officialFrameworks, setOfficialFrameworks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [comparing, setComparing] = useState(false);
+
+  // Dynamic content based on mode
+  const isDeploymentGap = mode === "deploymentGap";
+  const actionText = isDeploymentGap ? "Analyze" : "Compare";
+  const actioningText = isDeploymentGap ? "Analyzing" : "Comparing";
+  const actionedText = isDeploymentGap ? "analyzed" : "compared";
+  const headerTitle = isDeploymentGap
+    ? "Deployment Gap Analysis"
+    : "Compare Framework";
+  const headerIcon = isDeploymentGap ? "activity" : "shield-check";
+  const headerBgColor = isDeploymentGap
+    ? "from-secondary to-secondary/80"
+    : "from-primary to-primary/80";
+  const buttonText = isDeploymentGap
+    ? "Analyze Deployment Gap"
+    : "Compare Frameworks";
+  const buttonIcon = isDeploymentGap ? "activity" : "shield-check";
+  const buttonBgColor = isDeploymentGap
+    ? "bg-secondary hover:bg-secondary/90"
+    : "";
+  const selectBorderColor = isDeploymentGap
+    ? "border-secondary"
+    : "border-primary";
+  const selectBgColor = isDeploymentGap ? "bg-secondary/5" : "bg-primary/5";
+  const selectHoverColor = isDeploymentGap
+    ? "hover:border-secondary/50"
+    : "hover:border-primary/50";
+  const selectCheckBg = isDeploymentGap ? "bg-secondary" : "bg-primary";
+  const selectBadgeBg = isDeploymentGap
+    ? "bg-secondary/15 text-secondary"
+    : "bg-secondary/15 text-secondary";
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [selectedFramework, setSelectedFramework] = useState(null);
@@ -86,7 +121,9 @@ export default function CompareFrameworkModal({
 
   const handleCompare = async () => {
     if (!selectedFramework) {
-      toast.error("Please select an official framework to compare");
+      toast.error(
+        `Please select an official framework to ${actionText.toLowerCase()}`,
+      );
       return;
     }
 
@@ -102,14 +139,22 @@ export default function CompareFrameworkModal({
 
     try {
       setComparing(true);
-      const response = await compareFrameworks(
-        companyFramework.aiUpload.job_id,
-        selectedFramework.aiUpload.job_id,
-      );
+
+      // Call appropriate API based on mode
+      const response = isDeploymentGap
+        ? await analyzeDeploymentGap(
+            companyFramework.aiUpload.job_id,
+            selectedFramework.aiUpload.job_id,
+          )
+        : await compareFrameworks(
+            companyFramework.aiUpload.job_id,
+            selectedFramework.aiUpload.job_id,
+          );
 
       if (response.success) {
         toast.success(
-          response.message || "Framework comparison started successfully",
+          response.message ||
+            `Framework ${actionText.toLowerCase()} started successfully`,
         );
 
         // Call onSuccess if provided, otherwise call handleClose
@@ -120,7 +165,9 @@ export default function CompareFrameworkModal({
         }
       }
     } catch (error) {
-      toast.error(error.message || "Failed to start comparison");
+      toast.error(
+        error.message || `Failed to start ${actionText.toLowerCase()}`,
+      );
     } finally {
       setComparing(false);
     }
@@ -145,18 +192,20 @@ export default function CompareFrameworkModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20">
+        <div
+          className={`bg-linear-to-br ${headerBgColor} text-white p-6 relative overflow-hidden min-h-20`}
+        >
           <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
           <div className="relative z-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Icon name="shield-check" size="24px" />
+              <Icon name={headerIcon} size="24px" />
               <div>
                 <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                  Compare Framework
+                  {headerTitle}
                 </h2>
                 <p className="text-xs text-white/80 mt-0.5">
-                  Select an official framework to compare with{" "}
-                  {companyFramework?.frameworkName}
+                  Select an official framework to {actionText.toLowerCase()}{" "}
+                  with {companyFramework?.frameworkName}
                 </p>
               </div>
             </div>
@@ -242,9 +291,9 @@ export default function CompareFrameworkModal({
                     className={cn(
                       "p-3 w-full cursor-pointer rounded border-2 transition-all",
                       isSelected
-                        ? "border-primary bg-primary/5 shadow-sm"
+                        ? `${selectBorderColor} ${selectBgColor} shadow-sm`
                         : canCompare
-                          ? "border-border hover:border-primary/50 hover:bg-muted/50 cursor-pointer"
+                          ? `border-border ${selectHoverColor} hover:bg-muted/50 cursor-pointer`
                           : "border-border bg-muted/30 cursor-not-allowed opacity-60",
                     )}
                     disabled={!canCompare}
@@ -302,7 +351,9 @@ export default function CompareFrameworkModal({
                       </div>
                       {isSelected && (
                         <div className="shrink-0">
-                          <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <div
+                            className={`w-5 h-5 rounded-full ${selectCheckBg} flex items-center justify-center`}
+                          >
                             <Icon
                               name="check"
                               size="14px"
@@ -367,17 +418,17 @@ export default function CompareFrameworkModal({
           <Button
             onClick={handleCompare}
             disabled={!selectedFramework || comparing}
-            className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            className={`flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed ${buttonBgColor}`}
           >
             {comparing ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Comparing...
+                {actioningText}...
               </>
             ) : (
               <>
-                <Icon name="shield-check" size="16px" />
-                Compare Frameworks
+                <Icon name={buttonIcon} size="16px" />
+                {buttonText}
               </>
             )}
           </Button>

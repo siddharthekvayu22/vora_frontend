@@ -433,7 +433,7 @@ function CompanyFrameworkDetail() {
               </div>
               <div className="flex items-center gap-3">
                 <Button onClick={() => setUpdateModalOpen(true)}>
-                  <FiEdit size={16} /> Update
+                  <FiEdit size={16} /> Update Framework
                 </Button>
                 <Button
                   onClick={() => navigate(-1)}

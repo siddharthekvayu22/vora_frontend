@@ -165,16 +165,28 @@ function Sidebar() {
     }
   }, [location.pathname]);
 
+  // Function to check if a path is active (including child routes)
   const isActive = (path) => {
     if (!path) return false;
-    return path === "/dashboard"
-      ? location.pathname === "/" || location.pathname === "/dashboard"
-      : location.pathname === path;
+
+    // Special case for dashboard
+    if (path === "/dashboard") {
+      return location.pathname === "/" || location.pathname === "/dashboard";
+    }
+
+    // Check if current path starts with the menu item path
+    // This ensures parent menu shows active for child routes
+    return location.pathname.startsWith(path);
   };
 
+  // Check if parent or any of its children are active
   const isParentActive = (item) => {
-    if (item.path) return isActive(item.path);
+    if (item.path) {
+      // For items with direct path, check if current path starts with it
+      return isActive(item.path);
+    }
     if (item.children) {
+      // For parent items, check if any child is active
       return item.children.some((child) => isActive(child.path));
     }
     return false;

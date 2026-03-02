@@ -175,7 +175,7 @@ function OfficialFramework() {
     },
     {
       key: "aiUpload",
-      label: "Ai Status",
+      label: "Ai Extraction",
       sortable: false,
       render: (value, row) => <AiUploadStatusCard aiUpload={row.aiUpload} />,
     },

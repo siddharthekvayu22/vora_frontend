@@ -34,7 +34,6 @@ function OfficialFramework() {
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
 
@@ -77,7 +76,6 @@ function OfficialFramework() {
 
   const handleDeleteFramework = (framework) => {
     setFrameworkToDelete(framework);
-    setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -87,7 +85,6 @@ function OfficialFramework() {
       const result = await deleteOfficialFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
       refetch();
-      setDeleteModalOpen(false);
       setFrameworkToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
@@ -97,7 +94,6 @@ function OfficialFramework() {
   };
 
   const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
     setFrameworkToDelete(null);
   };
 
@@ -183,7 +179,7 @@ function OfficialFramework() {
       key: "uploadedBy",
       label: "Uploaded By",
       sortable: false,
-      render: (value, row) => {
+      render: (value) => {
         return (
           <UserMiniCard name={value.name} email={value.email} icon="user" />
         );
@@ -399,13 +395,11 @@ function OfficialFramework() {
       />
 
       {/* Delete Framework Modal */}
-      {deleteModalOpen && frameworkToDelete && (
-        <DeleteOfficialFrameworkModal
-          framework={frameworkToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteOfficialFrameworkModal
+        framework={frameworkToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 }

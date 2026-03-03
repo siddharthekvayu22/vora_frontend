@@ -148,11 +148,9 @@ export default function UploadCompanyFrameworkModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-150 max-h-[90vh]">
+      <DialogContent className="lg:max-w-150 max-h-[90vh]">
         <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="upload" size="24px" />

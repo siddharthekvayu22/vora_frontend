@@ -35,7 +35,6 @@ function CompanyFramework() {
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [frameworkToDelete, setFrameworkToDelete] = useState(null);
   const [frameworkToUpdate, setFrameworkToUpdate] = useState(null);
 
@@ -82,7 +81,6 @@ function CompanyFramework() {
 
   const handleDeleteFramework = (framework) => {
     setFrameworkToDelete(framework);
-    setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -92,7 +90,6 @@ function CompanyFramework() {
       const result = await deleteCompanyFramework(fileId);
       toast.success(result.message || "Framework deleted successfully");
       refetch();
-      setDeleteModalOpen(false);
       setFrameworkToDelete(null);
     } catch (error) {
       console.error("Delete error:", error);
@@ -102,7 +99,6 @@ function CompanyFramework() {
   };
 
   const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
     setFrameworkToDelete(null);
   };
 
@@ -178,7 +174,7 @@ function CompanyFramework() {
       key: "requestReview",
       label: "Request",
       sortable: false,
-      render: (value, row) => {
+      render: (value) => {
         const statusColors = {
           pending: "yellow",
           requested: "yellow",
@@ -210,7 +206,7 @@ function CompanyFramework() {
       key: "uploadedBy",
       label: "Uploaded By",
       sortable: false,
-      render: (value, row) => {
+      render: (value) => {
         return (
           <UserMiniCard name={value.name} email={value.email} icon="user" />
         );
@@ -476,13 +472,11 @@ function CompanyFramework() {
         framework={frameworkToUpdate}
       />
 
-      {deleteModalOpen && frameworkToDelete && (
-        <DeleteCompanyFrameworkModal
-          framework={frameworkToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteCompanyFrameworkModal
+        framework={frameworkToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Icon from "../../components/Icon";
@@ -113,22 +113,45 @@ function OfficialFrameworkDetail() {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPolling, setIsPolling] = useState(false);
-  const [uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [_uploadingToAi, setUploadingToAi] = useState(new Set()); // Changed to Set to track multiple uploads
   const [versionToDelete, setVersionToDelete] = useState(null);
-  const [approveModalOpen, setApproveModalOpen] = useState(false);
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
-  const [editControlModalOpen, setEditControlModalOpen] = useState(false);
   const [controlToEdit, setControlToEdit] = useState(null);
-  const [deleteControlModalOpen, setDeleteControlModalOpen] = useState(false);
   const [controlToDelete, setControlToDelete] = useState(null);
+
+  // Define fetchFrameworkDetails before useEffects
+  const fetchFrameworkDetails = useCallback(
+    async (isBackgroundRefresh = false) => {
+      try {
+        if (!isBackgroundRefresh) {
+          setLoading(true);
+        } else {
+          setIsPolling(true);
+        }
+        const response = await getOfficialFrameworkById(id);
+        if (response.success) {
+          setFramework(response.data.framework);
+        }
+      } catch (error) {
+        if (!isBackgroundRefresh) {
+          toast.error(error.message || "Failed to fetch framework details");
+          navigate("/official-frameworks");
+        }
+      } finally {
+        setLoading(false);
+        setIsPolling(false);
+      }
+    },
+    [id, navigate],
+  );
 
   useEffect(() => {
     fetchFrameworkDetails(false);
-  }, [id]);
+  }, [fetchFrameworkDetails]);
 
   // Set all versions as expanded by default when framework loads
   useEffect(() => {
@@ -137,9 +160,12 @@ function OfficialFrameworkDetail() {
         new Set(framework.fileVersions.map((v) => v.version)),
       );
     }
-  }, [framework?.fileVersions?.length]);
+  }, [framework?.fileVersions]);
 
   // Polling effect for AI status updates with exponential backoff
+  // Extract AI upload status for dependency tracking
+  const aiUploadStatus = framework?.fileVersions?.[0]?.aiUpload?.status;
+
   useEffect(() => {
     // Check if user is on detail page (path should be /official-frameworks/:id)
     const isOnDetailPage = window.location.pathname.includes(
@@ -201,29 +227,7 @@ function OfficialFrameworkDetail() {
         clearTimeout(timeoutId);
       }
     };
-  }, [framework?.fileVersions?.[0]?.aiUpload?.status, id]);
-
-  const fetchFrameworkDetails = async (isBackgroundRefresh = false) => {
-    try {
-      if (!isBackgroundRefresh) {
-        setLoading(true);
-      } else {
-        setIsPolling(true);
-      }
-      const response = await getOfficialFrameworkById(id);
-      if (response.success) {
-        setFramework(response.data.framework);
-      }
-    } catch (error) {
-      if (!isBackgroundRefresh) {
-        toast.error(error.message || "Failed to fetch framework details");
-        navigate("/official-frameworks");
-      }
-    } finally {
-      setLoading(false);
-      setIsPolling(false);
-    }
-  };
+  }, [aiUploadStatus, id, fetchFrameworkDetails, framework?.fileVersions]);
 
   const handleDownload = async (fileId, fileName) => {
     try {
@@ -257,7 +261,6 @@ function OfficialFrameworkDetail() {
 
   const handleDeleteVersion = (version) => {
     setVersionToDelete(version);
-    setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -271,7 +274,6 @@ function OfficialFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Version deleted successfully");
         fetchFrameworkDetails();
-        setDeleteModalOpen(false);
         setVersionToDelete(null);
       }
     } catch (error) {
@@ -281,12 +283,11 @@ function OfficialFrameworkDetail() {
   };
 
   const handleDeleteCancel = () => {
-    setDeleteModalOpen(false);
     setVersionToDelete(null);
   };
 
   const handleApprove = () => {
-    setApproveModalOpen(true);
+    setShowApproveModal(true);
   };
 
   const handleApproveConfirm = async () => {
@@ -295,7 +296,7 @@ function OfficialFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Framework approved successfully");
         fetchFrameworkDetails();
-        setApproveModalOpen(false);
+        setShowApproveModal(false);
       }
     } catch (error) {
       toast.error(error.message || "Failed to approve framework");
@@ -304,11 +305,11 @@ function OfficialFrameworkDetail() {
   };
 
   const handleApproveCancel = () => {
-    setApproveModalOpen(false);
+    setShowApproveModal(false);
   };
 
   const handleReject = () => {
-    setRejectModalOpen(true);
+    setShowRejectModal(true);
   };
 
   const handleRejectConfirm = async (rejectionReason) => {
@@ -320,7 +321,7 @@ function OfficialFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Framework rejected successfully");
         fetchFrameworkDetails();
-        setRejectModalOpen(false);
+        setShowRejectModal(false);
       }
     } catch (error) {
       toast.error(error.message || "Failed to reject framework");
@@ -329,7 +330,7 @@ function OfficialFrameworkDetail() {
   };
 
   const handleRejectCancel = () => {
-    setRejectModalOpen(false);
+    setShowRejectModal(false);
   };
 
   const handleUpdate = () => {
@@ -363,7 +364,6 @@ function OfficialFrameworkDetail() {
 
   const handleEditControl = (control) => {
     setControlToEdit(control);
-    setEditControlModalOpen(true);
   };
 
   const handleEditControlSave = async (updatedControl) => {
@@ -383,7 +383,6 @@ function OfficialFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Control updated successfully");
         fetchFrameworkDetails();
-        setEditControlModalOpen(false);
         setControlToEdit(null);
       }
     } catch (error) {
@@ -393,13 +392,11 @@ function OfficialFrameworkDetail() {
   };
 
   const handleEditControlCancel = () => {
-    setEditControlModalOpen(false);
     setControlToEdit(null);
   };
 
   const handleDeleteControl = (control) => {
     setControlToDelete(control);
-    setDeleteControlModalOpen(true);
   };
 
   const handleDeleteControlConfirm = async () => {
@@ -415,7 +412,6 @@ function OfficialFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Control deleted successfully");
         fetchFrameworkDetails();
-        setDeleteControlModalOpen(false);
         setControlToDelete(null);
       }
     } catch (error) {
@@ -425,7 +421,6 @@ function OfficialFrameworkDetail() {
   };
 
   const handleDeleteControlCancel = () => {
-    setDeleteControlModalOpen(false);
     setControlToDelete(null);
   };
 
@@ -444,7 +439,7 @@ function OfficialFrameworkDetail() {
 
   if (!framework) return null;
 
-  const currentVersionData = framework.fileVersions?.find(
+  const _currentVersionData = framework.fileVersions?.find(
     (v) => v.version === framework.currentVersion,
   );
 
@@ -1289,16 +1284,14 @@ function OfficialFrameworkDetail() {
       </div>
 
       {/* Delete Version Modal */}
-      {deleteModalOpen && versionToDelete && (
-        <DeleteVersionModal
-          version={versionToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteVersionModal
+        version={versionToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
 
       {/* Approve Framework Modal */}
-      {approveModalOpen && (
+      {showApproveModal && framework && (
         <ApproveFrameworkModal
           framework={framework}
           onConfirm={handleApproveConfirm}
@@ -1307,7 +1300,7 @@ function OfficialFrameworkDetail() {
       )}
 
       {/* Reject Framework Modal */}
-      {rejectModalOpen && (
+      {showRejectModal && framework && (
         <RejectFrameworkModal
           framework={framework}
           onConfirm={handleRejectConfirm}
@@ -1316,32 +1309,26 @@ function OfficialFrameworkDetail() {
       )}
 
       {/* Update Framework Modal */}
-      {updateModalOpen && (
-        <UpdateFrameworkModal
-          isOpen={updateModalOpen}
-          onClose={handleUpdateCancel}
-          onSuccess={handleUpdateSuccess}
-          framework={framework}
-        />
-      )}
+      <UpdateFrameworkModal
+        isOpen={updateModalOpen}
+        onClose={handleUpdateCancel}
+        onSuccess={handleUpdateSuccess}
+        framework={framework}
+      />
 
       {/* Edit Control Modal */}
-      {editControlModalOpen && controlToEdit && (
-        <EditControlModal
-          control={controlToEdit}
-          onSave={handleEditControlSave}
-          onCancel={handleEditControlCancel}
-        />
-      )}
+      <EditControlModal
+        control={controlToEdit}
+        onSave={handleEditControlSave}
+        onCancel={handleEditControlCancel}
+      />
 
       {/* Delete Control Modal */}
-      {deleteControlModalOpen && controlToDelete && (
-        <DeleteControlModal
-          control={controlToDelete}
-          onConfirm={handleDeleteControlConfirm}
-          onCancel={handleDeleteControlCancel}
-        />
-      )}
+      <DeleteControlModal
+        control={controlToDelete}
+        onConfirm={handleDeleteControlConfirm}
+        onCancel={handleDeleteControlCancel}
+      />
     </div>
   );
 }

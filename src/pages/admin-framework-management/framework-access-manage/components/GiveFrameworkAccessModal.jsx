@@ -39,10 +39,15 @@ function useDebounce(value, delay) {
  * GiveFrameworkAccessModal Component - Allows admin to assign framework access to users
  * Features two side-by-side tables for user and framework selection
  *
+ * @param {boolean} isOpen - Controls modal visibility
  * @param {Function} onSuccess - Success handler after assignment
  * @param {Function} onClose - Close handler
  */
-export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
+export default function GiveFrameworkAccessModal({
+  isOpen,
+  onSuccess,
+  onClose,
+}) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState(null);
   const [assigning, setAssigning] = useState(false);
@@ -59,7 +64,7 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     hasNextPage: false,
   });
   const [usersSearchTerm, setUsersSearchTerm] = useState("");
-  const [usersRoleFilter, setUsersRoleFilter] = useState("expert"); // Default to expert role
+  const usersRoleFilter = "expert"; // Filter to expert role only
   const [frameworksSearchTerm, setFrameworksSearchTerm] = useState("");
 
   // Debounced search terms to reduce API calls
@@ -198,11 +203,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
     setUsersPagination((p) => ({ ...p, currentPage: 1 }));
   };
 
-  const handleUserRoleFilter = (role) => {
-    setUsersRoleFilter(role);
-    setUsersPagination((p) => ({ ...p, currentPage: 1 }));
-  };
-
   const handleFrameworkSearch = (term) => {
     setFrameworksSearchTerm(term);
     setFrameworksPagination((p) => ({ ...p, currentPage: 1 }));
@@ -239,20 +239,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
       toast.error(err.message || "Failed to assign framework access");
     } finally {
       setAssigning(false);
-    }
-  };
-
-  /* ---------------- RENDER HELPERS ---------------- */
-  const getRoleStyle = (role) => {
-    switch (role?.toLowerCase()) {
-      case "admin":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
-      case "expert":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
-      case "company":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
     }
   };
 
@@ -371,11 +357,8 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
   /* ---------------- UI ---------------- */
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent
-        showCloseButton={false}
-        className="overflow-hidden lg:max-w-6xl"
-      >
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="lg:max-w-6xl">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="user-plus" size="24px" />
@@ -388,14 +371,6 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
               </DialogDescription>
             </div>
           </div>
-          <Button
-            size="icon"
-            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-            onClick={onClose}
-            title="Close"
-          >
-            <Icon name="x" size="20px" />
-          </Button>
         </DialogHeader>
 
         <div className="p-4 overflow-y-auto max-h-[calc(90vh-160px)]">

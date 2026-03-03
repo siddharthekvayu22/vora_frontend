@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { toast } from "sonner";
 import { formatDate } from "../../utils/dateFormatter";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
@@ -196,15 +195,11 @@ function OfficialFrameworkAccess() {
       />
 
       {/* Request Access Modal */}
-      {requestModalState.isOpen && (
-        <RequestAccessModal
-          framework={requestModalState.framework}
-          onSuccess={handleRequestAccessSuccess}
-          onClose={() =>
-            setRequestModalState({ isOpen: false, framework: null })
-          }
-        />
-      )}
+      <RequestAccessModal
+        framework={requestModalState.framework}
+        onSuccess={handleRequestAccessSuccess}
+        onClose={() => setRequestModalState({ isOpen: false, framework: null })}
+      />
     </div>
   );
 }

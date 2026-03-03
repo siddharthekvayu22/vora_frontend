@@ -67,7 +67,7 @@ export default function RequestAccessModal({ framework, onSuccess, onClose }) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent showCloseButton={false} className="overflow-hidden">
+      <DialogContent>
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="send" size="24px" />

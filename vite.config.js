@@ -16,6 +16,20 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 5000, // 5 MB
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Show all warnings
+        warn(warning);
+      },
+    },
+    // Fail build on errors
+    minify: "esbuild",
+    sourcemap: false,
+  },
+  esbuild: {
+    // Log all errors and warnings
+    logLevel: "error",
+    logLimit: 0,
   },
   server: {
     host: true, // or use '0.0.0.0' to expose on all network interfaces

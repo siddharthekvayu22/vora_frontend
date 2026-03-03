@@ -192,8 +192,8 @@ export default function RequestReviewModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh]">
-        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
+      <DialogContent className="lg:max-w-2xl max-h-[90vh]">
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-2">
             <Icon name="user-check" size="22px" />
             <div>
@@ -204,13 +204,13 @@ export default function RequestReviewModal({
                 Select an expert to review: {frameworkName}
               </p>
             </div>
+            <DialogDescription className="sr-only">
+              Select an expert to review the framework
+            </DialogDescription>
           </div>
-          <DialogDescription className="sr-only">
-            Select an expert to review the framework
-          </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 p-3 overflow-y-auto max-h-[calc(90vh-200px)]">
+        <div className="flex flex-col gap-2 p-3 overflow-y-auto max-h-[calc(90vh-200px)]">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
               <Icon

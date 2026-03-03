@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { toast } from "sonner";
 import Icon from "../../components/Icon";
 import DataTable from "../../components/data-table/DataTable";
 import { getOfficialFrameworkCategory } from "../../services/officialFrameworkService";
@@ -93,9 +92,7 @@ function OfficialFrameworkCategory() {
       key: "createdBy",
       label: "Created By",
       sortable: false,
-      render: (value, row) => (
-        <UserMiniCard name={value.name} email={value.email} />
-      ),
+      render: (value) => <UserMiniCard name={value.name} email={value.email} />,
     },
     {
       key: "createdAt",
@@ -155,15 +152,11 @@ function OfficialFrameworkCategory() {
       />
 
       {/* Request Access Modal */}
-      {requestModalState.isOpen && (
-        <RequestAccessModal
-          framework={requestModalState.framework}
-          onSuccess={handleRequestAccessSuccess}
-          onClose={() =>
-            setRequestModalState({ isOpen: false, framework: null })
-          }
-        />
-      )}
+      <RequestAccessModal
+        framework={requestModalState.framework}
+        onSuccess={handleRequestAccessSuccess}
+        onClose={() => setRequestModalState({ isOpen: false, framework: null })}
+      />
     </div>
   );
 }

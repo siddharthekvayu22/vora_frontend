@@ -410,51 +410,40 @@ function FrameworkAccess() {
         emptyMessage={emptyMessage}
       />
 
-      {viewModalState.isOpen && (
-        <AccessViewModal
-          accessRecord={viewModalState.accessRecord}
-          onClose={() =>
-            setViewModalState({ isOpen: false, accessRecord: null })
-          }
-        />
-      )}
+      <AccessViewModal
+        accessRecord={viewModalState.accessRecord}
+        onClose={() => setViewModalState({ isOpen: false, accessRecord: null })}
+      />
 
-      {approveModalState.isOpen && (
-        <ApproveAccessModal
-          accessRecord={approveModalState.accessRecord}
-          onConfirm={handleApproveAccess}
-          onCancel={() =>
-            setApproveModalState({ isOpen: false, accessRecord: null })
-          }
-        />
-      )}
+      <ApproveAccessModal
+        accessRecord={approveModalState.accessRecord}
+        onConfirm={handleApproveAccess}
+        onCancel={() =>
+          setApproveModalState({ isOpen: false, accessRecord: null })
+        }
+      />
 
-      {rejectModalState.isOpen && (
-        <RejectAccessModal
-          accessRecord={rejectModalState.accessRecord}
-          onConfirm={handleRejectAccess}
-          onCancel={() =>
-            setRejectModalState({ isOpen: false, accessRecord: null })
-          }
-        />
-      )}
+      <RejectAccessModal
+        accessRecord={rejectModalState.accessRecord}
+        onConfirm={handleRejectAccess}
+        onCancel={() =>
+          setRejectModalState({ isOpen: false, accessRecord: null })
+        }
+      />
 
-      {revokeModalState.isOpen && (
-        <RevokeAccessModal
-          accessRecord={revokeModalState.accessRecord}
-          onConfirm={handleRevokeAccess}
-          onCancel={() =>
-            setRevokeModalState({ isOpen: false, accessRecord: null })
-          }
-        />
-      )}
+      <RevokeAccessModal
+        accessRecord={revokeModalState.accessRecord}
+        onConfirm={handleRevokeAccess}
+        onCancel={() =>
+          setRevokeModalState({ isOpen: false, accessRecord: null })
+        }
+      />
 
-      {giveAccessModalState.isOpen && (
-        <GiveFrameworkAccessModal
-          onSuccess={handleGiveAccessSuccess}
-          onClose={() => setGiveAccessModalState({ isOpen: false })}
-        />
-      )}
+      <GiveFrameworkAccessModal
+        isOpen={giveAccessModalState.isOpen}
+        onSuccess={handleGiveAccessSuccess}
+        onClose={() => setGiveAccessModalState({ isOpen: false })}
+      />
     </div>
   );
 }

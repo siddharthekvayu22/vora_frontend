@@ -304,6 +304,3 @@ export default function Icon({
     />
   );
 }
-
-// Export the icon map for reference
-export { iconMap };

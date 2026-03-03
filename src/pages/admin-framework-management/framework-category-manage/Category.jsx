@@ -132,9 +132,7 @@ function Category() {
       key: "createdBy",
       label: "Created By",
       sortable: false,
-      render: (value, row) => (
-        <UserMiniCard name={value.name} email={value.email} />
-      ),
+      render: (value) => <UserMiniCard name={value.name} email={value.email} />,
     },
     {
       key: "createdAt",
@@ -204,26 +202,20 @@ function Category() {
         emptyMessage={emptyMessage}
       />
 
-      {modalState.isOpen && (
-        <CategoryModal
-          mode={modalState.mode}
-          category={modalState.category}
-          onSave={handleSaveCategory}
-          onClose={() =>
-            setModalState({ isOpen: false, mode: "create", category: null })
-          }
-        />
-      )}
+      <CategoryModal
+        mode={modalState.mode}
+        category={modalState.category}
+        onSave={handleSaveCategory}
+        onClose={() =>
+          setModalState({ isOpen: false, mode: "create", category: null })
+        }
+      />
 
-      {deleteModalState.isOpen && (
-        <DeleteCategoryModal
-          category={deleteModalState.category}
-          onConfirm={handleDeleteCategory}
-          onCancel={() =>
-            setDeleteModalState({ isOpen: false, category: null })
-          }
-        />
-      )}
+      <DeleteCategoryModal
+        category={deleteModalState.category}
+        onConfirm={handleDeleteCategory}
+        onCancel={() => setDeleteModalState({ isOpen: false, category: null })}
+      />
     </div>
   );
 }

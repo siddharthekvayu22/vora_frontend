@@ -842,11 +842,15 @@ function CompanyFrameworkDetail() {
                           (ver.deploymentGap?.status ===
                             "deployment_gap_completed" &&
                             ver.deploymentGap?.deployment_gaps
-                              ?.deployment_gap_results?.length > 0)) && (
+                              ?.deployment_gap_results?.length > 0)) &&
+                        (!framework.requestReview ||
+                          framework.requestReview.status !== "requested") && (
                           <Button
                             onClick={() => setRequestReviewModalOpen(true)}
                           >
-                            Request Review
+                            {framework.requestReview?.status === "rejected"
+                              ? "Re-request Review"
+                              : "Request Review"}
                           </Button>
                         )}
 

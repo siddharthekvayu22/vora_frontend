@@ -16,7 +16,8 @@ export function getAllCompanyFrameworks({
   search = "",
   sortBy = "createdAt",
   sortOrder = "desc",
-  status = "",
+  aiUploadStatus = "",
+  requestReviewStatus = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -24,7 +25,8 @@ export function getAllCompanyFrameworks({
     ...(search && { search }),
     ...(sortBy && { sortBy }),
     ...(sortOrder && { sortOrder }),
-    ...(status && { status }),
+    ...(aiUploadStatus && { aiUploadStatus }),
+    ...(requestReviewStatus && { requestReviewStatus }),
   });
 
   return apiRequest(

@@ -307,9 +307,64 @@ function CompanyFramework() {
 
     return (
       <>
-        {/* AI Upload Status Filter */}
+        {/* Request Review Status Filter */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-36 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+            >
+              {requestReviewStatusFilter
+                ? requestReviewStatusFilter === "pending"
+                  ? "Pending"
+                  : requestReviewStatusFilter === "requested"
+                    ? "Requested"
+                    : requestReviewStatusFilter === "approved"
+                      ? "Approved"
+                      : requestReviewStatusFilter === "rejected"
+                        ? "Rejected"
+                        : "Review Status"
+                : "Review Status"}
+              <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-36 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuItem
+              onClick={() => handleRequestReviewStatusFilter("")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              All Status
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleRequestReviewStatusFilter("pending")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Pending
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleRequestReviewStatusFilter("requested")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Requested
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleRequestReviewStatusFilter("approved")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Approved
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleRequestReviewStatusFilter("rejected")}
+              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+            >
+              Rejected
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         {user.role === "company" && (
           <>
+            {/* AI Upload Status Filter */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -369,62 +424,6 @@ function CompanyFramework() {
                   className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
                 >
                   Completed
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Request Review Status Filter */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-36 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
-                >
-                  {requestReviewStatusFilter
-                    ? requestReviewStatusFilter === "pending"
-                      ? "Pending"
-                      : requestReviewStatusFilter === "requested"
-                        ? "Requested"
-                        : requestReviewStatusFilter === "approved"
-                          ? "Approved"
-                          : requestReviewStatusFilter === "rejected"
-                            ? "Rejected"
-                            : "Review Status"
-                    : "Review Status"}
-                  <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-36 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
-                <DropdownMenuItem
-                  onClick={() => handleRequestReviewStatusFilter("")}
-                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-                >
-                  All Status
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleRequestReviewStatusFilter("pending")}
-                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-                >
-                  Pending
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleRequestReviewStatusFilter("requested")}
-                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-                >
-                  Requested
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleRequestReviewStatusFilter("approved")}
-                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-                >
-                  Approved
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => handleRequestReviewStatusFilter("rejected")}
-                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-                >
-                  Rejected
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

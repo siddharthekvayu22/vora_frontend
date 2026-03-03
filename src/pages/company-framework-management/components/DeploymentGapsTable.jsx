@@ -1,5 +1,11 @@
 // src/pages/CompanyFramework/components/DeploymentGapsTable.jsx
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -448,16 +454,46 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
           <span className="text-xs font-medium text-muted-foreground">
             Filter by status:
           </span>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 rounded text-sm border border-border bg-background"
-          >
-            <option value="all">All Controls</option>
-            <option value="implemented">Implemented</option>
-            <option value="partially implemented">Partially Implemented</option>
-            <option value="not implemented">Not Implemented</option>
-          </select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-2 w-40 flex items-center justify-between">
+                {filterStatus === "all"
+                  ? "All Controls"
+                  : filterStatus === "implemented"
+                    ? "Implemented"
+                    : filterStatus === "partially implemented"
+                      ? "Partially Implemented"
+                      : "Not Implemented"}
+                <FiChevronDown className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-0 w-40">
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("all")}
+                className="cursor-pointer text-xs"
+              >
+                All Controls
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Implemented
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("partially implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Partially Implemented
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("not implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Not Implemented
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex items-center gap-2">
           <button

@@ -5,6 +5,14 @@ import { AuthContext } from "../../../context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -17,16 +25,18 @@ import { Label } from "@/components/ui/label";
 /**
  * UserModal Component - Handles Create and Edit modes
  *
+ * @param {boolean} open - Dialog open state
+ * @param {Function} onOpenChange - Dialog open state change handler
  * @param {string} mode - 'create' | 'edit'
  * @param {Object} user - User data (for edit mode)
  * @param {Function} onSave - Save handler for create/edit
- * @param {Function} onClose - Close handler
  */
 export default function UserModal({
+  open,
+  onOpenChange,
   mode = "create",
   user = null,
   onSave,
-  onClose,
 }) {
   const { user: currentUser } = useContext(AuthContext);
 
@@ -130,6 +140,7 @@ export default function UserModal({
     setSaving(true);
     try {
       await onSave(formData);
+      onOpenChange(false);
     } catch (error) {
       console.error("Error saving user:", error);
       toast.error(error.message || "Failed to save user");
@@ -161,36 +172,31 @@ export default function UserModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-6 relative overflow-hidden min-h-20 rounded-t">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name={getIcon()} size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                {getTitle()}
-              </h2>
-            </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent showCloseButton={false} className="overflow-hidden">
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name={getIcon()} size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              {getTitle()}
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              {mode === "create"
+                ? "Fill in the form below to create a new user"
+                : "Update the user information in the form below"}
+            </DialogDescription>
           </div>
-        </div>
-
+          <Button
+            size="icon"
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={() => onOpenChange(false)}
+            title="Close"
+          >
+            <Icon name="x" size="20px" />
+          </Button>
+        </DialogHeader>
         <form onSubmit={handleSubmit}>
-          <div className="p-4 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 p-3">
             {/* Email Field */}
             <div className="space-y-1.5">
               <Label htmlFor="user-email">
@@ -269,7 +275,7 @@ export default function UserModal({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) border-border dark:border-gray-600 dark:bg-gray-800 z-10001"
+                  className="w-(--radix-dropdown-menu-trigger-width) border-border dark:border-gray-600 dark:bg-gray-800"
                   align="start"
                   sideOffset={4}
                 >
@@ -278,7 +284,7 @@ export default function UserModal({
                       key={option.value}
                       onClick={() => handleChange("role", option.value)}
                       className={cn(
-                        "cursor-pointer py-2.5 dark:focus:bg-gray-700 dark:focus:text-white",
+                        "cursor-pointer py-2 dark:focus:bg-gray-700 dark:focus:text-white",
                         formData.role === option.value &&
                           "bg-primary/10 text-primary font-medium",
                       )}
@@ -291,12 +297,12 @@ export default function UserModal({
             </div>
           </div>
 
-          <div className="flex gap-2 justify-end p-3 border-t border-border">
+          <DialogFooter className="pt-4 border-t border-border p-2">
             <Button
               type="button"
               variant="outline"
-              className="flex-1 px-4 py-2 font-semibold rounded bg-muted text-foreground border-2 border-border hover:bg-muted/80 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
+              className="flex-1"
+              onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
@@ -317,9 +323,9 @@ export default function UserModal({
                 </>
               )}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

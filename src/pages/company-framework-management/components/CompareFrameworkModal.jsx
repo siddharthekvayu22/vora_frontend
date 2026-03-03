@@ -9,6 +9,14 @@ import {
   analyzeDeploymentGap,
 } from "../../../services/companyFrameworkService";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Debounce utility function
 function debounce(func, wait) {
@@ -162,46 +170,30 @@ export default function CompareFrameworkModal({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={handleClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-175 w-[90%] max-h-[90vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 duration-300 border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name={headerIcon} size="24px" />
-              <div>
-                <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                  {headerTitle}
-                </h2>
-                <p className="text-xs text-white/80 mt-0.5">
-                  Select an official framework to {actionText.toLowerCase()}{" "}
-                  with {companyFramework?.frameworkName}
-                </p>
-              </div>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-175 max-h-[90vh] flex flex-col">
+        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name={headerIcon} size="24px" />
+            <div>
+              <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+                {headerTitle}
+              </DialogTitle>
+              <p className="text-xs text-white/80 mt-0.5">
+                Select an official framework to {actionText.toLowerCase()} with{" "}
+                {companyFramework?.frameworkName}
+              </p>
             </div>
-            <Button
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={handleClose}
-              disabled={comparing}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
           </div>
-        </div>
+          <DialogDescription className="sr-only">
+            Select an official framework to {actionText.toLowerCase()} with your
+            company framework
+          </DialogDescription>
+        </DialogHeader>
 
         {/* Search */}
-        <div className="px-4 py-3 border-b border-border bg-muted/30">
+        <div className="px-3 py-2 border-b border-border bg-muted/30">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <Icon
@@ -226,7 +218,7 @@ export default function CompareFrameworkModal({
         </div>
 
         {/* Framework List */}
-        <div className="flex-1 overflow-y-auto px-4 py-3 sidebar-scroll">
+        <div className="flex-1 overflow-y-auto px-3 py-2 sidebar-scroll">
           {loading ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-3">
@@ -350,7 +342,7 @@ export default function CompareFrameworkModal({
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
-          <div className="px-4 py-2 border-t border-border bg-muted/30">
+          <div className="px-3 py-2 border-t border-border bg-muted/30">
             <div className="flex items-center justify-between">
               <p className="text-xs text-muted-foreground">
                 Page {pagination.currentPage} of {pagination.totalPages} (
@@ -382,8 +374,7 @@ export default function CompareFrameworkModal({
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             type="button"
             variant="outline"
@@ -410,8 +401,8 @@ export default function CompareFrameworkModal({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

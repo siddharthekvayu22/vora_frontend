@@ -9,6 +9,14 @@ import {
 import CustomBadge from "../../../../components/custom/CustomBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 // Debounce utility function
 function useDebounce(value, delay) {
@@ -363,41 +371,33 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
 
   /* ---------------- UI ---------------- */
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent
+        showCloseButton={false}
+        className="overflow-hidden lg:max-w-6xl"
       >
-        {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-17.5">
-          <div className="absolute top-0 right-0 w-30 h-30 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Icon name="user-plus" size="22px" />
-              <div>
-                <h2 className="text-lg font-bold text-white drop-shadow-sm">
-                  Give Framework Access
-                </h2>
-                <p className="text-xs text-white/80">
-                  Select a user and framework category to assign access
-                </p>
-              </div>
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="user-plus" size="24px" />
+            <div>
+              <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+                Give Framework Access
+              </DialogTitle>
+              <DialogDescription className="text-xs text-white/80">
+                Select a user and framework category to assign access
+              </DialogDescription>
             </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
           </div>
-        </div>
+          <Button
+            size="icon"
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={onClose}
+            title="Close"
+          >
+            <Icon name="x" size="20px" />
+          </Button>
+        </DialogHeader>
 
-        {/* Content */}
         <div className="p-4 overflow-y-auto max-h-[calc(90vh-160px)]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Users Table */}
@@ -589,13 +589,12 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             onClick={onClose}
             type="button"
             variant="outline"
-            className="flex-1 rounded"
+            className="flex-1"
           >
             Cancel
           </Button>
@@ -616,8 +615,8 @@ export default function GiveFrameworkAccessModal({ onSuccess, onClose }) {
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

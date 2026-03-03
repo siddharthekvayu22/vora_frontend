@@ -6,6 +6,14 @@ import CustomBadge from "@/components/custom/CustomBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { requestExpertReview } from "@/services/companyFrameworkService";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -28,6 +36,7 @@ export default function RequestReviewModal({
   frameworkName,
   onSuccess,
   onClose,
+  isOpen,
 }) {
   const [selectedExpert, setSelectedExpert] = useState(null);
   const [requesting, setRequesting] = useState(false);
@@ -182,129 +191,110 @@ export default function RequestReviewModal({
   );
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden min-h-17.5">
-          <div className="absolute top-0 right-0 w-30 h-30 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Icon name="user-check" size="22px" />
-              <div>
-                <h2 className="text-lg font-bold text-white drop-shadow-sm">
-                  Request Expert Review
-                </h2>
-                <p className="text-xs text-white/80">
-                  Select an expert to review: {frameworkName}
-                </p>
-              </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh]">
+        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-2">
+            <Icon name="user-check" size="22px" />
+            <div>
+              <DialogTitle className="text-lg font-bold text-white drop-shadow-sm">
+                Request Expert Review
+              </DialogTitle>
+              <p className="text-xs text-white/80">
+                Select an expert to review: {frameworkName}
+              </p>
             </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
           </div>
-        </div>
+          <DialogDescription className="sr-only">
+            Select an expert to review the framework
+          </DialogDescription>
+        </DialogHeader>
 
-        {/* Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(90vh-160px)]">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
-                <Icon
-                  name="users"
-                  size="16px"
-                  className="text-purple-600 dark:text-purple-400"
-                />
-                Select Expert
-              </h3>
-              {selectedExpert && (
-                <span className="text-xs text-green-800 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
-                  Selected: {selectedExpert.name}
-                </span>
-              )}
-            </div>
+        <div className="flex flex-col gap-4 p-3 overflow-y-auto max-h-[calc(90vh-200px)]">
+          <div className="flex items-center justify-between">
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+              <Icon
+                name="users"
+                size="16px"
+                className="text-purple-600 dark:text-purple-400"
+              />
+              Select Expert
+            </h3>
+            {selectedExpert && (
+              <span className="text-xs text-green-800 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
+                Selected: {selectedExpert.name}
+              </span>
+            )}
+          </div>
 
-            <div className="border border-border rounded bg-background">
-              {/* Search */}
-              <div className="p-3 border-b border-border bg-muted/30">
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
-                    <Icon
-                      name="search"
-                      size="14px"
-                      className="text-muted-foreground"
-                    />
-                  </div>
-                  <Input
-                    type="text"
-                    placeholder="Search experts..."
-                    value={searchTerm}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="pl-8"
+          <div className="border border-border rounded bg-background">
+            {/* Search */}
+            <div className="p-3 border-b border-border bg-muted/30">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                  <Icon
+                    name="search"
+                    size="14px"
+                    className="text-muted-foreground"
                   />
                 </div>
+                <Input
+                  type="text"
+                  placeholder="Search experts..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="pl-8"
+                />
               </div>
-
-              {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-muted/80 border-b border-border">
-                    <tr>
-                      <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                        Expert
-                      </th>
-                      <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider pr-12">
-                        Role
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {loading ? (
-                      <tr>
-                        <td colSpan="2" className="px-3 py-6 text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                            <span className="text-muted-foreground text-sm">
-                              Loading experts...
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : experts.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan="2"
-                          className="px-3 py-6 text-center text-muted-foreground text-sm"
-                        >
-                          No experts found
-                        </td>
-                      </tr>
-                    ) : (
-                      experts.map(renderExpertRow)
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination */}
-              {!loading && experts.length > 0 && renderPagination()}
             </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-muted/80 border-b border-border">
+                  <tr>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      Expert
+                    </th>
+                    <th className="px-3 py-2 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider pr-12">
+                      Role
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {loading ? (
+                    <tr>
+                      <td colSpan="2" className="px-3 py-6 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                          <span className="text-muted-foreground text-sm">
+                            Loading experts...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : experts.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan="2"
+                        className="px-3 py-6 text-center text-muted-foreground text-sm"
+                      >
+                        No experts found
+                      </td>
+                    </tr>
+                  ) : (
+                    experts.map(renderExpertRow)
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {!loading && experts.length > 0 && renderPagination()}
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             onClick={onClose}
             type="button"
@@ -330,8 +320,8 @@ export default function RequestReviewModal({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

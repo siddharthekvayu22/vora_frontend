@@ -17,6 +17,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 /**
  * Upload Framework Modal Component
@@ -237,37 +245,32 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={handleClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-150 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent
+        showCloseButton={false}
+        className="overflow-hidden max-w-150"
       >
-        {/* Header */}
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="upload" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Upload Framework
-              </h2>
-            </div>
-            <Button
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={handleClose}
-              disabled={saving}
-              title="Close"
-            >
-              <Icon name="close" size="20px" />
-            </Button>
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="upload" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Upload Framework
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Upload a new framework file for approved categories
+            </DialogDescription>
           </div>
-        </div>
+          <Button
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={handleClose}
+            disabled={saving}
+            title="Close"
+          >
+            <Icon name="close" size="20px" />
+          </Button>
+        </DialogHeader>
 
-        {/* Content */}
-        <div className="p-4">
+        <div className="p-3 overflow-y-auto max-h-[calc(90vh-160px)]">
           {loadingCategories ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center gap-3">
@@ -408,7 +411,7 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                     <Label
                       htmlFor="framework-file"
                       className={cn(
-                        "flex items-center justify-center w-full px-4 py-8 border-2 border-dashed rounded cursor-pointer transition-colors hover:bg-accent/50",
+                        "flex items-center justify-center w-full px-4 py-2 border-2 border-dashed rounded cursor-pointer transition-colors hover:bg-accent/50",
                         errors.file ? "border-red-500" : "border-border",
                       )}
                     >
@@ -471,13 +474,12 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
           )}
         </div>
 
-        {/* Footer */}
         {!loadingCategories && approvedCategories.length > 0 && (
-          <div className="flex gap-2 justify-end p-3 border-t border-border">
+          <DialogFooter className="pt-4 border-t border-border p-2">
             <Button
               type="button"
               variant="outline"
-              className="flex-1 rounded"
+              className="flex-1"
               onClick={handleClose}
               disabled={saving}
             >
@@ -500,9 +502,9 @@ export default function UploadFrameworkModal({ isOpen, onClose, onSuccess }) {
                 </>
               )}
             </Button>
-          </div>
+          </DialogFooter>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

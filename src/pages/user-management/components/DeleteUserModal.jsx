@@ -1,21 +1,36 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 /**
  * DeleteUserModal Component - Confirmation dialog for deleting a user
  *
+ * @param {boolean} open - Dialog open state
+ * @param {Function} onOpenChange - Dialog open state change handler
  * @param {Object} user - User to delete
- * @param {Function} onConfirm - Confirm delete handler (receives method parameter)
- * @param {Function} onCancel - Cancel handler
+ * @param {Function} onConfirm - Confirm delete handler
  */
-export default function DeleteUserModal({ user, onConfirm, onCancel }) {
+export default function DeleteUserModal({
+  open,
+  onOpenChange,
+  user,
+  onConfirm,
+}) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
     setDeleting(true);
     try {
       await onConfirm();
+      onOpenChange(false);
     } catch (error) {
       console.error("Error deleting user:", error);
     } finally {
@@ -23,42 +38,35 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
     }
   };
 
-  return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] animate-in slide-in-from-bottom-5 duration-300 border border-border overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="warning" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete User
-              </h2>
-            </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onCancel}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
-          </div>
-        </div>
+  if (!user) return null;
 
-        <div className="p-6">
-          <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent showCloseButton={false} className="overflow-hidden">
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="warning" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Delete User
+            </DialogTitle>
+          </div>
+          <Button
+            size="icon"
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={() => onOpenChange(false)}
+            title="Close"
+          >
+            <Icon name="x" size="20px" />
+          </Button>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-4 p-3">
+          <DialogDescription>
             Choose how you want to delete this user. This action cannot be
             undone.
-          </p>
+          </DialogDescription>
 
-          <div className="bg-muted rounded p-4 border-l-4 border-red-500 mb-6">
+          <div className="bg-muted rounded p-4 border-l-4 border-red-500">
             <div className="flex items-center gap-4 mb-2">
               <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 <Icon name="user" size="24px" />
@@ -97,12 +105,12 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded"
-            onClick={onCancel}
+            className="flex-1"
+            onClick={() => onOpenChange(false)}
             disabled={deleting}
           >
             Cancel
@@ -110,8 +118,8 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
 
           <Button
             type="button"
-            className="flex-1 bg-destructive hover:bg-destructive/80 text-white rounded"
-            onClick={() => handleConfirm(false)}
+            className="flex-1 bg-destructive hover:bg-destructive/80 text-white inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            onClick={handleConfirm}
             disabled={deleting}
           >
             {deleting ? (
@@ -121,13 +129,13 @@ export default function DeleteUserModal({ user, onConfirm, onCancel }) {
               </>
             ) : (
               <>
-                <Icon name="user" size="16px" />
+                <Icon name="trash" size="16px" />
                 Delete
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

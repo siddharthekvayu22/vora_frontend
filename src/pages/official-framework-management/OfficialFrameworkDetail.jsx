@@ -1,27 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  FiArrowLeft,
-  FiDownload,
-  FiUploadCloud,
-  FiUser,
-  FiCalendar,
-  FiHash,
-  FiShield,
-  FiChevronDown,
-  FiChevronUp,
-  FiLoader,
-  FiTag,
-  FiClock,
-  FiMail,
-  FiInfo,
-  FiActivity,
-  FiTrash,
-  FiCheckCircle,
-  FiXCircle,
-  FiEdit,
-} from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
 import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
@@ -494,7 +473,7 @@ function OfficialFrameworkDetail() {
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded bg-primary/12 text-primary">
-                  <FiShield size={22} />
+                  <Icon name="shield" size="22px" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">
@@ -508,7 +487,7 @@ function OfficialFrameworkDetail() {
               <div className="flex items-center gap-3">
                 {user.role === "expert" && (
                   <Button onClick={handleUpdate}>
-                    <FiEdit size={16} />
+                    <Icon name="edit" size="16px" />
                     Update Framework
                   </Button>
                 )}
@@ -516,14 +495,14 @@ function OfficialFrameworkDetail() {
                   onClick={() => navigate(-1)}
                   className="flex items-center gap-2"
                 >
-                  <FiArrowLeft size={20} /> Back
+                  <Icon name="arrow-left" size="20px" /> Back
                 </Button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <InfoItem
-                icon={<FiTag size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Framework Code"
                 value={
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase bg-secondary/15 text-secondary">
@@ -532,7 +511,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiTag size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Current Version"
                 value={
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary">
@@ -541,7 +520,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiShield size={15} />}
+                icon={<Icon name="shield" size="15px" />}
                 label="Approval Status"
                 value={
                   <span
@@ -562,7 +541,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiCalendar size={15} />}
+                icon={<Icon name="calendar" size="15px" />}
                 label="Created"
                 value={
                   <span className="text-sm font-medium whitespace-nowrap">
@@ -571,7 +550,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiClock size={15} />}
+                icon={<Icon name="clock" size="15px" />}
                 label="Updated"
                 value={
                   <span className="text-sm font-medium whitespace-nowrap">
@@ -580,7 +559,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Framework ID"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -589,7 +568,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Framework Category ID"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -598,7 +577,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="File Object Id"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -607,7 +586,7 @@ function OfficialFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Current File Id"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -626,8 +605,9 @@ function OfficialFrameworkDetail() {
               framework.approval.rejectionReason && (
                 <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-4">
                   <div className="flex gap-3">
-                    <FiXCircle
-                      size={20}
+                    <Icon
+                      name="x-circle"
+                      size="20px"
                       className="text-red-600 dark:text-red-400 mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
@@ -653,8 +633,9 @@ function OfficialFrameworkDetail() {
               framework.approval.approvedBy && (
                 <div className="mt-4 bg-primary/10 border border-primary/30 rounded p-4">
                   <div className="flex gap-3">
-                    <FiCheckCircle
-                      size={20}
+                    <Icon
+                      name="check-circle"
+                      size="20px"
                       className="text-primary mt-0.5 shrink-0"
                     />
                     <div className="flex-1">
@@ -725,7 +706,7 @@ function OfficialFrameworkDetail() {
                         }
                         className="flex items-center gap-2"
                       >
-                        <FiDownload size={15} />
+                        <Icon name="download" size="15px" />
                         Download
                       </Button>
 
@@ -737,7 +718,7 @@ function OfficialFrameworkDetail() {
                             onClick={() => handleDeleteVersion(ver)}
                             className="flex items-center gap-2"
                           >
-                            <FiTrash size={15} />
+                            <Icon name="trash" size="15px" />
                             Delete
                           </Button>
                         )}
@@ -752,7 +733,7 @@ function OfficialFrameworkDetail() {
                               onClick={handleApprove}
                               className="flex items-center gap-2"
                             >
-                              <FiCheckCircle size={16} />
+                              <Icon name="check-circle" size="16px" />
                               Approve
                             </Button>
                             <Button
@@ -760,7 +741,7 @@ function OfficialFrameworkDetail() {
                               onClick={handleReject}
                               className="flex items-center gap-2"
                             >
-                              <FiXCircle size={16} />
+                              <Icon name="x-circle" size="16px" />
                               Reject
                             </Button>
                           </>
@@ -780,14 +761,18 @@ function OfficialFrameworkDetail() {
                             {ver.aiUpload?.status === "uploaded" ||
                             ver.aiUpload?.status === "processing" ? (
                               <>
-                                <FiLoader size={13} className="animate-spin" />
+                                <Icon
+                                  name="loader"
+                                  size="13px"
+                                  className="animate-spin"
+                                />
                                 {ver.aiUpload?.status === "processing"
                                   ? "Processing..."
                                   : "Uploading..."}
                               </>
                             ) : (
                               <>
-                                <FiUploadCloud size={13} />
+                                <Icon name="upload-cloud" size="13px" />
                                 {ver.aiUpload?.status === "failed" ||
                                 ver.aiUpload?.status === "skipped"
                                   ? "Retry AI Upload"
@@ -804,9 +789,9 @@ function OfficialFrameworkDetail() {
                         aria-label={isExpanded ? "Collapse" : "Expand"}
                       >
                         {isExpanded ? (
-                          <FiChevronUp size={18} />
+                          <Icon name="chevron-up" size="18px" />
                         ) : (
-                          <FiChevronDown size={18} />
+                          <Icon name="chevron-down" size="18px" />
                         )}
                       </Button>
                     </div>
@@ -815,7 +800,7 @@ function OfficialFrameworkDetail() {
                   {isExpanded && (
                     <div className="px-4 pb-5 pt-1 space-y-4 border-t border-border">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <FiCalendar size={14} />
+                        <Icon name="calendar" size="14px" />
                         <span>Uploaded on {formatDate(ver.uploadedAt)}</span>
                       </div>
 
@@ -826,14 +811,14 @@ function OfficialFrameworkDetail() {
                             .map((n) => n[0])
                             .join("")
                             .slice(0, 2)
-                            .toUpperCase() || <FiUser size={16} />}
+                            .toUpperCase() || <Icon name="user" size="16px" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold truncate">
                             {ver.uploadedBy?.name}
                           </p>
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <FiMail size={11} />
+                            <Icon name="mail" size="11px" />
                             <span className="truncate">
                               {ver.uploadedBy?.email}
                             </span>
@@ -851,7 +836,7 @@ function OfficialFrameworkDetail() {
                           onClick={() => toggleHash(ver.version)}
                           className="flex items-center gap-1.5"
                         >
-                          <FiHash size={13} />
+                          <Icon name="tag" size="13px" />
                           {hashVisible ? "Hide" : "Show"} file hash
                         </Button>
                       </div>
@@ -868,7 +853,11 @@ function OfficialFrameworkDetail() {
                           <div className="rounded border border-border bg-card overflow-hidden">
                             <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                               <div className="flex items-center gap-2">
-                                <FiInfo size={16} className="text-secondary" />
+                                <Icon
+                                  name="info"
+                                  size="16px"
+                                  className="text-secondary"
+                                />
                                 <h3 className="text-sm font-bold text-foreground">
                                   AI Processing Information
                                 </h3>
@@ -1064,8 +1053,9 @@ function OfficialFrameworkDetail() {
                                     {/* Header */}
                                     <div className="px-4 py-2 border-b border-border bg-primary/5 flex items-center justify-between">
                                       <div className="flex items-center gap-2">
-                                        <FiActivity
-                                          size={14}
+                                        <Icon
+                                          name="activity"
+                                          size="14px"
                                           className="text-primary"
                                         />
                                         <h3 className="text-sm font-semibold">
@@ -1139,8 +1129,9 @@ function OfficialFrameworkDetail() {
                                       {ver.aiUpload.status_history
                                         .completed_at && (
                                         <div className="mt-3 pt-2 border-t border-border text-[11px] text-muted-foreground flex items-center gap-1.5">
-                                          <FiCheckCircle
-                                            size={12}
+                                          <Icon
+                                            name="check-circle"
+                                            size="12px"
                                             className="text-green-500"
                                           />
                                           Completed •{" "}
@@ -1162,8 +1153,9 @@ function OfficialFrameworkDetail() {
                             <div className="mt-4 rounded border border-border bg-card overflow-hidden">
                               <div className="px-4 py-3 bg-primary/5 border-b border-border flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <FiShield
-                                    size={16}
+                                  <Icon
+                                    name="shield"
+                                    size="16px"
                                     className="text-primary"
                                   />
                                   <h3 className="text-sm font-bold text-foreground">

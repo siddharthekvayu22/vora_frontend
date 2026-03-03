@@ -43,6 +43,7 @@ import {
   MdWarning,
   MdError,
   MdInfo,
+  MdInfoOutline,
 
   // Arrows & Navigation
   MdArrowUpward,
@@ -105,6 +106,12 @@ import {
   FiUserPlus,
   FiUserMinus,
   FiUserCheck,
+  FiDownload,
+  FiUploadCloud,
+  FiLoader,
+  FiChevronUp,
+  FiGitMerge,
+  FiAlertCircle,
 } from "react-icons/fi";
 
 import {
@@ -113,8 +120,17 @@ import {
   HiOutlineClipboardList,
   HiDotsVertical,
 } from "react-icons/hi";
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleDown, FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+  FaAngleDown,
+  FaAngleLeft,
+  FaAngleRight,
+} from "react-icons/fa";
 import { RiRobot2Fill } from "react-icons/ri";
+
+import { IoKeySharp } from "react-icons/io5";
+import { IoIosSend } from "react-icons/io";
 
 // Icon mapping from old names to React Icons components
 const iconMap = {
@@ -130,7 +146,9 @@ const iconMap = {
 
   // Upload/Download icons
   upload: MdUpload,
-  download: MdDownload,
+  download: FiDownload,
+  send: IoIosSend,
+  "upload-cloud": FiUploadCloud,
 
   // Search/Analysis icons
   search: MdSearch,
@@ -144,6 +162,7 @@ const iconMap = {
   lock: MdLock,
   eye: MdVisibility,
   "eye-off": MdVisibilityOff,
+  key: IoKeySharp,
 
   // Chart/Analytics icons
   chart: MdBarChart,
@@ -170,8 +189,11 @@ const iconMap = {
   "check-circle": MdCheckCircle,
   warning: MdWarning,
   error: MdError,
-  info: MdInfo,
+  info: MdInfoOutline,
   "x-circle": MdCancel,
+  "alert-circle": FiAlertCircle,
+  loader: FiLoader,
+  ban: MdCancel, // Using MdCancel for ban/revoke actions
 
   // Arrow icons
   "arrow-up": MdArrowUpward,
@@ -179,6 +201,7 @@ const iconMap = {
   "arrow-left": FaAngleLeft,
   "arrow-right": FaAngleRight,
   "chevron-down": MdKeyboardArrowDown,
+  "chevron-up": FiChevronUp,
   "left-dubble-arrow": FaAngleDoubleLeft,
   "right-dubble-arrow": FaAngleDoubleRight,
 
@@ -210,6 +233,7 @@ const iconMap = {
   email: MdEmail,
   phone: MdPhone,
   message: MdMessage,
+  "message-square": MdMessage,
   notification: MdNotifications,
 
   // Theme icons
@@ -244,6 +268,9 @@ const iconMap = {
 
   // Activity specific
   activity: FiActivity,
+
+  // Git/Merge icons
+  "git-merge": FiGitMerge,
 };
 
 export default function Icon({

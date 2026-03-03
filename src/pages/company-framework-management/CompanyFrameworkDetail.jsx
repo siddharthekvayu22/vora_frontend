@@ -1,39 +1,26 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  FiArrowLeft,
-  FiDownload,
-  FiUploadCloud,
-  FiUser,
-  FiCalendar,
-  FiHash,
-  FiShield,
-  FiChevronDown,
-  FiChevronUp,
-  FiLoader,
-  FiTag,
-  FiClock,
-  FiMail,
-  FiInfo,
-  FiTrash,
-  FiEdit,
-  FiGitMerge,
-} from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
 import UpdateCompanyFrameworkModal from "./components/UpdateCompanyFrameworkModal";
 import CompareFrameworkModal from "./components/CompareFrameworkModal";
+import RequestReviewModal from "./components/RequestReviewModal";
+import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
+import RejectFrameworkModal from "./components/RejectFrameworkModal";
 import {
   downloadCompanyFrameworkFile,
   getCompanyFrameworkById,
   uploadCompanyFrameworkToAi,
   deleteCompanyFrameworkVersion,
+  approveCompanyFramework,
+  rejectCompanyFramework,
 } from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
 import ComparisonTable from "./components/ComparisonTable";
 import DeploymentGapsTable from "./components/DeploymentGapsTable";
+import { useAuth } from "@/context/useAuth";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
@@ -215,6 +202,7 @@ const useStatusPolling = (framework, setFramework, id) => {
 
 // ========== MAIN COMPONENT ==========
 function CompanyFrameworkDetail() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
@@ -232,6 +220,9 @@ function CompanyFrameworkDetail() {
   const [deploymentGapModalOpen, setDeploymentGapModalOpen] = useState(false);
   const [selectedVersionForDeploymentGap, setSelectedVersionForDeploymentGap] =
     useState(null);
+  const [requestReviewModalOpen, setRequestReviewModalOpen] = useState(false);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
 
   // Use custom polling hook
   useStatusPolling(framework, setFramework, id);
@@ -341,6 +332,38 @@ function CompanyFrameworkDetail() {
     });
   };
 
+  const handleApprove = async (comments) => {
+    try {
+      const response = await approveCompanyFramework(framework.id, {
+        comments,
+      });
+      if (response.success) {
+        toast.success(response.message || "Framework approved successfully");
+        await fetchFrameworkDetails();
+        setApproveModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to approve framework");
+      throw error;
+    }
+  };
+
+  const handleReject = async (comments) => {
+    try {
+      const response = await rejectCompanyFramework(framework.id, {
+        comments,
+      });
+      if (response.success) {
+        toast.success(response.message || "Framework rejected successfully");
+        await fetchFrameworkDetails();
+        setRejectModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to reject framework");
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -420,7 +443,7 @@ function CompanyFrameworkDetail() {
             <div className="flex items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded bg-primary/12 text-primary">
-                  <FiShield size={22} />
+                  <Icon name="shield" size="22px" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">
@@ -432,21 +455,40 @@ function CompanyFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={() => setUpdateModalOpen(true)}>
-                  <FiEdit size={16} /> Update
-                </Button>
+                {user.role === "expert" &&
+                  framework.requestReview?.status !== "approved" &&
+                  framework.requestReview?.status !== "rejected" &&
+                  framework.requestReview?.status === "requested" && (
+                    <>
+                      <Button onClick={() => setApproveModalOpen(true)}>
+                        <Icon name="edit" size="16px" /> <span>Approve</span>
+                      </Button>
+
+                      <Button
+                        variant="destructive"
+                        onClick={() => setRejectModalOpen(true)}
+                      >
+                        <Icon name="edit" size="16px" /> <span>Reject</span>
+                      </Button>
+                    </>
+                  )}
+                {user.role === "company" && (
+                  <Button onClick={() => setUpdateModalOpen(true)}>
+                    <Icon name="edit" size="16px" /> Update Framework
+                  </Button>
+                )}
                 <Button
                   onClick={() => navigate(-1)}
                   className="flex items-center gap-2"
                 >
-                  <FiArrowLeft size={20} /> Back
+                  <Icon name="arrow-left" size="20px" /> Back
                 </Button>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <InfoItem
-                icon={<FiTag size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Current Version"
                 value={
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-primary/15 text-primary">
@@ -455,7 +497,7 @@ function CompanyFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiCalendar size={15} />}
+                icon={<Icon name="calendar" size="15px" />}
                 label="Created"
                 value={
                   <span className="text-sm font-medium">
@@ -464,7 +506,7 @@ function CompanyFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiClock size={15} />}
+                icon={<Icon name="clock" size="15px" />}
                 label="Updated"
                 value={
                   <span className="text-sm font-medium">
@@ -473,7 +515,7 @@ function CompanyFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Framework ID"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -482,7 +524,7 @@ function CompanyFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="File Object Id"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -491,7 +533,7 @@ function CompanyFrameworkDetail() {
                 }
               />
               <InfoItem
-                icon={<FiHash size={15} />}
+                icon={<Icon name="tag" size="15px" />}
                 label="Current File Id"
                 value={
                   <span className="text-xs font-mono px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -503,7 +545,73 @@ function CompanyFrameworkDetail() {
                   </span>
                 }
               />
+              <InfoItem
+                icon={<Icon name="shield" size="15px" />}
+                label="Approval Status"
+                value={
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      framework.requestReview.status === "approved"
+                        ? "bg-primary/15 text-primary"
+                        : framework.requestReview.status === "rejected"
+                          ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                          : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    }`}
+                  >
+                    {framework.requestReview.status === "approved"
+                      ? "Approved"
+                      : framework.requestReview.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
+                  </span>
+                }
+              />
             </div>
+
+            {/* Show rejection reason if framework is rejected */}
+            {framework.requestReview.status === "rejected" &&
+              framework.requestReview.comments && (
+                <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-4">
+                  <div className="flex gap-3">
+                    <Icon name="x-circle" size="20px" className="text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                        Rejection Reason
+                      </h4>
+                      <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
+                        {framework.requestReview.comments}
+                      </p>
+                      {framework.requestReview.assignedExpert && (
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                          Rejected by:{" "}
+                          {framework.requestReview.assignedExpert.name} on{" "}
+                          {formatDate(framework.requestReview.reviewedAt)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            {/* Show approval info if framework is approved */}
+            {framework.requestReview.status === "approved" &&
+              framework.requestReview.assignedExpert && (
+                <div className="mt-4 bg-primary/10 border border-primary/30 rounded p-4">
+                  <div className="flex gap-3">
+                    <Icon name="check-circle" size="20px" className="text-primary mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
+                        Framework Approved
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Approved by:{" "}
+                        {framework.requestReview.assignedExpert.name} on{" "}
+                        {formatDate(framework.requestReview.reviewedAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
@@ -562,10 +670,11 @@ function CompanyFrameworkDetail() {
                           handleDownload(ver.fileId, ver.originalFileName)
                         }
                       >
-                        <FiDownload size={15} /> Download
+                        <Icon name="download" size="15px" /> Download
                       </Button>
 
-                      {ver.aiUpload?.status === "completed" &&
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
                         ver.aiUpload?.job_id &&
                         (ver.comparison?.status !== "comparison_completed" ||
                           (ver.comparison?.status === "comparison_completed" &&
@@ -586,14 +695,14 @@ function CompanyFrameworkDetail() {
                             ver.comparison?.status ===
                               "comparison_processing" ? (
                               <>
-                                <FiLoader size={13} className="animate-spin" />
+                                <Icon name="loader" size="13px" className="animate-spin" />
                                 {ver.comparison?.status === "comparison_started"
                                   ? "Starting..."
                                   : "Comparing..."}
                               </>
                             ) : (
                               <>
-                                <FiGitMerge size={13} />
+                                <Icon name="git-merge" size="13px" />
                                 {ver.comparison?.status ===
                                   "comparison_failed" ||
                                 (ver.comparison?.status ===
@@ -607,7 +716,8 @@ function CompanyFrameworkDetail() {
                           </Button>
                         )}
 
-                      {ver.aiUpload?.status === "completed" &&
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
                         ver.aiUpload?.job_id &&
                         (ver.deploymentGap?.status !==
                           "deployment_gap_completed" ||
@@ -633,7 +743,7 @@ function CompanyFrameworkDetail() {
                             ver.deploymentGap?.status ===
                               "deployment_gap_processing" ? (
                               <>
-                                <FiLoader size={13} className="animate-spin" />
+                                <Icon name="loader" size="13px" className="animate-spin" />
                                 {ver.deploymentGap?.status ===
                                 "deployment_gap_started"
                                   ? "Starting..."
@@ -641,7 +751,7 @@ function CompanyFrameworkDetail() {
                               </>
                             ) : (
                               <>
-                                <FiShield size={13} />
+                                <Icon name="shield" size="13px" />
                                 {ver.deploymentGap?.status ===
                                   "deployment_gap_failed" ||
                                 (ver.deploymentGap?.status ===
@@ -655,44 +765,67 @@ function CompanyFrameworkDetail() {
                           </Button>
                         )}
 
-                      {!isCurrent && framework.fileVersions.length > 1 && (
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDeleteVersion(ver)}
-                        >
-                          <FiTrash size={15} /> Delete
-                        </Button>
-                      )}
+                      {user.role === "company" &&
+                        !isCurrent &&
+                        framework.fileVersions.length > 1 && (
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteVersion(ver)}
+                          >
+                            <Icon name="trash" size="15px" /> Delete
+                          </Button>
+                        )}
 
-                      {(!ver.aiUpload ||
-                        !["completed"].includes(ver.aiUpload?.status)) && (
-                        <Button
-                          variant="secondary"
-                          onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={
-                            ver.aiUpload?.status === "uploaded" ||
-                            ver.aiUpload?.status === "processing"
-                          }
-                        >
-                          {ver.aiUpload?.status === "uploaded" ||
-                          ver.aiUpload?.status === "processing" ? (
-                            <>
-                              <FiLoader size={13} className="animate-spin" />
-                              {ver.aiUpload?.status === "processing"
-                                ? "Processing..."
-                                : "Uploading..."}
-                            </>
-                          ) : (
-                            <>
-                              <FiUploadCloud size={13} />
-                              {ver.aiUpload?.status === "failed" ||
-                              ver.aiUpload?.status === "skipped"
-                                ? "Retry AI Upload"
-                                : "Upload to AI"}
-                            </>
-                          )}
-                        </Button>
-                      )}
+                      {user.role === "company" &&
+                        (!ver.aiUpload ||
+                          !["completed"].includes(ver.aiUpload?.status)) && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleUploadToAi(ver.fileId)}
+                            disabled={
+                              ver.aiUpload?.status === "uploaded" ||
+                              ver.aiUpload?.status === "processing"
+                            }
+                          >
+                            {ver.aiUpload?.status === "uploaded" ||
+                            ver.aiUpload?.status === "processing" ? (
+                              <>
+                                <Icon name="loader" size="13px" className="animate-spin" />
+                                {ver.aiUpload?.status === "processing"
+                                  ? "Processing..."
+                                  : "Uploading..."}
+                              </>
+                            ) : (
+                              <>
+                                <Icon name="upload-cloud" size="13px" />
+                                {ver.aiUpload?.status === "failed" ||
+                                ver.aiUpload?.status === "skipped"
+                                  ? "Retry AI Upload"
+                                  : "Upload to AI"}
+                              </>
+                            )}
+                          </Button>
+                        )}
+
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
+                        ((ver.comparison?.status === "comparison_completed" &&
+                          ver.comparison?.comparisons?.comparison_data?.length >
+                            0) ||
+                          (ver.deploymentGap?.status ===
+                            "deployment_gap_completed" &&
+                            ver.deploymentGap?.deployment_gaps
+                              ?.deployment_gap_results?.length > 0)) &&
+                        (!framework.requestReview ||
+                          framework.requestReview.status !== "requested") && (
+                          <Button
+                            onClick={() => setRequestReviewModalOpen(true)}
+                          >
+                            {framework.requestReview?.status === "rejected"
+                              ? "Re-request Review"
+                              : "Request Review"}
+                          </Button>
+                        )}
 
                       <Button
                         variant="ghost"
@@ -700,9 +833,9 @@ function CompanyFrameworkDetail() {
                         onClick={() => toggleVersion(ver.version)}
                       >
                         {isExpanded ? (
-                          <FiChevronUp size={18} />
+                          <Icon name="chevron-up" size="18px" />
                         ) : (
-                          <FiChevronDown size={18} />
+                          <Icon name="chevron-down" size="18px" />
                         )}
                       </Button>
                     </div>
@@ -712,7 +845,7 @@ function CompanyFrameworkDetail() {
                   {isExpanded && (
                     <div className="px-4 pb-5 pt-1 space-y-4 border-t border-border">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <FiCalendar size={14} />
+                        <Icon name="calendar" size="14px" />
                         <span>Uploaded on {formatDate(ver.uploadedAt)}</span>
                       </div>
 
@@ -724,14 +857,14 @@ function CompanyFrameworkDetail() {
                             .map((n) => n[0])
                             .join("")
                             .slice(0, 2)
-                            .toUpperCase() || <FiUser size={16} />}
+                            .toUpperCase() || <Icon name="user" size="16px" />}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-semibold truncate">
                             {ver.uploadedBy?.name}
                           </p>
                           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <FiMail size={11} />
+                            <Icon name="mail" size="11px" />
                             <span className="truncate">
                               {ver.uploadedBy?.email}
                             </span>
@@ -749,7 +882,7 @@ function CompanyFrameworkDetail() {
                           size="sm"
                           onClick={() => toggleHash(ver.version)}
                         >
-                          <FiHash size={13} />
+                          <Icon name="tag" size="13px" />
                           {hashVisible ? "Hide" : "Show"} file hash
                         </Button>
                       </div>
@@ -765,7 +898,7 @@ function CompanyFrameworkDetail() {
                         <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
-                              <FiInfo size={16} className="text-secondary" />
+                              <Icon name="info" size="16px" className="text-secondary" />
                               <h3 className="text-sm font-bold">
                                 AI Processing Information
                               </h3>
@@ -872,7 +1005,7 @@ function CompanyFrameworkDetail() {
                         <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
-                              <FiInfo size={16} className="text-secondary" />
+                              <Icon name="info" size="16px" className="text-secondary" />
                               <h3 className="text-sm font-bold">
                                 Comparison Information
                               </h3>
@@ -1102,7 +1235,7 @@ function CompanyFrameworkDetail() {
                           <div className="rounded border border-border bg-card overflow-hidden">
                             <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                               <div className="flex items-center gap-2">
-                                <FiInfo size={16} className="text-secondary" />
+                                <Icon name="info" size="16px" className="text-secondary" />
                                 <h3 className="text-sm font-bold">
                                   Deployment Gap Analysis
                                 </h3>
@@ -1196,8 +1329,36 @@ function CompanyFrameworkDetail() {
           mode="deploymentGap"
         />
       )}
+
+      {requestReviewModalOpen && (
+        <RequestReviewModal
+          frameworkId={framework.id}
+          frameworkName={framework.frameworkName}
+          onSuccess={async () => {
+            await fetchFrameworkDetails(true);
+          }}
+          onClose={() => setRequestReviewModalOpen(false)}
+        />
+      )}
+
+      {approveModalOpen && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApprove}
+          onCancel={() => setApproveModalOpen(false)}
+        />
+      )}
+
+      {rejectModalOpen && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleReject}
+          onCancel={() => setRejectModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
 
 export default CompanyFrameworkDetail;
+

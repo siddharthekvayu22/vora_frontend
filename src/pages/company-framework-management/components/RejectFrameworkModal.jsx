@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/dialog";
 
 /**
- * RejectFrameworkModal Component - Confirmation dialog for rejecting a framework
+ * RejectFrameworkModal Component - Confirmation dialog for rejecting a company framework
  *
  * @param {Object} framework - Framework object to reject
  * @param {string} framework.id - Framework ID
  * @param {string} framework.frameworkName - Framework name
  * @param {string} framework.currentVersion - Current version
- * @param {Function} onConfirm - Confirm reject handler (receives rejectionReason)
+ * @param {Function} onConfirm - Confirm reject handler (receives comments)
  * @param {Function} onCancel - Cancel handler
  */
 export default function RejectFrameworkModal({
@@ -28,12 +28,19 @@ export default function RejectFrameworkModal({
   onCancel,
 }) {
   const [rejecting, setRejecting] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState("");
+  const [comments, setComments] = useState("");
+  const [error, setError] = useState("");
 
   const handleConfirm = async () => {
+    if (!comments.trim()) {
+      setError("Comments are required when rejecting a framework");
+      return;
+    }
+
+    setError("");
     setRejecting(true);
     try {
-      await onConfirm(rejectionReason);
+      await onConfirm(comments);
     } catch (error) {
       console.error("Error rejecting framework:", error);
     } finally {
@@ -54,8 +61,7 @@ export default function RejectFrameworkModal({
               Reject Framework
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Reject framework with optional reason. The uploader will be
-              notified.
+              Reject company framework with reason
             </DialogDescription>
           </div>
           <Button
@@ -92,38 +98,30 @@ export default function RejectFrameworkModal({
 
           <div className="mb-4">
             <Label
-              htmlFor="rejectionReason"
+              htmlFor="comments"
               className="block text-sm font-medium text-foreground mb-2"
             >
-              Rejection Reason (Optional)
+              Rejection Reason <span className="text-destructive">*</span>
             </Label>
             <Textarea
-              id="rejectionReason"
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
+              id="comments"
+              value={comments}
+              onChange={(e) => {
+                setComments(e.target.value);
+                if (error) setError("");
+              }}
               placeholder="Explain why this framework is being rejected..."
-              className="w-full px-3 py-2 text-sm rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              className={`w-full px-3 py-2 text-sm rounded border ${
+                error ? "border-destructive" : "border-border"
+              } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none`}
               rows={4}
               maxLength={500}
               disabled={rejecting}
             />
+            {error && <p className="text-xs text-destructive mt-1">{error}</p>}
             <p className="text-xs text-muted-foreground mt-1">
-              {rejectionReason.length}/500 characters
+              {comments.length}/500 characters
             </p>
-          </div>
-
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded p-3">
-            <div className="flex gap-2">
-              <Icon
-                name="info"
-                size="16px"
-                className="text-yellow-600 dark:text-yellow-400 mt-0.5 shrink-0"
-              />
-              <p className="text-xs text-yellow-800 dark:text-yellow-200 leading-relaxed">
-                Once rejected, the framework will be marked as not approved. The
-                uploader will be notified of the rejection.
-              </p>
-            </div>
           </div>
         </div>
 

@@ -2,6 +2,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Icon from "../../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 /**
  * ApproveAccessModal Component - Modal for approving framework access requests
@@ -30,35 +38,29 @@ export default function ApproveAccessModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-137.5 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="check-circle" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Approve Framework Access
-              </h2>
-            </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onCancel}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
+    <Dialog open={true} onOpenChange={onCancel}>
+      <DialogContent showCloseButton={false} className="overflow-hidden">
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="check-circle" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Approve Framework Access
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Approve framework access request for expert
+            </DialogDescription>
           </div>
-        </div>
+          <Button
+            size="icon"
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={onCancel}
+            title="Close"
+          >
+            <Icon name="x" size="20px" />
+          </Button>
+        </DialogHeader>
 
-        <div className="p-4 flex flex-col">
+        <div className="flex flex-col gap-4 p-3">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
             You are about to approve framework access for this expert.
           </p>
@@ -119,11 +121,11 @@ export default function ApproveAccessModal({
           </div>
         </div>
 
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             type="button"
             variant="outline"
-            className="flex-1 rounded"
+            className="flex-1"
             onClick={onCancel}
             disabled={approving}
           >
@@ -148,8 +150,8 @@ export default function ApproveAccessModal({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

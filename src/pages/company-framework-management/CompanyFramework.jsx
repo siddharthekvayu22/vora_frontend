@@ -26,8 +26,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { useAuth } from "@/context/useAuth";
+import CustomBadge from "@/components/custom/CustomBadge";
 
 function CompanyFramework() {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -56,8 +59,12 @@ function CompanyFramework() {
   });
 
   /* ---------------- HANDLERS ---------------- */
-  const handleStatusFilter = (status) => {
-    onFilterChange("status", status);
+  const handleAiUploadStatusFilter = (aiUploadStatus) => {
+    onFilterChange("aiUploadStatus", aiUploadStatus);
+  };
+
+  const handleRequestReviewStatusFilter = (requestReviewStatus) => {
+    onFilterChange("requestReviewStatus", requestReviewStatus);
   };
 
   const handleUploadSuccess = async () => {
@@ -168,6 +175,38 @@ function CompanyFramework() {
       render: (value, row) => <AiUploadStatusCard aiUpload={row.aiUpload} />,
     },
     {
+      key: "requestReview",
+      label: "Request",
+      sortable: false,
+      render: (value, row) => {
+        const statusColors = {
+          pending: "yellow",
+          requested: "yellow",
+          approved: "green",
+          rejected: "red",
+        };
+
+        // If no requestReview object exists
+        if (!value) {
+          return <CustomBadge label="Not Requested" color="gray" />;
+        }
+
+        // Get status from value object
+        const status = value.status;
+
+        return (
+          <CustomBadge
+            label={
+              status
+                ? status.charAt(0).toUpperCase() + status.slice(1)
+                : "Not Requested"
+            }
+            color={status ? statusColors[status] || "gray" : "gray"}
+          />
+        );
+      },
+    },
+    {
       key: "uploadedBy",
       label: "Uploaded By",
       sortable: false,
@@ -205,46 +244,52 @@ function CompanyFramework() {
         className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadFramework(row),
       },
-      {
-        id: `edit-${row.mainFileId}`,
-        label: "Edit Framework",
-        icon: "edit",
-        className: "text-primary hover:text-primary",
-        onClick: () => handleUpdateFramework(row),
-      },
-      {
-        id: `delete-${row.mainFileId}`,
-        label: "Delete Framework",
-        icon: "trash",
-        className: "text-red-600 hover:text-red-600",
-        onClick: () => handleDeleteFramework(row),
-      },
+      ...(user.role === "company"
+        ? [
+            {
+              id: `edit-${row.mainFileId}`,
+              label: "Edit Framework",
+              icon: "edit",
+              className: "text-primary hover:text-primary",
+              onClick: () => handleUpdateFramework(row),
+            },
+            {
+              id: `delete-${row.mainFileId}`,
+              label: "Delete Framework",
+              icon: "trash",
+              className: "text-red-600 hover:text-red-600",
+              onClick: () => handleDeleteFramework(row),
+            },
+          ]
+        : []),
     ];
 
-    if (!aiStatus) {
-      actions.splice(0, 0, {
-        id: `send-ai-${row.fileInfo?.versionFileId}`,
-        label: "Send to AI",
-        icon: "upload",
-        className: "text-blue-600 hover:text-blue-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "failed" || aiStatus === "skipped") {
-      actions.splice(0, 0, {
-        id: `retry-ai-${row.fileInfo?.versionFileId}`,
-        label: "Retry AI Upload",
-        icon: "refresh",
-        className: "text-orange-600 hover:text-orange-600",
-        onClick: () => handleUploadToAi(row),
-      });
-    } else if (aiStatus === "processing") {
-      actions.splice(0, 0, {
-        id: `ai-status-${row.fileInfo?.versionFileId}`,
-        label: "AI Processing...",
-        icon: "clock",
-        className: "text-blue-600 hover:text-blue-600",
-        disabled: true,
-      });
+    if (user.role === "company") {
+      if (!aiStatus) {
+        actions.splice(0, 0, {
+          id: `send-ai-${row.fileInfo?.versionFileId}`,
+          label: "Send to AI",
+          icon: "upload",
+          className: "text-blue-600 hover:text-blue-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "failed" || aiStatus === "skipped") {
+        actions.splice(0, 0, {
+          id: `retry-ai-${row.fileInfo?.versionFileId}`,
+          label: "Retry AI Upload",
+          icon: "refresh",
+          className: "text-orange-600 hover:text-orange-600",
+          onClick: () => handleUploadToAi(row),
+        });
+      } else if (aiStatus === "processing") {
+        actions.splice(0, 0, {
+          id: `ai-status-${row.fileInfo?.versionFileId}`,
+          label: "AI Processing...",
+          icon: "clock",
+          className: "text-blue-600 hover:text-blue-600",
+          disabled: true,
+        });
+      }
     }
 
     return (
@@ -256,81 +301,143 @@ function CompanyFramework() {
 
   const renderHeaderButtons = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const statusFilter = urlParams.get("status") || "";
+    const aiUploadStatusFilter = urlParams.get("aiUploadStatus") || "";
+    const requestReviewStatusFilter =
+      urlParams.get("requestReviewStatus") || "";
 
     return (
       <>
-        {/* Status Filter */}
+        {/* Request Review Status Filter */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
               size="lg"
-              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+              className="w-36 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
             >
-              {statusFilter
-                ? statusFilter === "uploaded"
-                  ? "Uploaded"
-                  : statusFilter === "failed"
-                    ? "Failed"
-                    : statusFilter === "skipped"
-                      ? "Skipped"
-                      : statusFilter === "processing"
-                        ? "Processing"
-                        : statusFilter === "completed"
-                          ? "Completed"
-                          : "All Status"
-                : "All Status"}
+              {requestReviewStatusFilter
+                ? requestReviewStatusFilter === "pending"
+                  ? "Pending"
+                  : requestReviewStatusFilter === "requested"
+                    ? "Requested"
+                    : requestReviewStatusFilter === "approved"
+                      ? "Approved"
+                      : requestReviewStatusFilter === "rejected"
+                        ? "Rejected"
+                        : "Review Status"
+                : "Review Status"}
               <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+          <DropdownMenuContent className="w-36 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
             <DropdownMenuItem
-              onClick={() => handleStatusFilter("")}
+              onClick={() => handleRequestReviewStatusFilter("")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
             >
               All Status
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleStatusFilter("uploaded")}
+              onClick={() => handleRequestReviewStatusFilter("pending")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
             >
-              Uploaded
+              Pending
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleStatusFilter("failed")}
+              onClick={() => handleRequestReviewStatusFilter("requested")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
             >
-              Failed
+              Requested
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleStatusFilter("skipped")}
+              onClick={() => handleRequestReviewStatusFilter("approved")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
             >
-              Skipped
+              Approved
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleStatusFilter("processing")}
+              onClick={() => handleRequestReviewStatusFilter("rejected")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
             >
-              Processing
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleStatusFilter("completed")}
-              className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
-            >
-              Completed
+              Rejected
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button
-          size="lg"
-          onClick={() => setUploadModalOpen(true)}
-          className="flex items-center gap-3"
-        >
-          <Icon name="plus" size="18px" />
-          Add New Framework
-        </Button>
+        {user.role === "company" && (
+          <>
+            {/* AI Upload Status Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-36 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+                >
+                  {aiUploadStatusFilter
+                    ? aiUploadStatusFilter === "uploaded"
+                      ? "Uploaded"
+                      : aiUploadStatusFilter === "failed"
+                        ? "Failed"
+                        : aiUploadStatusFilter === "skipped"
+                          ? "Skipped"
+                          : aiUploadStatusFilter === "processing"
+                            ? "Processing"
+                            : aiUploadStatusFilter === "completed"
+                              ? "Completed"
+                              : "AI Extraction"
+                    : "AI Extraction"}
+                  <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-36 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  All Extraction
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("uploaded")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  Uploaded
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("failed")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  Failed
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("skipped")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  Skipped
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("processing")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  Processing
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => handleAiUploadStatusFilter("completed")}
+                  className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
+                >
+                  Completed
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button
+              size="lg"
+              onClick={() => setUploadModalOpen(true)}
+              className="flex items-center gap-3"
+            >
+              <Icon name="plus" size="18px" />
+              Add New Framework
+            </Button>
+          </>
+        )}
       </>
     );
   };

@@ -103,6 +103,13 @@ function Sidebar() {
           },
         ],
       },
+      {
+        id: "company-framework-requests",
+        title: "Company Framework",
+        description: "Manage company framework requests",
+        icon: "framework",
+        path: "/frameworks",
+      },
     ],
 
     company: [

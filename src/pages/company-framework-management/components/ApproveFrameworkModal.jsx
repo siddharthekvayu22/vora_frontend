@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -11,27 +13,31 @@ import {
 } from "@/components/ui/dialog";
 
 /**
- * DeleteOfficialFrameworkModal Component - Confirmation dialog for deleting a framework
+ * ApproveFrameworkModal Component - Confirmation dialog for approving a company framework
  *
- * @param {Object} framework - Framework to delete
- * @param {Function} onConfirm - Confirm delete handler
+ * @param {Object} framework - Framework object to approve
+ * @param {string} framework.id - Framework ID
+ * @param {string} framework.frameworkName - Framework name
+ * @param {string} framework.currentVersion - Current version
+ * @param {Function} onConfirm - Confirm approve handler (receives comments)
  * @param {Function} onCancel - Cancel handler
  */
-export default function DeleteOfficialFrameworkModal({
+export default function ApproveFrameworkModal({
   framework,
   onConfirm,
   onCancel,
 }) {
-  const [deleting, setDeleting] = useState(false);
+  const [approving, setApproving] = useState(false);
+  const [comments, setComments] = useState("");
 
   const handleConfirm = async () => {
-    setDeleting(true);
+    setApproving(true);
     try {
-      await onConfirm();
+      await onConfirm(comments);
     } catch (error) {
-      console.error("Error deleting framework:", error);
+      console.error("Error approving framework:", error);
     } finally {
-      setDeleting(false);
+      setApproving(false);
     }
   };
 
@@ -39,16 +45,16 @@ export default function DeleteOfficialFrameworkModal({
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent
         showCloseButton={false}
-        className="overflow-hidden max-w-[500px]"
+        className="overflow-hidden max-w-125"
       >
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
-            <Icon name="warning" size="24px" />
+            <Icon name="check-circle" size="24px" />
             <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
-              Delete Framework
+              Approve Framework
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Confirm deletion of framework. This action cannot be undone.
+              Approve company framework and mark it as ready for use
             </DialogDescription>
           </div>
           <Button
@@ -63,39 +69,46 @@ export default function DeleteOfficialFrameworkModal({
 
         <div className="flex flex-col gap-4 p-3">
           <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            Are you sure you want to delete this framework? This action cannot
-            be undone.
+            Are you sure you want to approve this framework? This will mark the
+            framework as approved and ready for use.
           </p>
 
-          <div className="bg-muted rounded p-3 border-l-4 border-red-500 mb-4">
-            <div className="flex items-center gap-3 mb-1">
+          <div className="bg-muted rounded p-3 border-l-4 border-primary mb-4">
+            <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                <Icon name="document" size="20px" />
+                <Icon name="shield" size="20px" />
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
                   {framework.frameworkName}
                 </h4>
                 <p className="text-sm text-muted-foreground m-0">
-                  Code: {framework.frameworkCode}
+                  Version: {framework.currentVersion}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2 mt-1">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                {framework.frameworkType?.toUpperCase() || "PDF"}
-              </span>
-              {framework.fileInfo?.fileSize && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
-                  {framework.fileInfo.fileSize}
-                </span>
-              )}
-            </div>
-            {framework.uploadedBy?.name && (
-              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Uploaded by: {framework.uploadedBy.name}
-              </p>
-            )}
+          </div>
+
+          <div className="mb-4">
+            <Label
+              htmlFor="comments"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
+              Comments (Optional)
+            </Label>
+            <Textarea
+              id="comments"
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              placeholder="Add any comments about the approval..."
+              className="w-full px-3 py-2 text-sm rounded border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+              rows={4}
+              maxLength={500}
+              disabled={approving}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              {comments.length}/500 characters
+            </p>
           </div>
         </div>
 
@@ -105,26 +118,26 @@ export default function DeleteOfficialFrameworkModal({
             variant="outline"
             className="flex-1"
             onClick={onCancel}
-            disabled={deleting}
+            disabled={approving}
           >
             Cancel
           </Button>
 
           <Button
             type="button"
-            className="flex-1 inline-flex items-center justify-center gap-2 bg-destructive text-white hover:bg-destructive/80 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleConfirm}
-            disabled={deleting}
+            disabled={approving}
           >
-            {deleting ? (
+            {approving ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Deleting...
+                Approving...
               </>
             ) : (
               <>
-                <Icon name="trash" size="16px" />
-                Delete Framework
+                <Icon name="check-circle" size="16px" />
+                Approve Framework
               </>
             )}
           </Button>

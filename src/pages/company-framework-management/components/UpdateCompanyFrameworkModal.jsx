@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function UpdateCompanyFrameworkModal({
   isOpen,
@@ -174,35 +182,21 @@ export default function UpdateCompanyFrameworkModal({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={handleClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-150 w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="edit" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Update Company Framework
-              </h2>
-            </div>
-            <Button
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={handleClose}
-              disabled={saving}
-              title="Close"
-            >
-              <Icon name="close" size="20px" />
-            </Button>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-150 max-h-[90vh]">
+        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="edit" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Update Company Framework
+            </DialogTitle>
           </div>
-        </div>
+          <DialogDescription className="sr-only">
+            Update company framework details and upload new version
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="p-4">
+        <div className="flex flex-col gap-4 p-3">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Framework Name */}
             <div className="space-y-1.5">
@@ -370,7 +364,7 @@ export default function UpdateCompanyFrameworkModal({
           </form>
         </div>
 
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             type="button"
             variant="outline"
@@ -397,8 +391,8 @@ export default function UpdateCompanyFrameworkModal({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

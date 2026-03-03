@@ -1,6 +1,14 @@
 import { useState } from "react";
 import Icon from "../../../components/Icon";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function DeleteCompanyFrameworkModal({
   framework,
@@ -21,65 +29,51 @@ export default function DeleteCompanyFrameworkModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-[500px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 border border-border"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="warning" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Delete Framework
-              </h2>
-            </div>
-            <Button
-              size="icon"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onCancel}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
+    <Dialog open={!!framework} onOpenChange={onCancel}>
+      <DialogContent className="max-w-[500px]">
+        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="warning" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Delete Framework
+            </DialogTitle>
           </div>
-        </div>
+          <DialogDescription className="sr-only">
+            Confirm deletion of company framework
+          </DialogDescription>
+        </DialogHeader>
 
-        <div className="p-4">
-          <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+        <div className="flex flex-col gap-4 p-3">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             Are you sure you want to delete this framework? This action cannot
             be undone.
           </p>
 
-          <div className="bg-muted rounded p-3 border-l-4 border-red-500 mb-4">
+          <div className="bg-muted rounded p-3 border-l-4 border-red-500">
             <div className="flex items-center gap-3 mb-1">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                 <Icon name="document" size="20px" />
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {framework.frameworkName}
+                  {framework?.frameworkName}
                 </h4>
                 <p className="text-sm text-muted-foreground m-0">
-                  Code: {framework.frameworkCode}
+                  Code: {framework?.frameworkCode}
                 </p>
               </div>
             </div>
             <div className="flex gap-2 mt-1">
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                {framework.frameworkType?.toUpperCase() || "PDF"}
+                {framework?.frameworkType?.toUpperCase() || "PDF"}
               </span>
-              {framework.fileInfo?.fileSize && (
+              {framework?.fileInfo?.fileSize && (
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
                   {framework.fileInfo.fileSize}
                 </span>
               )}
             </div>
-            {framework.uploadedBy?.name && (
+            {framework?.uploadedBy?.name && (
               <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
                 Uploaded by: {framework.uploadedBy.name}
               </p>
@@ -87,7 +81,7 @@ export default function DeleteCompanyFrameworkModal({
           </div>
         </div>
 
-        <div className="flex gap-2 justify-end p-3 border-t border-border">
+        <DialogFooter className="pt-4 border-t border-border p-2">
           <Button
             type="button"
             variant="outline"
@@ -116,8 +110,8 @@ export default function DeleteCompanyFrameworkModal({
               </>
             )}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,3 +1,13 @@
+import React from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+
 // ========== COMPARISON TABLE COMPONENTS ==========
 
 // Score Circle Component
@@ -125,16 +135,56 @@ const ScoreColumn = ({ score }) => {
 
 // Main Comparison Table Component
 const ComparisonTable = ({ comparisonData, totalControls }) => {
+  const [sortOrder, setSortOrder] = React.useState("high-to-low"); // 'high-to-low' or 'low-to-high'
+
   if (!comparisonData?.length) return null;
+
+  // Sort comparison data based on selected order
+  const sortedData = [...comparisonData].sort((a, b) => {
+    if (sortOrder === "high-to-low") {
+      return b.Comparison_score - a.Comparison_score;
+    } else {
+      return a.Comparison_score - b.Comparison_score;
+    }
+  });
 
   return (
     <div className="rounded border border-border bg-muted/30 col-span-12 overflow-hidden">
       <div className="px-4 py-3 bg-muted/50 border-b border-border">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-semibold">Comparison Results</h4>
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/20 text-primary">
-            Total: {totalControls}
-          </span>
+          <div className="flex items-center gap-3">
+            {/* Sort Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs gap-2 w-28"
+                >
+                  {sortOrder === "high-to-low" ? "High to Low" : "Low to High"}
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-0 w-28">
+                <DropdownMenuItem
+                  onClick={() => setSortOrder("high-to-low")}
+                  className="cursor-pointer text-xs"
+                >
+                  High to Low
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSortOrder("low-to-high")}
+                  className="cursor-pointer text-xs"
+                >
+                  Low to High
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-primary/20 text-primary">
+              Total: {totalControls}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -154,7 +204,7 @@ const ComparisonTable = ({ comparisonData, totalControls }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {comparisonData.map((item, idx) => (
+            {sortedData.map((item, idx) => (
               <tr key={idx} className="hover:bg-muted/20 transition-colors">
                 {/* Framework Control Column */}
                 <td className="px-4 py-3 align-top">

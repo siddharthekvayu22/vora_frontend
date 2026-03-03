@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Icon from "../../../../components/Icon";
 import { formatDate } from "../../../../utils/dateFormatter";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 /**
  * AccessViewModal Component - Displays detailed information for framework access records
@@ -27,34 +34,30 @@ export default function AccessViewModal({ accessRecord, onClose }) {
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-10000 animate-in fade-in duration-200"
-      onClick={onClose}
-    >
-      <div
-        className="bg-background rounded shadow-2xl max-w-[900px] w-[90%] max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-5 duration-300 sidebar-scroll border border-border"
-        onClick={(e) => e.stopPropagation()}
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent
+        showCloseButton={false}
+        className="overflow-hidden lg:max-w-4xl"
       >
-        <div className="bg-linear-to-br from-primary to-primary/80 text-white p-4 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-37.5 h-37.5 bg-white/10 rounded-full transform translate-x-[40%] -translate-y-[40%]"></div>
-          <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Icon name="eye" size="24px" />
-              <h2 className="text-xl font-bold text-white drop-shadow-sm">
-                Framework Access Details
-              </h2>
-            </div>
-            <Button
-              size="icon"
-              variant="outline"
-              className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={onClose}
-              title="Close"
-            >
-              <Icon name="x" size="20px" />
-            </Button>
+        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+          <div className="flex items-center gap-3">
+            <Icon name="eye" size="24px" />
+            <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
+              Framework Access Details
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              View detailed information about framework access record
+            </DialogDescription>
           </div>
-        </div>
+          <Button
+            size="icon"
+            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
+            onClick={onClose}
+            title="Close"
+          >
+            <Icon name="x" size="20px" />
+          </Button>
+        </DialogHeader>
 
         <div className="p-3 space-y-8 overflow-y-auto sidebar-scroll max-h-[70vh]">
           {/* Record Information */}
@@ -411,7 +414,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
             </div>
           </section>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

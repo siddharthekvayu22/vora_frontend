@@ -16,7 +16,8 @@ export function getAllCompanyFrameworks({
   search = "",
   sortBy = "createdAt",
   sortOrder = "desc",
-  status = "",
+  aiUploadStatus = "",
+  requestReviewStatus = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -24,7 +25,8 @@ export function getAllCompanyFrameworks({
     ...(search && { search }),
     ...(sortBy && { sortBy }),
     ...(sortOrder && { sortOrder }),
-    ...(status && { status }),
+    ...(aiUploadStatus && { aiUploadStatus }),
+    ...(requestReviewStatus && { requestReviewStatus }),
   });
 
   return apiRequest(
@@ -163,6 +165,48 @@ export function analyzeDeploymentGap(
   );
 }
 
+/**
+ * Request expert review for company framework
+ */
+export function requestExpertReview(frameworkId, data) {
+  return apiRequest(
+    `/company-frameworks/frameworks/${frameworkId}/request-review`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    },
+    true,
+  );
+}
+
+/**
+ * Approve company framework by expert
+ */
+export function approveCompanyFramework(frameworkId, data) {
+  return apiRequest(
+    `/company-frameworks/frameworks/${frameworkId}/approve`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    },
+    true,
+  );
+}
+
+/**
+ * Reject company framework by expert
+ */
+export function rejectCompanyFramework(frameworkId, data) {
+  return apiRequest(
+    `/company-frameworks/frameworks/${frameworkId}/reject`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    },
+    true,
+  );
+}
+
 export default {
   getCompanyFrameworkById,
   getAllCompanyFrameworks,
@@ -174,4 +218,7 @@ export default {
   uploadCompanyFrameworkToAi,
   compareFrameworks,
   analyzeDeploymentGap,
+  requestExpertReview,
+  approveCompanyFramework,
+  rejectCompanyFramework,
 };

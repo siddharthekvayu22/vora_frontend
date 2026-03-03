@@ -432,24 +432,30 @@ function Users() {
         emptyMessage={emptyMessage}
       />
 
-      {modalState.isOpen && (
-        <UserModal
-          mode={modalState.mode}
-          user={modalState.user}
-          onSave={handleSaveUser}
-          onClose={() =>
-            setModalState({ isOpen: false, mode: "view", user: null })
+      {/* User Modal */}
+      <UserModal
+        open={modalState.isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setModalState({ isOpen: false, mode: "view", user: null });
           }
-        />
-      )}
+        }}
+        mode={modalState.mode}
+        user={modalState.user}
+        onSave={handleSaveUser}
+      />
 
-      {deleteModalState.isOpen && (
-        <DeleteUserModal
-          user={deleteModalState.user}
-          onConfirm={handleDeleteUser}
-          onCancel={() => setDeleteModalState({ isOpen: false, user: null })}
-        />
-      )}
+      {/* Delete User Modal */}
+      <DeleteUserModal
+        open={deleteModalState.isOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteModalState({ isOpen: false, user: null });
+          }
+        }}
+        user={deleteModalState.user}
+        onConfirm={handleDeleteUser}
+      />
     </div>
   );
 }

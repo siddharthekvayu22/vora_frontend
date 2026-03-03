@@ -313,17 +313,17 @@ function Profile() {
                 Quick Actions
               </h3>
             </div>
-            <div className="p-6 space-y-3">
+            <div className="p-6 flex items-center justify-between">
               <Button
                 onClick={() => setShowEditModal(true)}
-                className=" flex items-center  p-3 "
+                className=" flex items-center p-3 "
               >
                 <Icon name="edit" size="16px" />
                 <span>Edit Profile</span>
               </Button>
               <Button
                 onClick={() => setShowPasswordModal(true)}
-                className=" flex items-center  p-3"
+                className=" flex items-center p-3"
               >
                 <Icon name="key" size="16px" />
                 <span>Change Password</span>

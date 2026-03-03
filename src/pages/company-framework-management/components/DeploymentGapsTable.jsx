@@ -1,17 +1,14 @@
 // src/pages/CompanyFramework/components/DeploymentGapsTable.jsx
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
-import {
-  FiChevronDown,
-  FiChevronUp,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiXCircle,
-  FiInfo,
-  FiClock,
-  FiHash,
-} from "react-icons/fi";
+import Icon from "@/components/Icon";
 
 // Status Badge Component
 const StatusBadge = ({ status }) => {
@@ -19,25 +16,25 @@ const StatusBadge = ({ status }) => {
     switch (status?.toLowerCase()) {
       case "implemented":
         return {
-          icon: <FiCheckCircle size={14} />,
+          icon: <Icon name="check-circle" size="14px" />,
           text: "Implemented",
           className: "bg-green-500/15 text-green-600",
         };
       case "partially implemented":
         return {
-          icon: <FiAlertCircle size={14} />,
+          icon: <Icon name="alert-circle" size="14px" />,
           text: "Partially Implemented",
           className: "bg-yellow-500/15 text-yellow-600",
         };
       case "not implemented":
         return {
-          icon: <FiXCircle size={14} />,
+          icon: <Icon name="x-circle" size="14px" />,
           text: "Not Implemented",
           className: "bg-red-500/15 text-red-600",
         };
       default:
         return {
-          icon: <FiInfo size={14} />,
+          icon: <Icon name="info" size="14px" />,
           text: status || "Unknown",
           className: "bg-gray-500/15 text-gray-600",
         };
@@ -83,7 +80,9 @@ const SimilarityScore = ({ score }) => {
 // Info Card Component for Metadata
 const InfoCard = ({ icon, label, value }) => (
   <div className="flex items-start gap-3 p-3 rounded bg-muted/30 border border-border">
-    <div className="mt-0.5 text-primary">{icon}</div>
+    <div className="mt-0.5 text-primary">
+      <Icon name={icon} size="15px" />
+    </div>
     <div>
       <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
         {label}
@@ -114,7 +113,11 @@ const DeploymentPointCard = ({ point, index }) => {
           <StatusBadge status={point.Implementation_Status} />
         </div>
         <button className="p-1 hover:bg-muted rounded ml-2">
-          {expanded ? <FiChevronUp size={18} /> : <FiChevronDown size={18} />}
+          {expanded ? (
+            <Icon name="chevron-up" size="18px" />
+          ) : (
+            <Icon name="chevron-down" size="18px" />
+          )}
         </button>
       </div>
 
@@ -181,7 +184,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
         {/* Metadata Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <InfoCard
-            icon={<FiInfo size={15} />}
+            icon="info"
             label="Status"
             value={
               <span
@@ -196,7 +199,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
             }
           />
           <InfoCard
-            icon={<FiHash size={15} />}
+            icon="tag"
             label="Deployment Gap ID"
             value={
               <div className="flex items-center gap-2 min-w-0">
@@ -221,7 +224,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
             }
           />
           <InfoCard
-            icon={<FiClock size={15} />}
+            icon="clock"
             label="Timestamp"
             value={
               <span className="text-sm">
@@ -232,7 +235,7 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
             }
           />
           <InfoCard
-            icon={<FiClock size={15} />}
+            icon="clock"
             label="Last Updated"
             value={
               <span className="text-sm">
@@ -282,7 +285,11 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
 
         {/* Message */}
         <div className="rounded border border-border bg-muted/30 p-8 text-center">
-          <FiInfo size={32} className="mx-auto mb-3 text-muted-foreground" />
+          <Icon
+            name="info"
+            size="32px"
+            className="mx-auto mb-3 text-muted-foreground"
+          />
           <p className="text-sm text-muted-foreground mb-2">{message}</p>
           {totalPoints === 0 && (
             <p className="text-xs text-muted-foreground">
@@ -299,9 +306,9 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
           >
             <span className="text-sm font-medium">Additional Metadata</span>
             {showMetadata ? (
-              <FiChevronUp size={18} />
+              <Icon name="chevron-up" size="18px" />
             ) : (
-              <FiChevronDown size={18} />
+              <Icon name="chevron-down" size="18px" />
             )}
           </button>
 
@@ -448,16 +455,50 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
           <span className="text-xs font-medium text-muted-foreground">
             Filter by status:
           </span>
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 rounded text-sm border border-border bg-background"
-          >
-            <option value="all">All Controls</option>
-            <option value="implemented">Implemented</option>
-            <option value="partially implemented">Partially Implemented</option>
-            <option value="not implemented">Not Implemented</option>
-          </select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs gap-2 w-40 flex items-center justify-between"
+              >
+                {filterStatus === "all"
+                  ? "All Controls"
+                  : filterStatus === "implemented"
+                    ? "Implemented"
+                    : filterStatus === "partially implemented"
+                      ? "Partially Implemented"
+                      : "Not Implemented"}
+                <Icon name="chevron-down" size="12px" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="min-w-0 w-40">
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("all")}
+                className="cursor-pointer text-xs"
+              >
+                All Controls
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Implemented
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("partially implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Partially Implemented
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setFilterStatus("not implemented")}
+                className="cursor-pointer text-xs"
+              >
+                Not Implemented
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -518,19 +559,19 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
                   <div className="flex items-center gap-2 text-xs">
                     {implementedCount > 0 && (
                       <span className="flex items-center gap-1 text-green-600">
-                        <FiCheckCircle size={12} />
+                        <Icon name="check-circle" size="12px" />
                         {implementedCount}
                       </span>
                     )}
                     {partiallyCount > 0 && (
                       <span className="flex items-center gap-1 text-yellow-600">
-                        <FiAlertCircle size={12} />
+                        <Icon name="alert-circle" size="12px" />
                         {partiallyCount}
                       </span>
                     )}
                     {notImplementedCount > 0 && (
                       <span className="flex items-center gap-1 text-red-600">
-                        <FiXCircle size={12} />
+                        <Icon name="x-circle" size="12px" />
                         {notImplementedCount}
                       </span>
                     )}
@@ -542,9 +583,9 @@ const DeploymentGapsTable = ({ deploymentGaps }) => {
 
                   <button className="p-1 hover:bg-muted rounded">
                     {isExpanded ? (
-                      <FiChevronUp size={18} />
+                      <Icon name="chevron-up" size="18px" />
                     ) : (
-                      <FiChevronDown size={18} />
+                      <Icon name="chevron-down" size="18px" />
                     )}
                   </button>
                 </div>

@@ -399,13 +399,11 @@ function OfficialFramework() {
       />
 
       {/* Delete Framework Modal */}
-      {deleteModalOpen && frameworkToDelete && (
-        <DeleteOfficialFrameworkModal
-          framework={frameworkToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteOfficialFrameworkModal
+        framework={frameworkToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 }

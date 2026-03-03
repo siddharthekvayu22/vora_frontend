@@ -204,26 +204,20 @@ function Category() {
         emptyMessage={emptyMessage}
       />
 
-      {modalState.isOpen && (
-        <CategoryModal
-          mode={modalState.mode}
-          category={modalState.category}
-          onSave={handleSaveCategory}
-          onClose={() =>
-            setModalState({ isOpen: false, mode: "create", category: null })
-          }
-        />
-      )}
+      <CategoryModal
+        mode={modalState.mode}
+        category={modalState.category}
+        onSave={handleSaveCategory}
+        onClose={() =>
+          setModalState({ isOpen: false, mode: "create", category: null })
+        }
+      />
 
-      {deleteModalState.isOpen && (
-        <DeleteCategoryModal
-          category={deleteModalState.category}
-          onConfirm={handleDeleteCategory}
-          onCancel={() =>
-            setDeleteModalState({ isOpen: false, category: null })
-          }
-        />
-      )}
+      <DeleteCategoryModal
+        category={deleteModalState.category}
+        onConfirm={handleDeleteCategory}
+        onCancel={() => setDeleteModalState({ isOpen: false, category: null })}
+      />
     </div>
   );
 }

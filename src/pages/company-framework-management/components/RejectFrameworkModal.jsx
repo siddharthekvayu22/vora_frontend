@@ -50,10 +50,7 @@ export default function RejectFrameworkModal({
 
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent
-        showCloseButton={false}
-        className="overflow-hidden max-w-125"
-      >
+      <DialogContent className="lg:max-w-125">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="x-circle" size="24px" />
@@ -64,14 +61,6 @@ export default function RejectFrameworkModal({
               Reject company framework with reason
             </DialogDescription>
           </div>
-          <Button
-            size="icon"
-            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-            onClick={onCancel}
-            title="Close"
-          >
-            <Icon name="x" size="20px" />
-          </Button>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 p-3">

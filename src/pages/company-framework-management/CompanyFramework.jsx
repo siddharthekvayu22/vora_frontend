@@ -476,13 +476,11 @@ function CompanyFramework() {
         framework={frameworkToUpdate}
       />
 
-      {deleteModalOpen && frameworkToDelete && (
-        <DeleteCompanyFrameworkModal
-          framework={frameworkToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteCompanyFrameworkModal
+        framework={frameworkToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
     </div>
   );
 }

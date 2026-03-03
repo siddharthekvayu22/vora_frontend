@@ -97,10 +97,7 @@ export default function EditControlModal({ control, onSave, onCancel }) {
 
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent
-        showCloseButton={false}
-        className="overflow-hidden max-w-175"
-      >
+      <DialogContent className="lg:max-w-175">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="edit" size="24px" />
@@ -113,14 +110,6 @@ export default function EditControlModal({ control, onSave, onCancel }) {
               </DialogDescription>
             </div>
           </div>
-          <Button
-            size="icon"
-            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-            onClick={onCancel}
-            title="Close"
-          >
-            <Icon name="x" size="20px" />
-          </Button>
         </DialogHeader>
 
         <form

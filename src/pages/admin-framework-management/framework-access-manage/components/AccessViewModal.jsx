@@ -35,10 +35,7 @@ export default function AccessViewModal({ accessRecord, onClose }) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent
-        showCloseButton={false}
-        className="overflow-hidden lg:max-w-4xl"
-      >
+      <DialogContent className="lg:max-w-4xl">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="eye" size="24px" />
@@ -49,14 +46,6 @@ export default function AccessViewModal({ accessRecord, onClose }) {
               View detailed information about framework access record
             </DialogDescription>
           </div>
-          <Button
-            size="icon"
-            className="bg-white/10 border border-white/20 text-white backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center hover:bg-white/20 hover:border-white/40 hover:scale-105 transition-all duration-200 cursor-pointer"
-            onClick={onClose}
-            title="Close"
-          >
-            <Icon name="x" size="20px" />
-          </Button>
         </DialogHeader>
 
         <div className="p-3 space-y-8 overflow-y-auto sidebar-scroll max-h-[70vh]">

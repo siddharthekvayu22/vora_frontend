@@ -172,7 +172,7 @@ export default function CompareFrameworkModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-175 max-h-[90vh] flex flex-col">
+      <DialogContent className="lg:max-w-175 max-h-[90vh] flex flex-col">
         <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name={headerIcon} size="24px" />

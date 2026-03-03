@@ -573,7 +573,11 @@ function CompanyFrameworkDetail() {
               framework.requestReview.comments && (
                 <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-4">
                   <div className="flex gap-3">
-                    <Icon name="x-circle" size="20px" className="text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
+                    <Icon
+                      name="x-circle"
+                      size="20px"
+                      className="text-red-600 dark:text-red-400 mt-0.5 shrink-0"
+                    />
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
                         Rejection Reason
@@ -598,7 +602,11 @@ function CompanyFrameworkDetail() {
               framework.requestReview.assignedExpert && (
                 <div className="mt-4 bg-primary/10 border border-primary/30 rounded p-4">
                   <div className="flex gap-3">
-                    <Icon name="check-circle" size="20px" className="text-primary mt-0.5 shrink-0" />
+                    <Icon
+                      name="check-circle"
+                      size="20px"
+                      className="text-primary mt-0.5 shrink-0"
+                    />
                     <div className="flex-1">
                       <h4 className="text-sm font-semibold text-foreground mb-1">
                         Framework Approved
@@ -695,7 +703,11 @@ function CompanyFrameworkDetail() {
                             ver.comparison?.status ===
                               "comparison_processing" ? (
                               <>
-                                <Icon name="loader" size="13px" className="animate-spin" />
+                                <Icon
+                                  name="loader"
+                                  size="13px"
+                                  className="animate-spin"
+                                />
                                 {ver.comparison?.status === "comparison_started"
                                   ? "Starting..."
                                   : "Comparing..."}
@@ -743,7 +755,11 @@ function CompanyFrameworkDetail() {
                             ver.deploymentGap?.status ===
                               "deployment_gap_processing" ? (
                               <>
-                                <Icon name="loader" size="13px" className="animate-spin" />
+                                <Icon
+                                  name="loader"
+                                  size="13px"
+                                  className="animate-spin"
+                                />
                                 {ver.deploymentGap?.status ===
                                 "deployment_gap_started"
                                   ? "Starting..."
@@ -790,7 +806,11 @@ function CompanyFrameworkDetail() {
                             {ver.aiUpload?.status === "uploaded" ||
                             ver.aiUpload?.status === "processing" ? (
                               <>
-                                <Icon name="loader" size="13px" className="animate-spin" />
+                                <Icon
+                                  name="loader"
+                                  size="13px"
+                                  className="animate-spin"
+                                />
                                 {ver.aiUpload?.status === "processing"
                                   ? "Processing..."
                                   : "Uploading..."}
@@ -898,7 +918,11 @@ function CompanyFrameworkDetail() {
                         <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
-                              <Icon name="info" size="16px" className="text-secondary" />
+                              <Icon
+                                name="info"
+                                size="16px"
+                                className="text-secondary"
+                              />
                               <h3 className="text-sm font-bold">
                                 AI Processing Information
                               </h3>
@@ -1005,7 +1029,11 @@ function CompanyFrameworkDetail() {
                         <div className="rounded border border-border bg-card overflow-hidden">
                           <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                             <div className="flex items-center gap-2">
-                              <Icon name="info" size="16px" className="text-secondary" />
+                              <Icon
+                                name="info"
+                                size="16px"
+                                className="text-secondary"
+                              />
                               <h3 className="text-sm font-bold">
                                 Comparison Information
                               </h3>
@@ -1235,7 +1263,11 @@ function CompanyFrameworkDetail() {
                           <div className="rounded border border-border bg-card overflow-hidden">
                             <div className="px-4 py-3 bg-secondary/5 border-b border-border">
                               <div className="flex items-center gap-2">
-                                <Icon name="info" size="16px" className="text-secondary" />
+                                <Icon
+                                  name="info"
+                                  size="16px"
+                                  className="text-secondary"
+                                />
                                 <h3 className="text-sm font-bold">
                                   Deployment Gap Analysis
                                 </h3>
@@ -1260,105 +1292,91 @@ function CompanyFrameworkDetail() {
       </div>
 
       {/* Modals */}
-      {deleteModalOpen && versionToDelete && (
-        <DeleteVersionModal
-          version={versionToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={() => {
-            setDeleteModalOpen(false);
-            setVersionToDelete(null);
-          }}
-        />
-      )}
+      <DeleteVersionModal
+        version={versionToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteModalOpen(false);
+          setVersionToDelete(null);
+        }}
+      />
 
-      {updateModalOpen && (
-        <UpdateCompanyFrameworkModal
-          isOpen={updateModalOpen}
-          onClose={() => setUpdateModalOpen(false)}
-          onSuccess={() => {
-            fetchFrameworkDetails();
-            setUpdateModalOpen(false);
-          }}
-          framework={framework}
-        />
-      )}
+      <UpdateCompanyFrameworkModal
+        isOpen={updateModalOpen}
+        onClose={() => setUpdateModalOpen(false)}
+        onSuccess={() => {
+          fetchFrameworkDetails();
+          setUpdateModalOpen(false);
+        }}
+        framework={framework}
+      />
 
-      {compareModalOpen && selectedVersionForCompare && (
-        <CompareFrameworkModal
-          isOpen={compareModalOpen}
-          onClose={() => {
-            setCompareModalOpen(false);
-            setSelectedVersionForCompare(null);
-          }}
-          onSuccess={async () => {
-            // Wait for backend to update comparison status
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            // Fetch updated framework data to trigger polling
-            await fetchFrameworkDetails(true);
-            setCompareModalOpen(false);
-            setSelectedVersionForCompare(null);
-          }}
-          companyFramework={{
-            ...framework,
-            frameworkName: framework.frameworkName,
-            aiUpload: selectedVersionForCompare.aiUpload,
-          }}
-        />
-      )}
+      <CompareFrameworkModal
+        isOpen={compareModalOpen}
+        onClose={() => {
+          setCompareModalOpen(false);
+          setSelectedVersionForCompare(null);
+        }}
+        onSuccess={async () => {
+          // Wait for backend to update comparison status
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Fetch updated framework data to trigger polling
+          await fetchFrameworkDetails(true);
+          setCompareModalOpen(false);
+          setSelectedVersionForCompare(null);
+        }}
+        companyFramework={{
+          ...framework,
+          frameworkName: framework.frameworkName,
+          aiUpload: selectedVersionForCompare.aiUpload,
+        }}
+      />
 
-      {deploymentGapModalOpen && selectedVersionForDeploymentGap && (
-        <CompareFrameworkModal
-          isOpen={deploymentGapModalOpen}
-          onClose={() => {
-            setDeploymentGapModalOpen(false);
-            setSelectedVersionForDeploymentGap(null);
-          }}
-          onSuccess={async () => {
-            // Wait for backend to update deployment gap status
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            // Fetch updated framework data to trigger polling
-            await fetchFrameworkDetails(true);
-            setDeploymentGapModalOpen(false);
-            setSelectedVersionForDeploymentGap(null);
-          }}
-          companyFramework={{
-            ...framework,
-            frameworkName: framework.frameworkName,
-            aiUpload: selectedVersionForDeploymentGap.aiUpload,
-          }}
-          mode="deploymentGap"
-        />
-      )}
+      <CompareFrameworkModal
+        isOpen={deploymentGapModalOpen}
+        onClose={() => {
+          setDeploymentGapModalOpen(false);
+          setSelectedVersionForDeploymentGap(null);
+        }}
+        onSuccess={async () => {
+          // Wait for backend to update deployment gap status
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          // Fetch updated framework data to trigger polling
+          await fetchFrameworkDetails(true);
+          setDeploymentGapModalOpen(false);
+          setSelectedVersionForDeploymentGap(null);
+        }}
+        companyFramework={{
+          ...framework,
+          frameworkName: framework.frameworkName,
+          aiUpload: selectedVersionForDeploymentGap.aiUpload,
+        }}
+        mode="deploymentGap"
+      />
 
-      {requestReviewModalOpen && (
-        <RequestReviewModal
-          frameworkId={framework.id}
-          frameworkName={framework.frameworkName}
-          onSuccess={async () => {
-            await fetchFrameworkDetails(true);
-          }}
-          onClose={() => setRequestReviewModalOpen(false)}
-        />
-      )}
+      <RequestReviewModal
+        isOpen={requestReviewModalOpen}
+        frameworkId={framework.id}
+        frameworkName={framework.frameworkName}
+        onSuccess={async () => {
+          await fetchFrameworkDetails(true);
+        }}
+        onClose={() => setRequestReviewModalOpen(false)}
+      />
 
-      {approveModalOpen && (
-        <ApproveFrameworkModal
-          framework={framework}
-          onConfirm={handleApprove}
-          onCancel={() => setApproveModalOpen(false)}
-        />
-      )}
+      <ApproveFrameworkModal
+        framework={framework}
+        onConfirm={handleApprove}
+        onCancel={() => setApproveModalOpen(false)}
+      />
 
-      {rejectModalOpen && (
-        <RejectFrameworkModal
-          framework={framework}
-          onConfirm={handleReject}
-          onCancel={() => setRejectModalOpen(false)}
-        />
-      )}
+      <RejectFrameworkModal
+        framework={framework}
+        onConfirm={handleReject}
+        onCancel={() => setRejectModalOpen(false)}
+      />
     </div>
   );
 }
 
 export default CompanyFrameworkDetail;
-

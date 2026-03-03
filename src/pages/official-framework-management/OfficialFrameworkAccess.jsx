@@ -196,15 +196,11 @@ function OfficialFrameworkAccess() {
       />
 
       {/* Request Access Modal */}
-      {requestModalState.isOpen && (
-        <RequestAccessModal
-          framework={requestModalState.framework}
-          onSuccess={handleRequestAccessSuccess}
-          onClose={() =>
-            setRequestModalState({ isOpen: false, framework: null })
-          }
-        />
-      )}
+      <RequestAccessModal
+        framework={requestModalState.framework}
+        onSuccess={handleRequestAccessSuccess}
+        onClose={() => setRequestModalState({ isOpen: false, framework: null })}
+      />
     </div>
   );
 }

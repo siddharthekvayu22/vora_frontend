@@ -1289,59 +1289,47 @@ function OfficialFrameworkDetail() {
       </div>
 
       {/* Delete Version Modal */}
-      {deleteModalOpen && versionToDelete && (
-        <DeleteVersionModal
-          version={versionToDelete}
-          onConfirm={handleDeleteConfirm}
-          onCancel={handleDeleteCancel}
-        />
-      )}
+      <DeleteVersionModal
+        version={versionToDelete}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+      />
 
       {/* Approve Framework Modal */}
-      {approveModalOpen && (
-        <ApproveFrameworkModal
-          framework={framework}
-          onConfirm={handleApproveConfirm}
-          onCancel={handleApproveCancel}
-        />
-      )}
+      <ApproveFrameworkModal
+        framework={framework}
+        onConfirm={handleApproveConfirm}
+        onCancel={handleApproveCancel}
+      />
 
       {/* Reject Framework Modal */}
-      {rejectModalOpen && (
-        <RejectFrameworkModal
-          framework={framework}
-          onConfirm={handleRejectConfirm}
-          onCancel={handleRejectCancel}
-        />
-      )}
+      <RejectFrameworkModal
+        framework={framework}
+        onConfirm={handleRejectConfirm}
+        onCancel={handleRejectCancel}
+      />
 
       {/* Update Framework Modal */}
-      {updateModalOpen && (
-        <UpdateFrameworkModal
-          isOpen={updateModalOpen}
-          onClose={handleUpdateCancel}
-          onSuccess={handleUpdateSuccess}
-          framework={framework}
-        />
-      )}
+      <UpdateFrameworkModal
+        isOpen={updateModalOpen}
+        onClose={handleUpdateCancel}
+        onSuccess={handleUpdateSuccess}
+        framework={framework}
+      />
 
       {/* Edit Control Modal */}
-      {editControlModalOpen && controlToEdit && (
-        <EditControlModal
-          control={controlToEdit}
-          onSave={handleEditControlSave}
-          onCancel={handleEditControlCancel}
-        />
-      )}
+      <EditControlModal
+        control={controlToEdit}
+        onSave={handleEditControlSave}
+        onCancel={handleEditControlCancel}
+      />
 
       {/* Delete Control Modal */}
-      {deleteControlModalOpen && controlToDelete && (
-        <DeleteControlModal
-          control={controlToDelete}
-          onConfirm={handleDeleteControlConfirm}
-          onCancel={handleDeleteControlCancel}
-        />
-      )}
+      <DeleteControlModal
+        control={controlToDelete}
+        onConfirm={handleDeleteControlConfirm}
+        onCancel={handleDeleteControlCancel}
+      />
     </div>
   );
 }

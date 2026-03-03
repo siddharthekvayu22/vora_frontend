@@ -19,21 +19,29 @@ import {
   FiTrash,
   FiEdit,
   FiGitMerge,
+  FiCheckCircle,
+  FiXCircle,
 } from "react-icons/fi";
 import Icon from "../../components/Icon";
 import DeleteVersionModal from "./components/DeleteVersionModal";
 import UpdateCompanyFrameworkModal from "./components/UpdateCompanyFrameworkModal";
 import CompareFrameworkModal from "./components/CompareFrameworkModal";
+import RequestReviewModal from "./components/RequestReviewModal";
+import ApproveFrameworkModal from "./components/ApproveFrameworkModal";
+import RejectFrameworkModal from "./components/RejectFrameworkModal";
 import {
   downloadCompanyFrameworkFile,
   getCompanyFrameworkById,
   uploadCompanyFrameworkToAi,
   deleteCompanyFrameworkVersion,
+  approveCompanyFramework,
+  rejectCompanyFramework,
 } from "../../services/companyFrameworkService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
 import ComparisonTable from "./components/ComparisonTable";
 import DeploymentGapsTable from "./components/DeploymentGapsTable";
+import { useAuth } from "@/context/useAuth";
 
 // ========== HELPER COMPONENTS ==========
 const InfoItem = ({ icon, label, value }) => (
@@ -215,6 +223,7 @@ const useStatusPolling = (framework, setFramework, id) => {
 
 // ========== MAIN COMPONENT ==========
 function CompanyFrameworkDetail() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [framework, setFramework] = useState(null);
@@ -232,6 +241,9 @@ function CompanyFrameworkDetail() {
   const [deploymentGapModalOpen, setDeploymentGapModalOpen] = useState(false);
   const [selectedVersionForDeploymentGap, setSelectedVersionForDeploymentGap] =
     useState(null);
+  const [requestReviewModalOpen, setRequestReviewModalOpen] = useState(false);
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
 
   // Use custom polling hook
   useStatusPolling(framework, setFramework, id);
@@ -341,6 +353,38 @@ function CompanyFrameworkDetail() {
     });
   };
 
+  const handleApprove = async (comments) => {
+    try {
+      const response = await approveCompanyFramework(framework.id, {
+        comments,
+      });
+      if (response.success) {
+        toast.success(response.message || "Framework approved successfully");
+        await fetchFrameworkDetails();
+        setApproveModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to approve framework");
+      throw error;
+    }
+  };
+
+  const handleReject = async (comments) => {
+    try {
+      const response = await rejectCompanyFramework(framework.id, {
+        comments,
+      });
+      if (response.success) {
+        toast.success(response.message || "Framework rejected successfully");
+        await fetchFrameworkDetails();
+        setRejectModalOpen(false);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to reject framework");
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -432,9 +476,28 @@ function CompanyFrameworkDetail() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={() => setUpdateModalOpen(true)}>
-                  <FiEdit size={16} /> Update Framework
-                </Button>
+                {user.role === "expert" &&
+                  framework.requestReview?.status !== "approved" &&
+                  framework.requestReview?.status !== "rejected" &&
+                  framework.requestReview?.status === "requested" && (
+                    <>
+                      <Button onClick={() => setApproveModalOpen(true)}>
+                        <FiEdit size={16} /> <span>Approve</span>
+                      </Button>
+
+                      <Button
+                        variant="destructive"
+                        onClick={() => setRejectModalOpen(true)}
+                      >
+                        <FiEdit size={16} /> <span>Reject</span>
+                      </Button>
+                    </>
+                  )}
+                {user.role === "company" && (
+                  <Button onClick={() => setUpdateModalOpen(true)}>
+                    <FiEdit size={16} /> Update Framework
+                  </Button>
+                )}
                 <Button
                   onClick={() => navigate(-1)}
                   className="flex items-center gap-2"
@@ -503,7 +566,79 @@ function CompanyFrameworkDetail() {
                   </span>
                 }
               />
+              <InfoItem
+                icon={<FiShield size={15} />}
+                label="Approval Status"
+                value={
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      framework.requestReview.status === "approved"
+                        ? "bg-primary/15 text-primary"
+                        : framework.requestReview.status === "rejected"
+                          ? "bg-red-500/15 text-red-600 dark:text-red-400"
+                          : "bg-yellow-500/15 text-yellow-600 dark:text-yellow-400"
+                    }`}
+                  >
+                    {framework.requestReview.status === "approved"
+                      ? "Approved"
+                      : framework.requestReview.status === "rejected"
+                        ? "Rejected"
+                        : "Pending"}
+                  </span>
+                }
+              />
             </div>
+
+            {/* Show rejection reason if framework is rejected */}
+            {framework.requestReview.status === "rejected" &&
+              framework.requestReview.comments && (
+                <div className="mt-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded p-4">
+                  <div className="flex gap-3">
+                    <FiXCircle
+                      size={20}
+                      className="text-red-600 dark:text-red-400 mt-0.5 shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-red-800 dark:text-red-200 mb-1">
+                        Rejection Reason
+                      </h4>
+                      <p className="text-sm text-red-700 dark:text-red-300 leading-relaxed">
+                        {framework.requestReview.comments}
+                      </p>
+                      {framework.requestReview.assignedExpert && (
+                        <p className="text-xs text-red-600 dark:text-red-400 mt-2">
+                          Rejected by:{" "}
+                          {framework.requestReview.assignedExpert.name} on{" "}
+                          {formatDate(framework.requestReview.reviewedAt)}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            {/* Show approval info if framework is approved */}
+            {framework.requestReview.status === "approved" &&
+              framework.requestReview.assignedExpert && (
+                <div className="mt-4 bg-primary/10 border border-primary/30 rounded p-4">
+                  <div className="flex gap-3">
+                    <FiCheckCircle
+                      size={20}
+                      className="text-primary mt-0.5 shrink-0"
+                    />
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
+                        Framework Approved
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Approved by:{" "}
+                        {framework.requestReview.assignedExpert.name} on{" "}
+                        {formatDate(framework.requestReview.reviewedAt)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
@@ -565,7 +700,8 @@ function CompanyFrameworkDetail() {
                         <FiDownload size={15} /> Download
                       </Button>
 
-                      {ver.aiUpload?.status === "completed" &&
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
                         ver.aiUpload?.job_id &&
                         (ver.comparison?.status !== "comparison_completed" ||
                           (ver.comparison?.status === "comparison_completed" &&
@@ -607,7 +743,8 @@ function CompanyFrameworkDetail() {
                           </Button>
                         )}
 
-                      {ver.aiUpload?.status === "completed" &&
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
                         ver.aiUpload?.job_id &&
                         (ver.deploymentGap?.status !==
                           "deployment_gap_completed" ||
@@ -655,44 +792,63 @@ function CompanyFrameworkDetail() {
                           </Button>
                         )}
 
-                      {!isCurrent && framework.fileVersions.length > 1 && (
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDeleteVersion(ver)}
-                        >
-                          <FiTrash size={15} /> Delete
-                        </Button>
-                      )}
+                      {user.role === "company" &&
+                        !isCurrent &&
+                        framework.fileVersions.length > 1 && (
+                          <Button
+                            variant="destructive"
+                            onClick={() => handleDeleteVersion(ver)}
+                          >
+                            <FiTrash size={15} /> Delete
+                          </Button>
+                        )}
 
-                      {(!ver.aiUpload ||
-                        !["completed"].includes(ver.aiUpload?.status)) && (
-                        <Button
-                          variant="secondary"
-                          onClick={() => handleUploadToAi(ver.fileId)}
-                          disabled={
-                            ver.aiUpload?.status === "uploaded" ||
-                            ver.aiUpload?.status === "processing"
-                          }
-                        >
-                          {ver.aiUpload?.status === "uploaded" ||
-                          ver.aiUpload?.status === "processing" ? (
-                            <>
-                              <FiLoader size={13} className="animate-spin" />
-                              {ver.aiUpload?.status === "processing"
-                                ? "Processing..."
-                                : "Uploading..."}
-                            </>
-                          ) : (
-                            <>
-                              <FiUploadCloud size={13} />
-                              {ver.aiUpload?.status === "failed" ||
-                              ver.aiUpload?.status === "skipped"
-                                ? "Retry AI Upload"
-                                : "Upload to AI"}
-                            </>
-                          )}
-                        </Button>
-                      )}
+                      {user.role === "company" &&
+                        (!ver.aiUpload ||
+                          !["completed"].includes(ver.aiUpload?.status)) && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleUploadToAi(ver.fileId)}
+                            disabled={
+                              ver.aiUpload?.status === "uploaded" ||
+                              ver.aiUpload?.status === "processing"
+                            }
+                          >
+                            {ver.aiUpload?.status === "uploaded" ||
+                            ver.aiUpload?.status === "processing" ? (
+                              <>
+                                <FiLoader size={13} className="animate-spin" />
+                                {ver.aiUpload?.status === "processing"
+                                  ? "Processing..."
+                                  : "Uploading..."}
+                              </>
+                            ) : (
+                              <>
+                                <FiUploadCloud size={13} />
+                                {ver.aiUpload?.status === "failed" ||
+                                ver.aiUpload?.status === "skipped"
+                                  ? "Retry AI Upload"
+                                  : "Upload to AI"}
+                              </>
+                            )}
+                          </Button>
+                        )}
+
+                      {user.role === "company" &&
+                        ver.aiUpload?.status === "completed" &&
+                        ((ver.comparison?.status === "comparison_completed" &&
+                          ver.comparison?.comparisons?.comparison_data?.length >
+                            0) ||
+                          (ver.deploymentGap?.status ===
+                            "deployment_gap_completed" &&
+                            ver.deploymentGap?.deployment_gaps
+                              ?.deployment_gap_results?.length > 0)) && (
+                          <Button
+                            onClick={() => setRequestReviewModalOpen(true)}
+                          >
+                            Request Review
+                          </Button>
+                        )}
 
                       <Button
                         variant="ghost"
@@ -1194,6 +1350,33 @@ function CompanyFrameworkDetail() {
             aiUpload: selectedVersionForDeploymentGap.aiUpload,
           }}
           mode="deploymentGap"
+        />
+      )}
+
+      {requestReviewModalOpen && (
+        <RequestReviewModal
+          frameworkId={framework.id}
+          frameworkName={framework.frameworkName}
+          onSuccess={async () => {
+            await fetchFrameworkDetails(true);
+          }}
+          onClose={() => setRequestReviewModalOpen(false)}
+        />
+      )}
+
+      {approveModalOpen && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApprove}
+          onCancel={() => setApproveModalOpen(false)}
+        />
+      )}
+
+      {rejectModalOpen && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleReject}
+          onCancel={() => setRejectModalOpen(false)}
         />
       )}
     </div>

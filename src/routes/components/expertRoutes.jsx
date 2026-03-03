@@ -8,6 +8,8 @@ import OfficialFramework from "../../pages/official-framework-management/Officia
 import OfficialFrameworkDetail from "../../pages/official-framework-management/OfficialFrameworkDetail";
 import OfficialFrameworkCategory from "../../pages/official-framework-management/OfficialFrameworkCategory";
 import OfficialFrameworkAccess from "../../pages/official-framework-management/OfficialFrameworkAccess";
+import CompanyFramework from "@/pages/company-framework-management/CompanyFramework";
+import CompanyFrameworkDetail from "@/pages/company-framework-management/CompanyFrameworkDetail";
 
 const expertRoutes = [
   // Expert Dashboard
@@ -67,6 +69,28 @@ const expertRoutes = [
       <ProtectedRoute>
         <Layout>
           <OfficialFrameworkAccess />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="/company-framework-requests"
+    path="/frameworks"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <CompanyFramework />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="/company-framework-request-details"
+    path="/frameworks/:id"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <CompanyFrameworkDetail />
         </Layout>
       </ProtectedRoute>
     }

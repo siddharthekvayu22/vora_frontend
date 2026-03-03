@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner"
+import { toast } from "sonner";
 
 /**
  * Custom hook for managing table data with URL-based state management
@@ -137,6 +137,7 @@ export function useTableData(fetchFunction, options = {}) {
     defaultSortOrder,
     defaultLimit,
     onError,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     ...additionalDeps,
   ]);
 

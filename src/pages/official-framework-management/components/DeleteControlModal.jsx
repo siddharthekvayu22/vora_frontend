@@ -31,6 +31,8 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
     }
   };
 
+  if (!control) return null;
+
   return (
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="lg:max-w-[500px]">

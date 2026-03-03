@@ -60,20 +60,46 @@ export default function CompareFrameworkModal({
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState(null);
 
+  const fetchOfficialFrameworks = useCallback(
+    async (search = searchTerm) => {
+      try {
+        setLoading(true);
+        const response = await getAllOfficialFrameworks({
+          page: currentPage,
+          limit: 5,
+          search: search,
+        });
+
+        if (response.success) {
+          setOfficialFrameworks(response.data);
+          setPagination(response.pagination);
+        }
+      } catch (error) {
+        toast.error(error.message || "Failed to fetch official frameworks");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [currentPage, searchTerm],
+  );
+
   useEffect(() => {
     if (isOpen) {
       fetchOfficialFrameworks();
     }
-  }, [isOpen, currentPage]);
+  }, [isOpen, currentPage, fetchOfficialFrameworks]);
 
   // Debounced search function
   const debouncedSearch = useCallback(
-    debounce((searchValue) => {
-      setIsSearching(true);
-      setCurrentPage(1); // Reset to first page on search
-      fetchOfficialFrameworks(searchValue);
-    }, 1000), // 1000ms delay
-    [],
+    (searchValue) => {
+      const debouncedFn = debounce(() => {
+        setIsSearching(true);
+        setCurrentPage(1); // Reset to first page on search
+        fetchOfficialFrameworks(searchValue);
+      }, 1000);
+      debouncedFn();
+    },
+    [fetchOfficialFrameworks],
   );
 
   // Reset searching state when loading changes
@@ -82,26 +108,6 @@ export default function CompareFrameworkModal({
       setIsSearching(false);
     }
   }, [loading]);
-
-  const fetchOfficialFrameworks = async (search = searchTerm) => {
-    try {
-      setLoading(true);
-      const response = await getAllOfficialFrameworks({
-        page: currentPage,
-        limit: 5,
-        search: search,
-      });
-
-      if (response.success) {
-        setOfficialFrameworks(response.data);
-        setPagination(response.pagination);
-      }
-    } catch (error) {
-      toast.error(error.message || "Failed to fetch official frameworks");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSearchChange = (e) => {
     const value = e.target.value;

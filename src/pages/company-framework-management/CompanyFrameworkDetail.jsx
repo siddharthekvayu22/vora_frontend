@@ -191,13 +191,7 @@ const useStatusPolling = (framework, setFramework, id) => {
       isActiveRef.current = false;
       if (pollingRef.current) clearTimeout(pollingRef.current);
     };
-  }, [
-    framework?.fileVersions?.[0]?.aiUpload?.status,
-    framework?.fileVersions?.[0]?.comparison?.status,
-    framework?.fileVersions?.[0]?.deploymentGap?.status,
-    id,
-    setFramework,
-  ]);
+  }, [framework?.fileVersions, id, setFramework]);
 };
 
 // ========== MAIN COMPONENT ==========
@@ -208,8 +202,6 @@ function CompanyFrameworkDetail() {
   const [framework, setFramework] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPolling, setIsPolling] = useState(false);
-  const [uploadingToAi, setUploadingToAi] = useState(new Set());
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [versionToDelete, setVersionToDelete] = useState(null);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [expandedVersions, setExpandedVersions] = useState(new Set());
@@ -221,8 +213,8 @@ function CompanyFrameworkDetail() {
   const [selectedVersionForDeploymentGap, setSelectedVersionForDeploymentGap] =
     useState(null);
   const [requestReviewModalOpen, setRequestReviewModalOpen] = useState(false);
-  const [approveModalOpen, setApproveModalOpen] = useState(false);
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
 
   // Use custom polling hook
   useStatusPolling(framework, setFramework, id);
@@ -276,25 +268,17 @@ function CompanyFrameworkDetail() {
 
   const handleUploadToAi = async (versionFileId) => {
     try {
-      setUploadingToAi((prev) => new Set(prev).add(versionFileId));
       const response = await uploadCompanyFrameworkToAi(versionFileId);
       toast.success(response.message || "File uploaded to AI successfully");
       fetchFrameworkDetails(true);
     } catch (error) {
       toast.error(error.message || "Failed to upload to AI");
       fetchFrameworkDetails(true);
-    } finally {
-      setUploadingToAi((prev) => {
-        const next = new Set(prev);
-        next.delete(versionFileId);
-        return next;
-      });
     }
   };
 
   const handleDeleteVersion = (version) => {
     setVersionToDelete(version);
-    setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -307,7 +291,6 @@ function CompanyFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Version deleted successfully");
         await fetchFrameworkDetails();
-        setDeleteModalOpen(false);
         setVersionToDelete(null);
       }
     } catch (error) {
@@ -340,7 +323,7 @@ function CompanyFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Framework approved successfully");
         await fetchFrameworkDetails();
-        setApproveModalOpen(false);
+        setShowApproveModal(false);
       }
     } catch (error) {
       toast.error(error.message || "Failed to approve framework");
@@ -356,7 +339,7 @@ function CompanyFrameworkDetail() {
       if (response.success) {
         toast.success(response.message || "Framework rejected successfully");
         await fetchFrameworkDetails();
-        setRejectModalOpen(false);
+        setShowRejectModal(false);
       }
     } catch (error) {
       toast.error(error.message || "Failed to reject framework");
@@ -460,13 +443,13 @@ function CompanyFrameworkDetail() {
                   framework.requestReview?.status !== "rejected" &&
                   framework.requestReview?.status === "requested" && (
                     <>
-                      <Button onClick={() => setApproveModalOpen(true)}>
+                      <Button onClick={() => setShowApproveModal(true)}>
                         <Icon name="edit" size="16px" /> <span>Approve</span>
                       </Button>
 
                       <Button
                         variant="destructive"
-                        onClick={() => setRejectModalOpen(true)}
+                        onClick={() => setShowRejectModal(true)}
                       >
                         <Icon name="edit" size="16px" /> <span>Reject</span>
                       </Button>
@@ -1295,10 +1278,7 @@ function CompanyFrameworkDetail() {
       <DeleteVersionModal
         version={versionToDelete}
         onConfirm={handleDeleteConfirm}
-        onCancel={() => {
-          setDeleteModalOpen(false);
-          setVersionToDelete(null);
-        }}
+        onCancel={() => setVersionToDelete(null)}
       />
 
       <UpdateCompanyFrameworkModal
@@ -1365,15 +1345,15 @@ function CompanyFrameworkDetail() {
       />
 
       <ApproveFrameworkModal
-        framework={framework}
+        framework={showApproveModal ? framework : null}
         onConfirm={handleApprove}
-        onCancel={() => setApproveModalOpen(false)}
+        onCancel={() => setShowApproveModal(false)}
       />
 
       <RejectFrameworkModal
-        framework={framework}
+        framework={showRejectModal ? framework : null}
         onConfirm={handleReject}
-        onCancel={() => setRejectModalOpen(false)}
+        onCancel={() => setShowRejectModal(false)}
       />
     </div>
   );

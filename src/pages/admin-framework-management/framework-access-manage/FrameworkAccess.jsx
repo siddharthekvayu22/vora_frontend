@@ -440,6 +440,7 @@ function FrameworkAccess() {
       />
 
       <GiveFrameworkAccessModal
+        isOpen={giveAccessModalState.isOpen}
         onSuccess={handleGiveAccessSuccess}
         onClose={() => setGiveAccessModalState({ isOpen: false })}
       />

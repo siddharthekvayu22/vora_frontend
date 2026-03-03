@@ -37,6 +37,8 @@ export default function DeleteVersionModal({ version, onConfirm, onCancel }) {
     }
   };
 
+  if (!version) return null;
+
   return (
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent className="lg:max-w-[500px]">

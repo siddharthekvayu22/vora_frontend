@@ -67,12 +67,15 @@ export default function DataTable({
 
   // Debounced search function
   const debouncedSearch = useCallback(
-    debounce((searchValue) => {
-      if (onSearch) {
-        setIsSearching(true);
-        onSearch(searchValue);
-      }
-    }, 1000), // 1000ms delay
+    (searchValue) => {
+      const debouncedFn = debounce(() => {
+        if (onSearch) {
+          setIsSearching(true);
+          onSearch(searchValue);
+        }
+      }, 1000);
+      debouncedFn();
+    },
     [onSearch],
   );
 

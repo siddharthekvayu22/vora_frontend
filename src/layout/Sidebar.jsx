@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { useTheme } from "../context/ThemeContext";
@@ -12,7 +12,7 @@ function Sidebar() {
 
   const location = useLocation();
   const { logout, user } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const role = user?.role;
@@ -162,6 +162,23 @@ function Sidebar() {
   const menuItems = navigationConfig[role] || navigationConfig.expert;
 
   // Auto-expand parent menu if child is active
+  // Function to check if a path is active (including child routes)
+  const isActive = useCallback(
+    (path) => {
+      if (!path) return false;
+
+      // Special case for dashboard
+      if (path === "/dashboard") {
+        return location.pathname === "/" || location.pathname === "/dashboard";
+      }
+
+      // Check if current path starts with the menu item path
+      // This ensures parent menu shows active for child routes
+      return location.pathname.startsWith(path);
+    },
+    [location.pathname],
+  );
+
   useEffect(() => {
     const activeParent = menuItems.find(
       (item) =>
@@ -170,21 +187,7 @@ function Sidebar() {
     if (activeParent && activeMenu !== activeParent.id) {
       setActiveMenu(activeParent.id);
     }
-  }, [location.pathname]);
-
-  // Function to check if a path is active (including child routes)
-  const isActive = (path) => {
-    if (!path) return false;
-
-    // Special case for dashboard
-    if (path === "/dashboard") {
-      return location.pathname === "/" || location.pathname === "/dashboard";
-    }
-
-    // Check if current path starts with the menu item path
-    // This ensures parent menu shows active for child routes
-    return location.pathname.startsWith(path);
-  };
+  }, [location.pathname, menuItems, isActive, activeMenu]);
 
   // Check if parent or any of its children are active
   const isParentActive = (item) => {

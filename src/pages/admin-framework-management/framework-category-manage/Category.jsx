@@ -132,9 +132,7 @@ function Category() {
       key: "createdBy",
       label: "Created By",
       sortable: false,
-      render: (value, row) => (
-        <UserMiniCard name={value.name} email={value.email} />
-      ),
+      render: (value) => <UserMiniCard name={value.name} email={value.email} />,
     },
     {
       key: "createdAt",

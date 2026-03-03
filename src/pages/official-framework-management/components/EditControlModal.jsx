@@ -22,14 +22,14 @@ import {
  */
 export default function EditControlModal({ control, onSave, onCancel }) {
   const [formData, setFormData] = useState({
-    Control_name: control.Control_name || "",
-    Control_type: control.Control_type || "",
-    Control_description: control.Control_description || "",
+    Control_name: control?.Control_name || "",
+    Control_type: control?.Control_type || "",
+    Control_description: control?.Control_description || "",
   });
 
   // Initialize deployment points as array
   const [deploymentPoints, setDeploymentPoints] = useState(() => {
-    if (Array.isArray(control.Deployment_points)) {
+    if (control && Array.isArray(control.Deployment_points)) {
       return control.Deployment_points.length > 0
         ? control.Deployment_points
         : [""];
@@ -38,6 +38,8 @@ export default function EditControlModal({ control, onSave, onCancel }) {
   });
 
   const [saving, setSaving] = useState(false);
+
+  if (!control) return null;
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({

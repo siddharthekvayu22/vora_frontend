@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           await logoutApi();
         }
-      } catch (error) {
+      } catch {
         // Don't show error for logout API failure, just proceed with local logout
       } finally {
         // Clear session check interval

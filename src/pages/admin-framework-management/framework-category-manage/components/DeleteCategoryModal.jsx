@@ -35,7 +35,7 @@ export default function DeleteCategoryModal({ category, onConfirm, onCancel }) {
     <Dialog open={true} onOpenChange={onCancel}>
       <DialogContent
         showCloseButton={false}
-        className="overflow-hidden max-w-[500px]"
+        className="overflow-hidden max-w-125"
       >
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">

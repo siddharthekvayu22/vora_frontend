@@ -24,6 +24,8 @@ export default function DeleteOfficialFrameworkModal({
 }) {
   const [deleting, setDeleting] = useState(false);
 
+  if (!framework) return null;
+  
   const handleConfirm = async () => {
     setDeleting(true);
     try {
@@ -37,7 +39,7 @@ export default function DeleteOfficialFrameworkModal({
 
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent className="lg:max-w-[500px]">
+      <DialogContent className="lg:max-w-125">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="warning" size="24px" />

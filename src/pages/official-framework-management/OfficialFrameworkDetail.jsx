@@ -1284,11 +1284,13 @@ function OfficialFrameworkDetail() {
       </div>
 
       {/* Delete Version Modal */}
-      <DeleteVersionModal
-        version={versionToDelete}
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-      />
+      {versionToDelete && (
+        <DeleteVersionModal
+          version={versionToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
 
       {/* Approve Framework Modal */}
       {showApproveModal && framework && (

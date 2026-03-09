@@ -1275,11 +1275,13 @@ function CompanyFrameworkDetail() {
       </div>
 
       {/* Modals */}
-      <DeleteVersionModal
-        version={versionToDelete}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setVersionToDelete(null)}
-      />
+      {versionToDelete && (
+        <DeleteVersionModal
+          version={versionToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setVersionToDelete(null)}
+        />
+      )}
 
       <UpdateCompanyFrameworkModal
         isOpen={updateModalOpen}
@@ -1308,7 +1310,7 @@ function CompanyFrameworkDetail() {
         companyFramework={{
           ...framework,
           frameworkName: framework.frameworkName,
-          aiUpload: selectedVersionForCompare.aiUpload,
+          aiUpload: selectedVersionForCompare?.aiUpload || null,
         }}
       />
 
@@ -1329,7 +1331,7 @@ function CompanyFrameworkDetail() {
         companyFramework={{
           ...framework,
           frameworkName: framework.frameworkName,
-          aiUpload: selectedVersionForDeploymentGap.aiUpload,
+          aiUpload: selectedVersionForDeploymentGap?.aiUpload || null,
         }}
         mode="deploymentGap"
       />
@@ -1344,17 +1346,21 @@ function CompanyFrameworkDetail() {
         onClose={() => setRequestReviewModalOpen(false)}
       />
 
-      <ApproveFrameworkModal
-        framework={showApproveModal ? framework : null}
-        onConfirm={handleApprove}
-        onCancel={() => setShowApproveModal(false)}
-      />
+      {showApproveModal && framework && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApprove}
+          onCancel={() => setShowApproveModal(false)}
+        />
+      )}
 
-      <RejectFrameworkModal
-        framework={showRejectModal ? framework : null}
-        onConfirm={handleReject}
-        onCancel={() => setShowRejectModal(false)}
-      />
+      {showRejectModal && framework && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleReject}
+          onCancel={() => setShowRejectModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -122,7 +122,7 @@ function OfficialFrameworkAccess() {
     {
       key: "createdAt",
       label: "Created At",
-      sortable: false,
+      sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

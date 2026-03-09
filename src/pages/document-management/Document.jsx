@@ -141,7 +141,7 @@ function Document() {
     {
       key: "createdAt",
       label: "Uploaded At",
-      sortable: false,
+      sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),
@@ -149,7 +149,7 @@ function Document() {
     {
       key: "updatedAt",
       label: "Updated At",
-      sortable: false,
+      sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

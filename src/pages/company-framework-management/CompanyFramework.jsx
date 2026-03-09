@@ -215,7 +215,7 @@ function CompanyFramework() {
     {
       key: "createdAt",
       label: "Uploaded At",
-      sortable: false,
+      sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

@@ -103,7 +103,7 @@ export default function DataTable({
         setIsSearching(true);
         onSearch(value);
       }
-    }, 600); // 600ms debounce delay
+    }, 1000); // 1000ms debounce delay
   };
 
   const getSerialNumber = (index, pagination) => {

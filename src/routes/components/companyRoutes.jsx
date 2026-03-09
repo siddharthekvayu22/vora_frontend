@@ -10,6 +10,7 @@ import OfficialFramework from "@/pages/official-framework-management/OfficialFra
 import OfficialFrameworkDetail from "@/pages/official-framework-management/OfficialFrameworkDetail";
 import CompanyDashboard from "@/pages/dashboard-management/CompanyDashboard";
 import Document from "@/pages/document-management/Document";
+import DocumentDetail from "@/pages/document-management/DocumentDetail";
 
 const companyRoutes = [
   <Route
@@ -85,6 +86,17 @@ const companyRoutes = [
       <ProtectedRoute>
         <Layout>
           <Document />
+        </Layout>
+      </ProtectedRoute>
+    }
+  />,
+  <Route
+    key="company-document-detail"
+    path="/documents/:id"
+    element={
+      <ProtectedRoute>
+        <Layout>
+          <DocumentDetail />
         </Layout>
       </ProtectedRoute>
     }

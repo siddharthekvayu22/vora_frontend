@@ -303,7 +303,7 @@ function Users() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+                className="w-30 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
               >
                 {roleFilter
                   ? roleFilter === "admin"
@@ -319,7 +319,7 @@ function Users() {
                 <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuContent className="w-30 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
               <DropdownMenuItem
                 onClick={() => handleRoleFilter("")}
                 className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
@@ -360,7 +360,7 @@ function Users() {
             <Button
               variant="outline"
               size="lg"
-              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+              className="w-30 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
             >
               {statusFilter
                 ? statusFilter === "true"
@@ -370,7 +370,7 @@ function Users() {
               <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+          <DropdownMenuContent className="w-30 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
             <DropdownMenuItem
               onClick={() => handleStatusFilter("")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
@@ -444,29 +444,33 @@ function Users() {
       />
 
       {/* User Modal */}
-      <UserModal
-        open={modalState.isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setModalState({ isOpen: false, mode: "view", user: null });
-          }
-        }}
-        mode={modalState.mode}
-        user={modalState.user}
-        onSave={handleSaveUser}
-      />
+      {modalState.isOpen && (
+        <UserModal
+          open={modalState.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setModalState({ isOpen: false, mode: "view", user: null });
+            }
+          }}
+          mode={modalState.mode}
+          user={modalState.user}
+          onSave={handleSaveUser}
+        />
+      )}
 
       {/* Delete User Modal */}
-      <DeleteUserModal
-        open={deleteModalState.isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setDeleteModalState({ isOpen: false, user: null });
-          }
-        }}
-        user={deleteModalState.user}
-        onConfirm={handleDeleteUser}
-      />
+      {deleteModalState.isOpen && deleteModalState.user && (
+        <DeleteUserModal
+          open={deleteModalState.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDeleteModalState({ isOpen: false, user: null });
+            }
+          }}
+          user={deleteModalState.user}
+          onConfirm={handleDeleteUser}
+        />
+      )}
     </div>
   );
 }

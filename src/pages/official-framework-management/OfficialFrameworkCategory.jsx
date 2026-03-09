@@ -152,11 +152,15 @@ function OfficialFrameworkCategory() {
       />
 
       {/* Request Access Modal */}
-      <RequestAccessModal
-        framework={requestModalState.framework}
-        onSuccess={handleRequestAccessSuccess}
-        onClose={() => setRequestModalState({ isOpen: false, framework: null })}
-      />
+      {requestModalState.isOpen && requestModalState.framework && (
+        <RequestAccessModal
+          framework={requestModalState.framework}
+          onSuccess={handleRequestAccessSuccess}
+          onClose={() =>
+            setRequestModalState({ isOpen: false, framework: null })
+          }
+        />
+      )}
     </div>
   );
 }

@@ -859,7 +859,7 @@ function OfficialFrameworkDetail() {
                               </div>
                             </div>
 
-                            <div className="p-4 max-h-[400px] overflow-y-auto">
+                            <div className="p-4 max-h-100 overflow-y-auto">
                               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                 {/* Status & Message Card */}
                                 <div className="rounded border border-border bg-muted/30 overflow-hidden h-fit">
@@ -1091,7 +1091,7 @@ function OfficialFrameworkDetail() {
                                               >
                                                 {/* Dot */}
                                                 <span
-                                                  className={`absolute -left-[6px] top-[6px] w-2.5 h-2.5 rounded-full ${statusColor}`}
+                                                  className={`absolute -left-1.5 top-1.5 w-2.5 h-2.5 rounded-full ${statusColor}`}
                                                 />
 
                                                 {/* Row */}
@@ -1163,7 +1163,7 @@ function OfficialFrameworkDetail() {
                                 </span>
                               </div>
 
-                              <div className="p-4 max-h-[500px] overflow-y-auto">
+                              <div className="p-4 max-h-125 overflow-y-auto">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                   {/* Individual Control Cards */}
                                   {ver.aiUpload.controls.controls_data?.map(
@@ -1311,26 +1311,32 @@ function OfficialFrameworkDetail() {
       )}
 
       {/* Update Framework Modal */}
-      <UpdateFrameworkModal
-        isOpen={updateModalOpen}
-        onClose={handleUpdateCancel}
-        onSuccess={handleUpdateSuccess}
-        framework={framework}
-      />
+      {updateModalOpen && (
+        <UpdateFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={handleUpdateCancel}
+          onSuccess={handleUpdateSuccess}
+          framework={framework}
+        />
+      )}
 
       {/* Edit Control Modal */}
-      <EditControlModal
-        control={controlToEdit}
-        onSave={handleEditControlSave}
-        onCancel={handleEditControlCancel}
-      />
+      {controlToEdit && (
+        <EditControlModal
+          control={controlToEdit}
+          onSave={handleEditControlSave}
+          onCancel={handleEditControlCancel}
+        />
+      )}
 
       {/* Delete Control Modal */}
-      <DeleteControlModal
-        control={controlToDelete}
-        onConfirm={handleDeleteControlConfirm}
-        onCancel={handleDeleteControlCancel}
-      />
+      {controlToDelete && (
+        <DeleteControlModal
+          control={controlToDelete}
+          onConfirm={handleDeleteControlConfirm}
+          onCancel={handleDeleteControlCancel}
+        />
+      )}
     </div>
   );
 }

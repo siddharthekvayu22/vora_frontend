@@ -377,29 +377,35 @@ function OfficialFramework() {
       />
 
       {/* Upload Framework Modal */}
-      <UploadFrameworkModal
-        isOpen={uploadModalOpen}
-        onClose={() => setUploadModalOpen(false)}
-        onSuccess={handleUploadSuccess}
-      />
+      {uploadModalOpen && (
+        <UploadFrameworkModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          onSuccess={handleUploadSuccess}
+        />
+      )}
 
       {/* Update Framework Modal */}
-      <UpdateFrameworkModal
-        isOpen={updateModalOpen}
-        onClose={() => {
-          setUpdateModalOpen(false);
-          setFrameworkToUpdate(null);
-        }}
-        onSuccess={handleUpdateSuccess}
-        framework={frameworkToUpdate}
-      />
+      {updateModalOpen && frameworkToUpdate && (
+        <UpdateFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={() => {
+            setUpdateModalOpen(false);
+            setFrameworkToUpdate(null);
+          }}
+          onSuccess={handleUpdateSuccess}
+          framework={frameworkToUpdate}
+        />
+      )}
 
       {/* Delete Framework Modal */}
-      <DeleteOfficialFrameworkModal
-        framework={frameworkToDelete}
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-      />
+      {frameworkToDelete && (
+        <DeleteOfficialFrameworkModal
+          framework={frameworkToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 }

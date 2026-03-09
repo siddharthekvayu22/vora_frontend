@@ -334,7 +334,7 @@ function Sidebar() {
                     <div
                       className={`flex h-7 w-7 items-center justify-center rounded border transition ${activeMenu === item.id ? "rotate-180 border-primary bg-primary text-white" : "border-border bg-muted text-muted-foreground"}`}
                     >
-                      <Icon name="arrow-down" size="12px" />
+                      <Icon name="chevron-down" size="12px" />
                     </div>
                   )}
                 </div>

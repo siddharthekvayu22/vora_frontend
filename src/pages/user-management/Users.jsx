@@ -76,10 +76,16 @@ function Users() {
     try {
       if (modalState.mode === "create") {
         const response = await createUser(data);
+        if (!response || !response.success) {
+          throw new Error(response?.message || "Failed to create user");
+        }
         toast.success(response.message || "User created successfully");
       } else {
         const userId = modalState.user?._id || modalState.user?.id;
         const response = await updateUserByAdmin(userId, data);
+        if (!response || !response.success) {
+          throw new Error(response?.message || "Failed to update user");
+        }
         toast.success(response.message || "User updated successfully");
       }
       setModalState({ isOpen: false, mode: "view", user: null });
@@ -87,6 +93,7 @@ function Users() {
     } catch (e) {
       toast.error(e.message || "Failed to save user");
       console.error("Save user error:", e);
+      throw e;
     }
   };
 
@@ -100,13 +107,17 @@ function Users() {
         return;
       }
 
-      await deleteUser(userId);
+      const response = await deleteUser(userId);
+      if (!response || !response.success) {
+        throw new Error(response?.message || "Failed to delete user");
+      }
       toast.success("User deleted successfully");
       setDeleteModalState({ isOpen: false, user: null });
       refetch();
     } catch (e) {
       toast.error(e.message || "Failed to delete user");
       console.error("Delete user error:", e);
+      throw e;
     }
   };
 
@@ -292,7 +303,7 @@ function Users() {
               <Button
                 variant="outline"
                 size="lg"
-                className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+                className="w-30 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
               >
                 {roleFilter
                   ? roleFilter === "admin"
@@ -308,7 +319,7 @@ function Users() {
                 <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+            <DropdownMenuContent className="w-30 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
               <DropdownMenuItem
                 onClick={() => handleRoleFilter("")}
                 className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
@@ -349,7 +360,7 @@ function Users() {
             <Button
               variant="outline"
               size="lg"
-              className="w-[120px] justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
+              className="w-30 justify-between border-border dark:border-gray-600 dark:hover:border-gray-500 dark:bg-gray-800 text-muted-foreground dark:hover:bg-gray-700"
             >
               {statusFilter
                 ? statusFilter === "true"
@@ -359,7 +370,7 @@ function Users() {
               <ChevronDown className="h-4 w-4 opacity-50 dark:text-gray-400" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[120px] border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
+          <DropdownMenuContent className="w-30 border-border dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200">
             <DropdownMenuItem
               onClick={() => handleStatusFilter("")}
               className="cursor-pointer dark:focus:bg-gray-700 dark:focus:text-white"
@@ -433,29 +444,33 @@ function Users() {
       />
 
       {/* User Modal */}
-      <UserModal
-        open={modalState.isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setModalState({ isOpen: false, mode: "view", user: null });
-          }
-        }}
-        mode={modalState.mode}
-        user={modalState.user}
-        onSave={handleSaveUser}
-      />
+      {modalState.isOpen && (
+        <UserModal
+          open={modalState.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setModalState({ isOpen: false, mode: "view", user: null });
+            }
+          }}
+          mode={modalState.mode}
+          user={modalState.user}
+          onSave={handleSaveUser}
+        />
+      )}
 
       {/* Delete User Modal */}
-      <DeleteUserModal
-        open={deleteModalState.isOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setDeleteModalState({ isOpen: false, user: null });
-          }
-        }}
-        user={deleteModalState.user}
-        onConfirm={handleDeleteUser}
-      />
+      {deleteModalState.isOpen && deleteModalState.user && (
+        <DeleteUserModal
+          open={deleteModalState.isOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setDeleteModalState({ isOpen: false, user: null });
+            }
+          }}
+          user={deleteModalState.user}
+          onConfirm={handleDeleteUser}
+        />
+      )}
     </div>
   );
 }

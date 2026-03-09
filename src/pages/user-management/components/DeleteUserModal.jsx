@@ -30,7 +30,6 @@ export default function DeleteUserModal({
     setDeleting(true);
     try {
       await onConfirm();
-      onOpenChange(false);
     } catch (error) {
       console.error("Error deleting user:", error);
     } finally {

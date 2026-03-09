@@ -56,6 +56,8 @@ export default function RequestReviewModal({
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const fetchExperts = useCallback(async () => {
+    if (!isOpen) return; // Don't fetch if modal is not open
+
     setLoading(true);
     try {
       const params = {
@@ -69,21 +71,27 @@ export default function RequestReviewModal({
 
       const res = await getAllUsers(params);
 
-      setExperts(res.data || []);
-      setPagination((p) => ({
-        ...p,
-        totalPages: res.pagination?.totalPages || 1,
-        totalItems: res.pagination?.totalItems || 0,
-        hasPrevPage: pagination.currentPage > 1,
-        hasNextPage: pagination.currentPage < (res.pagination?.totalPages || 1),
-      }));
+      if (res && res.success) {
+        setExperts(res.data || []);
+        setPagination((p) => ({
+          ...p,
+          totalPages: res.pagination?.totalPages || 1,
+          totalItems: res.pagination?.totalItems || 0,
+          hasPrevPage: pagination.currentPage > 1,
+          hasNextPage:
+            pagination.currentPage < (res.pagination?.totalPages || 1),
+        }));
+      } else {
+        throw new Error(res?.message || "Failed to load experts");
+      }
     } catch (err) {
+      console.error("Error fetching experts:", err);
       toast.error(err.message || "Failed to load experts");
       setExperts([]);
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.limit, debouncedSearchTerm]);
+  }, [pagination.currentPage, pagination.limit, debouncedSearchTerm, isOpen]);
 
   useEffect(() => {
     fetchExperts();

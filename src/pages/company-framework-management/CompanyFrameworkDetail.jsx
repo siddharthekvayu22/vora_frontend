@@ -1275,86 +1275,100 @@ function CompanyFrameworkDetail() {
       </div>
 
       {/* Modals */}
-      <DeleteVersionModal
-        version={versionToDelete}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setVersionToDelete(null)}
-      />
+      {versionToDelete && (
+        <DeleteVersionModal
+          version={versionToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={() => setVersionToDelete(null)}
+        />
+      )}
 
-      <UpdateCompanyFrameworkModal
-        isOpen={updateModalOpen}
-        onClose={() => setUpdateModalOpen(false)}
-        onSuccess={() => {
-          fetchFrameworkDetails();
-          setUpdateModalOpen(false);
-        }}
-        framework={framework}
-      />
+      {updateModalOpen && (
+        <UpdateCompanyFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={() => setUpdateModalOpen(false)}
+          onSuccess={() => {
+            fetchFrameworkDetails();
+            setUpdateModalOpen(false);
+          }}
+          framework={framework}
+        />
+      )}
 
-      <CompareFrameworkModal
-        isOpen={compareModalOpen}
-        onClose={() => {
-          setCompareModalOpen(false);
-          setSelectedVersionForCompare(null);
-        }}
-        onSuccess={async () => {
-          // Wait for backend to update comparison status
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          // Fetch updated framework data to trigger polling
-          await fetchFrameworkDetails(true);
-          setCompareModalOpen(false);
-          setSelectedVersionForCompare(null);
-        }}
-        companyFramework={{
-          ...framework,
-          frameworkName: framework.frameworkName,
-          aiUpload: selectedVersionForCompare.aiUpload,
-        }}
-      />
+      {compareModalOpen && selectedVersionForCompare && (
+        <CompareFrameworkModal
+          isOpen={compareModalOpen}
+          onClose={() => {
+            setCompareModalOpen(false);
+            setSelectedVersionForCompare(null);
+          }}
+          onSuccess={async () => {
+            // Wait for backend to update comparison status
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Fetch updated framework data to trigger polling
+            await fetchFrameworkDetails(true);
+            setCompareModalOpen(false);
+            setSelectedVersionForCompare(null);
+          }}
+          companyFramework={{
+            ...framework,
+            frameworkName: framework.frameworkName,
+            aiUpload: selectedVersionForCompare?.aiUpload || null,
+          }}
+        />
+      )}
 
-      <CompareFrameworkModal
-        isOpen={deploymentGapModalOpen}
-        onClose={() => {
-          setDeploymentGapModalOpen(false);
-          setSelectedVersionForDeploymentGap(null);
-        }}
-        onSuccess={async () => {
-          // Wait for backend to update deployment gap status
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          // Fetch updated framework data to trigger polling
-          await fetchFrameworkDetails(true);
-          setDeploymentGapModalOpen(false);
-          setSelectedVersionForDeploymentGap(null);
-        }}
-        companyFramework={{
-          ...framework,
-          frameworkName: framework.frameworkName,
-          aiUpload: selectedVersionForDeploymentGap.aiUpload,
-        }}
-        mode="deploymentGap"
-      />
+      {deploymentGapModalOpen && selectedVersionForDeploymentGap && (
+        <CompareFrameworkModal
+          isOpen={deploymentGapModalOpen}
+          onClose={() => {
+            setDeploymentGapModalOpen(false);
+            setSelectedVersionForDeploymentGap(null);
+          }}
+          onSuccess={async () => {
+            // Wait for backend to update deployment gap status
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // Fetch updated framework data to trigger polling
+            await fetchFrameworkDetails(true);
+            setDeploymentGapModalOpen(false);
+            setSelectedVersionForDeploymentGap(null);
+          }}
+          companyFramework={{
+            ...framework,
+            frameworkName: framework.frameworkName,
+            aiUpload: selectedVersionForDeploymentGap?.aiUpload || null,
+          }}
+          mode="deploymentGap"
+        />
+      )}
 
-      <RequestReviewModal
-        isOpen={requestReviewModalOpen}
-        frameworkId={framework.id}
-        frameworkName={framework.frameworkName}
-        onSuccess={async () => {
-          await fetchFrameworkDetails(true);
-        }}
-        onClose={() => setRequestReviewModalOpen(false)}
-      />
+      {requestReviewModalOpen && framework && (
+        <RequestReviewModal
+          isOpen={requestReviewModalOpen}
+          frameworkId={framework.id}
+          frameworkName={framework.frameworkName}
+          onSuccess={async () => {
+            await fetchFrameworkDetails(true);
+          }}
+          onClose={() => setRequestReviewModalOpen(false)}
+        />
+      )}
 
-      <ApproveFrameworkModal
-        framework={showApproveModal ? framework : null}
-        onConfirm={handleApprove}
-        onCancel={() => setShowApproveModal(false)}
-      />
+      {showApproveModal && framework && (
+        <ApproveFrameworkModal
+          framework={framework}
+          onConfirm={handleApprove}
+          onCancel={() => setShowApproveModal(false)}
+        />
+      )}
 
-      <RejectFrameworkModal
-        framework={showRejectModal ? framework : null}
-        onConfirm={handleReject}
-        onCancel={() => setShowRejectModal(false)}
-      />
+      {showRejectModal && framework && (
+        <RejectFrameworkModal
+          framework={framework}
+          onConfirm={handleReject}
+          onCancel={() => setShowRejectModal(false)}
+        />
+      )}
     </div>
   );
 }

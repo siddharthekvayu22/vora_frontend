@@ -456,27 +456,33 @@ function CompanyFramework() {
         emptyMessage={emptyMessage}
       />
 
-      <UploadCompanyFrameworkModal
-        isOpen={uploadModalOpen}
-        onClose={() => setUploadModalOpen(false)}
-        onSuccess={handleUploadSuccess}
-      />
+      {uploadModalOpen && (
+        <UploadCompanyFrameworkModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          onSuccess={handleUploadSuccess}
+        />
+      )}
 
-      <UpdateCompanyFrameworkModal
-        isOpen={updateModalOpen}
-        onClose={() => {
-          setUpdateModalOpen(false);
-          setFrameworkToUpdate(null);
-        }}
-        onSuccess={handleUpdateSuccess}
-        framework={frameworkToUpdate}
-      />
+      {updateModalOpen && frameworkToUpdate && (
+        <UpdateCompanyFrameworkModal
+          isOpen={updateModalOpen}
+          onClose={() => {
+            setUpdateModalOpen(false);
+            setFrameworkToUpdate(null);
+          }}
+          onSuccess={handleUpdateSuccess}
+          framework={frameworkToUpdate}
+        />
+      )}
 
-      <DeleteCompanyFrameworkModal
-        framework={frameworkToDelete}
-        onConfirm={handleDeleteConfirm}
-        onCancel={handleDeleteCancel}
-      />
+      {frameworkToDelete && (
+        <DeleteCompanyFrameworkModal
+          framework={frameworkToDelete}
+          onConfirm={handleDeleteConfirm}
+          onCancel={handleDeleteCancel}
+        />
+      )}
     </div>
   );
 }

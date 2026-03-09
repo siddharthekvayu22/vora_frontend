@@ -57,7 +57,7 @@ function OfficialFrameworkCategory() {
       sortable: false,
       render: (value) => (
         <span
-          className="font-medium text-foreground line-clamp-1"
+          className="font-medium text-foreground line-clamp-2"
           title={value}
         >
           {value}

@@ -30,7 +30,7 @@ export default function DeleteCompanyDocumentModal({
 
   return (
     <Dialog open={!!document} onOpenChange={onCancel}>
-      <DialogContent className="lg:max-w-[500px]">
+      <DialogContent className="lg:max-w-125">
         <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="warning" size="24px" />

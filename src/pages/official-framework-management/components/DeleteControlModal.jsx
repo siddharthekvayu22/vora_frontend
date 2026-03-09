@@ -35,7 +35,7 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
 
   return (
     <Dialog open={true} onOpenChange={onCancel}>
-      <DialogContent className="lg:max-w-[500px]">
+      <DialogContent className="lg:max-w-125">
         <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="warning" size="24px" />

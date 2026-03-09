@@ -3,12 +3,12 @@ import Layout from "../../layout/Layout";
 import ProtectedRoute from "./ProtectedRoute";
 
 // Company Pages
-import Dashboard from "../../pages/dashboard-management/Dashboard";
 import Users from "../../pages/user-management/Users";
 import CompanyFramework from "@/pages/company-framework-management/CompanyFramework";
 import CompanyFrameworkDetail from "@/pages/company-framework-management/CompanyFrameworkDetail";
 import OfficialFramework from "@/pages/official-framework-management/OfficialFramework";
 import OfficialFrameworkDetail from "@/pages/official-framework-management/OfficialFrameworkDetail";
+import CompanyDashboard from "@/pages/dashboard-management/CompanyDashboard";
 
 const companyRoutes = [
   <Route
@@ -17,7 +17,7 @@ const companyRoutes = [
     element={
       <ProtectedRoute>
         <Layout>
-          <Dashboard />
+          <CompanyDashboard />
         </Layout>
       </ProtectedRoute>
     }

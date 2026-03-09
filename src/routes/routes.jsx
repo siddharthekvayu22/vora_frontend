@@ -10,6 +10,7 @@ import adminRoutes from "./components/adminRoutes";
 import expertRoutes from "./components/expertRoutes";
 import companyRoutes from "./components/companyRoutes";
 import authRoutes from "./components/authRoutes";
+import userRoutes from "./components/userRoutes";
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -29,6 +30,8 @@ function AppRoutes() {
         return expertRoutes;
       case "company":
         return companyRoutes;
+      case "user":
+        return userRoutes;
       default:
         return companyRoutes;
     }

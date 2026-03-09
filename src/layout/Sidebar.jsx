@@ -166,6 +166,13 @@ function Sidebar() {
         icon: "dashboard",
         path: "/dashboard",
       },
+      {
+        id: "documents",
+        title: "Documents",
+        description: "View & manage documents",
+        icon: "file",
+        path: "/documents",
+      },
     ],
   };
 

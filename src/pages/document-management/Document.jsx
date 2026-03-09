@@ -111,6 +111,12 @@ function Document() {
       ),
     },
     {
+      key: "currentVersion",
+      label: "Version",
+      sortable: false,
+      render: (value, row) => <span>{value}</span>,
+    },
+    {
       key: "documentType",
       label: "File Info",
       sortable: false,
@@ -135,6 +141,14 @@ function Document() {
     {
       key: "createdAt",
       label: "Uploaded At",
+      sortable: false,
+      render: (value) => (
+        <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
+      ),
+    },
+    {
+      key: "updatedAt",
+      label: "Updated At",
       sortable: false,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>

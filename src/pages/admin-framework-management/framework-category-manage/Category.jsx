@@ -104,7 +104,9 @@ function Category() {
       label: "Category Name",
       sortable: false,
       render: (value) => (
-        <span className="font-medium text-foreground">{value}</span>
+        <span className="font-medium text-foreground line-clamp-2">
+          {value}
+        </span>
       ),
     },
     {
@@ -202,20 +204,26 @@ function Category() {
         emptyMessage={emptyMessage}
       />
 
-      <CategoryModal
-        mode={modalState.mode}
-        category={modalState.category}
-        onSave={handleSaveCategory}
-        onClose={() =>
-          setModalState({ isOpen: false, mode: "create", category: null })
-        }
-      />
+      {modalState.isOpen && (
+        <CategoryModal
+          mode={modalState.mode}
+          category={modalState.category}
+          onSave={handleSaveCategory}
+          onClose={() =>
+            setModalState({ isOpen: false, mode: "create", category: null })
+          }
+        />
+      )}
 
-      <DeleteCategoryModal
-        category={deleteModalState.category}
-        onConfirm={handleDeleteCategory}
-        onCancel={() => setDeleteModalState({ isOpen: false, category: null })}
-      />
+      {deleteModalState.category && (
+        <DeleteCategoryModal
+          category={deleteModalState.category}
+          onConfirm={handleDeleteCategory}
+          onCancel={() =>
+            setDeleteModalState({ isOpen: false, category: null })
+          }
+        />
+      )}
     </div>
   );
 }

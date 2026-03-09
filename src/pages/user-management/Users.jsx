@@ -76,10 +76,16 @@ function Users() {
     try {
       if (modalState.mode === "create") {
         const response = await createUser(data);
+        if (!response || !response.success) {
+          throw new Error(response?.message || "Failed to create user");
+        }
         toast.success(response.message || "User created successfully");
       } else {
         const userId = modalState.user?._id || modalState.user?.id;
         const response = await updateUserByAdmin(userId, data);
+        if (!response || !response.success) {
+          throw new Error(response?.message || "Failed to update user");
+        }
         toast.success(response.message || "User updated successfully");
       }
       setModalState({ isOpen: false, mode: "view", user: null });
@@ -87,6 +93,7 @@ function Users() {
     } catch (e) {
       toast.error(e.message || "Failed to save user");
       console.error("Save user error:", e);
+      throw e;
     }
   };
 
@@ -100,13 +107,17 @@ function Users() {
         return;
       }
 
-      await deleteUser(userId);
+      const response = await deleteUser(userId);
+      if (!response || !response.success) {
+        throw new Error(response?.message || "Failed to delete user");
+      }
       toast.success("User deleted successfully");
       setDeleteModalState({ isOpen: false, user: null });
       refetch();
     } catch (e) {
       toast.error(e.message || "Failed to delete user");
       console.error("Delete user error:", e);
+      throw e;
     }
   };
 

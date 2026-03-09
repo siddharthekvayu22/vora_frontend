@@ -140,10 +140,8 @@ export default function UserModal({
     setSaving(true);
     try {
       await onSave(formData);
-      onOpenChange(false);
     } catch (error) {
       console.error("Error saving user:", error);
-      toast.error(error.message || "Failed to save user");
     } finally {
       setSaving(false);
     }

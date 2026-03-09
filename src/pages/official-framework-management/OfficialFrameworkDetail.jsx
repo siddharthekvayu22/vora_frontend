@@ -155,12 +155,11 @@ function OfficialFrameworkDetail() {
 
   // Set all versions as expanded by default when framework loads
   useEffect(() => {
-    if (framework?.fileVersions?.length) {
-      setExpandedVersions(
-        new Set(framework.fileVersions.map((v) => v.version)),
-      );
+    if (framework?.fileVersions?.length && framework?.currentVersion) {
+      // Only expand the current version by default
+      setExpandedVersions(new Set([framework.currentVersion]));
     }
-  }, [framework?.fileVersions]);
+  }, [framework?.fileVersions, framework?.currentVersion]);
 
   // Polling effect for AI status updates with exponential backoff
   // Extract AI upload status for dependency tracking

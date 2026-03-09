@@ -122,10 +122,11 @@ function DocumentDetail() {
   }, [fetchDocumentDetails]);
 
   useEffect(() => {
-    if (document?.fileVersions?.length) {
-      setExpandedVersions(new Set(document.fileVersions.map((v) => v.version)));
+    if (document?.fileVersions?.length && document?.currentVersion) {
+      // Only expand the current version by default
+      setExpandedVersions(new Set([document.currentVersion]));
     }
-  }, [document?.fileVersions]);
+  }, [document?.fileVersions, document?.currentVersion]);
 
   // ========== HANDLERS ==========
   const handleDownload = async (fileId, fileName) => {

@@ -249,12 +249,11 @@ function CompanyFrameworkDetail() {
   }, [fetchFrameworkDetails]);
 
   useEffect(() => {
-    if (framework?.fileVersions?.length) {
-      setExpandedVersions(
-        new Set(framework.fileVersions.map((v) => v.version)),
-      );
+    if (framework?.fileVersions?.length && framework?.currentVersion) {
+      // Only expand the current version by default
+      setExpandedVersions(new Set([framework.currentVersion]));
     }
-  }, [framework?.fileVersions]);
+  }, [framework?.fileVersions, framework?.currentVersion]);
 
   // ========== HANDLERS ==========
   const handleDownload = async (fileId, fileName) => {

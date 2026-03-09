@@ -12,7 +12,7 @@ function Sidebar() {
 
   const location = useLocation();
   const { logout, user } = useAuth();
-  const { toggleTheme } = useTheme();
+  const { toggleTheme, theme } = useTheme();
   const navigate = useNavigate();
 
   const role = user?.role;
@@ -157,6 +157,16 @@ function Sidebar() {
         path: "/documents",
       },
     ],
+
+    user: [
+      {
+        id: "dashboard",
+        title: "Dashboard",
+        description: "Overview & analytics",
+        icon: "dashboard",
+        path: "/dashboard",
+      },
+    ],
   };
 
   const menuItems = navigationConfig[role] || navigationConfig.expert;
@@ -213,12 +223,7 @@ function Sidebar() {
           aria-label="Open sidebar"
           variant="outline"
           size="icon"
-          className="
-      fixed left-2 top-5 z-50
-      flex h-11 w-11 items-center justify-center
-      rounded
-      bg-linear-to-br from-primary to-primary/70
-    "
+          className="fixed left-2 top-5 z-50 flex h-11 w-11 items-center justify-center rounded bg-linear-to-br from-primary to-primary/70"
         >
           <div className="flex flex-col gap-1">
             <span className="h-0.5 w-5 rounded-full bg-white" />
@@ -238,28 +243,14 @@ function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-85 bg-background flex flex-col
-                    shadow-2xl transition-transform duration-300 border-r border-border
-                    ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed left-0 top-0 z-50 h-screen w-85 bg-background flex flex-col shadow-2xl transition-transform duration-300 border-r border-border ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* ================= HEADER ================= */}
-        <div
-          className="relative flex items-center justify-between overflow-hidden
-                     bg-linear-to-br from-primary to-primary-2
-                     px-6 py-7"
-        >
-          <span
-            className="pointer-events-none absolute -top-1/2 -right-1/2
-                       h-[200%] w-[200%]
-                       bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_70%)]
-                       animate-rotatePattern"
-          />
+        <div className="relative flex items-center justify-between overflow-hidden bg-linear-to-br from-primary to-primary-2 px-6 py-7">
+          <span className="pointer-events-none absolute -top-1/2 -right-1/2 h-[200%] w-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_70%)] animate-rotatePattern" />
 
           <div className="relative z-10 flex items-center gap-3">
-            <div
-              className="flex h-12 w-12 items-center justify-center
-                            rounded shadow-lg overflow-hidden"
-            >
+            <div className="flex h-12 w-12 items-center justify-center rounded shadow-lg overflow-hidden">
               <img
                 src={logoImage}
                 alt="VORA Logo"
@@ -282,9 +273,7 @@ function Sidebar() {
 
           <Button
             onClick={() => setIsOpen(false)}
-            className="relative z-10 flex h-9 w-9 items-center justify-center
-                       rounded border border-white/30 bg-white/20
-                       text-white transition hover:rotate-90 hover:bg-red-500 cursor-pointer"
+            className="relative z-10 flex h-9 w-9 items-center justify-center rounded border border-white/30 bg-white/20 text-white transition hover:rotate-90 hover:bg-red-500 cursor-pointer"
           >
             <Icon name="close" size="20px" />
           </Button>
@@ -305,32 +294,16 @@ function Sidebar() {
                       setIsOpen(false);
                     }
                   }}
-                  className={`group relative flex cursor-pointer items-center gap-4
-                            rounded px-4 py-3 transition-all
-                  ${
-                    isParentActive(item)
-                      ? "border border-primary bg-linear-to-br from-primary/15 to-primary-2/15 shadow-md"
-                      : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"
-                  }`}
+                  className={`group relative flex cursor-pointer items-center gap-4 rounded px-4 py-3 transition-all ${isParentActive(item) ? "border border-primary bg-linear-to-br from-primary/15 to-primary-2/15 shadow-md" : "border border-transparent bg-muted hover:translate-x-1 hover:border-border hover:bg-background"}`}
                 >
                   {/* Left accent */}
                   <span
-                    className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r
-                    ${
-                      isParentActive(item)
-                        ? "h-2/3 bg-linear-to-b from-primary to-primary-2"
-                        : "h-0 bg-primary group-hover:h-1/2 transition-all"
-                    }`}
+                    className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 rounded-r ${isParentActive(item) ? "h-2/3 bg-linear-to-b from-primary to-primary-2" : "h-0 bg-primary group-hover:h-1/2 transition-all"}`}
                   />
 
                   {/* Icon */}
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded border transition
-                    ${
-                      isParentActive(item)
-                        ? "border-primary bg-primary/20 text-primary scale-110"
-                        : "border-border bg-muted text-muted-foreground group-hover:text-primary"
-                    }`}
+                    className={`flex h-10 w-10 items-center justify-center rounded border transition ${isParentActive(item) ? "border-primary bg-primary/20 text-primary scale-110" : "border-border bg-muted text-muted-foreground group-hover:text-primary"}`}
                   >
                     <Icon name={item.icon} size="20px" />
                   </div>
@@ -338,12 +311,7 @@ function Sidebar() {
                   {/* Text */}
                   <div className="flex flex-1 flex-col">
                     <span
-                      className={`text-sm font-semibold
-                      ${
-                        isParentActive(item)
-                          ? "text-primary"
-                          : "text-foreground"
-                      }`}
+                      className={`text-sm font-semibold ${isParentActive(item) ? "text-primary" : "text-foreground"}`}
                     >
                       {item.title}
                     </span>
@@ -357,12 +325,7 @@ function Sidebar() {
                   {/* Arrow */}
                   {item.children && (
                     <div
-                      className={`flex h-7 w-7 items-center justify-center rounded border transition
-                      ${
-                        activeMenu === item.id
-                          ? "rotate-180 border-primary bg-primary text-white"
-                          : "border-border bg-muted text-muted-foreground"
-                      }`}
+                      className={`flex h-7 w-7 items-center justify-center rounded border transition ${activeMenu === item.id ? "rotate-180 border-primary bg-primary text-white" : "border-border bg-muted text-muted-foreground"}`}
                     >
                       <Icon name="arrow-down" size="12px" />
                     </div>
@@ -377,20 +340,10 @@ function Sidebar() {
                         key={sub.id}
                         to={sub.path}
                         onClick={() => setIsOpen(false)}
-                        className={`group flex items-center gap-3 rounded px-3 py-2 transition
-                        ${
-                          isActive(sub.path)
-                            ? "bg-primary/20 text-primary border-l-2 border-primary"
-                            : "hover:translate-x-1 hover:bg-muted"
-                        }`}
+                        className={`group flex items-center gap-3 rounded px-3 py-2 transition ${isActive(sub.path) ? "bg-primary/20 text-primary border-l-2 border-primary" : "hover:translate-x-1 hover:bg-muted"}`}
                       >
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded border
-                          ${
-                            isActive(sub.path)
-                              ? "border-primary bg-primary/20 text-primary scale-110"
-                              : "border-border bg-muted text-muted-foreground"
-                          }`}
+                          className={`flex h-8 w-8 items-center justify-center rounded border ${isActive(sub.path) ? "border-primary bg-primary/20 text-primary scale-110" : "border-border bg-muted text-muted-foreground"}`}
                         >
                           <Icon name={sub.icon} size="16px" />
                         </div>
@@ -435,15 +388,20 @@ function Sidebar() {
           </Link>
 
           <div className="flex gap-2">
-            <Button onClick={toggleTheme} size="icon" className="flex-1 ">
-              Theme
+            <Button
+              onClick={toggleTheme}
+              size="icon"
+              className="flex-1 flex items-center gap-2 text-white"
+            >
+              <Icon name={theme === "dark" ? "sun" : "moon"} size="16px" />
+              {theme === "dark" ? "Light" : "Dark"}
             </Button>
             <Button
               onClick={() => logout()}
               size="icon"
-              className="flex-1 border border-red-500 bg-red-500/10
-                         py-2 text-sm text-red-500 hover:bg-red-500 hover:text-white"
+              className="flex-1 border border-red-500 bg-red-500/10 py-2 text-sm text-red-500 hover:bg-red-500 hover:text-white flex items-center gap-2"
             >
+              <Icon name="power" size="16px" />
               Logout
             </Button>
           </div>

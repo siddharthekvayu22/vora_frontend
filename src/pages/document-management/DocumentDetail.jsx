@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Icon from "../../components/Icon";
@@ -8,89 +8,84 @@ import {
   downloadCompanyDocumentFile,
   getCompanyDocumentById,
   deleteCompanyDocumentVersion,
+  uploadCompanyDocumentToAi,
 } from "../../services/companyDocumentService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/useAuth";
+import FileIcon from "./components/custom/FileIcon";
+import InfoItem from "./components/custom/InfoItem";
 
-// ========== HELPER COMPONENTS ==========
-const InfoItem = ({ icon, label, value }) => (
-  <div className="flex items-start gap-3 p-3 rounded bg-muted">
-    <div className="mt-0.5 text-primary">{icon}</div>
-    <div>
-      <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
-        {label}
-      </p>
-      {value}
-    </div>
-  </div>
-);
+// ========== CUSTOM HOOK FOR POLLING ==========
+const useStatusPolling = (document, setDocument, id) => {
+  const pollingRef = useRef(null);
+  const isActiveRef = useRef(true);
 
-const FileIcon = ({ type }) => {
-  const configs = {
-    pdf: {
-      icon: "pdf",
-      bgColor: "bg-red-50 dark:bg-red-900/20",
-      textColor: "text-red-600 dark:text-red-400",
-      borderColor: "border-red-200 dark:border-red-800",
-    },
-    doc: {
-      icon: "doc",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20",
-      textColor: "text-blue-600 dark:text-blue-400",
-      borderColor: "border-blue-200 dark:border-blue-800",
-    },
-    docx: {
-      icon: "doc",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20",
-      textColor: "text-blue-600 dark:text-blue-400",
-      borderColor: "border-blue-200 dark:border-blue-800",
-    },
-    xls: {
-      icon: "excel",
-      bgColor: "bg-green-50 dark:bg-green-900/20",
-      textColor: "text-green-600 dark:text-green-400",
-      borderColor: "border-green-200 dark:border-green-800",
-    },
-    xlsx: {
-      icon: "excel",
-      bgColor: "bg-green-50 dark:bg-green-900/20",
-      textColor: "text-green-600 dark:text-green-400",
-      borderColor: "border-green-200 dark:border-green-800",
-    },
-    ppt: {
-      icon: "ppt",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      textColor: "text-orange-600 dark:text-orange-400",
-      borderColor: "border-orange-200 dark:border-orange-800",
-    },
-    pptx: {
-      icon: "ppt",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      textColor: "text-orange-600 dark:text-orange-400",
-      borderColor: "border-orange-200 dark:border-orange-800",
-    },
-    default: {
-      icon: "file",
-      bgColor: "bg-gray-50 dark:bg-gray-900/20",
-      textColor: "text-gray-600 dark:text-gray-400",
-      borderColor: "border-gray-200 dark:border-gray-800",
-    },
-  };
+  useEffect(() => {
+    const aiStatus = document?.fileVersions?.[0]?.aiUpload?.status;
 
-  const fileType = type?.toLowerCase() || "pdf";
-  const config = configs[fileType] || configs.default;
+    const shouldPollAI = aiStatus === "uploaded" || aiStatus === "processing";
+    const isCorrectPage = window.location.pathname.includes(`/documents/${id}`);
 
-  return (
-    <span
-      className={`inline-flex items-center justify-center w-6 h-6 rounded ${config.bgColor} border ${config.borderColor} ${config.textColor}`}
-    >
-      <Icon name={config.icon} size="13px" />
-    </span>
-  );
+    if (!document?.fileVersions?.length || !shouldPollAI || !isCorrectPage) {
+      return;
+    }
+
+    let pollCount = 0;
+    const delays = [5000, 10000, 20000, 40000, 60000];
+
+    const poll = () => {
+      const delay = delays[Math.min(pollCount, delays.length - 1)];
+
+      pollingRef.current = setTimeout(async () => {
+        if (
+          !isActiveRef.current ||
+          !window.location.pathname.includes(`/documents/${id}`)
+        ) {
+          return;
+        }
+
+        try {
+          const response = await getCompanyDocumentById(id, {
+            params: { _t: Date.now() },
+          });
+
+          if (response.success && isActiveRef.current) {
+            const newDocument = response.data.document;
+            const newAIStatus =
+              newDocument?.fileVersions?.[0]?.aiUpload?.status;
+
+            setDocument(newDocument);
+            pollCount++;
+
+            const continuePollingAI =
+              newAIStatus === "uploaded" || newAIStatus === "processing";
+
+            if (continuePollingAI) {
+              poll();
+            }
+          }
+        } catch {
+          if (isActiveRef.current) {
+            pollCount++;
+            poll();
+          }
+        }
+      }, delay);
+    };
+
+    poll();
+
+    return () => {
+      isActiveRef.current = false;
+      if (pollingRef.current) clearTimeout(pollingRef.current);
+    };
+  }, [document?.fileVersions, id, setDocument]);
 };
 
 // ========== MAIN COMPONENT ==========
 function DocumentDetail() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
   const [document, setDocument] = useState(null);
@@ -100,6 +95,9 @@ function DocumentDetail() {
   const [expandedVersions, setExpandedVersions] = useState(new Set());
   const [showHash, setShowHash] = useState(new Set());
 
+  // Use status polling hook
+  useStatusPolling(document, setDocument, id);
+
   // Fetch document details
   const fetchDocumentDetails = useCallback(async () => {
     try {
@@ -108,7 +106,9 @@ function DocumentDetail() {
         params: { _t: Date.now() },
       });
 
-      if (response.success) setDocument(response.data.document);
+      if (response.success) {
+        setDocument(response.data.document);
+      }
     } catch (error) {
       toast.error(error.message || "Failed to fetch document details");
       navigate("/documents");
@@ -176,6 +176,17 @@ function DocumentDetail() {
     });
   };
 
+  const handleUploadToAi = async (fileId) => {
+    try {
+      const result = await uploadCompanyDocumentToAi(fileId);
+      // toast.success(result.message || "Document uploaded to AI successfully");
+      fetchDocumentDetails(true);
+    } catch (error) {
+      toast.error(error.message || "Failed to upload to AI");
+      fetchDocumentDetails(true);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -191,9 +202,23 @@ function DocumentDetail() {
 
   if (!document) return null;
 
+  // Check if AI is processing 
+  const isAIProcessing = ["uploaded", "processing"].includes(
+    document.fileVersions?.[0]?.aiUpload?.status,
+  );
+
   return (
     <div className="min-h-screen bg-background text-foreground my-5">
       <div className="space-y-6">
+        {/* AI Processing Indicator */}
+        {isAIProcessing && (
+          <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded shadow-lg backdrop-blur-sm">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
+              Monitoring AI status...
+            </span>
+          </div>
+        )}
         {/* Document Overview Card */}
         <div className="rounded overflow-hidden bg-card border border-border">
           <div className="h-1 bg-linear-to-r from-primary to-secondary" />
@@ -282,6 +307,35 @@ function DocumentDetail() {
                   </span>
                 }
               />
+              <InfoItem
+                icon={<Icon name="upload-cloud" size="15px" />}
+                label="AI Extraction"
+                value={
+                  document.fileVersions?.[0]?.aiUpload ? (
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        document.fileVersions[0].aiUpload.status === "completed"
+                          ? "bg-green-500/15 text-green-600"
+                          : document.fileVersions[0].aiUpload.status ===
+                                "uploaded" ||
+                              document.fileVersions[0].aiUpload.status ===
+                                "processing"
+                            ? "bg-blue-500/15 text-blue-600"
+                            : document.fileVersions[0].aiUpload.status ===
+                                "failed"
+                              ? "bg-red-500/15 text-red-600"
+                              : "bg-yellow-500/15 text-yellow-600"
+                      }`}
+                    >
+                      {document.fileVersions[0].aiUpload.status}
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-500/15 text-gray-600">
+                      Not Uploaded
+                    </span>
+                  )
+                }
+              />
             </div>
           </div>
         </div>
@@ -344,6 +398,42 @@ function DocumentDetail() {
                         <Icon name="download" size="15px" /> Download
                       </Button>
 
+                      {/* AI Upload Button */}
+                      {(user.role === "company" || user.role === "user") &&
+                        (!ver.aiUpload ||
+                          !["completed"].includes(ver.aiUpload?.status)) && (
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleUploadToAi(ver.fileId)}
+                            disabled={
+                              ver.aiUpload?.status === "uploaded" ||
+                              ver.aiUpload?.status === "processing"
+                            }
+                          >
+                            {ver.aiUpload?.status === "uploaded" ||
+                            ver.aiUpload?.status === "processing" ? (
+                              <>
+                                <Icon
+                                  name="loader"
+                                  size="13px"
+                                  className="animate-spin"
+                                />
+                                {ver.aiUpload?.status === "processing"
+                                  ? "Processing..."
+                                  : "Uploading..."}
+                              </>
+                            ) : (
+                              <>
+                                <Icon name="upload-cloud" size="13px" />
+                                {ver.aiUpload?.status === "failed" ||
+                                ver.aiUpload?.status === "skipped"
+                                  ? "Retry AI Upload"
+                                  : "Upload to AI"}
+                              </>
+                            )}
+                          </Button>
+                        )}
+
                       {!isCurrent && document.fileVersions.length > 1 && (
                         <Button
                           variant="destructive"
@@ -402,7 +492,7 @@ function DocumentDetail() {
                       </div>
 
                       {/* File Hash */}
-                      <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -411,11 +501,175 @@ function DocumentDetail() {
                           <Icon name="tag" size="13px" />
                           {hashVisible ? "Hide" : "Show"} file hash
                         </Button>
+                        {hashVisible && (
+                          <div className="px-2 py-2 rounded text-xs font-mono break-all bg-muted text-muted-foreground">
+                            {ver.fileHash}
+                          </div>
+                        )}
                       </div>
 
-                      {hashVisible && (
-                        <div className="p-3 rounded text-xs font-mono break-all bg-muted text-muted-foreground">
-                          {ver.fileHash}
+                      {/* AI Info */}
+                      {ver.aiUpload && (
+                        <div className="rounded border border-border bg-card overflow-hidden">
+                          <div className="px-4 py-3 bg-secondary/5 border-b border-border">
+                            <div className="flex items-center gap-2">
+                              <Icon
+                                name="info"
+                                size="16px"
+                                className="text-secondary"
+                              />
+                              <h3 className="text-sm font-bold">
+                                AI Processing Information
+                              </h3>
+                            </div>
+                          </div>
+
+                          <div className="p-4 max-h-100 overflow-y-auto">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                              {/* Status Card */}
+                              <div className="rounded border border-border bg-muted/30 overflow-hidden">
+                                <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-sm font-semibold">
+                                      Status
+                                    </h4>
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                        ver.aiUpload.status === "completed"
+                                          ? "bg-green-500/15 text-green-600"
+                                          : ver.aiUpload.status ===
+                                                "uploaded" ||
+                                              ver.aiUpload.status ===
+                                                "processing"
+                                            ? "bg-blue-500/15 text-blue-600"
+                                            : ver.aiUpload.status === "failed"
+                                              ? "bg-red-500/15 text-red-600"
+                                              : "bg-yellow-500/15 text-yellow-600"
+                                      }`}
+                                    >
+                                      {ver.aiUpload.status}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div className="p-3 space-y-2">
+                                  {ver.aiUpload.message && (
+                                    <div>
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Message
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {ver.aiUpload.message}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Show filename for uploaded status */}
+                                  {ver.aiUpload.status === "uploaded" &&
+                                    ver.aiUpload.filename && (
+                                      <div
+                                        className={
+                                          ver.aiUpload.message
+                                            ? "pt-2 border-t border-border"
+                                            : ""
+                                        }
+                                      >
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Filename
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {ver.aiUpload.filename}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                  {/* Show resourceType for uploaded status */}
+                                  {ver.aiUpload.status === "uploaded" &&
+                                    ver.aiUpload.resourceType && (
+                                      <div className="pt-2 border-t border-border">
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                          Resource Type
+                                        </p>
+                                        <p className="text-xs text-foreground">
+                                          {ver.aiUpload.resourceType}
+                                        </p>
+                                      </div>
+                                    )}
+
+                                  {ver.aiUpload.timestamp && (
+                                    <div className="pt-2 border-t border-border">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Timestamp
+                                      </p>
+                                      <p className="text-xs text-foreground">
+                                        {new Date(
+                                          ver.aiUpload.timestamp,
+                                        ).toLocaleString()}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Show duplicate information if applicable */}
+                                  {ver.aiUpload.is_duplicate && (
+                                    <div className="pt-2 border-t border-border">
+                                      <p className="text-[11px] font-medium uppercase tracking-wider mb-1.5 text-muted-foreground">
+                                        Duplicate Detection
+                                      </p>
+                                      <div className="flex items-center gap-2">
+                                        <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/15 text-blue-600">
+                                          Duplicate Detected
+                                        </span>
+                                      </div>
+                                      {ver.aiUpload.duplicate_of_uuid && (
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                          Reusing extraction from:{" "}
+                                          {ver.aiUpload.duplicate_of_uuid}
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Identifiers Card */}
+                              {(ver.aiUpload.uuid || ver.aiUpload.job_id) && (
+                                <div className="rounded border border-border bg-muted/30 overflow-hidden">
+                                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
+                                    <h4 className="text-sm font-semibold">
+                                      Identifiers
+                                    </h4>
+                                  </div>
+                                  <div className="p-3 space-y-2">
+                                    {ver.aiUpload.uuid && (
+                                      <div>
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          UUID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {ver.aiUpload.uuid}
+                                        </p>
+                                      </div>
+                                    )}
+                                    {ver.aiUpload.job_id && (
+                                      <div
+                                        className={
+                                          ver.aiUpload.uuid
+                                            ? "pt-2 border-t border-border"
+                                            : ""
+                                        }
+                                      >
+                                        <p className="text-[11px] font-medium uppercase tracking-wider mb-1 text-muted-foreground">
+                                          Job ID
+                                        </p>
+                                        <p className="text-xs font-mono text-foreground break-all">
+                                          {ver.aiUpload.job_id}
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>

@@ -99,6 +99,19 @@ export function deleteCompanyDocument(fileId) {
 }
 
 /**
+ * Upload company document file to ai
+ */
+export function uploadCompanyDocumentToAi(id) {
+  return apiRequest(
+    `/files/${id}/upload-to-ai`,
+    {
+      method: "POST",
+    },
+    true,
+  );
+}
+
+/**
  * Delete a specific file version
  */
 export function deleteCompanyDocumentVersion(fileId, versionFileId) {
@@ -119,4 +132,5 @@ export default {
   downloadCompanyDocumentFile,
   deleteCompanyDocument,
   deleteCompanyDocumentVersion,
+  uploadCompanyDocumentToAi,
 };

@@ -13,10 +13,12 @@ import {
   downloadCompanyDocumentFile,
   getAllCompanyDocuments,
   deleteCompanyDocument,
+  uploadCompanyDocumentToAi,
 } from "../../services/companyDocumentService";
 import { formatDate } from "../../utils/dateFormatter";
 import { Button } from "@/components/ui/button";
 import { useTableData } from "../../components/data-table/hooks/useTableData";
+import AiUploadStatusCard from "@/components/custom/AiUploadStatusCard";
 
 function Document() {
   const navigate = useNavigate();
@@ -95,6 +97,17 @@ function Document() {
     }
   };
 
+  const handleUploadToAi = async (fileId) => {
+    try {
+      const result = await uploadCompanyDocumentToAi(fileId);
+      toast.success(result.message || "Document uploaded to AI successfully");
+      refetch();
+    } catch (error) {
+      toast.error(error.message || "Failed to upload to AI");
+      refetch();
+    }
+  };
+
   /* ---------------- TABLE CONFIG ---------------- */
   const columns = [
     {
@@ -139,6 +152,12 @@ function Document() {
       },
     },
     {
+      key: "aiUpload",
+      label: "Ai Extraction",
+      sortable: false,
+      render: (value, row) => <AiUploadStatusCard aiUpload={row.aiUpload} />,
+    },
+    {
       key: "createdAt",
       label: "Uploaded At",
       sortable: true,
@@ -172,6 +191,27 @@ function Document() {
         className: "text-green-600 hover:text-green-600",
         onClick: () => handleDownloadDocument(row),
       },
+    ];
+
+    // Add AI upload action if not completed
+    if (!row.aiUpload || !["completed"].includes(row.aiUpload?.status)) {
+      actions.push({
+        id: `ai-upload-${row.fileInfo?.versionFileId}`,
+        label:
+          row.aiUpload?.status === "failed" ||
+          row.aiUpload?.status === "skipped"
+            ? "Retry AI Upload"
+            : "Upload to AI",
+        icon: "upload-cloud",
+        className: "text-purple-600 hover:text-purple-600",
+        onClick: () => handleUploadToAi(row.fileInfo?.versionFileId),
+        disabled:
+          row.aiUpload?.status === "uploaded" ||
+          row.aiUpload?.status === "processing",
+      });
+    }
+
+    actions.push(
       {
         id: `edit-${row.mainFileId}`,
         label: "Edit Document",
@@ -186,7 +226,7 @@ function Document() {
         className: "text-red-600 hover:text-red-600",
         onClick: () => handleDeleteDocument(row),
       },
-    ];
+    );
 
     return (
       <div className="flex justify-center">

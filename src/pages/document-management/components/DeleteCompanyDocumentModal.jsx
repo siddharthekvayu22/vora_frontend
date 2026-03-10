@@ -4,20 +4,17 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
-/**
- * DeleteControlModal Component - Confirmation dialog for deleting a control
- *
- * @param {Object} control - Control to delete
- * @param {Function} onConfirm - Confirm delete handler
- * @param {Function} onCancel - Cancel handler
- */
-export default function DeleteControlModal({ control, onConfirm, onCancel }) {
+export default function DeleteCompanyDocumentModal({
+  document,
+  onConfirm,
+  onCancel,
+}) {
   const [deleting, setDeleting] = useState(false);
 
   const handleConfirm = async () => {
@@ -25,56 +22,59 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
     try {
       await onConfirm();
     } catch (error) {
-      console.error("Error deleting control:", error);
+      console.error("Error deleting document:", error);
     } finally {
       setDeleting(false);
     }
   };
 
-  if (!control) return null;
-
   return (
-    <Dialog open={true} onOpenChange={onCancel}>
+    <Dialog open={!!document} onOpenChange={onCancel}>
       <DialogContent className="lg:max-w-125">
-        <DialogHeader className="flex flex-row items-center justify-between bg-linear-to-br from-primary to-primary/80 text-white py-4">
+        <DialogHeader className="bg-linear-to-br from-primary to-primary/80 text-white py-4">
           <div className="flex items-center gap-3">
             <Icon name="warning" size="24px" />
             <DialogTitle className="text-xl font-bold text-white drop-shadow-sm">
-              Delete Control
+              Delete Document
             </DialogTitle>
-            <DialogDescription className="sr-only">
-              Confirm deletion of control. This action cannot be undone.
-            </DialogDescription>
           </div>
+          <DialogDescription className="sr-only">
+            Confirm deletion of company document
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4 p-3">
-          <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-            Are you sure you want to delete this control? This action cannot be
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Are you sure you want to delete this document? This action cannot be
             undone.
           </p>
 
-          <div className="bg-muted rounded p-3 border-l-4 border-red-500 mb-4">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
-                <span className="text-sm font-bold">{control.Control_id}</span>
+          <div className="bg-muted rounded p-3 border-l-4 border-red-500">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                <Icon name="document" size="20px" />
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-semibold text-foreground m-0">
-                  {control.Control_name}
+                  {document?.documentName}
                 </h4>
               </div>
             </div>
-            <div className="flex gap-2 mt-2">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary/15 text-secondary">
-                {control.Control_type}
+            <div className="flex gap-2 mt-1">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                {document?.documentType?.toUpperCase() || "PDF"}
               </span>
+              {document?.fileInfo?.fileSize && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400">
+                  {document.fileInfo.fileSize}
+                </span>
+              )}
             </div>
-            <div className="mt-3 pt-3 border-t border-border">
-              <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                {control.Control_description}
+            {document?.uploadedBy?.name && (
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Uploaded by: {document.uploadedBy.name}
               </p>
-            </div>
+            )}
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
           <Button
             type="button"
             variant="outline"
-            className="flex-1"
+            className="flex-1 rounded"
             onClick={onCancel}
             disabled={deleting}
           >
@@ -103,7 +103,7 @@ export default function DeleteControlModal({ control, onConfirm, onCancel }) {
             ) : (
               <>
                 <Icon name="trash" size="16px" />
-                Delete Control
+                Delete Document
               </>
             )}
           </Button>

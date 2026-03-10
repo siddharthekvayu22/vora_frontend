@@ -150,7 +150,7 @@ function OfficialFramework() {
       sortable: false,
       render: (value) => (
         <span
-          className="font-medium text-foreground line-clamp-1"
+          className="font-medium text-foreground line-clamp-2"
           title={value}
         >
           {value}
@@ -188,7 +188,7 @@ function OfficialFramework() {
     {
       key: "createdAt",
       label: "Uploaded At",
-      sortable: false,
+      sortable: true,
       render: (value) => (
         <span className="text-sm whitespace-nowrap">{formatDate(value)}</span>
       ),

@@ -7,11 +7,15 @@ export function getAdminFrameworkCategory({
   page = 1,
   limit = 10,
   search = "",
+  sortBy = "",
+  sortOrder = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
   return apiRequest(
     `/admin/framework-categories/categories?${params.toString()}`,

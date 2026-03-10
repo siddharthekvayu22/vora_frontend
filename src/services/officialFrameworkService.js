@@ -15,12 +15,16 @@ export function getAllOfficialFrameworks({
   limit = 10,
   search = "",
   status = "",
+  sortBy = "",
+  sortOrder = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
     ...(status && { status }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
 
   return apiRequest(
@@ -36,11 +40,15 @@ export function getOfficialFrameworkCategory({
   page = 1,
   limit = 10,
   search = "",
+  sortBy = "",
+  sortOrder = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
 
   return apiRequest(
@@ -56,11 +64,15 @@ export function getOfficialFrameworkCategoryAccess({
   page = 1,
   limit = 10,
   search = "",
+  sortBy = "",
+  sortOrder = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
 
   return apiRequest(
@@ -206,7 +218,11 @@ export function rejectOfficialFramework(frameworkId, rejectionReason) {
 /**
  * Delete control from framework version
  */
-export function deleteOfficialFrameworkControl(frameworkId, version, controlId) {
+export function deleteOfficialFrameworkControl(
+  frameworkId,
+  version,
+  controlId,
+) {
   return apiRequest(
     `/official-frameworks/frameworks/${frameworkId}/versions/${version}/controls/${controlId}`,
     {
@@ -219,7 +235,12 @@ export function deleteOfficialFrameworkControl(frameworkId, version, controlId) 
 /**
  * Update control in framework version
  */
-export function updateOfficialFrameworkControl(frameworkId, version, controlId, controlData) {
+export function updateOfficialFrameworkControl(
+  frameworkId,
+  version,
+  controlId,
+  controlData,
+) {
   return apiRequest(
     `/official-frameworks/frameworks/${frameworkId}/versions/${version}/controls/${controlId}`,
     {
@@ -244,11 +265,15 @@ export function getApprovedOfficialFrameworks({
   page = 1,
   limit = 10,
   search = "",
+  sortBy = "",
+  sortOrder = "",
 } = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(sortBy && { sortBy }),
+    ...(sortOrder && { sortOrder }),
   });
 
   return apiRequest(

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Icon from "../Icon";
 import { Button } from "../ui/button";
 import {
@@ -10,19 +10,6 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-
-// Debounce utility function
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
 
 /**
  * Reusable DataTable Component
@@ -58,6 +45,7 @@ export default function DataTable({
 }) {
   const [searchTerm, setSearchTerm] = useState(externalSearchTerm);
   const [isSearching, setIsSearching] = useState(false);
+  const debounceTimerRef = useRef(null);
 
   // Sync external search term with internal state
   useEffect(() => {
@@ -65,19 +53,14 @@ export default function DataTable({
     setIsSearching(false); // Reset searching state when external term changes
   }, [externalSearchTerm]);
 
-  // Debounced search function
-  const debouncedSearch = useCallback(
-    (searchValue) => {
-      const debouncedFn = debounce(() => {
-        if (onSearch) {
-          setIsSearching(true);
-          onSearch(searchValue);
-        }
-      }, 1000);
-      debouncedFn();
-    },
-    [onSearch],
-  );
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   // Reset searching state when loading changes
   useEffect(() => {
@@ -104,12 +87,23 @@ export default function DataTable({
   // Ensure data is always an array
   const sortedData = Array.isArray(data) ? data : [];
 
-  // Handle search with debouncing
+  // Handle search with debouncing using useRef
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // Use debounced search instead of immediate API call
-    debouncedSearch(value);
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new timer
+    debounceTimerRef.current = setTimeout(() => {
+      if (onSearch) {
+        setIsSearching(true);
+        onSearch(value);
+      }
+    }, 1000); // 1000ms debounce delay
   };
 
   const getSerialNumber = (index, pagination) => {
